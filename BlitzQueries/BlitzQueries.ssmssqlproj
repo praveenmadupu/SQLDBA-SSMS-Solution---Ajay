@@ -3,6 +3,18 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
+        <ConnectionNode Name="ann1vespdb01:CORPORATE\adwivedi">
+          <Created>2018-03-14T11:45:04.3263628+05:30</Created>
+          <Type>SQL</Type>
+          <Server>ann1vespdb01</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="BAN-1ADWIVEDI-L:CORPORATE\adwivedi">
           <Created>2018-02-07T12:16:36.2857283+05:30</Created>
           <Type>SQL</Type>
@@ -14,6 +26,30 @@
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName />
+        </ConnectionNode>
+        <ConnectionNode Name="BAN-2ADWIVEDI-L:CORPORATE\adwivedi">
+          <Created>2018-03-13T20:50:44.271523+05:30</Created>
+          <Type>SQL</Type>
+          <Server>BAN-2ADWIVEDI-L</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="TUL1DBAPMTDB1:CORPORATE\adwivedi">
+          <Created>2018-03-13T20:21:53.5136092+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1DBAPMTDB1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
       </Items>
     </LogicalFolder>
@@ -44,8 +80,8 @@
           <FullPath>BlitzIndex.sql</FullPath>
         </FileNode>
         <FileNode Name="Blocking Tree.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Blocking Tree.sql</FullPath>
         </FileNode>
@@ -73,9 +109,15 @@
           <AssociatedConnUserName />
           <FullPath>What's running.sql</FullPath>
         </FileNode>
+        <FileNode Name="who_is_active_v11_30(Modified).sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:ann1vespdb01:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>ann1vespdb01</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>who_is_active_v11_30(Modified).sql</FullPath>
+        </FileNode>
         <FileNode Name="whoIsActive.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>whoIsActive.sql</FullPath>
         </FileNode>
