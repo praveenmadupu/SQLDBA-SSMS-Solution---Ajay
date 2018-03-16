@@ -19,7 +19,7 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "SQLDBATools-Inventory", "SQ
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "SpaceCapacity-Automation", "SpaceCapacity-Automation\SpaceCapacity-Automation.ssmssqlproj", "{3EAD2BB5-CA7E-4D64-BEC9-A6E7C95B0CD3}"
 EndProject
-Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Tivo-Alerts", "Tivo-Alerts\Tivo-Alerts.ssmssqlproj", "{96885267-A994-4A94-AE82-43C98262ACE7}"
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "SQLAgent-Notifications", "SQLAgent-Notifications\SQLAgent-Notifications.ssmssqlproj", "{819D9E21-3B8F-4503-B098-BE1FD5091B8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,8 +34,8 @@ Global
 		{9EB3646E-62A7-4242-BC8C-8D9C324A4C13}.Default|Default.ActiveCfg = Default
 		{57FF8DF9-22E7-4ED8-85D3-E23B480BE7BE}.Default|Default.ActiveCfg = Default
 		{3EAD2BB5-CA7E-4D64-BEC9-A6E7C95B0CD3}.Default|Default.ActiveCfg = Default
-		{515748B6-7D60-43FA-BF6E-D0A404CBCB5F}.Default|Default.ActiveCfg = Default
-		{96885267-A994-4A94-AE82-43C98262ACE7}.Default|Default.ActiveCfg = Default
+		{0834485A-7E22-45E9-A8AD-0336F962C752}.Default|Default.ActiveCfg = Default
+		{819D9E21-3B8F-4503-B098-BE1FD5091B8B}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
