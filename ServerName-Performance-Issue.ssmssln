@@ -15,18 +15,27 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "PowerShell Commands", "Powe
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "sp_HealthCheck", "sp_HealthCheck\sp_HealthCheck.ssmssqlproj", "{9EB3646E-62A7-4242-BC8C-8D9C324A4C13}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "SQLDBATools-Inventory", "SQLDBATools-Inventory\SQLDBATools-Inventory.ssmssqlproj", "{57FF8DF9-22E7-4ED8-85D3-E23B480BE7BE}"
+EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "SpaceCapacity-Automation", "SpaceCapacity-Automation\SpaceCapacity-Automation.ssmssqlproj", "{3EAD2BB5-CA7E-4D64-BEC9-A6E7C95B0CD3}"
+EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Tivo-Alerts", "Tivo-Alerts\Tivo-Alerts.ssmssqlproj", "{96885267-A994-4A94-AE82-43C98262ACE7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{34D3C094-4DA1-4402-BCC7-D7D3C964B2AD}.Default|Default.ActiveCfg = Default
-		{2F839FC3-8723-4058-85E1-6F5F4B024451}.Default|Default.ActiveCfg = Default
 		{15CC463C-A8D2-4F91-BF9C-5D8D86E815E2}.Default|Default.ActiveCfg = Default
 		{97D05A33-770A-4C00-B526-9FA045863965}.Default|Default.ActiveCfg = Default
 		{45C2C8C8-EE4A-44F4-B4F7-0A574BC0340D}.Default|Default.ActiveCfg = Default
 		{4E8B3D69-1D59-4EAE-BCB7-92BC26C3BA58}.Default|Default.ActiveCfg = Default
 		{9EB3646E-62A7-4242-BC8C-8D9C324A4C13}.Default|Default.ActiveCfg = Default
+		{57FF8DF9-22E7-4ED8-85D3-E23B480BE7BE}.Default|Default.ActiveCfg = Default
+		{3EAD2BB5-CA7E-4D64-BEC9-A6E7C95B0CD3}.Default|Default.ActiveCfg = Default
+		{515748B6-7D60-43FA-BF6E-D0A404CBCB5F}.Default|Default.ActiveCfg = Default
+		{96885267-A994-4A94-AE82-43C98262ACE7}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

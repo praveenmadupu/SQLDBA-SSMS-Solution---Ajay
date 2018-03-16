@@ -1,27 +1,27 @@
 <?xml version="1.0"?>
-<SqlWorkbenchSqlProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="Space Issues">
+<SqlWorkbenchSqlProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SQLDBATools-Inventory">
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="BAN-2ADWIVEDI-L:CORPORATE\adwivedi">
-          <Created>2018-03-16T13:15:07.968723+05:30</Created>
+        <ConnectionNode Name="TUL1CIPCNPDB1:CORPORATE\adwivedi">
+          <Created>2018-03-14T14:45:06.4160508+05:30</Created>
           <Type>SQL</Type>
-          <Server>BAN-2ADWIVEDI-L</Server>
+          <Server>TUL1CIPCNPDB1</Server>
           <UserName />
           <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
+          <InitialDB>master</InitialDB>
           <LoginTimeout>30</LoginTimeout>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
         <ConnectionNode Name="TUL1DBAPMTDB1:CORPORATE\adwivedi">
-          <Created>2018-03-15T17:43:19.1818081+05:30</Created>
+          <Created>2018-03-14T15:47:26.8439551+05:30</Created>
           <Type>SQL</Type>
           <Server>TUL1DBAPMTDB1</Server>
           <UserName />
           <Authentication>Windows Authentication</Authentication>
-          <InitialDB>SQLDBATools</InitialDB>
+          <InitialDB />
           <LoginTimeout>30</LoginTimeout>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
@@ -31,11 +31,17 @@
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
-        <FileNode Name="Get-DbSize.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
+        <FileNode Name="DatabaseMailProfile.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
-          <FullPath>Get-DbSize.sql</FullPath>
+          <FullPath>DatabaseMailProfile.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SQLDBATools - DDL.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SQLDBATools - DDL.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>
