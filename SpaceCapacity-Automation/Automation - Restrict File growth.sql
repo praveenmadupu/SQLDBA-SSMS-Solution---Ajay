@@ -3,6 +3,7 @@ GO
 IF OBJECT_ID('dbo.usp_AnalyzeSpaceCapacity') IS NULL
   EXEC ('CREATE PROCEDURE dbo.usp_AnalyzeSpaceCapacity AS RETURN 0;')
 GO
+--	EXEC tempdb..[usp_AnalyzeSpaceCapacity] @volumeInfo = 1
 --	EXEC tempdb..[usp_AnalyzeSpaceCapacity] @getLogInfo = 1
 --	EXEC tempdb..[usp_AnalyzeSpaceCapacity] @help = 1
 --	EXEC [dbo].[usp_AnalyzeSpaceCapacity] @addDataFiles = 1 ,@newVolume = 'E:\Data1\' ,@oldVolume = 'E:\Data\' --,@forceExecute = 1
@@ -12,18 +13,17 @@ GO
 --	EXEC tempdb..[usp_AnalyzeSpaceCapacity] @expandTempDBSize = 1 ,@output4IdealScenario = 1
 --	DECLARE	@_errorOccurred BIT; EXEC @_errorOccurred = tempdb..[usp_AnalyzeSpaceCapacity] ; SELECT CASE WHEN @_errorOccurred = 1 THEN 'fail' ELSE 'pass' END AS [Pass/Fail];
 ALTER PROCEDURE [dbo].[usp_AnalyzeSpaceCapacity]
-	@getInfo TINYINT = 0, @getLogInfo TINYINT = 0, @help TINYINT = 0, @addDataFiles TINYINT = 0, @addLogFiles TINYINT = 0, @restrictDataFileGrowth TINYINT = 0, @restrictLogFileGrowth TINYINT = 0, @generateCapacityException TINYINT = 0, @unrestrictFileGrowth TINYINT = 0, @removeCapacityException TINYINT = 0, @UpdateMountPointSecurity TINYINT = 0, @restrictMountPointGrowth TINYINT = 0, @expandTempDBSize TINYINT = 0, @optimizeLogFiles TINYINT = 0,
+	@getInfo TINYINT = 0, @getLogInfo TINYINT = 0, @volumeInfo TINYINT = 0, @help TINYINT = 0, @addDataFiles TINYINT = 0, @addLogFiles TINYINT = 0, @restrictDataFileGrowth TINYINT = 0, @restrictLogFileGrowth TINYINT = 0, @generateCapacityException TINYINT = 0, @unrestrictFileGrowth TINYINT = 0, @removeCapacityException TINYINT = 0, @UpdateMountPointSecurity TINYINT = 0, @restrictMountPointGrowth TINYINT = 0, @expandTempDBSize TINYINT = 0, @optimizeLogFiles TINYINT = 0,
 	@newVolume VARCHAR(50) = NULL, @oldVolume VARCHAR(50) = NULL, @mountPointGrowthRestrictionPercent TINYINT = 79, @tempDBMountPointPercent TINYINT = 89, @DBs2Consider VARCHAR(1000) = NULL, @mountPointFreeSpaceThreshold_GB INT = 60
 	,@verbose TINYINT = 0 ,@testAllOptions TINYINT = 0 ,@forceExecute TINYINT = 0 ,@allowMultiVolumeUnrestrictedFiles TINYINT = 0 ,@output4IdealScenario TINYINT = 0
 AS
 BEGIN
 	/*
 		Created By:		Ajay Dwivedi
-		Updated on:		08-Aug-2017
+		Updated on:		16-Mar-2018
 		Current Ver:	3.3 - Add functionality to make modification only for specific databases using @DBs2Consider
 
 		Purpose:		This procedure can be used to generate automatic TSQL code for working with ESCs like 'DBSEP2537- Data- Create and Restrict Database File Names' type.
-						\\gdv01fil01\d101\dba\sqlserver\scripts\sql\Maintenance
 	*/
 
 	SET NOCOUNT ON;
@@ -225,7 +225,7 @@ DECLARE		@_logicalCores TINYINT
 		ELSE
 			SET @_LogOrData = 'Log';
 
-		IF	(@help=1 OR @addDataFiles=1 OR @addLogFiles=1 OR @restrictDataFileGrowth=1 OR @restrictLogFileGrowth=1 OR @generateCapacityException=1 OR @unrestrictFileGrowth=1 OR @removeCapacityException=1 OR @UpdateMountPointSecurity=1 OR @restrictMountPointGrowth=1 OR @expandTempDBSize=1 OR @optimizeLogFiles=1)
+		IF	(@help=1 OR @volumeInfo=1 OR @addDataFiles=1 OR @addLogFiles=1 OR @restrictDataFileGrowth=1 OR @restrictLogFileGrowth=1 OR @generateCapacityException=1 OR @unrestrictFileGrowth=1 OR @removeCapacityException=1 OR @UpdateMountPointSecurity=1 OR @restrictMountPointGrowth=1 OR @expandTempDBSize=1 OR @optimizeLogFiles=1)
 		BEGIN	
 			SET	@getInfo = 0;
 			SET @getLogInfo = 0;
@@ -1176,11 +1176,14 @@ DECLARE		@_logicalCores TINYINT
 						,(CASE WHEN growth = 0 THEN '0' WHEN is_percent_growth = 1 THEN CAST(growth AS VARCHAR(5))+'%' 
 						ELSE CAST(CONVERT( DECIMAL(20,2),((65536*8.0)/1024.0)) AS VARCHAR(20))+'(MB)'
 						END) AS [growth(GB)]
-						,name as [FileName] ,LEFT(physical_name, CHARINDEX('\',physical_name,4))  as [Volume] 
+						,name as [FileName] 
+						,v.Volume  as [Volume] 
 				FROM	sys.master_files AS mf
 				INNER JOIN
 						T_FileGroup AS fg
 					ON	mf.database_id = fg.database_id AND mf.data_space_id = fg.data_space_id
+				OUTER APPLY
+						( SELECT v.Volume FROM @mountPointVolumes as v WHERE mf.physical_name LIKE (v.Volume+'%') ) as v
 				WHERE	mf.type_desc = 'ROWS'
 			)
 			,T_Files_Usage AS
@@ -1204,16 +1207,13 @@ DECLARE		@_logicalCores TINYINT
 					   ,[freespace(GB)]
 					   , [freespace(%)]
 				FROM	@mountPointVolumes as v
-				WHERE	v.Volume IN (SELECT DISTINCT [Volume] FROM T_Files_Filegroups)
-					OR	v.Volume LIKE '[A-Z]:\Data[0-9]\'
-					OR	v.Volume LIKE '[A-Z]:\Data[0-9][0-9]\'
+				WHERE	EXISTS (SELECT 1 FROM T_Files_Filegroups AS fg WHERE fg.Volume = v.Volume)
 			)
 			,T_Files AS
 			( 
 				SELECT	DB_ID, DB_Name, [TotalFilesSize(GB)], [FileGroup], 
-						--f.FileName+' (Growth by '+[growth(GB)]+')' AS FileSettings, 
 						f.[FileName]+' (Size|% Used|AutoGrowth :: '+size+'|'+CAST([% space used] AS VARCHAR(50))+' %|'+[growth(GB)]+')' AS FileSettings, 
-						v.VolumeName+' = '+CAST([freespace(GB)] AS VARCHAR(20))+'GB('+CAST([freespace(%)] AS VARCHAR(20))+'%) Free of '+CAST([capacity(GB)] AS VARCHAR(20))+' GB' as FileDrive
+						v.VolumeName+'['+v.Volume+']'+' = '+CAST([freespace(GB)] AS VARCHAR(20))+'GB('+CAST([freespace(%)] AS VARCHAR(20))+'%) Free of '+CAST([capacity(GB)] AS VARCHAR(20))+' GB' as FileDrive
 						,f.growth, f.[growth(GB)], f.[FileName], v.Volume, [capacity(MB)], [freespace(MB)], VolumeName, [capacity(GB)], [freespace(GB)], [freespace(%)]
 						,ROW_NUMBER()OVER(PARTITION BY v.Volume, f.DB_Name, f.[FileGroup] ORDER BY f.[file_id])AS FileID
 				FROM	T_Files_Filegroups AS f
@@ -1320,12 +1320,37 @@ DECLARE		@_logicalCores TINYINT
 				PRINT	'/*	******************** End:	@getInfo = 1 *****************************/
 
 ';
+		
 
 		END	-- End Block of @getInfo
 		
 		--	----------------------------------------------------------------------------
 			--	End:	@getInfo = 1
 		--	============================================================================
+
+		--	============================================================================
+			--	Begin:	@volumeInfo = 1
+		--	----------------------------------------------------------------------------
+		IF	@volumeInfo = 1
+		BEGIN
+			IF @verbose=1 
+				PRINT	'
+/*	******************** Begin:	@volumeInfo = 1 *****************************/';
+
+		SELECT	v.Volume, v.Label, v.[capacity(GB)], v.[freespace(GB)]
+				,[UsedSpace(GB)] = v.[capacity(GB)]-v.[freespace(GB)]
+				,v.[freespace(%)] 
+				,[UsedSpace(%)] = 100-v.[freespace(%)]
+		FROM	@mountPointVolumes AS v;
+
+			IF @verbose=1 
+				PRINT	'
+/*	******************** Begin:	@volumeInfo = 1 *****************************/';
+		END
+		--	----------------------------------------------------------------------------
+			--	End:	@volumeInfo = 1
+		--	============================================================================
+
 
 
 		--	============================================================================
@@ -1357,6 +1382,9 @@ DECLARE		@_logicalCores TINYINT
 				PRINT	'	Start Loop, and find VLFs for each log file of every db';
 			WHILE (@_loopCounter <= @_loopCounts)
 			BEGIN
+				--	Truncate temp table
+				TRUNCATE TABLE #stage;
+
 				SELECT @_dbName = DBName FROM @Databases WHERE ID = @_loopCounter ;
 				SET @_loopSQLText = 'DBCC LOGINFO ('+QUOTENAME(@_dbName)+')
 		WITH  NO_INFOMSGS;';
@@ -1394,10 +1422,14 @@ DECLARE		@_logicalCores TINYINT
 			(
 				SELECT	mf.database_id as [DB_ID], DB_NAME(mf.database_id) AS [DB_Name], CASE WHEN d.is_read_only = 1 THEN 'Read_Only' ELSE DATABASEPROPERTYEX(DB_NAME(mf.database_id), 'Status') END as DB_State
 						,[TotalFilesSize(GB)]
-						,(CASE WHEN growth = 0 THEN '0' WHEN is_percent_growth = 1 THEN CAST(growth AS VARCHAR(5))+'%' 
-						ELSE CAST(CONVERT( DECIMAL(20,2),((65536*8.0)/1024.0)) AS VARCHAR(20))+' mb'
-						END) AS [growth(GB)]
-						,mf.name as [FileName] ,LEFT(physical_name, CHARINDEX('\',physical_name,4))  as [Volume]
+						,(CASE	WHEN	growth = 0 
+								THEN	'0' 
+								WHEN	is_percent_growth = 1 
+								THEN	CAST(growth AS VARCHAR(5))+'%' 
+								ELSE	CAST(CONVERT( DECIMAL(20,2),((mf.growth*8.0)/1024.0)) AS VARCHAR(20))+' mb'
+							END) AS [growth(GB)]
+						,mf.name as [FileName] 
+						,v.Volume  as [Volume]
 						,mf.* 
 						,d.recovery_model_desc
 				FROM	sys.master_files AS mf
@@ -1407,6 +1439,8 @@ DECLARE		@_logicalCores TINYINT
 				LEFT JOIN
 						T_Files_Size AS l
 					ON	l.database_id = mf.database_id
+				OUTER APPLY
+					(	SELECT v.Volume FROM @mountPointVolumes AS v WHERE mf.physical_name LIKE (v.Volume+'%')	) AS v
 				WHERE	mf.type_desc = 'LOG'
 			)
 			,T_Volumes_Derived AS
@@ -1419,16 +1453,15 @@ DECLARE		@_logicalCores TINYINT
 					   ,[freespace(GB)]
 					   ,[freespace(%)]
 				FROM	@mountPointVolumes as v
-				WHERE	v.Volume IN (SELECT DISTINCT [Volume] FROM T_Files_Filegroups)
-					OR	v.Volume LIKE '[A-Z]:\LOG[S][0-9]\'
-					OR	v.Volume LIKE '[A-Z]:\LOG[S][0-9][0-9]\'
+				WHERE	EXISTS (SELECT * FROM T_Files_Filegroups AS fg WHERE v.Volume = fg.[Volume])
+					--OR	v.Volume LIKE '[A-Z]:\LOG[S][0-9]\'
+					--OR	v.Volume LIKE '[A-Z]:\LOG[S][0-9][0-9]\'
 			)
 			,T_Files AS
 			(
 				SELECT	DB_ID, DB_Name, [TotalFilesSize(GB)], DB_State,
 						f.FileName+' (VLF_Count|Size|AutoGrowth :: '+CAST(l.VLFCount AS VARCHAR(20))+'|'+CAST(CONVERT(DECIMAL(20,2),((size*8.0)/1024/1024)) AS VARCHAR(20))+' gb|'+[growth(GB)]+')' AS FileSettings, 
-						--f.FileName+' (Growth by '+[growth(GB)]+') with '+CAST(l.VLFCount AS VARCHAR(20))+' VLFs' AS FileSettings, 
-						v.VolumeName+' = '+CAST([freespace(GB)] AS VARCHAR(20))+'GB('+CAST([freespace(%)] AS VARCHAR(20))+'%) Free of '+CAST([capacity(GB)] AS VARCHAR(20))+' GB' as FileDrive
+						v.VolumeName+QUOTENAME(v.Volume)+' = '+CAST([freespace(GB)] AS VARCHAR(20))+'GB('+CAST([freespace(%)] AS VARCHAR(20))+'%) Free of '+CAST([capacity(GB)] AS VARCHAR(20))+' GB' as FileDrive
 						,growth, [growth(GB)], [FileName], l.VLFCount
 						,v.Volume, [capacity(MB)], [freespace(MB)], VolumeName, [capacity(GB)], [freespace(GB)], [freespace(%)]
 						,ROW_NUMBER()OVER(PARTITION BY v.Volume, f.DB_Name ORDER BY f.[file_id]) AS FileID
@@ -1459,7 +1492,7 @@ DECLARE		@_logicalCores TINYINT
 			IF	@verbose = 1
 			BEGIN
 				PRINT	'	SELECT * FROM #LogFiles;';
-				SELECT 'SELECT * FROM #LogFiles;' AS RunningQuery, * FROM #LogFiles;
+				SELECT 'SELECT * FROM #LogFiles;' AS RunningQuery, * FROM #LogFiles ORDER BY DB_Name;
 			END
 
 			IF @verbose = 1

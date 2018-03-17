@@ -1,4 +1,4 @@
---EXEC tempdb..[usp_AnalyzeSpaceCapacity] @verbose = 1
+--EXEC tempdb..[usp_AnalyzeSpaceCapacity] @getLogInfo = 1 ,@verbose = 1
 /*	Created By:		Ajay Dwivedi
 	Purpose:		Get Space Utilization of All DB Files along with Free space on Drives.
 					This considers even non-accessible DBs
