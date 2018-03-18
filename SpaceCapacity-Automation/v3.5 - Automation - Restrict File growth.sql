@@ -3,25 +3,33 @@ GO
 IF OBJECT_ID('dbo.usp_AnalyzeSpaceCapacity') IS NULL
   EXEC ('CREATE PROCEDURE dbo.usp_AnalyzeSpaceCapacity AS RETURN 0;')
 GO
+
 --	EXEC tempdb..[usp_AnalyzeSpaceCapacity] @volumeInfo = 1
---	EXEC tempdb..[usp_AnalyzeSpaceCapacity] @getLogInfo = 1
+--	EXEC tempdb..[usp_AnalyzeSpaceCapacity] @getLogInfo = 1 ,@verbose = 1
 --	EXEC tempdb..[usp_AnalyzeSpaceCapacity] @help = 1
---	EXEC [dbo].[usp_AnalyzeSpaceCapacity] @addDataFiles = 1 ,@newVolume = 'E:\Data1\' ,@oldVolume = 'E:\Data\' --,@forceExecute = 1
---	EXEC [dbo].[usp_AnalyzeSpaceCapacity] @generateCapacityException = 1, @oldVolume = 'E:\Data\'
+--	EXEC [dbo].[usp_AnalyzeSpaceCapacity] @addDataFiles = 1 ,@newVolume = 'E:\Data5\' ,@oldVolume = 'E:\Data4\' ,@forceExecute = 1
+--	EXEC [dbo].[usp_AnalyzeSpaceCapacity] @generateCapacityException = 1, @oldVolume = 'E:\Data1\'
 --	EXEC tempdb..[usp_AnalyzeSpaceCapacity] @verbose = 1
---	EXEC [dbo].[usp_AnalyzeSpaceCapacity] @restrictDataFileGrowth = 1 ,@oldVolume = 'E:\Data\' --,@forceExecute = 1
+--	EXEC [dbo].[usp_AnalyzeSpaceCapacity] @restrictDataFileGrowth = 1 ,@oldVolume = 'E:\Data4\' ,@forceExecute = 1
 --	EXEC tempdb..[usp_AnalyzeSpaceCapacity] @expandTempDBSize = 1 ,@output4IdealScenario = 1
 --	DECLARE	@_errorOccurred BIT; EXEC @_errorOccurred = tempdb..[usp_AnalyzeSpaceCapacity] ; SELECT CASE WHEN @_errorOccurred = 1 THEN 'fail' ELSE 'pass' END AS [Pass/Fail];
+/*	
+DECLARE	@_errorOccurred BIT; 
+EXEC @_errorOccurred = [dbo].[usp_AnalyzeSpaceCapacity] @addDataFiles = 1 ,@newVolume = 'E:\Data6\' ,@oldVolume = 'E:\Data5\' 
+														,@forceExecute = 1 ; 
+SELECT CASE WHEN @_errorOccurred = 1 THEN 'fail' ELSE 'pass' END AS [Pass/Fail];
+*/
 ALTER PROCEDURE [dbo].[usp_AnalyzeSpaceCapacity]
 	@getInfo TINYINT = 0, @getLogInfo TINYINT = 0, @volumeInfo TINYINT = 0, @help TINYINT = 0, @addDataFiles TINYINT = 0, @addLogFiles TINYINT = 0, @restrictDataFileGrowth TINYINT = 0, @restrictLogFileGrowth TINYINT = 0, @generateCapacityException TINYINT = 0, @unrestrictFileGrowth TINYINT = 0, @removeCapacityException TINYINT = 0, @UpdateMountPointSecurity TINYINT = 0, @restrictMountPointGrowth TINYINT = 0, @expandTempDBSize TINYINT = 0, @optimizeLogFiles TINYINT = 0,
-	@newVolume VARCHAR(50) = NULL, @oldVolume VARCHAR(50) = NULL, @mountPointGrowthRestrictionPercent TINYINT = 79, @tempDBMountPointPercent TINYINT = NULL, @tempDbMaxSizeThresholdInGB INT = NULL, @DBs2Consider VARCHAR(1000) = NULL, @mountPointFreeSpaceThreshold_GB INT = 60
+	@newVolume VARCHAR(50) = NULL, @oldVolume VARCHAR(200) = NULL, @mountPointGrowthRestrictionPercent TINYINT = 79, @tempDBMountPointPercent TINYINT = NULL, @tempDbMaxSizeThresholdInGB INT = NULL, @DBs2Consider VARCHAR(1000) = NULL, @mountPointFreeSpaceThreshold_GB INT = 60
 	,@verbose TINYINT = 0 ,@testAllOptions TINYINT = 0 ,@forceExecute TINYINT = 0 ,@allowMultiVolumeUnrestrictedFiles TINYINT = 0 ,@output4IdealScenario TINYINT = 0
 AS
 BEGIN
 	/*
 		Created By:		Ajay Dwivedi
-		Updated on:		16-Mar-2018
-		Current Ver:	3.3 - Add functionality to make modification only for specific databases using @DBs2Consider
+		Updated on:		18-Mar-2018
+		Current Ver:	3.4 - a) Remove issues when multiple files are there with same logical names
+							b) **Add functionality to handle multiple comma separated @oldVolume names (This would be quite complex)**
 
 		Purpose:		This procedure can be used to generate automatic TSQL code for working with ESCs like 'DBSEP2537- Data- Create and Restrict Database File Names' type.
 	*/
@@ -34,12 +42,12 @@ BEGIN
 	--	Declare table for Error Handling
 	IF OBJECT_ID('tempdb..#ErrorMessages') IS NOT NULL
 		DROP TABLE #ErrorMessages;
-	CREATE TABLE	#ErrorMessages
+	CREATE TABLE #ErrorMessages
 	(
 		ErrorID INT IDENTITY(1,1),
 		ErrorCategory VARCHAR(50), -- 'Compilation Error', 'Runtime Time', 'ALTER DATABASE Error'
-		DBName VARCHAR(255) NULL,
-		[FileName] VARCHAR(255) NULL,
+		DBName varchar (255) NULL,
+		[FileName] varchar (255) NULL,
 		ErrorDetails TEXT NOT NULL,
 		TSQLCode TEXT NULL
 	);
@@ -50,9 +58,9 @@ BEGIN
 		MessageID INT IDENTITY(1,1),
 		Status VARCHAR(15),
 		Category VARCHAR(100), -- 'Compilation Error', 'Runtime Time', 'ALTER DATABASE Error', 'Add Data File', 'Add Log File'
-		DBName SYSNAME NULL,
-		[FileGroup] SYSNAME NULL,
-		[FileName] SYSNAME NULL,
+		DBName varchar (255) NULL,
+		[FileGroup] varchar (255) NULL,
+		[FileName] varchar (255) NULL,
 		MessageDetails TEXT NOT NULL,
 		TSQLCode TEXT NULL
 	);
@@ -84,10 +92,10 @@ BEGIN
 			,@_loopCounter SMALLINT
 			,@_loopCounts SMALLINT
 			,@_loopSQLText VARCHAR(MAX)
-			,@_dbName VARCHAR(255)
-			,@_fileGroup SYSNAME
-			,@_name VARCHAR(255)
-			,@_newName VARCHAR(255)
+			,@_dbName varchar (255)
+			,@_fileGroup varchar (255)
+			,@_name varchar (255)
+			,@_newName varchar (255)
 			,@_oldVolumesSpecified VARCHAR(200) -- Store comma separated volume names for @oldVolume
 			,@_capacityExceptionSQLText VARCHAR(MAX)
 			,@_svrName VARCHAR(255)
@@ -102,14 +110,67 @@ BEGIN
 			,@_Space_To_Add_to_Files_MB DECIMAL(20,2)
 			,@_productVersion VARCHAR(20)
 			,@_SpaceToBeFreed_MB DECIMAL(20,2)
+			--,@_helpText VARCHAR(MAX)
 			,@_sqlText NVARCHAR(4000) -- Can be used for any dynamic queries
 			,@_procSTMT_Being_Executed VARCHAR(2000);
 
-DECLARE		@_logicalCores TINYINT
+	DECLARE	@_logicalCores TINYINT
 			,@_fileCounts TINYINT
 			,@_maxFileNO TINYINT
 			,@_counts_of_Files_To_Be_Created TINYINT
 			,@_jobTimeThreshold_in_Hrs INT;
+
+	/*	There are many bugs with system stored procedure [dbo].[sp_MSforeachdb].
+		So, creating my own procedure to be used later in code
+		http://sqlblog.com/blogs/aaron_bertrand/archive/2010/02/08/bad-habits-to-kick-relying-on-undocumented-behavior.aspx
+	*/
+	IF OBJECT_ID('dbo.ForEachDB_MyWay') IS NULL
+	EXEC ('	CREATE PROCEDURE dbo.ForEachDB_MyWay
+				@cmd            NVARCHAR(MAX),
+				@name_pattern   NVARCHAR(257) = ''%'',
+				@recovery_model NVARCHAR(60) = NULL
+			AS
+			BEGIN
+				--	http://sqlblog.com/blogs/aaron_bertrand/archive/2010/02/08/bad-habits-to-kick-relying-on-undocumented-behavior.aspx
+				--	Code developed by Aaron Bertrand
+				SET NOCOUNT ON;
+
+				DECLARE
+					@sql NVARCHAR(MAX),
+					@db  NVARCHAR(257);
+
+				DECLARE c_dbs CURSOR LOCAL FORWARD_ONLY STATIC READ_ONLY 
+					FOR
+						SELECT QUOTENAME([name])
+							FROM sys.databases
+							WHERE (@recovery_model IS NULL OR (recovery_model_desc = @recovery_model))
+							AND [name] LIKE @name_pattern
+							AND [state] = 0
+							AND [is_read_only] = 0
+						ORDER BY [name];
+
+				OPEN c_dbs;
+    
+				FETCH NEXT FROM c_dbs INTO @db;
+
+				WHILE @@FETCH_STATUS <> -1
+				BEGIN
+					SET @sql = REPLACE(@cmd, ''?'', @db);
+					BEGIN TRY
+						EXEC(@sql);
+					END TRY
+					BEGIN CATCH
+						-- I''ll leave more advanced error handling as an exercise:
+						PRINT ERROR_MESSAGE();
+					END CATCH
+
+					FETCH NEXT FROM c_dbs INTO @db;
+				END
+
+				CLOSE c_dbs;
+				DEALLOCATE c_dbs;
+			END'
+		);
 
 	IF @verbose=1
 		PRINT	'Initiating local variables';
@@ -127,27 +188,28 @@ DECLARE		@_logicalCores TINYINT
 	SET	@_productVersion = (SELECT CAST(SERVERPROPERTY('ProductVersion') AS VARCHAR(20)) AS PVersion);
 	SET @_counts_of_Files_To_Be_Created = 0;
 	SET @_jobTimeThreshold_in_Hrs = NULL; -- Set threshold hours to 18 here
+	SELECT @_oldVolumesSpecified = CASE WHEN (@oldVolume IS NOT NULL) AND (CHARINDEX(',',@oldVolume)<>0) THEN @oldVolume ELSE NULL END;
 
 	IF @verbose=1 
 		PRINT	'Declaring Table Variables';
 
 	DECLARE @output TABLE (line varchar(2000));
-	DECLARE @T_Files_Final_Add TABLE (ID INT IDENTITY(1,1), TSQL_AddFile VARCHAR(2000),DBName VARCHAR(255), name VARCHAR(255), _name VARCHAR(255));
-	DECLARE @T_LogFiles_Final_Add TABLE (ID INT IDENTITY(1,1), TSQL_AddFile VARCHAR(2000),DBName VARCHAR(255), name VARCHAR(255), _name VARCHAR(255));
-	DECLARE @T_Files_Final_Restrict TABLE (ID INT IDENTITY(1,1), TSQL_RestrictFileGrowth VARCHAR(2000),DBName VARCHAR(255), name VARCHAR(255), _name VARCHAR(255));
-	DECLARE @T_Files_Final_AddUnrestrict TABLE (ID INT IDENTITY(1,1), TSQL_AddFile VARCHAR(2000),DBName VARCHAR(255), name VARCHAR(255), _name VARCHAR(255) NULL);
-	DECLARE @T_Files_Final_AddUnrestrictLogFiles TABLE (ID INT IDENTITY(1,1), TSQL_AddFile VARCHAR(2000),DBName VARCHAR(255), name VARCHAR(255), _name VARCHAR(255) NULL);
+	DECLARE @T_Files_Final_Add TABLE (ID INT IDENTITY(1,1), TSQL_AddFile VARCHAR(2000),DBName varchar (255), [fileGroup] varchar (255), name varchar (255), _name varchar (255));
+	DECLARE @T_LogFiles_Final_Add TABLE (ID INT IDENTITY(1,1), TSQL_AddFile VARCHAR(2000),DBName varchar (255), name varchar (255), _name varchar (255));
+	DECLARE @T_Files_Final_Restrict TABLE (ID INT IDENTITY(1,1), TSQL_RestrictFileGrowth VARCHAR(2000),DBName varchar (255), name varchar (255), _name varchar (255));
+	DECLARE @T_Files_Final_AddUnrestrict TABLE (ID INT IDENTITY(1,1), TSQL_AddFile VARCHAR(2000),DBName varchar (255), name varchar (255), _name varchar (255) NULL);
+	DECLARE @T_Files_Final_AddUnrestrictLogFiles TABLE (ID INT IDENTITY(1,1), TSQL_AddFile VARCHAR(2000),DBName varchar (255), name varchar (255), _name varchar (255) NULL);
 	DECLARE @T_Files_ReSizeTempDB TABLE (ID INT IDENTITY(1,1), TSQL_ResizeTempDB_Files VARCHAR(2000));
 	DECLARE @T_Files_restrictMountPointGrowth TABLE (ID INT IDENTITY(1,1), TSQL_restrictMountPointGrowth VARCHAR(2000));
-	DECLARE @T_Files_Remove TABLE (ID INT IDENTITY(1,1), TSQL_EmptyFile VARCHAR(2000), TSQL_RemoveFile VARCHAR(2000), name VARCHAR(255), Volume VARCHAR(255));
-
+	DECLARE @T_Files_Remove TABLE (ID INT IDENTITY(1,1), TSQL_EmptyFile VARCHAR(2000), TSQL_RemoveFile VARCHAR(2000), name varchar (255), Volume VARCHAR(255));
 
 	DECLARE @mountPointVolumes TABLE ( Volume VARCHAR(200), [Label] VARCHAR(100) NULL, [capacity(MB)] DECIMAL(20,2), [freespace(MB)] DECIMAL(20,2) ,VolumeName VARCHAR(50), [capacity(GB)]  DECIMAL(20,2), [freespace(GB)]  DECIMAL(20,2), [freespace(%)]  DECIMAL(20,2) );
-	DECLARE @filegroups TABLE ([DBName] [VARCHAR](255), [name] [VARCHAR](255), [data_space_id] smallint, [type_desc] [varchar](100) );
+	DECLARE @filegroups TABLE ([DBName] [varchar](255), [name] [varchar](255), [data_space_id] smallint, [type_desc] [varchar](100) );
 	DECLARE @Databases TABLE (ID INT IDENTITY(1,1), DBName VARCHAR(200));
-	DECLARE	@DatabasesBySize TABLE (DBName VARCHAR(255), database_id SMALLINT, [Size (GB)] DECIMAL(20,2));
-	DECLARE	@T_DatabasesNotAccessible TABLE (database_id SMALLINT, DBName VARCHAR(255));
-	DECLARE @filterDatabaseNames TABLE (DBName VARCHAR(255));
+	DECLARE	@DatabasesBySize TABLE (DBName varchar (255), database_id SMALLINT, [Size (GB)] DECIMAL(20,2));
+	DECLARE	@T_DatabasesNotAccessible TABLE (database_id SMALLINT, DBName varchar (255));
+	DECLARE @filterDatabaseNames TABLE (DBName varchar (255)); -- This table will be used if multiple Database names are supplied in @DBsToConsider parameter
+	DECLARE @oldVolumeNames TABLE (ID INT IDENTITY(1,1), oldVolume VARCHAR(20)); -- This table will be used if multiple volumes are supplied in @oldVolume parameter
 	DECLARE @DBFiles TABLE
 	(
 		[DbName] [varchar](500),
@@ -166,7 +228,7 @@ DECLARE		@_logicalCores TINYINT
 	IF @verbose=1 
 		PRINT	'Creating temp table #T_Files_Derived';
 	IF OBJECT_ID('tempdb..#T_Files_Derived') IS NOT NULL
-		DROP TABLE #T_Files_Derived;
+		TRUNCATE TABLE #T_Files_Derived;
 	CREATE TABLE #T_Files_Derived
 	(
 		[dbName] [nvarchar](128) NULL,
@@ -174,13 +236,13 @@ DECLARE		@_logicalCores TINYINT
 		[file_id] [int] NULL,
 		[type_desc] [nvarchar](60) NULL,
 		[data_space_id] [int] NULL, -- filegroup id
-		[name] [VARCHAR](255) NULL,
+		[name] [varchar](255) NULL,
 		[physical_name] [nvarchar](260) NULL,
 		[size] [int] NULL,	-- file size from sys.master_files
 		[max_size] [int] NULL, -- max_size value from sys.master_files
 		[growth] [int] NULL, --	growth value from sys.master_files
 		[is_percent_growth] [bit] NULL,
-		[fileGroup] [VARCHAR](255) NULL,
+		[fileGroup] [varchar](255) NULL,
 		[FileIDRankPerFileGroup] [bigint] NULL,
 		[isExistingOn_NewVolume] [int] NULL,
 		[isExisting_UnrestrictedGrowth_on_OtherVolume] [int] NULL,
@@ -200,8 +262,8 @@ DECLARE		@_logicalCores TINYINT
 	DECLARE @tempDBFiles TABLE
 	(
 		[fileNo] INT IDENTITY(1,1),
-		[DBName] [VARCHAR](255) NULL,
-		[LogicalName] [VARCHAR](255) NOT NULL,
+		[DBName] [varchar](255) NULL,
+		[LogicalName] [varchar](255) NOT NULL,
 		[physical_name] [nvarchar](260) NOT NULL,
 		[FileSize_MB] [numeric](18, 6) NULL,
 		[Volume] [varchar](200) NULL,
@@ -222,6 +284,8 @@ DECLARE		@_logicalCores TINYINT
 		DROP TABLE #runningAgentJobs;
 
 	BEGIN TRY	-- Try Catch for executable blocks that may throw error
+		IF @verbose = 1
+			PRINT	'	This is starting point of outermost Try/Catch Block	';
 
 		IF @help = 1
 			GOTO HELP_GOTO_BOOKMARK;
@@ -268,13 +332,11 @@ DECLARE		@_logicalCores TINYINT
 				ELSE
 					EXEC sp_executesql N'RAISERROR (@_errorMSG, 16, 1)', N'@_errorMSG VARCHAR(200)', @_errorMSG;
 			END
-			
 			-- If both parameters are NULL, use @tempDbMaxSizeThresholdInGB with default 
 			IF (@tempDbMaxSizeThresholdInGB IS NULL AND @tempDBMountPointPercent IS NULL)
 			BEGIN 
 				SET @_errorMSG = '	/*	Value for neither @tempDbMaxSizeThresholdInGB or @tempDBMountPointPercent is provided. So, proceeding with @tempDbMaxSizeThresholdInGB = ';
 				SET @tempDbMaxSizeThresholdInGB = 16;
-
 				IF @forceExecute = 0
 				BEGIN
 					SET @_errorMSG =	@_errorMSG + CAST(	@tempDbMaxSizeThresholdInGB AS VARCHAR(5)) + '
@@ -283,6 +345,26 @@ DECLARE		@_logicalCores TINYINT
 				END
 			END
 		END
+		IF @verbose = 1
+			PRINT '	Evaluating value for @_procSTMT_Being_Executed';
+		SET @_procSTMT_Being_Executed = 'EXEC [dbo].[usp_AnalyzeSpaceCapacity] ';
+		IF @getInfo = 1
+			SET @_procSTMT_Being_Executed += ' @getInfo = 1';
+		ELSE IF @getLogInfo = 1
+			SET @_procSTMT_Being_Executed += ' @getLogInfo = 1';
+		ELSE IF @help = 1
+			SET @_procSTMT_Being_Executed += ' @help = 1';
+		ELSE IF @addDataFiles = 1
+			SET @_procSTMT_Being_Executed += ' @addDataFiles = 1 ' + ',@newVolume = '+QUOTENAME(@newVolume,'''')+' ,@oldVolume = '+QUOTENAME(@oldVolume,'''') + (CASE WHEN @DBs2Consider IS NOT NULL THEN ' ,@DBs2Consider = '+QUOTENAME(@DBs2Consider,'''') ELSE '' END) + (CASE WHEN @forceExecute = 1 THEN ' ,@forceExecute = 1' ELSE '' END)+ ';';
+		ELSE IF @addLogFiles = 1
+			SET @_procSTMT_Being_Executed += ' @addLogFiles = 1 ' + ',@newVolume = '+QUOTENAME(@newVolume,'''')+' ,@oldVolume = '+QUOTENAME(@oldVolume,'''') + (CASE WHEN @DBs2Consider IS NOT NULL THEN ' ,@DBs2Consider = '+QUOTENAME(@DBs2Consider,'''') ELSE '' END) + (CASE WHEN @forceExecute = 1 THEN ' ,@forceExecute = 1' ELSE '' END)+ ';';
+		ELSE IF @restrictDataFileGrowth = 1
+			SET @_procSTMT_Being_Executed += ' @restrictDataFileGrowth = 1 ' + ' ,@oldVolume = '+QUOTENAME(@oldVolume,'''') + (CASE WHEN @DBs2Consider IS NOT NULL THEN ' ,@DBs2Consider = '+QUOTENAME(@DBs2Consider,'''') ELSE '' END) + (CASE WHEN @forceExecute = 1 THEN ' ,@forceExecute = 1' ELSE '' END)+ ';';
+		ELSE IF @restrictLogFileGrowth = 1
+			SET @_procSTMT_Being_Executed += ' @restrictLogFileGrowth = 1 ' + ' ,@oldVolume = '+QUOTENAME(@oldVolume,'''') + (CASE WHEN @DBs2Consider IS NOT NULL THEN ' ,@DBs2Consider = '+QUOTENAME(@DBs2Consider,'''') ELSE '' END) + (CASE WHEN @forceExecute = 1 THEN ' ,@forceExecute = 1' ELSE '' END)+ ';';
+
+		IF @verbose = 1
+			PRINT '	Value of @_procSTMT_Being_Executed = '+CHAR(10)+CHAR(10)+@_procSTMT_Being_Executed+CHAR(10);
 
 		--	Check if valid parameter is selected for procedure
 		IF (COALESCE(@getInfo,@help,@addDataFiles,@addLogFiles,@restrictDataFileGrowth,@restrictLogFileGrowth,@generateCapacityException,@unrestrictFileGrowth
@@ -376,14 +458,82 @@ DECLARE		@_logicalCores TINYINT
 			IF @verbose=1 
 				PRINT	'
 /*	******************** BEGIN: Common Code *****************************/';
+
+			-- Check if more than one volume has been mentioned in @oldVolume parameter
+			IF @_oldVolumesSpecified IS NOT NULL -- proceed if more than one volume specified 
+			BEGIN
+				
+				IF @verbose = 1
+					PRINT	'	Following old volumes are specified:- '+@oldVolume;
 		
-			IF (@oldVolume IS NOT NULL OR @newVolume IS NOT NULL)
+				WITH t1(Volume,AllVolumeNames) AS 
+				(
+					SELECT	CAST(LEFT(@oldVolume, CHARINDEX(',',@oldVolume+',')-1) AS VARCHAR(500)) as Volume,
+							STUFF(@oldVolume, 1, CHARINDEX(',',@oldVolume+','), '') as AllVolumeNames
+					--
+					UNION ALL
+					--
+					SELECT	CAST(LEFT(AllVolumeNames, CHARINDEX(',',AllVolumeNames+',')-1) AS VARChAR(500)) AS Volume,
+							STUFF(AllVolumeNames, 1, CHARINDEX(',',AllVolumeNames+','), '')  as AllVolumeNames
+					FROM t1
+					WHERE AllVolumeNames > ''	
+				)
+				INSERT @oldVolumeNames
+				SELECT CASE WHEN RIGHT(RTRIM(LTRIM(Volume)),1) <> '\' THEN Volume+'\' ELSE Volume END FROM t1 ORDER BY Volume ASC;
+
+				IF @verbose = 1
+				BEGIN
+					PRINT	' SELECT * FROM @oldVolumeNames;';
+					SELECT 'SELECT * FROM @oldVolumeNames' AS RunningQuery, * FROM @oldVolumeNames;
+				END
+
+			END
+			ELSE
 			BEGIN
 				IF @verbose=1 
 					PRINT	'	Adding Backslash at the end for @oldVolume & @newVolume';
-				SELECT	@oldVolume = CASE WHEN RIGHT(RTRIM(LTRIM(@oldVolume)),1) <> '\' THEN @oldVolume+'\' ELSE @oldVolume END,
-						@newVolume = CASE WHEN RIGHT(RTRIM(LTRIM(@newVolume)),1) <> '\' THEN @newVolume+'\' ELSE @newVolume END;
+				SELECT	@oldVolume = CASE WHEN RIGHT(RTRIM(LTRIM(@oldVolume)),1) <> '\' THEN @oldVolume+'\' ELSE @oldVolume END;
 			END
+			SELECT	@newVolume = CASE WHEN RIGHT(RTRIM(LTRIM(@newVolume)),1) <> '\' THEN @newVolume+'\' ELSE @newVolume END;
+
+			IF @_oldVolumesSpecified IS NOT NULL -- proceed if more than one volume specified 
+			BEGIN
+				DECLARE @_counter INT
+				SET @_counter = (SELECT MAX(ID) FROM @oldVolumeNames);
+
+				WHILE (@_counter > 1)
+				BEGIN
+					SELECT  @oldVolume =  oldVolume FROM @oldVolumeNames WHERE ID = @_counter;
+
+					IF @addDataFiles = 1
+					BEGIN
+						IF @forceExecute <> 1
+							PRINT 'Calling another instance of Space Capacity Procedure with @oldVolume = '+QUOTENAME(@oldVolume,'''')+'.'+CHAR(10);
+						EXECUTE sp_executesql
+	N'EXEC [dbo].[usp_AnalyzeSpaceCapacity] @addDataFiles = 1 ,@newVolume = @v_newVolume ,@oldVolume = @v_oldVolume ,@forceExecute = @v_forceExecute ,@verbose = @v_verbose;', N'@v_newVolume VARCHAR(20), @v_oldVolume VARCHAR(20), @_v_forceExecute TINYINT, @v_verbose TINYINT', @v_newVolume = @newVolume, @v_oldVolume = @oldVolume, @v_forceExecute = @forceExecute, @v_verbose = @verbose;
+						
+						IF @forceExecute <> 1
+							PRINT '	Executed completed for this instance.';
+					END
+					ELSE IF @restrictDataFileGrowth = 1
+					BEGIN
+						IF @forceExecute <> 1
+							PRINT 'Calling another instance of Space Capacity Procedure with @oldVolume = '+QUOTENAME(@oldVolume,'''')+'.'+CHAR(10);
+						EXECUTE sp_executesql
+	N'EXEC [dbo].[usp_AnalyzeSpaceCapacity] @restrictDataFileGrowth = 1 ,@oldVolume = @v_oldVolume ,@forceExecute = @v_forceExecute ,@verbose = @v_verbose;', N'@v_oldVolume VARCHAR(20), @v_forceExecute TINYINT, @v_verbose TINYINT', @v_oldVolume = @oldVolume, @v_forceExecute = @forceExecute, @v_verbose = @verbose;
+						
+						IF @forceExecute <> 1
+							PRINT '	Execution completed for this instance.';
+					END
+
+					SET @_counter = @_counter - 1;
+				END
+			END
+			
+			--	set value of @oldVolume for just one volume/drive. The parent procedure will be using this value only.
+			SELECT	@oldVolume = oldVolume
+			FROM	@oldVolumeNames
+			WHERE	ID = 1;
 
 			-- Check is specific databases have been mentioned
 			IF @DBs2Consider IS NOT NULL
@@ -412,6 +562,7 @@ DECLARE		@_logicalCores TINYINT
 			/*
 			SET @_powershellCMD =  'powershell.exe -c "Get-WmiObject -ComputerName ' + QUOTENAME(@@servername,'''') + ' -Class Win32_Volume -Filter ''DriveType = 3'' | select name,Label,capacity,freespace | foreach{$_.name+''|''+$_.Label+''|''+$_.capacity/1048576+''%''+$_.freespace/1048576+''*''}"';
 			*/
+
 			-- Clear previous output
 			DELETE @output;
 
@@ -440,6 +591,9 @@ DECLARE		@_logicalCores TINYINT
 						expression = left(line,CHARINDEX('|',line)-1), 
 						searchExpression = SUBSTRING ( line , CHARINDEX('|',line)+1, LEN(line)+1 ), 
 						delimitorPosition = CHARINDEX('|',SUBSTRING ( line , CHARINDEX('|',line)+1, LEN(line)+1 ))
+
+
+
 				FROM	@output
 				WHERE	line like '[A-Z][:]%'
 						--line like 'C:\%'
@@ -482,6 +636,8 @@ DECLARE		@_logicalCores TINYINT
 					,[Label]
 					,[capacity(MB)] = CAST([capacity(MB)] AS numeric(20,2))
 					,[freespace(MB)] = CAST([freespace(MB)] AS numeric(20,2)) 
+
+
 					,[Label] as VolumeName
 					,CAST((CAST([capacity(MB)] AS numeric(20,2))/1024.0) AS DECIMAL(20,2)) AS [capacity(GB)]
 					,CAST((CAST([freespace(MB)] AS numeric(20,2))/1024.0) AS DECIMAL(20,2)) AS [freespace(GB)]
@@ -652,9 +808,10 @@ DECLARE		@_logicalCores TINYINT
 			BEGIN
 				IF @verbose=1 
 					PRINT	'	Populate values into @filegroups temp table';
+				
 				INSERT @filegroups
-				EXEC  sp_MSforeachdb  ' 
-			USE [?];
+				EXEC  ForEachDB_MyWay  ' 
+			USE ?;
 			SELECT db_name(), name, data_space_id, type_desc FROM [sys].[filegroups];
 			 ' ;
 				IF @verbose = 1
@@ -671,8 +828,8 @@ DECLARE		@_logicalCores TINYINT
 					PRINT	'	Populating data into @DBFiles.';
 
 				INSERT @DBFiles
-				EXEC sp_MSforeachdb '
-				USE [?];
+				EXEC ForEachDB_MyWay '
+				USE ?;
 				SELECT	DB_NAME() AS DbName,
 						name AS FileName,
 						data_space_id,
@@ -763,7 +920,8 @@ DECLARE		@_logicalCores TINYINT
 						SELECT	f.dbName, f.database_id, f.file_id, f.type_desc, f.data_space_id, f.name, f.physical_name, f.size, f.max_size, f.growth, f.is_percent_growth, f.fileGroup, 
 								f.FileIDRankPerFileGroup, f.isExistingOn_NewVolume, f.isExisting_UnrestrictedGrowth_on_OtherVolume, d.[Size (GB)]
 								,mf.[_name]
-								,[_physical_name] = @newVolume+[_name]+'.ldf'
+								--,[_physical_name] = @newVolume+[_name]+'.ldf'
+								,[_physical_name] = @newVolume+[_physicalName]+'.ldf'
 								,u2.Sum_DataFilesSize_MB AS TotalSize_All_DataFiles_MB
 								,u2.Sum_LogsFilesSize_MB AS TotalSize_All_LogFiles_MB
 								,u.maxfileSize_oldVolumes_MB
@@ -795,20 +953,45 @@ DECLARE		@_logicalCores TINYINT
 								) AS u2
 							ON	f.database_id = DB_ID(u2.DbName)
 						LEFT JOIN
-							(	SELECT	database_id, DBName, type_desc, name, _name = (CASE WHEN CHARINDEX(DBName,name) <> 0 THEN DBName ELSE '' END)+_Name_Without_DBName
+							(	SELECT	database_id, DBName, type_desc, name, physical_name, _name = (CASE WHEN CHARINDEX(DBName,name) <> 0 THEN DBName ELSE '' END)+_Name_Without_DBName
+										,_physicalName = (CASE WHEN CHARINDEX(DBName,Physical_Name_Without_Extension) <> 0 THEN DBName ELSE '' END)+[_PhysicalName_Without_DBName]
 								FROM	(
-											SELECT	database_id, DBName, type_desc, name, FileNO_String, FileNO_Int, Name_Without_DBName, FileOrder, 
-													[_Name_Without_DBName] = (CASE WHEN LEN( [_Name_Without_DBName]) > 0 THEN [_Name_Without_DBName] ELSE (CASE WHEN type_desc = 'ROWS' THEN '_Data01' ELSE '_Log01' END) END)
+											SELECT	database_id, DBName, type_desc, name, physical_name, Logical_FileNO_String, Logical_FileNO_Int, Logical_Name_Without_DBName, FileOrder, 
+													[_Name_Without_DBName] = (CASE WHEN LEN( [_LogicalName_Without_DBName]) > 0 THEN [_LogicalName_Without_DBName] ELSE (CASE WHEN type_desc = 'ROWS' THEN '_Data01' ELSE '_Log01' END) END)
+													,Physical_Name_Without_Extension
+													,_PhysicalName_Without_DBName
 											FROM	(
-														SELECT	*
-																,ROW_NUMBER()OVER(PARTITION BY DBName, type_desc ORDER BY FileNO_Int DESC) as FileOrder
-																,[_Name_Without_DBName] = CASE WHEN LEN(FileNO_String)<>0 THEN REPLACE(Name_Without_DBName,FileNO_String,(CASE WHEN LEN(FileNO_Int+1) = 1 THEN ('0'+CAST((FileNO_Int+1) AS VARCHAR(20))) ELSE CAST((FileNO_Int+1) AS VARCHAR(20)) END )) ELSE Name_Without_DBName + (CASE WHEN type_desc = 'LOG' THEN '01' ELSE '_data01' END) END
+														SELECT	T_Files_01.*
+																,FileOrder = ROW_NUMBER()OVER(PARTITION BY DBName, type_desc ORDER BY Logical_FileNO_Int DESC)
+																,MaxFileNO = MAX(Logical_FileNO_Int)OVER(PARTITION BY DBName, type_desc)
+																,[_LogicalName_Without_DBName] = CASE WHEN LEN(Logical_FileNO_String)<>0 THEN REPLACE(Logical_Name_Without_DBName,Logical_FileNO_String,(CASE WHEN LEN(Logical_FileNO_Int+1) = 1 THEN ('0'+CAST((Logical_FileNO_Int+1) AS VARCHAR(20))) ELSE CAST((Logical_FileNO_Int+1) AS VARCHAR(20)) END )) ELSE Logical_Name_Without_DBName + (CASE WHEN type_desc = 'LOG' THEN '01' ELSE '_data01' END) END
+																,[_PhysicalName_Without_DBName] = CASE WHEN LEN(Physical_FileNO_String)<>0 THEN REPLACE(Physical_Name_Without_DBName,Physical_FileNO_String,(CASE WHEN LEN(Physical_FileNO_Int+1) = 1 THEN ('0'+CAST((Physical_FileNO_Int+1) AS VARCHAR(20))) ELSE CAST((Physical_FileNO_Int+1) AS VARCHAR(20)) END )) ELSE Physical_Name_Without_DBName + (CASE WHEN type_desc = 'LOG' THEN '01' ELSE '_data01' END) END
 														FROM	(
-																	SELECT mf.database_id, db_name(database_id) AS DBName, type_desc, name 
-																			,FileNO_String = RIGHT(name,PATINDEX('%[a-zA-Z_ ]%',REVERSE(name))-1)
-																			,FileNO_Int = CAST(RIGHT(name,PATINDEX('%[a-zA-Z_ ]%',REVERSE(name))-1) AS INT)
-																			,Name_Without_DBName = REPLACE ( name, db_name(database_id), '')
+																	SELECT mf.database_id, db_name(database_id) AS DBName, type_desc, name, mfi.physical_name
+																			,mfi.Logical_FileNO_String
+																			,mfi.Logical_FileNO_Int
+																			,mfi.Logical_Name_Without_DBName
+																			,mfi.Physical_Name_Without_Extension
+																			,mfi.hasNameIssue
+																			,Physical_FileNO_String = RIGHT(REPLACE(REPLACE(mfi.Physical_Name_Without_Extension,']',''),'[',''),PATINDEX('%[a-zA-Z_ ]%',REVERSE(REPLACE(REPLACE(mfi.Physical_Name_Without_Extension,']',''),'[','')))-1)
+																			,Physical_FileNO_Int = CAST(RIGHT(REPLACE(REPLACE(mfi.Physical_Name_Without_Extension,']',''),'[',''),PATINDEX('%[a-zA-Z_ ]%',REVERSE(REPLACE(REPLACE(mfi.Physical_Name_Without_Extension,']',''),'[','')))-1) AS BIGINT)
+																			,Physical_Name_Without_DBName = REPLACE ( mfi.Physical_Name_Without_Extension, db_name(mf.database_id), '')
 																	FROM sys.master_files as mf
+																	CROSS APPLY 
+																		(	SELECT	physical_name = RIGHT(mfi.physical_name,CHARINDEX('\',REVERSE(mfi.physical_name),0)-1)
+																					,Logical_FileNO_String = RIGHT(REPLACE(REPLACE(mfi.name,']',''),'[',''),PATINDEX('%[a-zA-Z_ ]%',REVERSE(REPLACE(REPLACE(mfi.name,']',''),'[','')))-1)
+																					,Logical_FileNO_Int = CAST(RIGHT(REPLACE(REPLACE(mfi.name,']',''),'[',''),PATINDEX('%[a-zA-Z_ ]%',REVERSE(REPLACE(REPLACE(mfi.name,']',''),'[','')))-1) AS BIGINT)
+																					,Logical_Name_Without_DBName = REPLACE ( mfi.name, db_name(mfi.database_id), '')
+																					,Physical_Name_Without_Extension = LEFT(RIGHT(mfi.physical_name,CHARINDEX('\',REVERSE(mfi.physical_name),0)-1),CHARINDEX('.',RIGHT(mfi.physical_name,CHARINDEX('\',REVERSE(mfi.physical_name),0)-1))-1)
+																					,hasNameIssue = CASE WHEN EXISTS ( SELECT * FROM sys.master_files as t WHERE t.name = mfi.name AND mfi.database_id <> t.database_id)
+																								THEN 1
+																								ELSE 0
+																								END
+																			FROM	sys.master_files as mfi 
+																			WHERE	mfi.database_id = mf.database_id AND mfi.file_id = mf.file_id 
+																		) as mfi
+																	WHERE mf.type_desc = 'LOG'
+																	AND	mf.database_id > 4
 																) AS T_Files_01
 													) AS T_Files_02
 										) AS T_Files_03
@@ -867,7 +1050,8 @@ DECLARE		@_logicalCores TINYINT
 						SELECT	f.dbName, f.database_id, f.file_id, f.type_desc, f.data_space_id, f.name, f.physical_name, f.size, f.max_size, f.growth, f.is_percent_growth, f.fileGroup, 
 								f.FileIDRankPerFileGroup, f.isExistingOn_NewVolume, f.isExisting_UnrestrictedGrowth_on_OtherVolume, d.[Size (GB)]
 								,[_name]
-								,[_physical_name] = @newVolume+[_name]+'.ndf'
+								,[_physical_name] = @newVolume+[_physicalName]+'.ndf'
+								--,[_physical_name] = @newVolume+[_name]+'.ndf'
 								,u2.Sum_DataFilesSize_MB AS TotalSize_All_DataFiles_MB
 								,u2.Sum_LogsFilesSize_MB AS TotalSize_All_LogFiles_MB
 								,u.maxfileSize_oldVolumes_MB
@@ -901,26 +1085,50 @@ DECLARE		@_logicalCores TINYINT
 						LEFT JOIN -- get new names per filegroup
 							(	SELECT	database_id, DBName, type_desc, name, _name = (CASE WHEN CHARINDEX(DBName,name) <> 0 THEN DBName ELSE '' END)+_Name_Without_DBName
 										,FileOrder ,data_space_id
+										,_physicalName = (CASE WHEN CHARINDEX(DBName,Physical_Name_Without_Extension) <> 0 THEN DBName ELSE '' END)+[_PhysicalName_Without_DBName]
 								FROM	(
-											SELECT	database_id, DBName, type_desc, name, FileNO_String, FileNO_Int, Name_Without_DBName, FileOrder, data_space_id,
-													[_Name_Without_DBName] = (CASE WHEN LEN( [_Name_Without_DBName]) > 0 THEN [_Name_Without_DBName] ELSE (CASE WHEN type_desc = 'ROWS' THEN '_Data01' ELSE '_Log01' END) END)
+											SELECT	database_id, DBName, type_desc, name, Logical_FileNO_String, Logical_FileNO_Int, Logical_Name_Without_DBName, FileOrder, data_space_id,
+													[_PhysicalName_Without_DBName], [Physical_Name_Without_Extension],
+													[_Name_Without_DBName] = (CASE WHEN LEN( [_LogicalName_Without_DBName]) > 0 THEN [_LogicalName_Without_DBName] ELSE (CASE WHEN type_desc = 'ROWS' THEN '_Data01' ELSE '_Log01' END) END)
 											FROM	(
+
 														SELECT	T_Files_01.*
-																,FileOrder = ROW_NUMBER()OVER(PARTITION BY DBName, type_desc, data_space_id ORDER BY FileNO_Int DESC)
-																,MaxFileNO = MAX(FileNO_Int)OVER(PARTITION BY DBName, type_desc)
-																,[_Name_Without_DBName] = CASE	WHEN LEN(FileNO_String)<>0 -- if more than 1 files already exist, then just increment no by 1
-																								THEN REPLACE(Name_Without_DBName,FileNO_String,(CASE WHEN LEN(FileNO_Int+data_space_id) = 1 THEN ('0'+CAST((FileNO_Int+data_space_id) AS VARCHAR(20))) ELSE CAST((FileNO_Int+data_space_id) AS VARCHAR(20)) END )) 
-																								ELSE Name_Without_DBName + (CASE WHEN type_desc = 'LOG' THEN '01' ELSE '_data01' END) END
-														FROM	(
-											
-																	SELECT mf.database_id, db_name(database_id) AS DBName, type_desc, name, data_space_id, growth
-																			,FileNO_String = RIGHT(REPLACE(REPLACE(name,']',''),'[',''),PATINDEX('%[a-zA-Z_ ]%',REVERSE(REPLACE(REPLACE(name,']',''),'[','')))-1)
-																			,FileNO_Int = CAST(RIGHT(REPLACE(REPLACE(name,']',''),'[',''),PATINDEX('%[a-zA-Z_ ]%',REVERSE(REPLACE(REPLACE(name,']',''),'[','')))-1) AS BIGINT)
-																			,Name_Without_DBName = REPLACE ( name, db_name(database_id), '')
+																,FileOrder = ROW_NUMBER()OVER(PARTITION BY DBName, type_desc, data_space_id ORDER BY Logical_FileNO_Int DESC)
+																,MaxFileNO = MAX(Logical_FileNO_Int)OVER(PARTITION BY DBName, type_desc)
+																,[_LogicalName_Without_DBName] = CASE	WHEN LEN(Logical_FileNO_String)<>0 -- if more than 1 files already exist, then just increment no by 1
+																								THEN REPLACE(Logical_Name_Without_DBName,Logical_FileNO_String,(CASE WHEN LEN(Logical_FileNO_Int+data_space_id) = 1 THEN ('0'+CAST((Logical_FileNO_Int+data_space_id) AS VARCHAR(20))) ELSE CAST((Logical_FileNO_Int+data_space_id) AS VARCHAR(20)) END )) 
+																								ELSE Logical_Name_Without_DBName + (CASE WHEN type_desc = 'LOG' THEN '01' ELSE '_data01' END) END
+																,[_PhysicalName_Without_DBName] = CASE	WHEN LEN(Physical_FileNO_String)<>0 -- if more than 1 files already exist, then just increment no by 1
+																								THEN REPLACE(Physical_Name_Without_DBName,Physical_FileNO_String,(CASE WHEN LEN(Physical_FileNO_Int+data_space_id) = 1 THEN ('0'+CAST((Physical_FileNO_Int+data_space_id) AS VARCHAR(20))) ELSE CAST((Physical_FileNO_Int+data_space_id) AS VARCHAR(20)) END )) 
+																								ELSE Physical_Name_Without_DBName + (CASE WHEN type_desc = 'LOG' THEN '01' ELSE '_data01' END) END
+														FROM	(		
+																	SELECT mf.database_id, db_name(database_id) AS DBName, type_desc, name, mfi.physical_name, data_space_id, growth
+																			,mfi.Logical_FileNO_String
+																			,mfi.Logical_FileNO_Int 
+																			,mfi.Logical_Name_Without_DBName
+																			,Physical_Name_Without_Extension
+																			,mfi.hasNameIssue
+																			,Physical_FileNO_String = RIGHT(REPLACE(REPLACE(mfi.Physical_Name_Without_Extension,']',''),'[',''),PATINDEX('%[a-zA-Z_ ]%',REVERSE(REPLACE(REPLACE(mfi.Physical_Name_Without_Extension,']',''),'[','')))-1)
+																			,Physical_FileNO_Int = CAST(RIGHT(REPLACE(REPLACE(mfi.Physical_Name_Without_Extension,']',''),'[',''),PATINDEX('%[a-zA-Z_ ]%',REVERSE(REPLACE(REPLACE(mfi.Physical_Name_Without_Extension,']',''),'[','')))-1) AS BIGINT)
+																			,Physical_Name_Without_DBName = REPLACE ( mfi.Physical_Name_Without_Extension, db_name(mf.database_id), '')
 																	FROM sys.master_files as mf
+																	CROSS APPLY 
+																		(	SELECT	physical_name = RIGHT(mfi.physical_name,CHARINDEX('\',REVERSE(mfi.physical_name),0)-1)
+																					,Logical_FileNO_String = RIGHT(REPLACE(REPLACE(mfi.name,']',''),'[',''),PATINDEX('%[a-zA-Z_ ]%',REVERSE(REPLACE(REPLACE(mfi.name,']',''),'[','')))-1)
+																					,Logical_FileNO_Int = CAST(RIGHT(REPLACE(REPLACE(mfi.name,']',''),'[',''),PATINDEX('%[a-zA-Z_ ]%',REVERSE(REPLACE(REPLACE(mfi.name,']',''),'[','')))-1) AS BIGINT)
+																					,Logical_Name_Without_DBName = REPLACE ( mfi.name, db_name(mfi.database_id), '')
+																					,Physical_Name_Without_Extension = LEFT(RIGHT(mfi.physical_name,CHARINDEX('\',REVERSE(mfi.physical_name),0)-1),CHARINDEX('.',RIGHT(mfi.physical_name,CHARINDEX('\',REVERSE(mfi.physical_name),0)-1))-1)
+																					,hasNameIssue = CASE WHEN EXISTS ( SELECT * FROM sys.master_files as t WHERE t.name = mfi.name AND mfi.database_id <> t.database_id)
+																								THEN 1
+																								ELSE 0
+																								END
+																			FROM	sys.master_files as mfi 
+																			WHERE	mfi.database_id = mf.database_id AND mfi.file_id = mf.file_id 
+																		) as mfi
 																	WHERE mf.type_desc = 'ROWS'
-											
+																	AND mf.database_id > 4
 																) AS T_Files_01
+
 													) AS T_Files_02
 										) AS T_Files_03
 								WHERE	FileOrder = 1
@@ -1162,7 +1370,7 @@ DECLARE		@_logicalCores TINYINT
 		'+(CASE WHEN @forceExecute = 0 THEN 'PRINT	''Restricting growth for file '+QUOTENAME(name)+' of database ['+dbName+']'';' ELSE '' END) + '
 	ALTER DATABASE ['+dbName+'] MODIFY FILE ( NAME = '+QUOTENAME(name,'''')+', FILEGROWTH = 0);'
 									,TSQL_UnRestrictFileGrowth = '		
-		'+(CASE WHEN @forceExecute = 0 THEN 'PRINT	''Removing restriction for file '+QUOTENAME(name,'''')+' of database ['+dbName+']'';' ELSE '' END) + '	
+		'+(CASE WHEN @forceExecute = 0 THEN 'PRINT	''Removing restriction for file '+QUOTENAME(name)+' of database ['+dbName+']'';' ELSE '' END) + '	
 	ALTER DATABASE ['+dbName+'] MODIFY FILE ( NAME = '+QUOTENAME(name,'''')+', FILEGROWTH = '+[_autoGrowth]+');';
 		
 				END
@@ -1229,7 +1437,7 @@ DECLARE		@_logicalCores TINYINT
 				SELECT	mf.file_id, mf.database_id as [DB_ID], DB_NAME(mf.database_id) AS [DB_Name], fg.[TotalFilesSize(GB)], fg.[FileGroup]
 						,growth 
 						,(CASE WHEN growth = 0 THEN '0' WHEN is_percent_growth = 1 THEN CAST(growth AS VARCHAR(5))+'%' 
-						ELSE CAST(CONVERT( DECIMAL(20,2),((65536*8.0)/1024.0)) AS VARCHAR(20))+'(MB)'
+						ELSE CAST(CONVERT( DECIMAL(20,2),((growth*8.0)/1024.0)) AS VARCHAR(20))+'(MB)'
 						END) AS [growth(GB)]
 						,name as [FileName] 
 						,v.Volume  as [Volume] 
@@ -1252,8 +1460,6 @@ DECLARE		@_logicalCores TINYINT
 										END
 				FROM	@DBFiles AS f
 			)
-			
-			
 			,T_Volumes_Derived AS
 			(
 				SELECT	Volume
@@ -1269,6 +1475,7 @@ DECLARE		@_logicalCores TINYINT
 			,T_Files AS
 			( 
 				SELECT	DB_ID, DB_Name, [TotalFilesSize(GB)], [FileGroup], 
+						--f.FileName+' (Growth by '+[growth(GB)]+')' AS FileSettings, 
 						f.[FileName]+' (Size|% Used|AutoGrowth :: '+size+'|'+CAST([% space used] AS VARCHAR(50))+' %|'+[growth(GB)]+')' AS FileSettings, 
 						v.VolumeName+'['+v.Volume+']'+' = '+CAST([freespace(GB)] AS VARCHAR(20))+'GB('+CAST([freespace(%)] AS VARCHAR(20))+'%) Free of '+CAST([capacity(GB)] AS VARCHAR(20))+' GB' as FileDrive
 						,f.growth, f.[growth(GB)], f.[FileName], v.Volume, [capacity(MB)], [freespace(MB)], VolumeName, [capacity(GB)], [freespace(GB)], [freespace(%)]
@@ -1377,14 +1584,12 @@ DECLARE		@_logicalCores TINYINT
 				PRINT	'/*	******************** End:	@getInfo = 1 *****************************/
 
 ';
-		
 
 		END	-- End Block of @getInfo
 		
 		--	----------------------------------------------------------------------------
 			--	End:	@getInfo = 1
 		--	============================================================================
-
 		--	============================================================================
 			--	Begin:	@volumeInfo = 1
 		--	----------------------------------------------------------------------------
@@ -1407,9 +1612,7 @@ DECLARE		@_logicalCores TINYINT
 		--	----------------------------------------------------------------------------
 			--	End:	@volumeInfo = 1
 		--	============================================================================
-
-
-
+		
 		--	============================================================================
 			--	Begin:	@getLogInfo = 1
 		--	----------------------------------------------------------------------------
@@ -1441,12 +1644,11 @@ DECLARE		@_logicalCores TINYINT
 			BEGIN
 				--	Truncate temp table
 				TRUNCATE TABLE #stage;
-
-				
+				SET @_dbName = NULL;
 				SELECT @_dbName = DBName FROM @Databases WHERE ID = @_loopCounter ;
 				SET @_loopSQLText = 'DBCC LOGINFO ('+QUOTENAME(@_dbName)+')
 		WITH  NO_INFOMSGS;';
-
+				
 				INSERT #stage
 				EXEC (@_loopSQLText);
 
@@ -1480,12 +1682,18 @@ DECLARE		@_logicalCores TINYINT
 			(
 				SELECT	mf.database_id as [DB_ID], DB_NAME(mf.database_id) AS [DB_Name], CASE WHEN d.is_read_only = 1 THEN 'Read_Only' ELSE DATABASEPROPERTYEX(DB_NAME(mf.database_id), 'Status') END as DB_State
 						,[TotalFilesSize(GB)]
-						,(CASE	WHEN	growth = 0 
-								THEN	'0' 
-								WHEN	is_percent_growth = 1 
-								THEN	CAST(growth AS VARCHAR(5))+'%' 
-								ELSE	CAST(CONVERT( DECIMAL(20,2),((mf.growth*8.0)/1024.0)) AS VARCHAR(20))+' mb'
-							END) AS [growth(GB)]
+						,(CASE	WHEN 	growth = 0 
+								THEN 	'0' 
+								WHEN 	is_percent_growth = 1 
+								THEN 	CAST(growth AS VARCHAR(5))+'%' 
+								ELSE 	CAST(CONVERT( DECIMAL(20,2),((mf.growth*8.0)/1024.0)) AS VARCHAR(20))+' mb'
+						END) AS [growth(GB)]
+						,(CASE	WHEN 	(size *8.0)/1024/1024/1024 >= 5.0 -- (page counts * 8) {KB}/1024 {MB}/1024 {GB}
+								THEN 	CAST(CAST((size *8.0)/1024/1024/1024 AS numeric(20,2)) AS VARCHAR(20))+' tb'
+								WHEN 	(size *8.0)/1024/1024 >= 1.0 -- (page counts * 8) {KB}/1024 {MB}/1024 {GB}
+								THEN 	CAST(CAST((size *8.0)/1024/1024 AS numeric(20,2)) AS VARCHAR(20))+' gb'
+								ELSE 	CAST(CAST((size *8.0)/1024 AS numeric(20,2)) AS VARCHAR(20))+' mb'
+						END) AS [size(GB)]
 						,mf.name as [FileName] 
 						,v.Volume  as [Volume]
 						,mf.* 
@@ -1518,7 +1726,7 @@ DECLARE		@_logicalCores TINYINT
 			,T_Files AS
 			(
 				SELECT	DB_ID, DB_Name, [TotalFilesSize(GB)], DB_State,
-						f.FileName+' (VLF_Count|Size|AutoGrowth :: '+CAST(l.VLFCount AS VARCHAR(20))+'|'+CAST(CONVERT(DECIMAL(20,2),((size*8.0)/1024/1024)) AS VARCHAR(20))+' gb|'+[growth(GB)]+')' AS FileSettings, 
+						f.FileName+' (VLF_Count|Size|AutoGrowth :: '+CAST(l.VLFCount AS VARCHAR(20))+'|'+[size(GB)]+'|'+[growth(GB)]+')' AS FileSettings, 
 						v.VolumeName+QUOTENAME(v.Volume)+' = '+CAST([freespace(GB)] AS VARCHAR(20))+'GB('+CAST([freespace(%)] AS VARCHAR(20))+'%) Free of '+CAST([capacity(GB)] AS VARCHAR(20))+' GB' as FileDrive
 						,growth, [growth(GB)], [FileName], l.VLFCount
 						,v.Volume, [capacity(MB)], [freespace(MB)], VolumeName, [capacity(GB)], [freespace(GB)], [freespace(%)]
@@ -1767,7 +1975,8 @@ DECLARE		@_logicalCores TINYINT
 											  } [;]
 
 		<drive_name> :: { ''E:\Data\'' | ''E:\Data01'' | ''E:\Data2'' | ... }
-
+';
+		PRINT '
 		--------------------------------------- EXAMPLE 1 ----------------------------------------------
 		EXEC [dbo].[usp_AnalyzeSpaceCapacity];
 		EXEC [dbo].[usp_AnalyzeSpaceCapacity] ,@DBs2Consider = ''unet, Test1Db, MirrorTestDB'';
@@ -1784,7 +1993,8 @@ DECLARE		@_logicalCores TINYINT
 		EXEC [dbo].[usp_AnalyzeSpaceCapacity] @help = 1
 
 		This returns help for procedure usp_AnalyzeSpaceCapacity along with definitions for each parameter.
-
+'
+		PRINT '
 		--------------------------------------- EXAMPLE 4 ----------------------------------------------
 		EXEC [dbo].[usp_AnalyzeSpaceCapacity] @addDataFiles = 1 ,@newVolume = ''E:\Data1\'' ,@oldVolume = ''E:\Data\'';
 		EXEC [dbo].[usp_AnalyzeSpaceCapacity] @addDataFiles = 1 ,@newVolume = ''E:\Data1\'' ,@oldVolume = ''E:\Data\'' ,@DBs2Consider = ''unet, Test1Db, MirrorTestDB'';
@@ -1820,7 +2030,8 @@ DECLARE		@_logicalCores TINYINT
 		EXEC [dbo].[usp_AnalyzeSpaceCapacity] @unrestrictFileGrowth = 1, @oldVolume = ''E:\Data\'' ,@DBs2Consider = ''unet, Test1Db, MirrorTestDB'';
 
 		This generates TSQL Code for remove Data File growth Restriction for files on @oldVolume.
-
+';
+		PRINT '
 		--------------------------------------- EXAMPLE 9 ----------------------------------------------
 		EXEC [dbo].[usp_AnalyzeSpaceCapacity] @generateCapacityException = 1, @oldVolume = ''E:\Data\''
 
@@ -1854,6 +2065,7 @@ DECLARE		@_logicalCores TINYINT
 
 		This generates TSQL code to re-size log files upto current size with objective to reduce high VLF Counts
 	';
+
 		IF @verbose=1 
 			PRINT	'/*	******************** End:	@help = 1 *****************************/
 ';
@@ -1895,12 +2107,25 @@ DECLARE		@_logicalCores TINYINT
 				BEGIN
 					IF @_errorOccurred = 0
 						SET @_errorOccurred = 1;
-
+					
+					/*	Not needed any more
 					INSERT #ErrorMessages
 					SELECT	'Mirror Server' AS ErrorCategory
 							,NULL AS DBName 
 							,NULL AS [FileName] 
 							,@_errorMSG AS ErrorDetails 
+							,NULL AS TSQLCode;
+					*/
+
+					--	Make a FAIL entry for Sending message to end user
+					INSERT @OutputMessages
+						(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+					SELECT	'Fail' AS Status
+							,'Mirror Server' AS Category
+							,NULL AS  DBName
+							,NULL AS [FileGroup]
+							,NULL AS [FileName]
+							,@_errorMSG AS MessageDetails
 							,NULL AS TSQLCode;
 				END
 				ELSE
@@ -1916,12 +2141,25 @@ DECLARE		@_logicalCores TINYINT
 				BEGIN
 					IF @_errorOccurred = 0
 						SET @_errorOccurred = 1;
-
+					
+					/*	Not needed anymore
 					INSERT #ErrorMessages
 					SELECT	'Non-Accessible Databases' AS ErrorCategory
 							,NULL AS DBName 
 							,NULL AS [FileName] 
 							,@_errorMSG AS ErrorDetails 
+							,NULL AS TSQLCode;
+					*/
+
+					--	Make a FAIL entry for Sending message to end user
+					INSERT @OutputMessages
+						(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+					SELECT	'Information' AS Status
+							,'Non-Accessible Databases' AS Category
+							,NULL AS  DBName
+							,NULL AS [FileGroup]
+							,NULL AS [FileName]
+							,@_errorMSG AS MessageDetails
 							,NULL AS TSQLCode;
 				END
 				ELSE
@@ -1935,6 +2173,19 @@ DECLARE		@_logicalCores TINYINT
 	*/';
 				IF @forceExecute = 0 -- Ignore this message if @forceExecute = 1 since this is information only message
 					PRINT @_errorMSG;
+				ELSE
+				BEGIN
+					--	Make a FAIL entry for Sending message to end user
+					INSERT @OutputMessages
+						(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+					SELECT	'Information' AS Status
+							,'Principal Databases' AS Category
+							,NULL AS  DBName
+							,NULL AS [FileGroup]
+							,NULL AS [FileName]
+							,@_errorMSG AS MessageDetails
+							,NULL AS TSQLCode;
+				END
 			END
 				
 
@@ -1945,6 +2196,19 @@ DECLARE		@_logicalCores TINYINT
 	*/';
 				IF @forceExecute = 0 -- Ignore this message if @forceExecute = 1 since this is information only message
 					PRINT @_errorMSG;
+				ELSE
+				BEGIN
+					--	Make a FAIL entry for Sending message to end user
+					INSERT @OutputMessages
+						(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+					SELECT	'Information' AS Status
+							,'Multiple Files for FileGroup' AS Category
+							,NULL AS  DBName
+							,NULL AS [FileGroup]
+							,NULL AS [FileName]
+							,@_errorMSG AS MessageDetails
+							,NULL AS TSQLCode;
+				END
 			END
 
 		
@@ -1968,8 +2232,8 @@ DECLARE		@_logicalCores TINYINT
 				END
 
 				DELETE @T_Files_Final_Add;
-				INSERT @T_Files_Final_Add (TSQL_AddFile,DBName,name,_name)
-				SELECT TSQL_AddFile,DBName,name,_name FROM #T_Files_Final as f WHERE isExistingOn_NewVolume = 0 AND isExisting_UnrestrictedGrowth_on_OtherVolume = 0 AND [FileIDRankPerFileGroup] = 1 ORDER BY f.DBName;
+				INSERT @T_Files_Final_Add (TSQL_AddFile,DBName,[fileGroup],name,_name)
+				SELECT TSQL_AddFile,DBName,[fileGroup],name,_name FROM #T_Files_Final as f WHERE isExistingOn_NewVolume = 0 AND isExisting_UnrestrictedGrowth_on_OtherVolume = 0 AND [FileIDRankPerFileGroup] = 1 ORDER BY f.DBName;
 
 				--	Find if data files to be added for [uhtdba]
 				IF EXISTS (SELECT * FROM @mountPointVolumes AS v WHERE v.Volume = @oldVolume AND v.[freespace(GB)] >= @mountPointFreeSpaceThreshold_GB)
@@ -1977,6 +2241,20 @@ DECLARE		@_logicalCores TINYINT
 					SET @_errorMSG = '/*	NOTE: Data file for [uhtdba] database is not being created since @oldVolume '+QUOTENAME(@oldVolume,'''') + ' has more than '+CAST(@mountPointFreeSpaceThreshold_GB AS VARCHAR(10))+' gb of free space.	*/';
 					IF @forceExecute = 0 -- Ignore this message if @forceExecute = 1 since this is information only message
 						PRINT @_errorMSG;
+					ELSE
+					BEGIN
+						--	Make a Information entry for Sending message to end user
+						INSERT @OutputMessages
+							(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+						SELECT	'Information' AS Status
+								,'No action taken for [uhtdba]' AS Category
+								,NULL AS  DBName
+								,NULL AS [FileGroup]
+								,NULL AS [FileName]
+								,@_errorMSG AS MessageDetails
+								,NULL AS TSQLCode;
+					END
+
 					DELETE FROM @T_Files_Final_Add
 						WHERE DBName = 'uhtdba';
 					DELETE FROM #T_Files_Final
@@ -1995,6 +2273,7 @@ DECLARE		@_logicalCores TINYINT
 					SELECT @_loopSQLText = '
 --	Add File: '+CAST(@_loopCounter AS VARCHAR(5))+';'+TSQL_AddFile 
 							,@_dbName = DBName ,@_name = name ,@_newName = _name
+							,@_fileGroup = fileGroup
 					FROM @T_Files_Final_Add as f WHERE f.ID = @_loopCounter;
 					IF @_loopCounter = 1
 						SET @_loopSQLText =	'USE [master];
@@ -2006,16 +2285,40 @@ DECLARE		@_logicalCores TINYINT
 					BEGIN
 						BEGIN TRY
 							EXEC (@_loopSQLText);
+
+							--	Make a SUCCESS entry for Sending message to end user
+							INSERT @OutputMessages
+								(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+							SELECT	'Success' AS Status
+									,'Add Data File' AS Category
+									,@_dbName AS  DBName
+									,@_fileGroup AS [FileGroup]
+									,@_name AS [FileName]
+									,'Data Files Successfully Added for Combination of database and filegroup' AS MessageDetails
+									,@_loopSQLText AS TSQLCode;
 						END TRY
 						BEGIN CATCH
 							IF @_errorOccurred = 0
 								SET @_errorOccurred = 1;
-
+							
+							/*	This is not needed anymore
 							INSERT #ErrorMessages
 							SELECT	'ALTER DATABASE Failed' AS ErrorCategory
 									,@_dbName AS DBName 
 									,@_name AS [FileName] 
 									,ERROR_MESSAGE() AS ErrorDetails 
+									,@_loopSQLText AS TSQLCode;
+							*/
+
+							--	Make a FAIL entry for Sending message to end user
+							INSERT @OutputMessages
+								(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+							SELECT	'Fail' AS Status
+									,'Add Data File' AS Category
+									,@_dbName AS  DBName
+									,@_fileGroup AS [FileGroup]
+									,@_name AS [FileName]
+									,ERROR_MESSAGE() AS MessageDetails
 									,@_loopSQLText AS TSQLCode;
 						END CATCH
 					END
@@ -2092,16 +2395,40 @@ USE [master];
 					BEGIN
 						BEGIN TRY
 							EXEC @_loopSQLText;
+
+							--	Make a SUCCESS entry for Sending message to end user
+							INSERT @OutputMessages
+								(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+							SELECT	'Success' AS Status
+									,'Add Data File - UnRestrict' AS Category
+									,@_dbName AS  DBName
+									,NULL AS [FileGroup]
+									,@_name AS [FileName]
+									,'Data File already existing on @newVolume has been set with un-restricted growth Successfully.' AS MessageDetails
+									,@_loopSQLText AS TSQLCode;
 						END TRY
 						BEGIN CATCH
 							IF @_errorOccurred = 0
 								SET @_errorOccurred = 1;
 
+							/*	This is not needed anymore
 							INSERT #ErrorMessages
 							SELECT	'ALTER DATABASE Failed' AS ErrorCategory
 									,@_dbName AS DBName 
 									,@_name AS [FileName] 
 									,ERROR_MESSAGE() AS ErrorDetails 
+									,@_loopSQLText AS TSQLCode;
+							*/
+
+							--	Make a FAIL entry for Sending message to end user
+							INSERT @OutputMessages
+								(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+							SELECT	'Fail' AS Status
+									,'Add Data File - UnRestrict' AS Category
+									,@_dbName AS  DBName
+									,NULL AS [FileGroup]
+									,@_name AS [FileName]
+									,ERROR_MESSAGE() AS MessageDetails
 									,@_loopSQLText AS TSQLCode;
 						END CATCH
 					END
@@ -2126,8 +2453,25 @@ SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR IsExisting
 					ON	1 = 1 AND NOT (isExistingOn_NewVolume = 1 OR isExisting_UnrestrictedGrowth_on_OtherVolume = 1);
 			END
 
-			IF @forceExecute = 0 AND NOT EXISTS (SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR isExisting_UnrestrictedGrowth_on_OtherVolume = 1)) 
-				PRINT	'	/*	~~~~ No secondary Data files to add on @newVolume '+QUOTENAME(@newVolume)+' with respect to @oldVolume '+QUOTENAME(@oldVolume) + '. ~~~~ */'; 
+			IF NOT EXISTS (SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR isExisting_UnrestrictedGrowth_on_OtherVolume = 1))
+			BEGIN
+				IF @forceExecute = 0
+					PRINT	'	/*	~~~~ No secondary Data files to add on @newVolume '+QUOTENAME(@newVolume)+' with respect to @oldVolume '+QUOTENAME(@oldVolume) + '. ~~~~ */';
+				ELSE
+				BEGIN
+					--	Make a FAIL entry for Sending message to end user
+					INSERT @OutputMessages
+						(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+					SELECT	'Information' AS Status
+							,'Add Data File' AS Category
+							,NULL AS  DBName
+							,NULL AS [FileGroup]
+							,NULL AS [FileName]
+							,'No secondary Data files to add on @newVolume '+QUOTENAME(@newVolume)+' with respect to @oldVolume '+QUOTENAME(@oldVolume) AS MessageDetails
+							,NULL AS TSQLCode
+				END
+			END			
+			
 			IF	@verbose = 1
 				PRINT	'/*	******************** End:	@addDataFiles = 1 *****************************/
 ';
@@ -2173,11 +2517,24 @@ SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR IsExisting
 					IF @_errorOccurred = 0
 						SET @_errorOccurred = 1;
 
+					/*	Not needed any more
 					INSERT #ErrorMessages
 					SELECT	'Mirror Server' AS ErrorCategory
 							,NULL AS DBName 
 							,NULL AS [FileName] 
 							,@_errorMSG AS ErrorDetails 
+							,NULL AS TSQLCode;
+					*/
+
+					--	Make a FAIL entry for Sending message to end user
+					INSERT @OutputMessages
+						(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+					SELECT	'Fail' AS Status
+							,'Mirror Server' AS Category
+							,NULL AS  DBName
+							,NULL AS [FileGroup]
+							,NULL AS [FileName]
+							,@_errorMSG AS MessageDetails
 							,NULL AS TSQLCode;
 				END
 				ELSE
@@ -2194,11 +2551,24 @@ SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR IsExisting
 					IF @_errorOccurred = 0
 						SET @_errorOccurred = 1;
 
+					/*	Not needed anymore
 					INSERT #ErrorMessages
 					SELECT	'Non-Accessible Databases' AS ErrorCategory
 							,NULL AS DBName 
 							,NULL AS [FileName] 
 							,@_errorMSG AS ErrorDetails 
+							,NULL AS TSQLCode;
+					*/
+
+					--	Make a FAIL entry for Sending message to end user
+					INSERT @OutputMessages
+						(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+					SELECT	'Information' AS Status
+							,'Non-Accessible Databases' AS Category
+							,NULL AS  DBName
+							,NULL AS [FileGroup]
+							,NULL AS [FileName]
+							,@_errorMSG AS MessageDetails
 							,NULL AS TSQLCode;
 				END
 				ELSE
@@ -2210,8 +2580,21 @@ SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR IsExisting
 				SET @_errorMSG = '/*	NOTE: Following '+CAST(@_principalDatabaseCounts_Mirroring AS VARCHAR(5))+' database(s) '+(case when @_principalDatabaseCounts_Mirroring > 1 then 'are' else 'is' end) +' in role of ''Mirroring Principal''. So generating code to add files for these dbs. Kindly make sure that Same Data Volumes exists on DR server '''+@_mirroringPartner+''' as well. Otherwise this shall fail.
 				'+@_principalDatabases+'
 	*/';
-				IF @forceExecute = 0 -- Ignore this message if @forceExecute = 1 since this is information only message
+				IF @forceExecute = 0 
 					PRINT @_errorMSG;
+				ELSE
+				BEGIN
+					--	Make a FAIL entry for Sending message to end user
+					INSERT @OutputMessages
+						(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+					SELECT	'Information' AS Status
+							,'Principal Databases' AS Category
+							,NULL AS  DBName
+							,NULL AS [FileGroup]
+							,NULL AS [FileName]
+							,@_errorMSG AS MessageDetails
+							,NULL AS TSQLCode;
+				END
 			END
 
 			--	Check if there are multiple log files on @oldVolume
@@ -2222,11 +2605,20 @@ SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR IsExisting
 	*/';
 				IF @forceExecute = 0 -- Ignore this message if @forceExecute = 1 since this is information only message
 					PRINT @_errorMSG;
+				ELSE
+				BEGIN
+					--	Make a FAIL entry for Sending message to end user
+					INSERT @OutputMessages
+						(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+					SELECT	'Information' AS Status
+							,'Multiple Log Files for Database' AS Category
+							,NULL AS  DBName
+							,NULL AS [FileGroup]
+							,NULL AS [FileName]
+							,@_errorMSG AS MessageDetails
+							,NULL AS TSQLCode;
+				END
 			END
-
-	--		IF	EXISTS (SELECT * FROM #T_Files_Final WHERE isExistingOn_NewVolume = 0 AND [FileIDRankPerFileGroup] = 1)
-	--			PRINT	'/*	NOTE: Few database(s) exists that have multiple files per filegroup on @oldVolume '+QUOTENAME(@oldVolume) + '. But, this script will add only single file per filegroup per database on @newVolume '+QUOTENAME(@newVolume) + '.
-	--*/';
 
 			IF @verbose = 1
 			BEGIN
@@ -2248,7 +2640,6 @@ SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR IsExisting
 					PRINT	'	Declaring variables and inserting data into @T_LogFiles_Final_Add';
 				END
 			
-				--DECLARE @T_LogFiles_Final_Add TABLE (ID INT IDENTITY(1,1), TSQL_AddFile VARCHAR(2000), DBName,name,_name);
 				DELETE @T_LogFiles_Final_Add;
 				INSERT @T_LogFiles_Final_Add (TSQL_AddFile,DBName,name,_name)
 				SELECT TSQL_AddFile,DBName,name,_name FROM #T_Files_Final as f WHERE isExistingOn_NewVolume = 0 AND [FileIDRankPerFileGroup] = 1 AND isExisting_UnrestrictedGrowth_on_OtherVolume = 0 ORDER BY f.dbName;
@@ -2259,6 +2650,20 @@ SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR IsExisting
 					SET @_errorMSG = '/*	NOTE: Log file for [uhtdba] and [tempdb] databases is not being created since @oldVolume '+QUOTENAME(@oldVolume,'''') + ' has more than '+cast(@mountPointFreeSpaceThreshold_GB as varchar(20))+' gb of free space.	*/';
 					IF @forceExecute = 0 -- Ignore this message if @forceExecute = 1 since this is information only message
 						PRINT @_errorMSG;
+					ELSE
+					BEGIN
+						--	Make an Information entry for Sending message to end user
+						INSERT @OutputMessages
+							(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+						SELECT	'Information' AS Status
+								,'No action taken for [uhtdba] and [tempdb]' AS Category
+								,NULL AS  DBName
+								,NULL AS [FileGroup]
+								,NULL AS [FileName]
+								,@_errorMSG AS MessageDetails
+								,NULL AS TSQLCode;
+					END
+
 					DELETE FROM @T_LogFiles_Final_Add
 						WHERE DBName IN ('uhtdba','tempdb');
 				END
@@ -2290,17 +2695,43 @@ SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR IsExisting
 					BEGIN
 						BEGIN TRY
 							EXEC (@_loopSQLText);
+
+							--	Make a SUCCESS entry for Sending message to end user
+							INSERT @OutputMessages
+								(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+							SELECT	'Success' AS Status
+									,'Add Log File' AS Category
+									,@_dbName AS  DBName
+									,NULL AS [FileGroup]
+									,@_name AS [FileName]
+									,'Log File Successfully Added for database.' AS MessageDetails
+									,@_loopSQLText AS TSQLCode;
+
 						END TRY
 						BEGIN CATCH
 							IF @_errorOccurred = 0
 								SET @_errorOccurred = 1;
 
+							/*	This is not needed anymore
 							INSERT #ErrorMessages
 							SELECT	'ALTER DATABASE Failed' AS ErrorCategory
 									,@_dbName AS DBName 
 									,@_name AS [FileName] 
 									,ERROR_MESSAGE() AS ErrorDetails 
 									,@_loopSQLText AS TSQLCode;
+							*/
+
+							--	Make a FAIL entry for Sending message to end user
+							INSERT @OutputMessages
+								(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+							SELECT	'Fail' AS Status
+									,'Add Log File' AS Category
+									,@_dbName AS  DBName
+									,NULL AS [FileGroup]
+									,@_name AS [FileName]
+									,ERROR_MESSAGE() AS MessageDetails
+									,@_loopSQLText AS TSQLCode;
+
 						END CATCH
 					END
 					ELSE
@@ -2369,16 +2800,40 @@ USE [master];
 					BEGIN
 						BEGIN TRY
 							EXEC @_loopSQLText;
+
+							--	Make a SUCCESS entry for Sending message to end user
+							INSERT @OutputMessages
+								(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+							SELECT	'Success' AS Status
+									,'Add Log File - UnRestrict' AS Category
+									,@_dbName AS  DBName
+									,NULL AS [FileGroup]
+									,@_name AS [FileName]
+									,'Log File already existing on @newVolume has been set with un-restricted growth Successfully.' AS MessageDetails
+									,@_loopSQLText AS TSQLCode;
 						END TRY
 						BEGIN CATCH
 							IF @_errorOccurred = 0
 								SET @_errorOccurred = 1;
 
+							/*	This is not needed anymore
 							INSERT #ErrorMessages
 							SELECT	'ALTER DATABASE Failed' AS ErrorCategory
 									,@_dbName AS DBName 
 									,@_name AS [FileName] 
 									,ERROR_MESSAGE() AS ErrorDetails 
+									,@_loopSQLText AS TSQLCode;
+							*/
+
+							--	Make a FAIL entry for Sending message to end user
+							INSERT @OutputMessages
+								(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+							SELECT	'Fail' AS Status
+									,'Add Log File - UnRestrict' AS Category
+									,@_dbName AS  DBName
+									,NULL AS [FileGroup]
+									,@_name AS [FileName]
+									,ERROR_MESSAGE() AS MessageDetails
 									,@_loopSQLText AS TSQLCode;
 						END CATCH
 					END
@@ -2402,8 +2857,25 @@ SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR IsExisting
 					ON	1 = 1 AND NOT (isExistingOn_NewVolume = 1 OR isExisting_UnrestrictedGrowth_on_OtherVolume = 1);
 			END
 
-			IF @forceExecute = 0 AND NOT EXISTS (SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR isExisting_UnrestrictedGrowth_on_OtherVolume = 1))
-				PRINT	'	/*	~~~~ No Log files to add on @newVolume '+QUOTENAME(@newVolume)+' with respect to @oldVolume '+QUOTENAME(@oldVolume) + '. ~~~~ */'; 
+			IF NOT EXISTS (SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR isExisting_UnrestrictedGrowth_on_OtherVolume = 1))
+			BEGIN
+				IF @forceExecute = 0
+					PRINT	'	/*	~~~~ No Log files to add on @newVolume '+QUOTENAME(@newVolume)+' with respect to @oldVolume '+QUOTENAME(@oldVolume) + '. ~~~~ */'; 
+				ELSE
+				BEGIN
+					--	Make a FAIL entry for Sending message to end user
+					INSERT @OutputMessages
+						(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+					SELECT	'Information' AS Status
+							,'Add Log File' AS Category
+							,NULL AS  DBName
+							,NULL AS [FileGroup]
+							,NULL AS [FileName]
+							,'No Log files to add on @newVolume '+QUOTENAME(@newVolume)+' with respect to @oldVolume '+QUOTENAME(@oldVolume) AS MessageDetails
+							,NULL AS TSQLCode;
+				END
+			END
+
 			IF	@verbose = 1
 				PRINT	'/*	******************** End:	@addLogFiles = 1 *****************************/
 ';
@@ -2459,11 +2931,24 @@ SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR IsExisting
 					IF @_errorOccurred = 0
 						SET @_errorOccurred = 1;
 
+					/*	Not needed any more
 					INSERT #ErrorMessages
 					SELECT	'Mirror Server' AS ErrorCategory
 							,NULL AS DBName 
 							,NULL AS [FileName] 
 							,@_errorMSG AS ErrorDetails 
+							,NULL AS TSQLCode;
+					*/
+
+					--	Make a FAIL entry for Sending message to end user
+					INSERT @OutputMessages
+						(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+					SELECT	'Fail' AS Status
+							,'Mirror Server' AS Category
+							,NULL AS  DBName
+							,NULL AS [FileGroup]
+							,NULL AS [FileName]
+							,@_errorMSG AS MessageDetails
 							,NULL AS TSQLCode;
 				END
 				ELSE
@@ -2481,11 +2966,15 @@ SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR IsExisting
 					IF @_errorOccurred = 0
 						SET @_errorOccurred = 1;
 
-					INSERT #ErrorMessages
-					SELECT	'Non-Accessible Databases' AS ErrorCategory
-							,NULL AS DBName 
-							,NULL AS [FileName] 
-							,@_errorMSG AS ErrorDetails 
+					--	Make a FAIL entry for Sending message to end user
+					INSERT @OutputMessages
+						(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+					SELECT	'Information' AS Status
+							,'Non-Accessible Databases' AS Category
+							,NULL AS  DBName
+							,NULL AS [FileGroup]
+							,NULL AS [FileName]
+							,@_errorMSG AS MessageDetails
 							,NULL AS TSQLCode;
 				END
 				ELSE
@@ -2499,6 +2988,19 @@ SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR IsExisting
 	*/';
 				IF @forceExecute = 0 -- Ignore this message if @forceExecute = 1 since this is information only message
 					PRINT @_errorMSG;
+				ELSE
+				BEGIN
+					--	Make a FAIL entry for Sending message to end user
+					INSERT @OutputMessages
+						(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+					SELECT	'Information' AS Status
+							,'Principal Databases' AS Category
+							,NULL AS  DBName
+							,NULL AS [FileGroup]
+							,NULL AS [FileName]
+							,@_errorMSG AS MessageDetails
+							,NULL AS TSQLCode;
+				END
 			END
 
 			IF @verbose = 1
@@ -2508,25 +3010,30 @@ SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR IsExisting
 			SELECT	@_nonAddedDataFilesDatabases = COALESCE(@_nonAddedDataFilesDatabases+', '+DB_NAME(database_id),DB_NAME(database_id))
 			FROM	(SELECT DISTINCT database_id FROM #T_Files_Final WHERE [isExisting_UnrestrictedGrowth_on_OtherVolume] = 0) as d;
 			SET @_nonAddedDataFilesDatabasesCounts = (LEN(@_nonAddedDataFilesDatabases)-LEN(REPLACE(@_nonAddedDataFilesDatabases,',',''))+1);
+			
 			IF	@_nonAddedDataFilesDatabases IS NOT NULL
 			BEGIN
-				SET @_errorMSG = '/*	NOTE: New Data files for following '+CAST(@_nonAddedDataFilesDatabasesCounts AS VARCHAR(5))+' database(s) are yet to be added. So skipping these database for growth restriction.
+				SET @_errorMSG = '/*	NOTE: New Data files for following '+CAST(@_nonAddedDataFilesDatabasesCounts AS VARCHAR(5))+' database(s) are yet to be added on other volumes with free space greater than 20%. So skipping these database for growth restriction.
 				'+@_nonAddedDataFilesDatabases+'
 	*/';
-				IF @forceExecute = 1
+				IF @forceExecute = 0
+					PRINT @_errorMSG;
+				ELSE
 				BEGIN
 					IF @_errorOccurred = 0
 						SET @_errorOccurred = 1;
 
-					INSERT #ErrorMessages
-					SELECT	'DataFile Not Created' AS ErrorCategory
-							,NULL AS DBName 
-							,NULL AS [FileName] 
-							,@_errorMSG AS ErrorDetails 
+					--	Make a FAIL entry for Sending message to end user
+					INSERT @OutputMessages
+						(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+					SELECT	'Fail' AS Status
+							,'Restrict Data File - New Files Not Created' AS Category
+							,NULL AS  DBName
+							,NULL AS [FileGroup]
+							,NULL AS [FileName]
+							,@_errorMSG AS MessageDetails
 							,NULL AS TSQLCode;
 				END
-				ELSE
-					PRINT @_errorMSG;
 			END
 
 			IF @verbose = 1
@@ -2537,7 +3044,9 @@ SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR IsExisting
 			--	Generate TSQL Code for restricting data files growth
 			IF EXISTS (SELECT * FROM #T_Files_Final WHERE [isExisting_UnrestrictedGrowth_on_OtherVolume] = 1 AND growth <> 0)
 			BEGIN	-- Begin block for tsql code generation
-						
+				IF @verbose = 1
+					PRINT	'		Begin block for tsql code generation';
+
 				DELETE @T_Files_Final_Restrict;
 				INSERT @T_Files_Final_Restrict (TSQL_RestrictFileGrowth,DBName,name,_name)
 				SELECT [TSQL_RestrictFileGrowth],dbName,name,_name FROM #T_Files_Final as f WHERE [isExisting_UnrestrictedGrowth_on_OtherVolume] = 1 AND growth <> 0 ORDER BY f.dbName;
@@ -2560,16 +3069,31 @@ SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR IsExisting
 					BEGIN
 						BEGIN TRY
 							EXEC (@_loopSQLText);
+
+							--	Make a SUCCESS entry for Sending message to end user
+							INSERT @OutputMessages
+								(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+							SELECT	'Success' AS Status
+									,'Restrict Data File' AS Category
+									,@_dbName AS  DBName
+									,NULL AS [FileGroup]
+									,@_name AS [FileName]
+									,'Data File Successfully restricted from growing.' AS MessageDetails
+									,@_loopSQLText AS TSQLCode;
 						END TRY
 						BEGIN CATCH
 							IF @_errorOccurred = 0
 								SET @_errorOccurred = 1;
-
-							INSERT #ErrorMessages
-							SELECT	'ALTER DATABASE Failed' AS ErrorCategory
-									,@_dbName AS DBName 
-									,@_name AS [FileName] 
-									,ERROR_MESSAGE() AS ErrorDetails 
+								
+							--	Make a FAIL entry for Sending message to end user
+							INSERT @OutputMessages
+								(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+							SELECT	'Fail' AS Status
+									,'Restrict Data File' AS Category
+									,@_dbName AS  DBName
+									,NULL AS [FileGroup]
+									,@_name AS [FileName]
+									,ERROR_MESSAGE() AS MessageDetails
 									,@_loopSQLText AS TSQLCode;
 						END CATCH
 					END
@@ -2581,7 +3105,23 @@ SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR IsExisting
 				END
 			END -- End block for tsql code generation
 			ELSE
-				PRINT	'	No Data files to restrict growth for @oldVolume '+QUOTENAME(@oldVolume)+'.';
+			BEGIN
+				IF @forceExecute = 0
+					PRINT	'	/*	~~~~ No Data files to restrict on @oldVolume '+QUOTENAME(@oldVolume)+'.';
+				ELSE
+				BEGIN
+					--	Make a FAIL entry for Sending message to end user
+					INSERT @OutputMessages
+						(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+					SELECT	'Information' AS Status
+							,'Restrict Data File Growth' AS Category
+							,NULL AS  DBName
+							,NULL AS [FileGroup]
+							,NULL AS [FileName]
+							,'No Data Files eligible for restricting autogrowth on @oldVolume '+QUOTENAME(@oldVolume) AS MessageDetails
+							,NULL AS TSQLCode
+				END
+			END
 		END	-- End Else portion for Validation of Data volumes
 
 		IF @verbose = 1
@@ -2706,19 +3246,76 @@ SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR IsExisting
 		ELSE
 		BEGIN -- Begin Else portion for Validation of Data volumes
 			IF	@_mirrorDatabases IS NOT NULL
-				PRINT	'	/*	NOTE: Following '+CAST(@_mirrorDatabaseCounts_Mirroring AS VARCHAR(5))+' database(s) '+(case when @_mirrorDatabaseCounts_Mirroring > 1 then 'are' else 'is' end) +' in role of ''Mirroring Partner''. So unrestrict data files growth on Partner server '''+@_mirroringPartner+''' for these dbs.
+			BEGIN
+				SET @_errorMSG = '/*	NOTE: Following '+CAST(@_mirrorDatabaseCounts_Mirroring AS VARCHAR(5))+' database(s) '+(case when @_mirrorDatabaseCounts_Mirroring > 1 then 'are' else 'is' end) +' in role of ''Mirroring Partner''. So unrestrict data files growth on Partner server '''+@_mirroringPartner+''' for these dbs.
 				'+@_mirrorDatabases+'
 	*/';
+				IF @forceExecute = 1
+				BEGIN
+					IF @_errorOccurred = 0
+						SET @_errorOccurred = 1;
+
+					--	Make a FAIL entry for Sending message to end user
+					INSERT @OutputMessages
+						(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+					SELECT	'Fail' AS Status
+							,'Mirror Server' AS Category
+							,NULL AS  DBName
+							,NULL AS [FileGroup]
+							,NULL AS [FileName]
+							,@_errorMSG AS MessageDetails
+							,NULL AS TSQLCode;
+				END
+				ELSE
+					PRINT @_errorMSG;
+			END
 	
 			IF	@_nonAccessibleDatabases IS NOT NULL
-			PRINT	'	/*	NOTE: Following '+CAST(@_nonAccessibleDatabasesCounts AS VARCHAR(5))+' database(s) '+(case when @_nonAccessibleDatabasesCounts > 1 then 'are' else 'is' end) +' in non-accessible state. Either wait, or resolve the issue, and then unrestrict Data files.
+			BEGIN
+				SET @_errorMSG = '/*	NOTE: Following '+CAST(@_nonAccessibleDatabasesCounts AS VARCHAR(5))+' database(s) '+(case when @_nonAccessibleDatabasesCounts > 1 then 'are' else 'is' end) +' in non-accessible state. Either wait, or resolve the issue, and then unrestrict Data files.
 				'+@_nonAccessibleDatabases+'
 	*/';
+				IF @forceExecute = 1
+				BEGIN
+					IF @_errorOccurred = 0
+						SET @_errorOccurred = 1;
+
+					--	Make a FAIL entry for Sending message to end user
+					INSERT @OutputMessages
+						(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+					SELECT	'Information' AS Status
+							,'Non-Accessible Databases' AS Category
+							,NULL AS  DBName
+							,NULL AS [FileGroup]
+							,NULL AS [FileName]
+							,@_errorMSG AS MessageDetails
+							,NULL AS TSQLCode;
+				END
+				ELSE
+					PRINT @_errorMSG;
+			END
 
 			IF	@_principalDatabases IS NOT NULL
-				PRINT	'	/*	NOTE: Following '+CAST(@_principalDatabaseCounts_Mirroring AS VARCHAR(5))+' database(s) '+(case when @_principalDatabaseCounts_Mirroring > 1 then 'are' else 'is' end) +' in role of ''Mirroring Principal''. So generating code to un-restrict growth of secondary files for these dbs.
+			BEGIN
+				SET @_errorMSG = '/*	NOTE: Following '+CAST(@_principalDatabaseCounts_Mirroring AS VARCHAR(5))+' database(s) '+(case when @_principalDatabaseCounts_Mirroring > 1 then 'are' else 'is' end) +' in role of ''Mirroring Principal''. So generating code to un-restrict growth of secondary files for these dbs.
 				'+@_principalDatabases+'
 	*/';
+				IF @forceExecute = 0 -- Ignore this message if @forceExecute = 1 since this is information only message
+					PRINT @_errorMSG;
+				ELSE
+				BEGIN
+					--	Make a FAIL entry for Sending message to end user
+					INSERT @OutputMessages
+						(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+					SELECT	'Information' AS Status
+							,'Principal Databases' AS Category
+							,NULL AS  DBName
+							,NULL AS [FileGroup]
+							,NULL AS [FileName]
+							,@_errorMSG AS MessageDetails
+							,NULL AS TSQLCode;
+				END
+			END
 
 			--	Generate TSQL Code for un-restricting data file growth
 			IF EXISTS (SELECT * FROM #T_Files_Final WHERE growth = 0)
@@ -2742,7 +3339,40 @@ SELECT * FROM #T_Files_Final WHERE NOT (isExistingOn_NewVolume = 1 OR IsExisting
 	--	TSQL Code to Remove Restriction of Auto Growth for files on @oldVolume '+QUOTENAME(@oldVolume) + '.
 ' + @_loopSQLText;
 
-					PRINT @_loopSQLText;
+					IF @forceExecute = 1
+					BEGIN
+						BEGIN TRY
+							EXEC (@_loopSQLText);
+
+							--	Make a SUCCESS entry for Sending message to end user
+							INSERT @OutputMessages
+								(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+							SELECT	'Success' AS Status
+									,'Un-Restrict File' AS Category
+									,@_dbName AS  DBName
+									,NULL AS [FileGroup]
+									,@_name AS [FileName]
+									,'Autogrowth restriction removed for file' AS MessageDetails
+									,@_loopSQLText AS TSQLCode;
+						END TRY
+						BEGIN CATCH
+							IF @_errorOccurred = 0
+								SET @_errorOccurred = 1;
+								
+							--	Make a FAIL entry for Sending message to end user
+							INSERT @OutputMessages
+								(Status, Category, DBName, FileGroup, FileName, MessageDetails, TSQLCode)
+							SELECT	'Fail' AS Status
+									,'Un-Restrict File' AS Category
+									,@_dbName AS  DBName
+									,NULL AS [FileGroup]
+									,@_name AS [FileName]
+									,ERROR_MESSAGE() AS MessageDetails
+									,@_loopSQLText AS TSQLCode;
+						END CATCH
+					END
+					ELSE
+						PRINT @_loopSQLText;
 
 					SET @_loopSQLText = '';
 					SET @_loopCounter = @_loopCounter + 1;
@@ -2814,7 +3444,7 @@ Kindly use @restrictMountPointGrowth functionality to increase the space utiliza
 			PRINT	'	--	NOTE:	'+CAST(@_freeSpace_OldVolume_GB AS VARCHAR(20))+'gb('+CAST(@_freeSpace_OldVolume_Percent AS VARCHAR(20))+'%) of '+CAST(@_totalSpace_OldVolume_GB AS VARCHAR(20))+'gb is available on @oldVolume '+QUOTENAME(@oldVolume,'''')+'.';
 			PRINT	'
 	--	Add Space Capacity Exception for '+QUOTENAME(@oldVolume,'''')+'
-		--	Execute Below code on MNA server <DBSWP0230CLS>
+		--	Execute Below code on MNA server <DBMNAServer>
 	';
 			--	Find FQN
 			DECLARE @Domain varchar(100), @key varchar(100);
@@ -2887,7 +3517,7 @@ Kindly use @restrictMountPointGrowth functionality to increase the space utiliza
 	BEGIN
 			PRINT	'/*	Import <<SQLDBATools>> powershell module, and then use <<Update-MountPointSecurity>> command after that.
 
-	Import-Module "\\Naselrrr01\sql_infra\DBATools\SQLDBATools.psm1"
+	Import-Module "\\DBATools\SQLDBATools.psm1"
 	Update-MountPointSecurity -ServerName '+QUOTENAME(@@SERVERNAME,'"')+ '
 	Update-TSMFolderPermissions -ServerName '+QUOTENAME(@@SERVERNAME,'"')+ '
 	Update-SQLBackupFolderPermissions -ServerName '+QUOTENAME(@@SERVERNAME,'"')+ '
@@ -3276,7 +3906,7 @@ ALTER DATABASE ['+DbName+'] MODIFY FILE ( NAME = N'''+[FileName]+''', SIZE = '+C
 						CROSS JOIN
 						(SELECT TOP 1 * FROM @tempDBFiles WHERE [isToBeDeleted] = 0 ORDER BY LogicalName DESC) AS t
 						WHERE	FileIterator_Table.FileNo_Add <= @_counts_of_Files_To_Be_Created
-						--AND @output4IdealScenario = 1
+						AND @output4IdealScenario = 1
 					) AS df
 				ON		1 = 2
 				) AS O;
@@ -3584,15 +4214,20 @@ USE [master];
 	--	============================================================================
 	--	Sample Error
 	--SELECT 1/0 as [Divide By Zero];
-	END TRY
+
+		IF @verbose = 1
+			PRINT	'	This is END TRY point for outermost Try/Catch Block	';
+
+	END TRY	-- Try Catch for executable blocks that may throw error
 	BEGIN CATCH
 		IF @verbose=1
-			PRINT	'*** Inside Outer Catch Block ***';
+			PRINT	'*** Inside OuterMost Catch Block ***';
 	
 		-- If we are inside Catch block, that means something went wrong.
 		IF @_errorOccurred = 0
 			SET @_errorOccurred = 1;
 
+		/*	This is no longer needed
 		--	If some select/update tsql statement failed, it will be called compilation error
 		INSERT #ErrorMessages
 			SELECT	CASE WHEN PATINDEX('%has free space more than%',ERROR_MESSAGE()) > 0
@@ -3612,15 +4247,52 @@ USE [master];
 					,NULL AS [FileName] 
 					,ERROR_MESSAGE() AS ErrorDetails 
 					,NULL AS TSQLCode;
+		*/
+
+		--	Make a FAIL entry for Sending message to end user
+		INSERT @OutputMessages
+			([Status], Category, DBName, [FileGroup], [FileName], MessageDetails, TSQLCode)
+		SELECT	'Error' AS [Status],
+				CASE WHEN PATINDEX('%has free space more than%',ERROR_MESSAGE()) > 0
+					THEN 'Reconsider Space Threshold'
+					WHEN PATINDEX('%Kindly restrict the data/log files on @oldVolume before using @generateCapacityException option.%',ERROR_MESSAGE()) > 0
+					THEN 'Files Growth Yet to be Restricted'
+					WHEN ERROR_MESSAGE() = 'Volume configuration is not per standard. Kindly perform the activity manually.'
+					THEN 'Not Supported'
+					WHEN ERROR_MESSAGE() = 'Backup job is running. So kindly create/restrict files later.'
+					THEN 'Backup Job is running.'
+					WHEN CHARINDEX('@',ERROR_MESSAGE()) > 0
+					THEN 'Improper Parameter'
+					ELSE 'Compilation Error'
+					END 
+						AS ErrorCategory
+				,NULL AS DBName 
+				,NULL AS [FileGroup]
+				,NULL AS [FileName] 
+				,ERROR_MESSAGE() AS ErrorDetails 
+				,NULL AS TSQLCode;
+
 	END CATCH
 
-	-- Print the #ErrorMessages table data
-	IF @_errorOccurred = 1
+	-- Return data from @OutputMessages table which contains Error Messages, Action Taken, and its result (pass/fail)
+		-- Show this output only when @forceExecute = 1 or @_errorOccurred = 1
+	IF ( @forceExecute = 1 
+							AND (	@addDataFiles = 1 
+								OR	@addLogFiles = 1	
+								OR	@restrictDataFileGrowth = 1
+								OR	@restrictLogFileGrowth = 1
+								OR	@unrestrictFileGrowth = 1
+								OR	@removeCapacityException = 1
+								OR	@restrictMountPointGrowth = 1
+								OR	@expandTempDBSize = 1
+							)	 
+		) OR (@_errorOccurred = 1)
 	BEGIN
-		SELECT * FROM #ErrorMessages;
 		IF @verbose=1
-			PRINT	'Returing #ErrorMessages table data';
+			PRINT	'Returing @OutputMessages table data';
+		SELECT * FROM @OutputMessages;
 	END
+
 	RETURN @_errorOccurred; -- 1 = Error, 0 = Success
 
 END -- End Procedure
