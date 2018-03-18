@@ -28,8 +28,22 @@ BEGIN
 	/*
 		Created By:		Ajay Dwivedi
 		Updated on:		18-Mar-2018
-		Current Ver:	3.4 - a) Remove issues when multiple files are there with same logical names
+		Current Ver:	3.5 - a) Remove issues when multiple files are there with same logical names
 							b) **Add functionality to handle multiple comma separated @oldVolume names (This would be quite complex)**
+							--@optimizeLogFiles -- Removes high VLF counts, and set good autogrowth settings
+							--@releaseSpaceByShrinkingFiles -- Release free space from Data/Log files
+							--@getVolumeSpaceConsumers -- Get All the files and Folder inside drive with their size, author
+$path = 'E:';
+Get-ChildItem -Path $path -Recurse -File | 
+    Select-Object   Name,
+                    @{l='ParentPath';e={$_.DirectoryName}},
+                    @{l='SizeBytes';e={$_.Length}},
+                    @{l='Owner';e={((Get-ACL $_.FullName).Owner)}},
+                    CreationTime,
+                    LastAccessTime,
+                    LastWriteTime,
+                    @{l='IsFolder';e={if($_.PSIsContainer) {1} else {0}}} |
+        foreach{ $_.Name + '|' + $_.ParentPath + '|' + $_.SizeBytes + '|' + $_.Owner + '|' + $_.CreationTime + '|' + $_.LastAccessTime + '|' + $_.LastWriteTime + '|' + $_.IsFolder }
 
 		Purpose:		This procedure can be used to generate automatic TSQL code for working with ESCs like 'DBSEP2537- Data- Create and Restrict Database File Names' type.
 	*/
