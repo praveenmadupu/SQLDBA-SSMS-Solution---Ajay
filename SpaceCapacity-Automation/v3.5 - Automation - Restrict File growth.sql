@@ -20,9 +20,9 @@ EXEC @_errorOccurred = [dbo].[usp_AnalyzeSpaceCapacity] @addDataFiles = 1 ,@newV
 SELECT CASE WHEN @_errorOccurred = 1 THEN 'fail' ELSE 'pass' END AS [Pass/Fail];
 */
 ALTER PROCEDURE [dbo].[usp_AnalyzeSpaceCapacity]
-	@getInfo TINYINT = 0, @getLogInfo TINYINT = 0, @volumeInfo TINYINT = 0, @help TINYINT = 0, @addDataFiles TINYINT = 0, @addLogFiles TINYINT = 0, @restrictDataFileGrowth TINYINT = 0, @restrictLogFileGrowth TINYINT = 0, @generateCapacityException TINYINT = 0, @unrestrictFileGrowth TINYINT = 0, @removeCapacityException TINYINT = 0, @UpdateMountPointSecurity TINYINT = 0, @restrictMountPointGrowth TINYINT = 0, @expandTempDBSize TINYINT = 0, @optimizeLogFiles TINYINT = 0,
+	@getInfo BIT = 0, @getLogInfo BIT = 0, @volumeInfo BIT = 0, @help BIT = 0, @addDataFiles BIT = 0, @addLogFiles BIT = 0, @restrictDataFileGrowth BIT = 0, @restrictLogFileGrowth BIT = 0, @generateCapacityException BIT = 0, @unrestrictFileGrowth BIT = 0, @removeCapacityException BIT = 0, @UpdateMountPointSecurity BIT = 0, @restrictMountPointGrowth BIT = 0, @expandTempDBSize BIT = 0, @optimizeLogFiles BIT = 0, @getVolumeSpaceConsumers BIT = 0,
 	@newVolume VARCHAR(50) = NULL, @oldVolume VARCHAR(200) = NULL, @mountPointGrowthRestrictionPercent TINYINT = 79, @tempDBMountPointPercent TINYINT = NULL, @tempDbMaxSizeThresholdInGB INT = NULL, @DBs2Consider VARCHAR(1000) = NULL, @mountPointFreeSpaceThreshold_GB INT = 60
-	,@verbose TINYINT = 0 ,@testAllOptions TINYINT = 0 ,@forceExecute TINYINT = 0 ,@allowMultiVolumeUnrestrictedFiles TINYINT = 0 ,@output4IdealScenario TINYINT = 0
+	,@verbose BIT = 0 ,@testAllOptions BIT = 0 ,@forceExecute BIT = 0 ,@allowMultiVolumeUnrestrictedFiles BIT = 0 ,@output4IdealScenario BIT = 0
 AS
 BEGIN
 	/*
@@ -83,7 +83,7 @@ Get-ChildItem -Path $path -Recurse -File |
 	DECLARE	@_errorOccurred BIT 
 	SET @_errorOccurred = 0;
 
-	DECLARE @_powershellCMD VARCHAR(400);
+	DECLARE @_powershellCMD VARCHAR(2000);
 	DECLARE	@_addFileSQLText VARCHAR(MAX)
 			,@_isServerPartOfMirroring TINYINT
 			,@_mirroringPartner VARCHAR(50)
@@ -297,6 +297,53 @@ Get-ChildItem -Path $path -Recurse -File |
 	IF OBJECT_ID('tempdb..#runningAgentJobs') IS NOT NULL -- Used to find if any backup job is running.
 		DROP TABLE #runningAgentJobs;
 
+	--	Table to be used in @getVolumeSpaceConsumers functionality
+	IF OBJECT_ID('tempdb..#VolumeFiles') IS NOT NULL -- Get all the files on @oldVolume
+		DROP TABLE #VolumeFiles;
+	CREATE TABLE #VolumeFiles
+	(
+		[Name] [varchar](255) NOT NULL,
+		[ParentPathID] INT NULL,
+		[ParentPath] [varchar](255) NULL,
+		[SizeBytes] BIGINT NULL,
+		[Size] AS (CASE	WHEN	[SizeBytes]/1024.0/1024/1024 > 1.0 
+						THEN	CAST(CAST([SizeBytes]/1024.0/1024/1024 AS DECIMAL(20,2)) AS VARCHAR(21)) + ' gb'
+						WHEN	[SizeBytes]/1024.0/1024 > 1.0 
+						THEN	CAST(CAST([SizeBytes]/1024.0/1024 AS DECIMAL(20,2)) AS VARCHAR(21)) + ' mb'
+						WHEN	[SizeBytes]/1024.0 > 1.0 
+						THEN	CAST(CAST([SizeBytes]/1024.0 AS DECIMAL(20,2)) AS VARCHAR(21)) + ' kb'
+						ELSE	CAST(CAST([SizeBytes] AS DECIMAL(20,2)) AS VARCHAR(21)) + ' bytes'
+						END),
+		[Owner] [varchar](100) NULL,
+		[CreationTime] DATETIME2 NULL,
+		[LastAccessTime] DATETIME2 NULL,
+		[LastWriteTime] DATETIME2 NULL,
+		[IsFile] BIT NULL DEFAULT 1
+	);
+	IF OBJECT_ID('tempdb..#VolumeFolders') IS NOT NULL -- Get all the files on @oldVolume
+		DROP TABLE #VolumeFolders;
+	CREATE TABLE #VolumeFolders
+	(
+		[PathID] INT NULL,
+		[Name] [varchar](255) NOT NULL,
+		[ParentPathID] [varchar](255) NULL,
+		[SizeBytes] BIGINT NULL,
+		[Size] AS (CASE	WHEN	[SizeBytes]/1024.0/1024/1024 > 1.0 
+						THEN	CAST(CAST([SizeBytes]/1024.0/1024/1024 AS DECIMAL(20,2)) AS VARCHAR(21)) + ' gb'
+						WHEN	[SizeBytes]/1024.0/1024 > 1.0 
+						THEN	CAST(CAST([SizeBytes]/1024.0/1024 AS DECIMAL(20,2)) AS VARCHAR(21)) + ' mb'
+						WHEN	[SizeBytes]/1024.0 > 1.0 
+						THEN	CAST(CAST([SizeBytes]/1024.0 AS DECIMAL(20,2)) AS VARCHAR(21)) + ' kb'
+						ELSE	CAST(CAST([SizeBytes] AS DECIMAL(20,2)) AS VARCHAR(21)) + ' bytes'
+						END),
+		[TotalChildItems] INT NULL,
+		[Owner] [varchar](100) NULL,
+		[CreationTime] DATETIME2 NULL,
+		[LastAccessTime] DATETIME2 NULL,
+		[LastWriteTime] DATETIME2 NULL,
+		[IsFolder] BIT NULL DEFAULT 1
+	);
+	
 	BEGIN TRY	-- Try Catch for executable blocks that may throw error
 		IF @verbose = 1
 			PRINT	'	This is starting point of outermost Try/Catch Block	';
@@ -320,7 +367,7 @@ Get-ChildItem -Path $path -Recurse -File |
 		ELSE
 			SET @_LogOrData = 'Log';
 
-		IF	(@help=1 OR @volumeInfo=1 OR @addDataFiles=1 OR @addLogFiles=1 OR @restrictDataFileGrowth=1 OR @restrictLogFileGrowth=1 OR @generateCapacityException=1 OR @unrestrictFileGrowth=1 OR @removeCapacityException=1 OR @UpdateMountPointSecurity=1 OR @restrictMountPointGrowth=1 OR @expandTempDBSize=1 OR @optimizeLogFiles=1)
+		IF	(@help=1 OR @volumeInfo=1 OR @addDataFiles=1 OR @addLogFiles=1 OR @restrictDataFileGrowth=1 OR @restrictLogFileGrowth=1 OR @generateCapacityException=1 OR @unrestrictFileGrowth=1 OR @removeCapacityException=1 OR @UpdateMountPointSecurity=1 OR @restrictMountPointGrowth=1 OR @expandTempDBSize=1 OR @optimizeLogFiles=1 OR @getVolumeSpaceConsumers=1)
 		BEGIN	
 			SET	@getInfo = 0;
 			SET @getLogInfo = 0;
@@ -442,9 +489,9 @@ Get-ChildItem -Path $path -Recurse -File |
 		END
 
 		--	Check if valid parameter is selected for procedure
-		IF ( (@restrictDataFileGrowth=1 OR @restrictLogFileGrowth=1 OR @restrictMountPointGrowth=1) AND (@oldVolume IS NULL))
+		IF ( (@restrictDataFileGrowth=1 OR @restrictLogFileGrowth=1 OR @restrictMountPointGrowth=1 OR @getVolumeSpaceConsumers=1) AND (@oldVolume IS NULL))
 		BEGIN
-			SET @_errorMSG = '@oldVolume parameters must be specified with '+(CASE WHEN @restrictDataFileGrowth=1 THEN '@restrictDataFileGrowth' WHEN @restrictLogFileGrowth=1 THEN '@restrictLogFileGrowth' ELSE '@restrictMountPointGrowth' END)+' = 1 parameter.';
+			SET @_errorMSG = '@oldVolume parameters must be specified with '+(CASE WHEN @getVolumeSpaceConsumers=1 THEN '@getVolumeSpaceConsumers' WHEN @restrictDataFileGrowth=1 THEN '@restrictDataFileGrowth' WHEN @restrictLogFileGrowth=1 THEN '@restrictLogFileGrowth' ELSE '@restrictMountPointGrowth' END)+' = 1 parameter.';
 			IF (select CAST(LEFT(CAST(SERVERPROPERTY('ProductVersion') AS VARCHAR(50)),charindex('.',CAST(SERVERPROPERTY('ProductVersion') AS VARCHAR(50)))-1) AS INT)) >= 12
 				EXEC sp_executesql N'THROW 50000,@_errorMSG,1',N'@_errorMSG VARCHAR(200)', @_errorMSG;
 			ELSE
@@ -472,6 +519,10 @@ Get-ChildItem -Path $path -Recurse -File |
 			IF @verbose=1 
 				PRINT	'
 /*	******************** BEGIN: Common Code *****************************/';
+
+			-- Jump to @getVolumeSpaceConsumers code
+			IF @getVolumeSpaceConsumers = 1
+				GOTO getVolumeSpaceConsumers_GOTO_BOOKMARK;
 
 			-- Check if more than one volume has been mentioned in @oldVolume parameter
 			IF @_oldVolumesSpecified IS NOT NULL -- proceed if more than one volume specified 
@@ -1604,6 +1655,8 @@ Get-ChildItem -Path $path -Recurse -File |
 		--	----------------------------------------------------------------------------
 			--	End:	@getInfo = 1
 		--	============================================================================
+
+
 		--	============================================================================
 			--	Begin:	@volumeInfo = 1
 		--	----------------------------------------------------------------------------
@@ -1627,6 +1680,256 @@ Get-ChildItem -Path $path -Recurse -File |
 			--	End:	@volumeInfo = 1
 		--	============================================================================
 		
+
+		--	============================================================================
+			--	Begin:	@getVolumeSpaceConsumers = 1
+		--	----------------------------------------------------------------------------
+		getVolumeSpaceConsumers_GOTO_BOOKMARK:
+		IF	@getVolumeSpaceConsumers = 1
+		BEGIN
+			IF @verbose=1 
+				PRINT	'
+/*	******************** Begin:	@getVolumeSpaceConsumers = 1 *****************************/';
+
+			--	Begin: Get All the files from @oldVolume
+			SET @_powershellCMD =  'powershell.exe -c "Get-ChildItem -Path '''+@oldVolume+''' -Recurse -File | Select-Object   Name, @{l=''ParentPath'';e={$_.DirectoryName}}, @{l=''SizeBytes'';e={$_.Length}}, @{l=''Owner'';e={((Get-ACL $_.FullName).Owner)}}, CreationTime, LastAccessTime, LastWriteTime, @{l=''IsFolder'';e={if($_.PSIsContainer) {1} else {0}}} | foreach{ $_.Name + ''|'' + $_.ParentPath + ''|'' + $_.SizeBytes + ''|'' + $_.Owner + ''|'' + $_.CreationTime + ''|'' + $_.LastAccessTime + ''|'' + $_.LastWriteTime + ''|'' + $_.IsFolder }"';
+
+			-- Clear previous output
+			DELETE @output;
+
+			IF @verbose = 1
+			BEGIN
+				PRINT	'	Executing xp_cmdshell command:-
+		'+@_powershellCMD;
+			END
+
+			--inserting all files from @oldVolume in to temporary table
+			INSERT @output
+			EXEC xp_cmdshell @_powershellCMD;
+
+			IF @verbose = 1
+			BEGIN
+				PRINT	'	SELECT * FROM @output';
+				SELECT 'SELECT * FROM @output' AS RunningQuery,* FROM @output;
+			END
+
+			IF @verbose=1 
+				PRINT	'	Extract Details for Files from PowerShell command output';
+			;WITH t_RawData AS
+			(
+				SELECT	ID = 1, 
+						line, 
+						expression = left(line,CHARINDEX('|',line)-1), 
+						searchExpression = SUBSTRING ( line , CHARINDEX('|',line)+1, LEN(line)+1 ), 
+						delimitorPosition = CHARINDEX('|',SUBSTRING ( line , CHARINDEX('|',line)+1, LEN(line)+1 ))
+				FROM	@output
+				WHERE	line IS NOT NULL
+				-- 
+				UNION all
+				--
+				SELECT	ID = ID + 1, 
+						line, 
+						expression = CASE WHEN delimitorPosition = 0 THEN searchExpression ELSE left(searchExpression,delimitorPosition-1) END, 
+						searchExpression = CASE WHEN delimitorPosition = 0 THEN NULL ELSE SUBSTRING(searchExpression,delimitorPosition+1,len(searchExpression)+1) END, 
+						delimitorPosition = CASE WHEN delimitorPosition = 0 THEN -1 ELSE CHARINDEX('|',SUBSTRING(searchExpression,delimitorPosition+1,len(searchExpression)+1)) END
+				FROM	t_RawData
+				WHERE	delimitorPosition >= 0
+			)
+			,T_Files AS 
+			(
+				SELECT	line, Name, ParentPath, SizeBytes, Owner, CreationTime, LastAccessTime, LastWriteTime, IsFolder
+				FROM (
+						SELECT	line, --Name, ParentPath, SizeBytes, Owner, CreationTime, LastAccessTime, LastWriteTime, IsFolder
+								[Column] =	CASE	ID
+													WHEN 1
+													THEN 'Name'
+													WHEN 2
+													THEN 'ParentPath'
+													WHEN 3
+													THEN 'SizeBytes'
+													WHEN 4
+													THEN 'Owner'
+													WHEN 5
+													THEN 'CreationTime'
+													WHEN 6
+													THEN 'LastAccessTime'
+													WHEN 7
+													THEN 'LastWriteTime'
+													WHEN 8
+													THEN 'IsFolder'
+													ELSE NULL
+													END,
+								[Value] = expression
+						FROM	t_RawData
+						) as up
+				PIVOT (MAX([Value]) FOR [Column] IN (Name, ParentPath, SizeBytes, Owner, CreationTime, LastAccessTime, LastWriteTime, IsFolder)) as pvt
+				--ORDER BY LINE
+			)
+			INSERT #VolumeFiles
+				( Name, ParentPath, SizeBytes, Owner, CreationTime, LastAccessTime, LastWriteTime, IsFile )
+			SELECT	Name, --[ParentPathID] = DENSE_RANK()OVER(ORDER BY ParentPath)
+					ParentPath, SizeBytes, Owner, CreationTime, LastAccessTime, LastWriteTime, [IsFile] = 1
+			FROM	T_Files v;
+
+			IF @verbose=1
+			BEGIN
+				PRINT	'	Values populated for #VolumeFiles';
+				PRINT	'	SELECT * FROM #VolumeFiles;'
+				SELECT 'SELECT * FROM #VolumeFiles;' AS RunningQuery,* FROM #VolumeFiles;
+			END
+
+			--	Begin: Get All folders from @oldVolume
+			SET @_powershellCMD =  'powershell.exe -c "Get-ChildItem -Path '''+@oldVolume+''' -Recurse -Directory | Select-Object   FullName, @{l=''Owner'';e={((Get-ACL $_.FullName).Owner)}}, CreationTime, LastAccessTime, LastWriteTime | foreach{ $_.FullName + ''|'' + $_.Owner + ''|'' + $_.CreationTime + ''|'' + $_.LastAccessTime + ''|'' + $_.LastWriteTime }"';
+
+			-- Clear previous output
+			DELETE @output;
+
+			IF @verbose = 1
+			BEGIN
+				PRINT	'	Executing xp_cmdshell command:-
+		'+@_powershellCMD;
+			END
+
+			--inserting all folders information from @oldVolume in to temporary table
+			INSERT @output
+			EXEC xp_cmdshell @_powershellCMD;
+
+			IF @verbose = 1
+			BEGIN
+				PRINT	'	SELECT * FROM @output';
+				SELECT 'SELECT * FROM @output' AS RunningQuery,* FROM @output;
+			END
+
+			IF @verbose=1 
+				PRINT	'	Extract Details for Files from PowerShell command output';
+			;WITH t_RawData AS
+			(
+				SELECT	ID = 1, 
+						line, 
+						expression = left(line,CHARINDEX('|',line)-1), 
+						searchExpression = SUBSTRING ( line , CHARINDEX('|',line)+1, LEN(line)+1 ), 
+						delimitorPosition = CHARINDEX('|',SUBSTRING ( line , CHARINDEX('|',line)+1, LEN(line)+1 ))
+				FROM	@output
+				WHERE	line IS NOT NULL
+				-- 
+				UNION all
+				--
+				SELECT	ID = ID + 1, 
+						line, 
+						expression = CASE WHEN delimitorPosition = 0 THEN searchExpression ELSE left(searchExpression,delimitorPosition-1) END, 
+						searchExpression = CASE WHEN delimitorPosition = 0 THEN NULL ELSE SUBSTRING(searchExpression,delimitorPosition+1,len(searchExpression)+1) END, 
+						delimitorPosition = CASE WHEN delimitorPosition = 0 THEN -1 ELSE CHARINDEX('|',SUBSTRING(searchExpression,delimitorPosition+1,len(searchExpression)+1)) END
+				FROM	t_RawData
+				WHERE	delimitorPosition >= 0
+			)
+			,T_Folders AS 
+			(
+				SELECT	line, Name, Owner, CreationTime, LastAccessTime, LastWriteTime
+				FROM (
+						SELECT	line, --Name, Owner, CreationTime, LastAccessTime, LastWriteTime
+								[Column] =	CASE	ID
+													WHEN 1
+													THEN 'Name'
+													WHEN 2
+													THEN 'Owner'
+													WHEN 3
+													THEN 'CreationTime'
+													WHEN 4
+													THEN 'LastAccessTime'
+													WHEN 5
+													THEN 'LastWriteTime'
+													ELSE NULL
+													END,
+								[Value] = expression
+						FROM	t_RawData
+						) as up
+				PIVOT (MAX([Value]) FOR [Column] IN (Name, Owner, CreationTime, LastAccessTime, LastWriteTime)) as pvt
+			)
+			INSERT #VolumeFolders
+				( PathID, Name, SizeBytes, TotalChildItems, Owner, CreationTime, LastAccessTime, LastWriteTime, IsFolder )
+			SELECT	[PathID] = d.PathID, 
+					[Name] = d.Name, 
+					--[ParentPathID] = NULL, 
+					[SizeBytes] = CASE WHEN d.PathID = 1 THEN v.[SizeBytes] ELSE fd.SizeBytes END, 
+					[TotalChildItems] = CASE WHEN d.PathID = 1 THEN v.TotalChildItems ELSE fd.TotalChildItems END
+					,d.Owner ,d.CreationTime ,d.LastAccessTime ,d.LastWriteTime
+					,IsFolder = 1
+			FROM  (
+					SELECT	PathID = 1,
+							[Name] = REPLACE(@oldVolume,'\',''),
+							[Owner] = NULL, 
+							CreationTime = NULL, 
+							LastAccessTime = NULL, 
+							LastWriteTime = NULL
+					--
+					UNION ALL
+					--
+					SELECT	PathID = (DENSE_RANK() OVER (ORDER BY fldr.Name))+1, -- Leaving PathID = 1 for Base Drive like E:\
+							Name, Owner, CreationTime, LastAccessTime, LastWriteTime					
+					FROM	T_Folders as fldr
+				  ) AS d -- as directory
+			LEFT OUTER JOIN
+				  (
+					SELECT	--[PathID] = ParentPathID, 
+							[Name] = ParentPath,
+							[SizeBytes] = SUM(SizeBytes),
+							[TotalChildItems] = COUNT(*),
+							[Owner] = NULL, [CreationTime] = NULL, [LastAccessTime] = NULL, [LastWriteTime] = NULL, IsFolder = 1
+					FROM	#VolumeFiles as vf
+					GROUP BY ParentPath
+				  ) AS fd -- as folder Details
+				ON	fd.Name = d.Name
+			FULL OUTER JOIN
+				  (
+					SELECT	[PathID] = 1, 
+							--[Name] = REPLACE(@oldVolume,'\',''),
+							[SizeBytes] = SUM(SizeBytes),
+							[TotalChildItems] = COUNT(*)
+					FROM	#VolumeFiles as vf
+				  ) AS v -- as volume
+				ON	v.PathID = d.PathID;
+
+			-- Updating ParentPathID into #VolumeFolders table
+			UPDATE	c
+			SET	c.ParentPathID = p.PathID
+			FROM	#VolumeFolders as c
+			LEFT JOIN
+					#VolumeFolders as p
+				ON	p.Name = LEFT(c.[Name],LEN(c.[Name])-CHARINDEX('\',REVERSE(c.[Name])))
+			WHERE	c.PathID <> 1;
+
+			-- Updating ParentPathID into #VolumeFiles table
+			UPDATE	c
+			SET		c.ParentPathID = p.PathID
+			FROM	#VolumeFiles as c
+			LEFT JOIN
+					#VolumeFolders as p
+				ON	c.[ParentPath] = (CASE WHEN p.PathID = 1 THEN p.Name+'\' else p.Name END);
+			
+			UPDATE #VolumeFolders
+			SET Name = (CASE WHEN CHARINDEX('\',[Name]) = 0 THEN [Name]+'\' ELSE [Name] END)
+			WHERE	PathID = 1
+
+
+			IF @verbose=1
+			BEGIN
+				PRINT	'	Values populated for #VolumeFolders';
+				PRINT	'	SELECT * FROM #VolumeFolders;'
+				SELECT 'SELECT * FROM #VolumeFolders;' AS RunningQuery,* FROM #VolumeFolders;
+			END
+
+			select * from #VolumeFiles;
+			select * from #VolumeFolders;
+
+			IF @verbose=1 
+				PRINT	'
+/*	******************** Begin:	@getVolumeSpaceConsumers = 1 *****************************/';
+		END
+		--	----------------------------------------------------------------------------
+			--	End:	@getVolumeSpaceConsumers = 1
+		--	============================================================================
+		
+
 		--	============================================================================
 			--	Begin:	@getLogInfo = 1
 		--	----------------------------------------------------------------------------
