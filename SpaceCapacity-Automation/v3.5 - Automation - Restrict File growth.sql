@@ -2155,55 +2155,55 @@ Get-ChildItem -Path $path -Recurse -File |
 					--
 				UNION ALL
 					--
-				SELECT	'@getInfo','TINYINT','0','Displays distribution of Data Files across multiple data volumes. It presents file details like database name, its file groups, db status, logical name and autogrowth setting, and volume details like free space and total space.'
+				SELECT	'@getInfo','BIT','0','Displays distribution of Data Files across multiple data volumes. It presents file details like database name, its file groups, db status, logical name and autogrowth setting, and volume details like free space and total space.'
 					--
 				UNION ALL
 					--
-				SELECT	'@volumeInfo','TINYINT','0','Displays Total size, Used Space, Free Space and percentage for all Volumes/disk drives.'
+				SELECT	'@volumeInfo','BIT','0','Displays Total size, Used Space, Free Space and percentage for all Volumes/disk drives.'
 				--
 				UNION ALL
 					--
-				SELECT	'@getLogInfo','TINYINT','0','Displays distribution of Log Files across multiple log volumes. It presents log file details like database name, db status, logical name, size, VLF counts and autogrowth setting, and volume details like free space and total space.'
+				SELECT	'@getLogInfo','BIT','0','Displays distribution of Log Files across multiple log volumes. It presents log file details like database name, db status, logical name, size, VLF counts and autogrowth setting, and volume details like free space and total space.'
 				--
 				UNION ALL
 					--
-				SELECT	'@addDataFiles','TINYINT','0','This generates TSQL code for adding data files on @newVolume for data files present on @oldVolume for each combination of database and filegroup.'
+				SELECT	'@addDataFiles','BIT','0','This generates TSQL code for adding data files on @newVolume for data files present on @oldVolume for each combination of database and filegroup.'
 				--
 				UNION ALL
 					--
-				SELECT	'@addLogFiles','TINYINT','0','This generates TSQL code for adding log files on @newVolume for log files present on @oldVolume for each database.'
+				SELECT	'@addLogFiles','BIT','0','This generates TSQL code for adding log files on @newVolume for log files present on @oldVolume for each database.'
 				--
 				UNION ALL
 					--
-				SELECT	'@restrictDataFileGrowth','TINYINT','0','This generates TSQL code for restricting growth of Data files on @oldVolume.'
+				SELECT	'@restrictDataFileGrowth','BIT','0','This generates TSQL code for restricting growth of Data files on @oldVolume.'
 				--
 				UNION ALL
 					--
-				SELECT	'@restrictLogFileGrowth','TINYINT','0','This generates TSQL code for restricting growth of Log files on @oldVolume.'
+				SELECT	'@restrictLogFileGrowth','BIT','0','This generates TSQL code for restricting growth of Log files on @oldVolume.'
 				--
 				UNION ALL
 					--
-				SELECT	'@generateCapacityException','TINYINT','0','This generates TSQL code for adding capacity exception on MNA alerting database server for @oldVolume.'
+				SELECT	'@generateCapacityException','BIT','0','This generates TSQL code for adding capacity exception on MNA alerting database server for @oldVolume.'
 				--
 				UNION ALL
 					--
-				SELECT	'@unrestrictFileGrowth','TINYINT','0','This generates TSQL code for removing the growth restrict for data/log files on @oldVolume.'
+				SELECT	'@unrestrictFileGrowth','BIT','0','This generates TSQL code for removing the growth restrict for data/log files on @oldVolume.'
 				--
 				UNION ALL
 					--
-				SELECT	'@removeCapacityException','TINYINT','0','This generates TSQL code for removing the added capacity exception on MNA alerting database server for @oldVolume.'
+				SELECT	'@removeCapacityException','BIT','0','This generates TSQL code for removing the added capacity exception on MNA alerting database server for @oldVolume.'
 				--
 				UNION ALL
 					--
-				SELECT	'@UpdateMountPointSecurity','TINYINT','0','This prints directions on how to update access for sql service account on @newVolume.'
+				SELECT	'@UpdateMountPointSecurity','BIT','0','This prints directions on how to update access for sql service account on @newVolume.'
 				--
 				UNION ALL
 					--
-				SELECT	'@restrictMountPointGrowth','TINYINT','0','This generates TSQL code for expanding/shrinking files upto @mountPointGrowthRestrictionPercent % of total volume capacity.'
+				SELECT	'@restrictMountPointGrowth','BIT','0','This generates TSQL code for expanding/shrinking files upto @mountPointGrowthRestrictionPercent % of total volume capacity.'
 				--
 				UNION ALL
 					--
-				SELECT	'@expandTempDBSize','TINYINT','0','This generates TSQL code for expanding tempdb data files upto @tempDBMountPointPercent % of total tempdb volume capacity.'
+				SELECT	'@expandTempDBSize','BIT','0','This generates TSQL code for expanding tempdb data files upto @tempDBMountPointPercent % of total tempdb volume capacity.'
 				--
 				UNION ALL
 					--
@@ -2235,23 +2235,23 @@ Get-ChildItem -Path $path -Recurse -File |
 				--
 				UNION ALL
 					--
-				SELECT	'@verbose','TINYINT','0','Used for debugging procedure. It will display temp table results created in background for analyzing issues/logic.'
+				SELECT	'@verbose','BIT','0','Used for debugging procedure. It will display temp table results created in background for analyzing issues/logic.'
 				--
 				UNION ALL
 					--
-				SELECT	'@testAllOptions','TINYINT','0','Used for debugging procedure. It will test all parameter options for procedure.'
+				SELECT	'@testAllOptions','BIT','0','Used for debugging procedure. It will test all parameter options for procedure.'
 				--
 				UNION ALL
 					--
-				SELECT	'@forceExecute','TINYINT','0','When set to 1, will execute the TSQL Code generated by main parameter options like @addDataFiles, @addLogFiles, @restrictDataFileGrowth, @restrictLogFileGrowth, @unrestrictFileGrowth, @restrictMountPointGrowth and @expandTempDBSize.'
+				SELECT	'@forceExecute','BIT','0','When set to 1, will execute the TSQL Code generated by main parameter options like @addDataFiles, @addLogFiles, @restrictDataFileGrowth, @restrictLogFileGrowth, @unrestrictFileGrowth, @restrictMountPointGrowth and @expandTempDBSize.'
 				--
 				UNION ALL
 					--
-				SELECT	'@allowMultiVolumeUnrestrictedFiles','TINYINT','0','All creation of multiple data/log files with unrestricted growth on multiple volumes.'
+				SELECT	'@allowMultiVolumeUnrestrictedFiles','BIT','0','All creation of multiple data/log files with unrestricted growth on multiple volumes.'
 				--
 				UNION ALL
 					--
-				SELECT	'@output4IdealScenario','TINYINT','0','When set to 1, will generate TSQL code to add/remove data files based on the number Logical cores on server upto 8, and delete extra data files created on non-tempdb volumes.'
+				SELECT	'@output4IdealScenario','BIT','0','When set to 1, will generate TSQL code to add/remove data files based on the number Logical cores on server upto 8, and delete extra data files created on non-tempdb volumes.'
 				) AS Params; --([Parameter Name], [Data Type], [Default Value], [Parameter Description]);
 
 		PRINT	'
