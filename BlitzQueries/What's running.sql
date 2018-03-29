@@ -1,4 +1,3 @@
-
 --	Query to find what's is running on server
 SELECT	s.session_id, 
 		DB_NAME(r.database_id) as DBName,

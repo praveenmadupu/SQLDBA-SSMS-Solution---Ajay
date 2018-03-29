@@ -63,6 +63,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="tul1cipmbdb2:CORPORATE\adwivedi">
+          <Created>2018-03-29T15:36:38.9855643+05:30</Created>
+          <Type>SQL</Type>
+          <Server>tul1cipmbdb2</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>tempdb</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="TUL1DBAPMTDB1:CORPORATE\adwivedi">
           <Created>2018-03-13T20:21:53.5136092+05:30</Created>
           <Type>SQL</Type>
@@ -86,8 +98,8 @@
           <FullPath>Blitz.sql</FullPath>
         </FileNode>
         <FileNode Name="BlitzCache.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipmbdb2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipmbdb2</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>BlitzCache.sql</FullPath>
         </FileNode>
@@ -108,6 +120,12 @@
           <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Blocking Tree.sql</FullPath>
+        </FileNode>
+        <FileNode Name="CREATE TABLE [dbo].[whatIsRunning].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>CREATE TABLE [dbo].[whatIsRunning].sql</FullPath>
         </FileNode>
         <FileNode Name="Other queries.sql">
           <AssociatedConnectionMoniker />
@@ -148,7 +166,14 @@
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
-      <Items />
+      <Items>
+        <FileNode Name="WhatIsRunning.gif">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>WhatIsRunning.gif</FullPath>
+        </FileNode>
+      </Items>
     </LogicalFolder>
   </Items>
 </SqlWorkbenchSqlProject>

@@ -27,6 +27,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="tul1cipmbdb2:CORPORATE\adwivedi">
+          <Created>2018-03-29T13:58:14.1365951+05:30</Created>
+          <Type>SQL</Type>
+          <Server>tul1cipmbdb2</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="TUL1DBAPMTDB1:CORPORATE\adwivedi">
           <Created>2018-03-16T13:18:14.5685404+05:30</Created>
           <Type>SQL</Type>
@@ -44,16 +56,10 @@
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="Automation - Restrict File growth.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipmbdb2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipmbdb2</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Automation - Restrict File growth.sql</FullPath>
-        </FileNode>
-        <FileNode Name="v3.5 - Automation - Restrict File growth.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>v3.5 - Automation - Restrict File growth.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>
