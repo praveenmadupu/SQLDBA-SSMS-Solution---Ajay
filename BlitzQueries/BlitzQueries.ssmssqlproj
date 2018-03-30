@@ -167,6 +167,12 @@
     </LogicalFolder>
     <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
       <Items>
+        <FileNode Name="sp_whoIsActive.gif">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>sp_whoIsActive.gif</FullPath>
+        </FileNode>
         <FileNode Name="WhatIsRunning.gif">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
