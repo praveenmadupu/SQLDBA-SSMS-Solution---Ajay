@@ -48,3 +48,8 @@ Screenshot for **`WhatIsRunning.sql`**:-
 
 Screenshot for modified versin of **`who_is_active_v11_30`**:-
 ![](BlitzQueries/sp_whoIsActive.gif)
+
+### 3. [sp_HealthCheck]
+This project contains a procedure named [sp_HealthCheck] This procedure gives `currently running queries`, `CPU and Memory usage`, `Usage of Data & Log Volumes`, `Space utilization of data/log files`, `Lead Blockers`, and `session details performing Backup/Restore/Rollback`.
+
+![](sp_HealthCheck/sp_HealthCheck_PMTDBA.JPG)
