@@ -4,55 +4,58 @@ IF OBJECT_ID('dbo.sp_HealthCheck') IS NULL
 	EXEC ('CREATE PROCEDURE [dbo].[sp_HealthCheck] AS RETURN 0;');
 GO
 ALTER PROCEDURE [dbo].[sp_HealthCheck] ( 
-						@Option		varchar(1) = 0
-						, @Status	varchar(10) = 'ACTIVE'
-						, @Orderby	varchar(1) = 1 )
+						@p_Option		varchar(1) = 0
+						,@p_Status	varchar(10) = 'ACTIVE'
+						,@p_Orderby	varchar(1) = 1 
+						,@p_getExecutionPlan bit = 0
+					)
 --WITH EXECUTE AS 'dbo'
 AS
 BEGIN
 /* 
 	Created By:			Ajay Dwivedi
-	Creatd Date:		14-Feb-2018
+	Creatd Date:		30-Mar-2018
 	Sproc Name:			dbo.sp_HealthCheck
-	Current Version:	0.2
+	Current Version:	0.3
 	Description: 1. Checks the Active connections
 				 2. CPU and Memory Usage
 				 3. Displays the capacity on the server and databases space used and availability just as sp_helpdb
-				 4. Lead Blocker connection(s)
+				 4. Blocking Tree
 				 5. Long running connection(s): Backup/Rollback, DBCC TABLE CHECK/Shrinkfile status with estimation time of completion with percentage
 				 6. AlwaysOn availability Group status
 				 7. Mirroring status
 
 		Store Procedure Parameters:
 				sp_HealthCheck 
-						@Option			varchar(1)
-						@Status			varchar(10)
-						@Orderby		varchar(1)
+						@p_Option			varchar(1)
+						@p_Status			varchar(10)
+						@p_Orderby		varchar(1)
 
 		usage:  exec sp_HealthCheck -- This display the Active connections by default with order by Logical_Reads and CPU%, Diskspace, Lead Blocker, Long runngin connections
 				Select parameters with values as below:
-				exec sp_HealthCheck @Option = 0 - All, 1 - Connections, 2 - CPU %, 3 - Diskspace, 4 - Lead Blocker, 5 - Backup/Rollback status.
-									, @Status = 'All' or 'ACTIVE' or 'SLEEPING'
-									, @Orderby =  1 - 'Logical_Reads desc'
+				exec sp_HealthCheck @p_Option = 0 - All, 1 - Connections, 2 - CPU %, 3 - Diskspace, 4 - Lead Blocker, 5 - Backup/Rollback status.
+									, @p_Status = 'All' or 'ACTIVE' or 'SLEEPING'
+									, @p_Orderby =  1 - 'Logical_Reads desc'
 												  2 - 'Order by CPUTime desc'
 												  3 - 'Order by SPID'
+												  4 - 'Order by DBName'
 		Example:									
 			exec sp_HealthCheck '?' 
 			exec sp_HealthCheck -- This display the Active connections by default with order by Logical_Reads and CPU%, Diskspace, Lead Blocker, Long runngin connections
-			exec sp_HealthCheck @Option = 0  -- This display the Active connections by default with order by Logical_Reads and CPU%, Diskspace, Lead Blocker, Long running connections
-			exec sp_HealthCheck @Option = 1	 -- Active connections
+			exec sp_HealthCheck @p_Option = 0  -- This display the Active connections by default with order by Logical_Reads and CPU%, Diskspace, Lead Blocker, Long running connections
+			exec sp_HealthCheck @p_Option = 1	 -- Active connections
 
-			exec sp_HealthCheck @Option = 1, @status = 'All', @Orderby = 3		-- Connection with Active and Sleeping and Order by SPID
-			exec sp_HealthCheck @Option = 1, @status = 'ACTIVE', @Orderby = 1	-- Connection with Active and Order by Logical_Reads desc
-			exec sp_HealthCheck @Option = 1, @status = 'SLEEPING', @Orderby = 1	-- Connection with Sleeping and Order by Logical_Reads desc
-			exec sp_HealthCheck @Option = 2  -- CPU usage % and Memory Usage %
+			exec sp_HealthCheck @p_Option = 1, @p_Status = 'All', @p_Orderby = 3		-- Connection with Active and Sleeping and Order by SPID
+			exec sp_HealthCheck @p_Option = 1, @p_Status = 'ACTIVE', @p_Orderby = 1	-- Connection with Active and Order by Logical_Reads desc
+			exec sp_HealthCheck @p_Option = 1, @p_Status = 'SLEEPING', @p_Orderby = 1	-- Connection with Sleeping and Order by Logical_Reads desc
+			exec sp_HealthCheck @p_Option = 2  -- CPU usage % and Memory Usage %
 												( This feature is applies to SQL Server 2008 plus higher version )
-			exec sp_HealthCheck @Option = 3  --	Displays the capacity on the server and databases free and used
+			exec sp_HealthCheck @p_Option = 3  --	Displays the capacity on the server and databases free and used
 												( The Server Capacity feature is applies to SQL Server 2008 plus higher version to avoid using xp_cmdshell due to Security reasons: )
-			exec sp_HealthCheck @Option = 4	 --	Lead Blocker list only the waittime greater than 60 seconds 
-			exec sp_HealthCheck @Option = 5	 -- Long running connections: just ass Backup/Rollback, DBCC TABLE CHECK/Shrinkfile status with estimation time of completion with percentage'
-			exec sp_HealthCheck @Option = 6	 -- AlwaysOn availability Group status
-			exec sp_HealthCheck @Option = 7	 -- Mirroring status
+			exec sp_HealthCheck @p_Option = 4	 --	Lead Blocker list only the waittime greater than 60 seconds 
+			exec sp_HealthCheck @p_Option = 5	 -- Long running connections: just ass Backup/Rollback, DBCC TABLE CHECK/Shrinkfile status with estimation time of completion with percentage'
+			exec sp_HealthCheck @p_Option = 6	 -- AlwaysOn availability Group status
+			exec sp_HealthCheck @p_Option = 7	 -- Mirroring status
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 	SET NOCOUNT ON
@@ -61,11 +64,11 @@ BEGIN
 	declare @UsageClause varchar(max)
 	set @UsageClause = '
 		This stored procedure gives the following reports:
-			1. Connection details just as sp_who2 with selection criteria
+			1. All sessions which are currently running some request, or sleeping but consuming memory, or blocking other sessions
 			2. CPU and Memory Usage % ( This feature is applies to SQL Server 2008 plus higher version )
 			3. Displays the capacity on the server and databases space used and availability
 			   ( The Server Capacity feature is applies to SQL Server 2008 plus higher version )
-			4. Lead Blocker Connection(s)
+			4. Blocking Tree
 			5. Long running connection(s): Just as Backup/Rollback status with estimation time of completion with percentage
 			6. AlwaysOn availability Group status
 			7. Mirroring status
@@ -74,48 +77,49 @@ BEGIN
 		AlwaysOn availability feature is applies to SQL Server 2012 plus higher version
 		Store Procedure Parameters:
 			sp_HealthCheck 
-					@Option			varchar(1)
-					@Status			varchar(10)
-					@Orderby		varchar(1)
+					@p_Option			varchar(1)
+					@p_Status			varchar(10)
+					@p_Orderby		varchar(1)
 		usage:
 			exec sp_HealthCheck -- This display the Active connections by default with order by Logical_Reads and CPU%, Diskspace, 
 								   Lead Blocker, Long running connections, AlwaysOn availability status and Mirroring status
 			Select parameters with values as below:
 			exec sp_HealthCheck 
-					@Option		= 0 - Display Connections, CPU%, Diskspace, Lead Blocker, Long running connections with status, AlwaysOn availability status and Mirroring status
+					@p_Option		= 0 - Display Connections, CPU%, Diskspace, Lead Blocker, Long running connections with status, AlwaysOn availability status and Mirroring status
 								  1 - Connections ( default active )
 								  2 - CPU and Memory Usage % ( This feature is applies to SQL Server 2008 plus higher version )
 								  3 - Displays the capacity on the server and databases space used and availability
 									  ( The Server Capacity feature is applies to SQL Server 2008 plus higher version )								  
-								  4 - Lead Blocker connection(s)
+								  4 - Blocking Tree
 								  5 - Long running connection(s): Just as Backup/Rollback status with estimation time of completion with percentage
 								  6	- This displays the AlwaysOn availability Group status
 								  7 - This displays the Mirroring status
-					, @Status	= ''All'' ( Active & Sleeping )
+					, @p_Status	= ''All'' ( Active & Sleeping )
 								  ''ACTIVE'' ( default )
 								  ''SLEEPING'' 
-					, @Orderby	= 1 - ''Logical_Reads desc'' ( default )
+					, @p_Orderby	= 1 - ''Logical_Reads desc'' ( default )
 								  2 - ''Order by CPUTime desc''
 								  3 - ''Order by SPID''
+								  4 - ''Order by DBName''
 		Example:									
 			exec sp_HealthCheck ''?''  -- Help
 			exec sp_HealthCheck -- This display the Active connections by default with order by Logical_Reads and CPU%, Diskspace, 
 								   Lead Blocker, Long running connections, AlwaysOn availability status and Mirroring status
-			exec sp_HealthCheck @Option = 0  -- This display the Active connections by default with order by Logical_Reads and CPU%, Diskspace, 
+			exec sp_HealthCheck @p_Option = 0  -- This display the Active connections by default with order by Logical_Reads and CPU%, Diskspace, 
 												Lead Blocker, Long running connections, AlwaysOn availability status and Mirroring status
-			exec sp_HealthCheck @Option = 1	 -- Active connections
+			exec sp_HealthCheck @p_Option = 1	 -- Active connections
 
-			exec sp_HealthCheck @Option = 1, @Status = ''All'', @Orderby = 3      -- Connection with Active and Sleeping and Order by SPID
-			exec sp_HealthCheck @Option = 1, @Status = ''ACTIVE'', @Orderby = 1   -- Connection with Active and Order by Logical_Reads desc
-			exec sp_HealthCheck @Option = 1, @Status = ''SLEEPING'', @Orderby = 1 -- Connection with Sleeping and Order by Logical_Reads desc
+			exec sp_HealthCheck @p_Option = 1, @p_Status = ''All'', @p_Orderby = 3      -- Connection with Active and Sleeping and Order by SPID
+			exec sp_HealthCheck @p_Option = 1, @p_Status = ''ACTIVE'', @p_Orderby = 1   -- Connection with Active and Order by Logical_Reads desc
+			exec sp_HealthCheck @p_Option = 1, @p_Status = ''SLEEPING'', @p_Orderby = 1 -- Connection with Sleeping and Order by Logical_Reads desc
 
-			exec sp_HealthCheck @Option = 2  -- CPU and Memory Usage % ( This feature is applies to SQL Server 2008 plus higher version )
-			exec sp_HealthCheck @Option = 3  --	Displays the capacity on the server and databases space used and availability 
+			exec sp_HealthCheck @p_Option = 2  -- CPU and Memory Usage % ( This feature is applies to SQL Server 2008 plus higher version )
+			exec sp_HealthCheck @p_Option = 3  --	Displays the capacity on the server and databases space used and availability 
 												( The Server Capacity feature is applies to SQL Server 2008 plus higher version )
-			exec sp_HealthCheck @Option = 4	 --	Lead Blocker connection(s) only the waittime greater than 60 seconds 
-			exec sp_HealthCheck @Option = 5	 -- Long running connections: Just as Backup/Rollback status with estimation time of completion with percentage
-			exec sp_HealthCheck @Option = 6	 -- This displays the AlwaysOn availability Group status
-			exec sp_HealthCheck @Option = 7	 -- This displays the Mirroring status
+			exec sp_HealthCheck @p_Option = 4	 --	Blocking Tree only the waittime greater than 60 seconds 
+			exec sp_HealthCheck @p_Option = 5	 -- Long running connections: Just as Backup/Rollback status with estimation time of completion with percentage
+			exec sp_HealthCheck @p_Option = 6	 -- This displays the AlwaysOn availability Group status
+			exec sp_HealthCheck @p_Option = 7	 -- This displays the Mirroring status
 						
 			exec sp_HealthCheck
 			exec sp_HealthCheck 1
@@ -127,7 +131,7 @@ BEGIN
 			exec sp_HealthCheck 7'
 
 	begin try
-		if ( @Option not in ('0','1','2','3','4','5','6','7'))
+		if ( @p_Option not in ('0','1','2','3','4','5','6','7'))
 		begin
 			print @UsageClause
 			return
@@ -138,74 +142,124 @@ BEGIN
 		-- - - - - - - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - 
 		--	1. Shows connection details
 		--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-		if ( @Option = '0' or @Option = '1' )
+		if ( @p_Option = '0' or @p_Option = '1' )
 		begin 
-			declare @Status_stmt nvarchar(100)
+			declare @p_Status_stmt nvarchar(100)
 			declare @sql nvarchar(max)
+			declare @sql_2ndHalf nvarchar(max)
 			
-			select @Status_stmt = case @Status when 'ACTIVE' then 'and upper(coalesce(r.status, s.status)) not in (''SLEEPING'', ''BACKGROUND'')' 
+			select @p_Status_stmt = case @p_Status when 'ACTIVE' then 'and upper(coalesce(r.status, s.status)) not in (''SLEEPING'', ''BACKGROUND'')' 
 											   when 'SLEEPING' then 'and upper(coalesce(r.status, s.status)) in (''SLEEPING'')' 
 											   when 'ALL' then ' ' end
 			
-			select @sql = '
-			SELECT SPID = s.session_id
-					,DB_NAME(r.database_id) as DBName
-					,r.STATUS
-					,r.percent_complete
-					,CAST(((DATEDIFF(s,start_time,GetDate()))/3600) as varchar) + '' hour(s), ''
-						+ CAST((DATEDIFF(s,start_time,GetDate())%3600)/60 as varchar) + ''min, ''
-						+ CAST((DATEDIFF(s,start_time,GetDate())%60) as varchar) + '' sec''  as running_time
-					,CAST((estimated_completion_time/3600000) as varchar) + '' hour(s), ''
-								  + CAST((estimated_completion_time %3600000)/60000  as varchar) + ''min, ''
-								  + CAST((estimated_completion_time %60000)/1000  as varchar) + '' sec''  as est_time_to_go
-					,dateadd(second,estimated_completion_time/1000, getdate())  as est_completion_time 
-					,r.blocking_session_id ''blocked by''
-					,r.wait_type
-					,wait_resource
-					,r.wait_time / (1000.0) ''Wait Time (in Sec)''
-					,r.logical_reads
-					,r.writes
-					,r.cpu_time
-					,Substring(st.TEXT, (r.statement_start_offset / 2) + 1, (
-							(
-								CASE r.statement_end_offset
-									WHEN - 1
-										THEN Datalength(st.TEXT)
-									ELSE r.statement_end_offset
-									END - r.statement_start_offset
-								) / 2
-							) + 1) AS statement_text
-					,st.text as Batch_Text
-					--,r.sql_handle
-					--,r.plan_handle
-					,r.query_hash
-					,r.query_plan_hash
-					,s.login_name
-					,s.host_name
-					,s.program_name
-					,ISNULL(r.open_transaction_count,tn.enlist_count) AS open_transaction_count
-					,qp.query_plan
-				FROM sys.dm_exec_sessions AS s
-				LEFT JOIN sys.dm_exec_requests AS r ON r.session_id = s.session_id
-				LEFT JOIN sys.dm_tran_session_transactions AS tn ON tn.session_id = s.session_id
-				OUTER APPLY sys.dm_exec_sql_text(r.sql_handle) AS st
-				OUTER APPLY sys.dm_exec_query_plan(r.plan_handle) AS qp
-				WHERE s.session_id != @@SPID
-				AND	(r.session_id IS NOT NULL OR (tn.enlist_count IS NOT NULL AND tn.enlist_count > 0))
-				AND (s.session_id >= 50 OR EXISTS (SELECT 1 from sys.dm_exec_requests AS ri WHERE ri.blocking_session_id = s.session_id)) ' + @Status_stmt + 
+			SET @sql = '
+--	https://raw.githubusercontent.com/imajaydwivedi/SQLDBA-SSMS-Solution/master/BlitzQueries/WhatIsRunning.sql
+SELECT	s.session_id, 
+		DB_NAME(r.database_id) as DBName,
+		r.percent_complete,
+		[session_status] = s.status,
+		[request_status] = r.status,
+		[running_command] = r.command,
+		[request_wait_type] = r.wait_type, 
+		[request_wait_resource] = wait_resource,
+		[request_start_time] = r.start_time,
+		[request_running_time] = CAST(((DATEDIFF(s,r.start_time,GetDate()))/3600) as varchar) + '' hour(s), ''
+			+ CAST((DATEDIFF(s,r.start_time,GetDate())%3600)/60 as varchar) + ''min, ''
+			+ CAST((DATEDIFF(s,r.start_time,GetDate())%60) as varchar) + '' sec'',
+		[est_time_to_go] = CAST((r.estimated_completion_time/3600000) as varchar) + '' hour(s), ''
+						+ CAST((r.estimated_completion_time %3600000)/60000  as varchar) + ''min, ''
+						+ CAST((r.estimated_completion_time %60000)/1000  as varchar) + '' sec'',
+		[est_completion_time] = dateadd(second,r.estimated_completion_time/1000, getdate()),
+		[blocked by] = r.blocking_session_id,
+		[statement_text] = Substring(st.TEXT, (r.statement_start_offset / 2) + 1, (
+				(
+					CASE r.statement_end_offset
+						WHEN - 1
+							THEN Datalength(st.TEXT)
+						ELSE r.statement_end_offset
+						END - r.statement_start_offset
+					) / 2
+				) + 1),
+		[Batch_Text] = st.text,
+		[WaitTime(S)] = r.wait_time / (1000.0),
+		[total_elapsed_time(S)] = r.total_elapsed_time / (1000.0),
+		s.login_time, s.host_name, s.host_process_id, s.client_interface_name, s.login_name, 
+		s.memory_usage, 
+		[session_writes] = s.writes, 
+		[request_writes] = r.writes, 
+		[session_logical_reads] = s.logical_reads, 
+		[request_logical_reads] = r.logical_reads, 
+		s.is_user_process, 
+		[session_row_count] = s.row_count,
+		[request_row_count] = r.row_count,
+		r.sql_handle, 
+		r.plan_handle,
+		r.open_transaction_count,
+		[request_cpu_time] = r.cpu_time,
+		[granted_query_memory] = CASE WHEN ((CAST(r.granted_query_memory AS numeric(20,2))*8)/1024/1024) >= 1.0
+									  THEN CAST(((CAST(r.granted_query_memory AS numeric(20,2))*8)/1024/1024) AS VARCHAR(23)) + '' GB''
+									  WHEN ((CAST(r.granted_query_memory AS numeric(20,2))*8)/1024) >= 1.0
+									  THEN CAST(((CAST(r.granted_query_memory AS numeric(20,2))*8)/1024) AS VARCHAR(23)) + '' MB''
+									  ELSE CAST((CAST(r.granted_query_memory AS numeric(20,2))*8) AS VARCHAR(23)) + '' KB''
+									  END,
+		r.query_hash, 
+		r.query_plan_hash,'+(CASE WHEN @p_getExecutionPlan = 1 THEN '
+		[BatchQueryPlan] = bqp.query_plan,
+		[SqlQueryPlan] = CAST(sqp.query_plan AS xml),' ELSE '' END) + '
+		[program_name] = CASE	WHEN	s.program_name like ''SQLAgent - TSQL JobStep %''
+				THEN	(	select	top 1 ''SQL Job = ''+j.name 
+							from msdb.dbo.sysjobs (nolock) as j
+							inner join msdb.dbo.sysjobsteps (nolock) AS js on j.job_id=js.job_id
+							where right(cast(js.job_id as nvarchar(50)),10) = RIGHT(substring(s.program_name,30,34),10) 
+						)
+				ELSE	s.program_name
+				END,
+		[IsSqlJob] = CASE WHEN s.program_name like ''SQLAgent - TSQL JobStep %''THEN 1 ELSE 2	END';
+			
+			SET @sql_2ndHalf = '
+FROM	sys.dm_exec_sessions AS s
+LEFT JOIN sys.dm_exec_requests AS r ON r.session_id = s.session_id
+OUTER APPLY sys.dm_exec_sql_text(r.sql_handle) AS st'+(CASE WHEN @p_getExecutionPlan = 1 THEN '
+OUTER APPLY sys.dm_exec_query_plan(r.plan_handle) AS bqp
+OUTER APPLY sys.dm_exec_text_query_plan(r.plan_handle,r.statement_start_offset, r.statement_end_offset) as sqp
+' ELSE '' END)+'
+WHERE	(case	when s.session_id != @@SPID
+		AND	(	(	s.session_id > 50
+				AND	(	r.session_id IS NOT NULL -- either some part of session has active request
+					OR	ISNULL(open_resultset_count,0) > 0 -- some result is open
+					)
+				)
+				OR	s.session_id IN (select ri.blocking_session_id from sys.dm_exec_requests as ri )
+			) -- either take user sid, or system sid blocking user sid
+				then 1
+				when NOT (s.session_id != @@SPID
+		AND	(	(	s.session_id > 50
+				AND	(	r.session_id IS NOT NULL -- either some part of session has active request
+					OR	ISNULL(open_resultset_count,0) > 0 -- some result is open
+					)
+				)
+				OR	s.session_id IN (select ri.blocking_session_id from sys.dm_exec_requests as ri )
+			))
+				THEN 0
+				else null
+				end) = 1
+' + @p_Status_stmt + 
 			' order by ' +
-			( case @Orderby when 1 then 'Logical_Reads desc' 
+			( case @p_Orderby when 1 then 'request_logical_reads desc' 
 							when 2 then 'CPUTime desc' 
 							when 3 then 'SPID' 
-			  else 'Logical_Reads desc' end )
+							when 4 then 'Order by DBName'
+			  else 'request_logical_reads desc' end )
 
-			execute sp_executesql @sql
+			--print @sql;
+			--PRINT @sql_2ndHalf;
+			exec (@sql+@sql_2ndHalf);
 		end
 
 		-- - - - - - - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - 
 		--	2. CPU and Memory Usage % ( This feature is applies to SQL Server 2008 through current version )
 		--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-		if ( @Option = '0' or @Option = '2' )
+		if ( @p_Option = '0' or @p_Option = '2' )
 		begin 
 			if object_id (N'master.sys.dm_os_sys_memory') is null or object_id (N'master.sys.dm_os_ring_buffers') is null
 			begin
@@ -236,7 +290,7 @@ BEGIN
 		-- - - - - - - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - 
 		--	3. Displays the capacity on the server space used and availablity
 		--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-		if ( @Option = '0' or @Option = '3' )
+		if ( @p_Option = '0' or @p_Option = '3' )
 		begin 
 			if object_id (N'master.sys.dm_os_volume_stats') is null or object_id (N'sys.dm_db_file_space_usage') is null
 			begin
@@ -290,9 +344,23 @@ BEGIN
 				, DatabaseName		sysname
 				, LogicalFileName	varchar(100)
 				, FileName			varchar(250)
-				, FileSizeMB		decimal(20,2)
-				, SpaceUsedMB		decimal(20,2)
-				, FreeSpaceMB		decimal(20,2) )
+				, FileSizeKB		decimal(20,2)
+				, SpaceUsedKB		decimal(20,2)
+				, FreeSpaceKB		decimal(20,2)
+				, FileSize AS (CASE WHEN FileSizeKB/1024/1024/1024 >= 1.0 THEN CAST( CAST(FileSizeKB/1024/1024/1024 AS DECIMAL(20,2)) AS VARCHAR(23))+' TB'
+									WHEN FileSizeKB/1024/1024 >= 1.0 THEN CAST( CAST(FileSizeKB/1024/1024 AS DECIMAL(20,2)) AS VARCHAR(23))+' GB'
+									WHEN FileSizeKB/1024 >= 1.0 THEN CAST( CAST(FileSizeKB/1024 AS DECIMAL(20,2)) AS VARCHAR(23))+' MB'
+									ELSE CAST(CAST(FileSizeKB AS DECIMAL(20,2)) AS VARCHAR(23))+ ' KB' END)
+				, SpaceUsed AS (CASE WHEN SpaceUsedKB/1024/1024/1024 >= 1.0 THEN CAST( CAST(SpaceUsedKB/1024/1024/1024 AS DECIMAL(20,2)) AS VARCHAR(23))+' TB'
+									WHEN SpaceUsedKB/1024/1024 >= 1.0 THEN CAST( CAST(SpaceUsedKB/1024/1024 AS DECIMAL(20,2)) AS VARCHAR(23))+' GB'
+									WHEN SpaceUsedKB/1024 >= 1.0 THEN CAST( CAST(SpaceUsedKB/1024 AS DECIMAL(20,2)) AS VARCHAR(23))+' MB'
+									ELSE CAST(CAST(SpaceUsedKB AS DECIMAL(20,2)) AS VARCHAR(23))+ ' KB' END)
+				, FreeSpace AS (CASE WHEN FreeSpaceKB/1024/1024/1024 >= 1.0 THEN CAST( CAST(FreeSpaceKB/1024/1024/1024 AS DECIMAL(20,2)) AS VARCHAR(23))+' TB'
+									WHEN FreeSpaceKB/1024/1024 >= 1.0 THEN CAST( CAST(FreeSpaceKB/1024/1024 AS DECIMAL(20,2)) AS VARCHAR(23))+' GB'
+									WHEN FreeSpaceKB/1024 >= 1.0 THEN CAST( CAST(FreeSpaceKB/1024 AS DECIMAL(20,2)) AS VARCHAR(23))+' MB'
+									ELSE CAST(CAST(FreeSpaceKB AS DECIMAL(20,2)) AS VARCHAR(23))+ ' KB' END)
+				, [SpaceUsed(%)] AS cast( (SpaceUsedKB*100.0)/FileSizeKB as DECIMAL(20,1))
+				 )
 
 			if object_id (N'master.sys.sp_msforeachdb') is not null
 			begin
@@ -302,9 +370,9 @@ BEGIN
 					, DatabaseName = ''?''
 					, LogicalFileName = a.name
 					, a.Filename
-					, round(convert(float,a.size/128.000),2) as FileSizeMB     
-					, round(convert(float,fileproperty(a.name,''SpaceUsed'')/128.000),2) as SpaceUsedMB     
-					, round(convert(float,(a.size-fileproperty(a.name,''SpaceUsed''))/128.000),2) as FreeSpaceMB 
+					, FileSizeKB = (a.size * 8.0)
+					, SpaceUsedKB = (fileproperty(a.name,''SpaceUsed'') * 8.0)
+					, FreeSpaceKB = (a.size - fileproperty(a.name,''SpaceUsed''))*8.0
 				from sys.sysfiles a ( nolock )'
 			end
 
@@ -337,16 +405,57 @@ BEGIN
 					select top 1 @dbnm = dbname from @dbtmp
 				end
 			end
-			select * from @FileSpaceDetails
+			select DatabaseId, DatabaseName, LogicalFileName, FileName, FileSize, SpaceUsed, FreeSpace, [SpaceUsed(%)]
+					--,FileSizeKB, SpaceUsedKB, FreeSpaceKB
+			from @FileSpaceDetails
 			where DatabaseId > 4
-			order by DatabaseId, FileName 
+			order by DatabaseName, FileSizeKB desc 
 		end
 
 		-- - - - - - - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - 
-		--	4. Lead Blocker connection(s)
+		--	4. Blocking Tree
 		--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-		if ( @Option = '0' or @Option = '4' )
+		if ( @p_Option = '0' or @p_Option = '4' )
 		begin 
+			--	https://blog.sqlauthority.com/2008/08/18/sql-server-detailed-explanation-of-transaction-lock-lock-type-avoid-locks/
+			IF OBJECT_ID('tempdb..#T') IS NOT NULL
+				DROP TABLE #T;
+			SELECT SPID
+				,BLOCKED
+				,REPLACE(REPLACE(T.TEXT, CHAR(10), ' '), CHAR(13), ' ') AS BATCH
+			INTO #T
+			FROM sys.sysprocesses R
+			CROSS APPLY sys.dm_exec_sql_text(R.SQL_HANDLE) T;
+
+			WITH BLOCKERS (	SPID	,BLOCKED	,LEVEL	,BATCH	)
+			AS (
+				SELECT SPID
+					,BLOCKED
+					,CAST(REPLICATE('0', 4 - LEN(CAST(SPID AS VARCHAR))) + CAST(SPID AS VARCHAR) AS VARCHAR(1000)) AS LEVEL
+					,BATCH
+				FROM #T R
+				WHERE (	BLOCKED = 0 OR BLOCKED = SPID )
+					AND EXISTS ( SELECT * FROM #T R2 WHERE R2.BLOCKED = R.SPID AND R2.BLOCKED <> R2.SPID )
+				--
+				UNION ALL
+				--
+				SELECT R.SPID
+					,R.BLOCKED
+					,CAST(BLOCKERS.LEVEL + RIGHT(CAST((1000 + R.SPID) AS VARCHAR(100)), 4) AS VARCHAR(1000)) AS LEVEL
+					,R.BATCH
+				FROM #T AS R
+				INNER JOIN BLOCKERS 
+					ON R.BLOCKED = BLOCKERS.SPID
+				WHERE R.BLOCKED > 0	AND R.BLOCKED <> R.SPID
+				)
+			SELECT N'    ' + REPLICATE(N'|         ', LEN(LEVEL) / 4 - 1) + CASE 
+					WHEN (LEN(LEVEL) / 4 - 1) = 0
+						THEN 'HEAD -  '
+					ELSE '|------  '
+					END + CAST(SPID AS NVARCHAR(10)) + N' ' + BATCH AS BLOCKING_TREE
+			FROM BLOCKERS
+			ORDER BY LEVEL ASC;
+			/*
 			declare @sp_id int
 			select @sp_id = p.spid from master.sys.sysprocesses p (nolock)
 			where p.spid in ( select distinct blocked from master.sys.sysprocesses s (nolock) 
@@ -388,13 +497,14 @@ BEGIN
 								    and s.blocked > 0 )
 				  and p.blocked = 0	
 			end
+			*/
 		end
 
 		-- - - - - - - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - 
 		--	5. Long running connections: Backup/Rollback, DBCC TABLE CHECK/Shrinkfile status with 
 		--		estimation time of completion with percentage
 		--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-		if ( @Option = '0' or @Option = '5' )
+		if ( @p_Option = '0' or @p_Option = '5' )
 		begin 
 			if not exists ( select 1 from master.sys.dm_exec_requests r 
 						where r.percent_complete <> 0
@@ -443,7 +553,7 @@ BEGIN
 		-- - - - - - - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - 
 		--	6. AlwaysOn availability Group status
 		--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-		if ( @Option = '0' or @Option = '6' )
+		if ( @p_Option = '0' or @p_Option = '6' )
 		begin 
 			if object_id (N'master.sys.availability_groups') is not null 
 			   and exists ( select port from sys.tcp_endpoints where type_desc = 'DATABASE_MIRRORING' ) 
@@ -483,7 +593,7 @@ BEGIN
 		-- - - - - - - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - 
 		--	7. Mirroring status
 		--- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-		if ( @Option = '0' or @Option = '7' )
+		if ( @p_Option = '0' or @p_Option = '7' )
 		begin 
 			if object_id (N'master.sys.tcp_endpoints') is not null 
 			begin
