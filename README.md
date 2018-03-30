@@ -42,3 +42,9 @@ This project contains script files that can be used for Health Checkup or Perfor
 - Find Un-trusted Foreign Keys
 - Find Usage Stats for Table and Indexes
 ```
+It also contains scripts for finding `WhatIsRunning` and also modified version of `sp_WhoIsActive`. 
+Screenshot for **`WhatIsRunning.sql`**:-
+![](BlitzQueries/WhatIsRunning.gif)
+
+Screenshot for modified versin of **`who_is_active_v11_30`**:-
+![](BlitzQueries/sp_whoIsActive.gif)
