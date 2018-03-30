@@ -77,6 +77,12 @@
     </LogicalFolder>
     <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
       <Items>
+        <FileNode Name="sp_HealthCheck_New.JPG">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>sp_HealthCheck_New.JPG</FullPath>
+        </FileNode>
         <FileNode Name="sp_HealthCheck_PMTDBA.JPG">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
