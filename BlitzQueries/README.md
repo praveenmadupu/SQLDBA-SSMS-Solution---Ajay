@@ -9,4 +9,10 @@ Below is sample screenshot.
 
 ![](WhatIsRunning.gif)
 
+### 2) Adam Mechanic's [sp_WhoIsActive] - Modified
 
+<b> [Latest Code of Modified [sp_WhoIsActive] Script](who_is_active_v11_30(Modified).sql)</b>
+
+I am big fan of [Adam Mechanic's [sp_WhoIsActive]](http://whoisactive.com/downloads/). I have modified the latest script `v11.30` to provide the `job name` in case the running session belongs to sql agent job. Below are sample screenshots.
+
+![](sp_whoIsActive.gif)
