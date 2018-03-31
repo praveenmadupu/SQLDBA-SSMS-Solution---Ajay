@@ -3,42 +3,6 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="ann1vespdb01:CORPORATE\adwivedi">
-          <Created>2018-03-14T11:45:04.3263628+05:30</Created>
-          <Type>SQL</Type>
-          <Server>ann1vespdb01</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="BAN-1ADWIVEDI-L:CORPORATE\adwivedi">
-          <Created>2018-02-07T12:16:36.2857283+05:30</Created>
-          <Type>SQL</Type>
-          <Server>BAN-1ADWIVEDI-L</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName />
-        </ConnectionNode>
-        <ConnectionNode Name="BAN-2ADWIVEDI-L:CORPORATE\adwivedi">
-          <Created>2018-03-13T20:50:44.271523+05:30</Created>
-          <Type>SQL</Type>
-          <Server>BAN-2ADWIVEDI-L</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
         <ConnectionNode Name="BAN-2ADWIVEDI-L:sa">
           <Created>2018-03-22T16:59:27.6517116+05:30</Created>
           <Type>SQL</Type>
@@ -51,55 +15,19 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="TUL1CIPCNPDB1:CORPORATE\adwivedi">
-          <Created>2018-03-14T14:30:37.6310508+05:30</Created>
-          <Type>SQL</Type>
-          <Server>TUL1CIPCNPDB1</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="tul1cipmbdb2:CORPORATE\adwivedi">
-          <Created>2018-03-29T15:36:38.9855643+05:30</Created>
-          <Type>SQL</Type>
-          <Server>tul1cipmbdb2</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB>tempdb</InitialDB>
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="TUL1DBAPMTDB1:CORPORATE\adwivedi">
-          <Created>2018-03-13T20:21:53.5136092+05:30</Created>
-          <Type>SQL</Type>
-          <Server>TUL1DBAPMTDB1</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="Blitz.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Blitz.sql</FullPath>
         </FileNode>
         <FileNode Name="BlitzCache.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipmbdb2:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>tul1cipmbdb2</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>BlitzCache.sql</FullPath>
         </FileNode>
@@ -116,20 +44,20 @@
           <FullPath>BlitzIndex.sql</FullPath>
         </FileNode>
         <FileNode Name="Blocking Tree.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Blocking Tree.sql</FullPath>
         </FileNode>
         <FileNode Name="CREATE TABLE [dbo].[whatIsRunning].sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>CREATE TABLE [dbo].[whatIsRunning].sql</FullPath>
         </FileNode>
         <FileNode Name="Other queries.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Other queries.sql</FullPath>
         </FileNode>
@@ -146,20 +74,20 @@
           <FullPath>Querying Deadlocks From System_Health XEvent.sql</FullPath>
         </FileNode>
         <FileNode Name="WhatIsRunning.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>WhatIsRunning.sql</FullPath>
         </FileNode>
         <FileNode Name="who_is_active_v11_30(Modified).sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>who_is_active_v11_30(Modified).sql</FullPath>
         </FileNode>
         <FileNode Name="whoIsActive.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>whoIsActive.sql</FullPath>
         </FileNode>

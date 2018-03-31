@@ -15,30 +15,6 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="TUL1CIPCNPDB1:CORPORATE\adwivedi">
-          <Created>2018-03-14T14:45:06.4160508+05:30</Created>
-          <Type>SQL</Type>
-          <Server>TUL1CIPCNPDB1</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB>master</InitialDB>
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="TUL1DBAPMTDB1:CORPORATE\adwivedi">
-          <Created>2018-03-14T15:47:26.8439551+05:30</Created>
-          <Type>SQL</Type>
-          <Server>TUL1DBAPMTDB1</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
@@ -50,8 +26,8 @@
           <FullPath>DatabaseMailProfile.sql</FullPath>
         </FileNode>
         <FileNode Name="SQLDBATools - DDL.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>SQLDBATools - DDL.sql</FullPath>
         </FileNode>

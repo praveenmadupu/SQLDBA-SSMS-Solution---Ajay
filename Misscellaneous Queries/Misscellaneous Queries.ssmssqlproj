@@ -15,61 +15,13 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="TUL1CIPCNPDB1:CORPORATE\adwivedi">
-          <Created>2018-03-20T10:21:33.9784892+05:30</Created>
-          <Type>SQL</Type>
-          <Server>TUL1CIPCNPDB1</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB>master</InitialDB>
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="TUL1CIPEDB2:CORPORATE\adwivedi">
-          <Created>2018-03-27T11:31:09.7102546+05:30</Created>
-          <Type>SQL</Type>
-          <Server>TUL1CIPEDB2</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="TUL1CIPXDB19:CORPORATE\adwivedi">
-          <Created>2018-03-24T11:27:55.6277119+05:30</Created>
-          <Type>SQL</Type>
-          <Server>TUL1CIPXDB19</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB>master</InitialDB>
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="TUL1DBAPMTDB1:CORPORATE\adwivedi">
-          <Created>2018-03-28T09:41:26.4631777+05:30</Created>
-          <Type>SQL</Type>
-          <Server>TUL1DBAPMTDB1</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="Command Prompt.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPXDB19:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPXDB19</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Command Prompt.sql</FullPath>
         </FileNode>
@@ -80,8 +32,8 @@
           <FullPath>dbo.usp_ConvertQuery2HTMLTable.sql</FullPath>
         </FileNode>
         <FileNode Name="Find Long Running Query.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Find Long Running Query.sql</FullPath>
         </FileNode>
@@ -92,8 +44,8 @@
           <FullPath>Kill All Session for DB.sql</FullPath>
         </FileNode>
         <FileNode Name="Return Query Output as HTML Table.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Return Query Output as HTML Table.sql</FullPath>
         </FileNode>
