@@ -179,6 +179,12 @@
           <AssociatedConnUserName />
           <FullPath>WhatIsRunning.gif</FullPath>
         </FileNode>
+        <FileNode Name="WhatIsRunning2.gif">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>WhatIsRunning2.gif</FullPath>
+        </FileNode>
       </Items>
     </LogicalFolder>
   </Items>
