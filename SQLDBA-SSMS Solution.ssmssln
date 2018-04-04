@@ -23,6 +23,8 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "SQLAgent-Notifications", "S
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Misscellaneous Queries", "Misscellaneous Queries\Misscellaneous Queries.ssmssqlproj", "{77970B04-2242-40A2-98C1-A70538432873}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "LogShipping", "LogShipping\LogShipping.ssmssqlproj", "{033BA5C7-B799-40F0-B8BE-741D0E02F34E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -37,8 +39,9 @@ Global
 		{57FF8DF9-22E7-4ED8-85D3-E23B480BE7BE}.Default|Default.ActiveCfg = Default
 		{3EAD2BB5-CA7E-4D64-BEC9-A6E7C95B0CD3}.Default|Default.ActiveCfg = Default
 		{819D9E21-3B8F-4503-B098-BE1FD5091B8B}.Default|Default.ActiveCfg = Default
-		{AC0F1964-1973-4C60-9EB8-1FC4CA59E752}.Default|Default.ActiveCfg = Default
 		{77970B04-2242-40A2-98C1-A70538432873}.Default|Default.ActiveCfg = Default
+		{9A4B5BD9-4EB7-4553-BE0A-9A55F03EEE79}.Default|Default.ActiveCfg = Default
+		{033BA5C7-B799-40F0-B8BE-741D0E02F34E}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

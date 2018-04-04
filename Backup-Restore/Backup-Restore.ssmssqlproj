@@ -27,14 +27,26 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="SQL-B:sa">
+          <Created>2018-04-02T13:11:19.2341396+05:30</Created>
+          <Type>SQL</Type>
+          <Server>SQL-B</Server>
+          <UserName>sa</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB>WhoIsActive</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="1) Generate - Backup Script.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:SQL-B:False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>SQL-B</AssociatedConnSrvName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>1) Generate - Backup Script.sql</FullPath>
         </FileNode>
         <FileNode Name="2) Script Out DB Permissions in case of DB Refresh.sql">
@@ -44,9 +56,9 @@
           <FullPath>2) Script Out DB Permissions in case of DB Refresh.sql</FullPath>
         </FileNode>
         <FileNode Name="3) Generate - Restore Script.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:SQL-A:False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>SQL-A</AssociatedConnSrvName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>3) Generate - Restore Script.sql</FullPath>
         </FileNode>
         <FileNode Name="4) Script Out DB_Owner from Source.sql">
@@ -92,9 +104,9 @@
           <FullPath>Query - Backup History.sql</FullPath>
         </FileNode>
         <FileNode Name="Query - Restore History.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:SQL-B:False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>SQL-B</AssociatedConnSrvName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>Query - Restore History.sql</FullPath>
         </FileNode>
       </Items>

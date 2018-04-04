@@ -8,6 +8,22 @@ SELECT	@@servername as SvrName,
 		DATEDIFF(day,create_date, GETDATE()) as ServiceStartDays 
 FROM sys.databases as d where d.name = 'tempdb';
 
+--	Get Socket, Physical Core, and Logical Core count from SQL Server Error Log
+EXEC master..xp_readerrorlog 0,1, N'Server process ID is'
+EXEC master..xp_readerrorlog 0,1, N'System Manufacturer:', N'System Model'
+EXEC master..xp_readerrorlog 0,1, N'sockets',N'processors'
+EXEC master..xp_readerrorlog 0,1, N'Instant File Initialization'
+EXEC master..xp_readerrorlog 0,1, N'Server is listening on'
+EXEC master..xp_readerrorlog 0,1, N'Dedicated admin connection support'
+
+--	Hardware Information from SQL Server 2016
+SELECT	i.cpu_count as [Logical_CPU_Count], physical_memory_kb/1024 as [Physical Memory(MB)], i.virtual_machine_type_desc
+		,i.sqlserver_start_time
+FROM	sys.dm_os_sys_info as i;
+
+--	Check Enabled Trace Flags
+DBCC TRACESTATUS(-1);
+
 --	Check if compatibility Model of databases are up to date
 SELECT * FROM sys.databases as d
 	WHERE d.compatibility_level NOT IN (SELECT d1.compatibility_level FROM sys.databases as d1 WHERE d1.name = 'model');
