@@ -1,5 +1,6 @@
 use master
 go
+
 --	Get all files of path
 exec xp_dirtree '\\DC\Backups\SQL-A',0,1;
 
