@@ -337,8 +337,7 @@ BEGIN
 	END
 	ELSE -- If no backup files to restore
 	BEGIN
-		IF @p_Verbose = 1
-			PRINT	'No new Log files to apply.';
+		PRINT	'No new Log files to apply.';
 	END
 END
 GO

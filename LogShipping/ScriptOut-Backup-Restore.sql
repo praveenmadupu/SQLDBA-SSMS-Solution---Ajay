@@ -3,7 +3,7 @@ DECLARE @fileDate VARCHAR(20) -- used for file name
 DECLARE @dbName VARCHAR(125) = 'LSTesting';
 DECLARE @backupPath VARCHAR(125) = '\\DC\Backups\SQL-A\';
 DECLARE @sqlString NVARCHAR(MAX);
-DECLARE @backupType VARCHAR(20) = 'Full'
+DECLARE @backupType VARCHAR(20) = 'Log' /* Full, Log	*/
 DECLARE @backupTypeContext VARCHAR(20);
 DECLARE @backupExtension VARCHAR(20);
 
@@ -15,8 +15,16 @@ SELECT @fileDate = DATENAME(DAY,GETDATE())+CAST(DATENAME(MONTH,GETDATE()) AS VAR
 SELECT @fileName = (SELECT @backupPath+@dbName+'_'+@backupTypeContext+'_'+ @fileDate + @backupExtension);
 
 SET @sqlString = '
+--	Execute on Primary Instance ''SQL-A''
 BACKUP '+@backupTypeContext+' '+QUOTENAME(@dbName)+'
-	TO DISK = '''+@fileName+'''';
+	TO DISK = '''+@fileName+''' WITH STATS = 3';
 
 PRINT	@sqlString;
 --EXEC (@sqlString);
+
+SET @sqlString = '
+--	Execute on Secondary Instance ''SQL-B''
+RESTORE '+@backupTypeContext+' '+QUOTENAME(@dbName)+'
+	FROM DISK = '''+@fileName+''' WITH NORECOVERY, STATS = 3';
+
+PRINT	@sqlString;

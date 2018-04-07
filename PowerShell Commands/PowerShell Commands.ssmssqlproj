@@ -43,6 +43,12 @@
           <AssociatedConnUserName />
           <FullPath>Get-SqlResult2Excel.sql</FullPath>
         </FileNode>
+        <FileNode Name="Ping Servers.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Ping Servers.sql</FullPath>
+        </FileNode>
         <FileNode Name="QueryResults-2-Excel.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
