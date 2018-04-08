@@ -25,6 +25,8 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Misscellaneous Queries", "M
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "LogShipping", "LogShipping\LogShipping.ssmssqlproj", "{033BA5C7-B799-40F0-B8BE-741D0E02F34E}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "DBA-Classes", "DBA-Classes\DBA-Classes.ssmssqlproj", "{D958BF35-55F3-48B0-A3A1-4CEFDF74727B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -40,8 +42,8 @@ Global
 		{3EAD2BB5-CA7E-4D64-BEC9-A6E7C95B0CD3}.Default|Default.ActiveCfg = Default
 		{819D9E21-3B8F-4503-B098-BE1FD5091B8B}.Default|Default.ActiveCfg = Default
 		{77970B04-2242-40A2-98C1-A70538432873}.Default|Default.ActiveCfg = Default
-		{9A4B5BD9-4EB7-4553-BE0A-9A55F03EEE79}.Default|Default.ActiveCfg = Default
 		{033BA5C7-B799-40F0-B8BE-741D0E02F34E}.Default|Default.ActiveCfg = Default
+		{D958BF35-55F3-48B0-A3A1-4CEFDF74727B}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
