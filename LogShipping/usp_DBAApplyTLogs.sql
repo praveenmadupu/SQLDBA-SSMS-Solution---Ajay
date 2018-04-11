@@ -1,6 +1,26 @@
 USE [master]
 GO
-	--	EXEC master..[usp_DBAApplyTLogs] 'LSTesting', 'LSTesting', '\\DC\Backups\SQL-A\', @p_TUFLocation = 'E:\LS_UndoFiles' ,@p_Verbose = 1 ,@p_DryRun = 1
+/*	Examples:-
+EXEC master..[usp_DBAApplyTLogs] 'LSTesting', 'LSTesting', '\\DC\Backups\SQL-A\', @p_TUFLocation = 'E:\LS_UndoFiles' ,@p_Verbose = 1 ,@p_DryRun = 1
+EXEC master..[usp_DBAApplyTLogs] 'LSTesting', 'LSTesting', '\\DC\Backups\SQL-A\', @p_TUFLocation = 'E:\LS_UndoFiles'
+EXEC master..[usp_DBAApplyTLogs] 'LSTesting', 'LSTesting', '\\DC\Backups\SQL-A\', @p_TUFLocation = 'E:\LS_UndoFiles' ,@p_Verbose = 1
+EXEC master..[usp_DBAApplyTLogs] 'LSTesting', 'LSTesting', '\\DC\Backups\SQL-A\', @p_TUFLocation = 'E:\LS_UndoFiles' ,@p_TakeExclusiveLocksForRestore = 1
+EXEC master..[usp_DBAApplyTLogs] 'LSTesting', 'LSTesting', '\\DC\Backups\SQL-A\', @p_TUFLocation = 'E:\LS_UndoFiles' ,@p_TakeExclusiveLocksForRestore = 0
+
+--	Run job with Exclusive access Once Every 2 Hours
+IF (DATEPART(hour,GETDATE())%2 = 0 
+	AND DATEPART(MINUTE,GETDATE()) <= 5
+)
+BEGIN
+	--PRINT 'Even Hours, and 1st 5 minutes'
+	EXEC master..[usp_DBAApplyTLogs] 'LSTesting', 'LSTesting', '\\DC\Backups\SQL-A\', @p_TUFLocation = 'E:\LS_UndoFiles' ,@p_TakeExclusiveLocksForRestore = 1
+END
+ELSE
+BEGIN
+	--PRINT 'Odd Hours'
+	EXEC master..[usp_DBAApplyTLogs] 'LSTesting', 'LSTesting', '\\DC\Backups\SQL-A\', @p_TUFLocation = 'E:\LS_UndoFiles' ,@p_TakeExclusiveLocksForRestore = 0
+END
+*/
 
 IF OBJECT_ID('dbo.usp_DBAApplyTLogs') IS NULL
 	EXEC ('CREATE PROCEDURE [dbo].[usp_DBAApplyTLogs] AS SELECT 1 AS [Dummy];')
@@ -9,7 +29,8 @@ ALTER PROCEDURE [dbo].[usp_DBAApplyTLogs]
 	@p_SourceDbName VARCHAR(125),		-- Database name on the publisher
 	@p_DestinationDbName VARCHAR(125),	-- Database name on the subscriber
 	@p_SourceBackupLocation VARCHAR(255), -- Location of the log backup files on the publisher; default Prod
-	@p_TUFLocation VARCHAR(100)	-- Location for TUF files on Subscriber
+	@p_TUFLocation VARCHAR(100),	-- Location for TUF files on Subscriber
+	@p_TakeExclusiveLocksForRestore BIT = 1  -- When set to 1, then procedure will kill any connection on @p_DestinationDbName for Log Restore Activity
 	,@p_Verbose INT = 0 -- SET it to 1 to run the procedure in Debugging Mode
 	,@p_DryRun INT = 0
 AS
@@ -251,7 +272,7 @@ BEGIN
 		WHILE @@FETCH_STATUS = 0 
 		BEGIN
 			--	If restoring the first Log in sequence, then take exclusive access of database
-			IF @id = 1
+			IF (@id = 1 AND @p_TakeExclusiveLocksForRestore = 1)
 			BEGIN
 				SET @EXECstr = 'USE master;
 

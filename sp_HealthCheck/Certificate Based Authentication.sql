@@ -16,10 +16,17 @@ GO
 CREATE LOGIN [CodeSigningLogin] FROM CERTIFICATE [CodeSigningCertificate];
 GO
 
-GRANT VIEW SERVER STATE TO [CodeSigningLogin]
+--GRANT VIEW SERVER STATE TO [CodeSigningLogin]
+--GO
+
+EXEC sp_addsrvrolemember @loginame = 'CodeSigningLogin', @rolename = 'sysadmin' 
 GO
 
 ADD SIGNATURE TO [dbo].[sp_HealthCheck]
 	BY CERTIFICATE [CodeSigningCertificate]
 	WITH PASSWORD = 'Work@Y0urBest'
 GO
+
+GRANT EXECUTE ON OBJECT::[dbo].[sp_HealthCheck]
+    TO public;  
+GO  

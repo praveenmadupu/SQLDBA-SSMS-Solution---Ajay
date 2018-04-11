@@ -4,6 +4,72 @@ GO
 CREATE SCHEMA [Staging]
 GO
 
+CREATE TABLE [Staging].[ServerInfo]
+(
+	[ServerName] [varchar](125) NULL,
+	[EnvironmentType] varchar(125) NOT NULL,
+	[DNSHostName] [varchar](125) NULL,
+	[IPAddress] [varchar](15) NULL,
+	[Domain] [varchar](125) NULL,
+	[OperatingSystem] [varchar](125) NULL,
+	[SPVersion] [varchar](125) NULL,
+	[Model] [varchar](125) NULL,
+	[RAM] [int] NULL,
+	[CPU] [tinyint] NULL,
+	[CollectionTime] [smalldatetime] NULL
+) ON [StagingData]
+GO
+
+CREATE TABLE [Info].[Server]
+(
+	[ServerID] INT IDENTITY(1,1) NOT NULL,
+	[ServerName] [varchar](125) NULL,
+	[EnvironmentType] varchar(125) NOT NULL,
+	[DNSHostName] [varchar](125) NULL,
+	[IPAddress] [varchar](15) NULL,
+	[Domain] [varchar](125) NULL,
+	[OperatingSystem] [varchar](125) NULL,
+	[SPVersion] [varchar](125) NULL,
+	[Model] [varchar](125) NULL,
+	[RAM] [int] NULL,
+	[CPU] [tinyint] NULL,
+	[CollectionTime] [smalldatetime] NULL
+) ON [MasterData]
+GO
+
+ALTER TABLE [Info].[Server]
+	ADD CONSTRAINT pk_Info_Server PRIMARY KEY(ServerID)
+GO
+
+ALTER TABLE [Info].[Server] 
+	ADD CONSTRAINT UK_Info_Server_ServerName UNIQUE (ServerName) 
+GO
+
+CREATE TABLE [dbo].[VolumeInfo]
+(
+	ID [BIGINT] IDENTITY(1,1) NOT NULL,
+	[ServerName] [varchar](125) NOT NULL,
+	[VolumeName] [varchar](125) NOT NULL,
+	[CapacityGB] [decimal](20, 2) NOT NULL,
+	[UsedSpaceGB] [decimal](20, 2) NOT NULL,
+	[UsedSpacePercent] [decimal](20, 2) NOT NULL,
+	[FreeSpaceGB] [decimal](20, 2) NOT NULL,
+	[Label] [varchar](125) NULL,
+	[CollectionTime] [datetime2](7) NOT NULL
+) ON [CollectedData]
+GO
+
+ALTER TABLE [dbo].[VolumeInfo]
+	ADD CONSTRAINT pk_dbo_VolumeInfo PRIMARY KEY(ServerName,VolumeName)
+GO
+
+ALTER TABLE [dbo].[VolumeInfo]     
+	ADD CONSTRAINT FK_VolumeInfo_ServerName FOREIGN KEY (ServerName)     
+    REFERENCES [Info].[Server]  (ServerName)     
+    --ON DELETE CASCADE    
+    --ON UPDATE CASCADE  
+GO
+
 CREATE TABLE [Staging].[DatabaseBackups](
 	[ServerName] [sysname] NOT NULL,
 	[DatabaseName] [sysname] NOT NULL,
@@ -13,7 +79,20 @@ CREATE TABLE [Staging].[DatabaseBackups](
 	[LastDifferentialBackupDate] [datetime2](7) NULL,
 	[LastLogBackupDate] [datetime2](7) NULL,
 	[CollectionTime] [DATETIME2](7) NOT NULL
-) ON [PRIMARY]
+) ON [StagingData]
+GO
+
+CREATE TABLE Staging.VolumeInfo
+(
+	[ServerName] [varchar](125) NOT NULL,
+	[VolumeName] [varchar](125),
+	[CapacityGB] DECIMAL(20,2) NOT NULL,
+	[UsedSpaceGB] DECIMAL(20,2) NOT NULL,
+	[UsedSpacePercent] DECIMAL(20,2) NOT NULL,
+	[FreeSpaceGB] DECIMAL(20,2) NOT NULL,
+	[Label] [varchar](125) NULL,
+	[CollectionTime] [datetime2](7) NOT NULL
+) ON [StagingData]
 GO
 
 --TRUNCATE TABLE [Staging].[DatabaseBackups]
@@ -21,31 +100,33 @@ GO
 USE [SQLDBATools]
 GO
 
-CREATE TABLE [dbo].[Instance](
-	[Instance_ID] [BIGINT] IDENTITY(1,1) PRIMARY KEY,
+CREATE TABLE [info].[Instance]
+(
+	[Instance_ID] int IDENTITY(1,1) PRIMARY KEY,
 	[SNo] [float] NULL,
 	[Name] [varchar](255) NULL,
+	[NetworkName] [varchar](125) NULL,
 	[IsVM] [bit] NULL,
 	[IsSQLClusterNode] [bit] DEFAULT 0,
 	[IsAlwaysOnNode] [bit] DEFAULT 0,
-	[NodeType] [varchar](255) NULL,
+	[NodeType] [varchar](125) NULL,
 	[GeneralDescription] [varchar](255) NULL,
-	[IPAddress] [varchar](255) NULL,
-	[EnvironmentType] [varchar](255) NULL,
-	[BusinessUnit] [varchar](255) NULL,
-	[Product] [varchar](255) NULL,
-	[SupportedApplication ] [varchar](255) NULL,
-	[Domain] [varchar](255) NULL,
-	[Version] [varchar](255) NULL,
-	[Release] [varchar](255) NULL,
-	[ProductKey] [varchar](255) NULL,
-	[OSVersion] [varchar](255) NULL,
-	[BusinessOwner] [varchar](255) NULL,
-	[PrimaryContact] [varchar](255) NULL,
-	[SecondaryContact] [varchar](255) NULL,
+	[IPAddress] [varchar](125) NULL,
+	[EnvironmentType] [varchar](125) NULL,
+	[BusinessUnit] [varchar](125) NULL,
+	[Product] [varchar](125) NULL,
+	[SupportedApplication ] [varchar](125) NULL,
+	[Domain] [varchar](125) NULL,
+	[Version] [varchar](125) NULL,
+	[Release] [varchar](125) NULL,
+	[ProductKey] [varchar](125) NULL,
+	[OSVersion] [varchar](125) NULL,
+	[BusinessOwner] [varchar](125) NULL,
+	[PrimaryContact] [varchar](125) NULL,
+	[SecondaryContact] [varchar](125) NULL,
 	[IsDecommissioned] [bit] DEFAULT 0,
 	[IsPowerShellLinked] [bit] NULL
-) ON [PRIMARY]
+) ON [MasterData]
 GO
 
 
@@ -113,6 +194,80 @@ CREATE TABLE dbo.JobHistory
 	StartTime smalldatetime NOT NULL
 )
 GO
+
+CREATE table Info.PowerShellFunctionCalls
+(
+	ID BIGINT IDENTITY(1,1) NOT NULL,
+	[CmdLetName] VARCHAR(125) NOT NULL,
+	[ParentScript] VARCHAR(125) NULL,
+	[ScriptText] VARCHAR(125) NOT NULL,
+	[ServerName] VARCHAR(125) NULL,
+	[Result] VARCHAR(50) DEFAULT 'Success',
+	CollectionTime SMALLDATETIME DEFAULT GETDATE(),
+	[ErrorMessage] VARCHAR(2000) NULL
+) ON [StagingData]
+GO
+CREATE NONCLUSTERED INDEX NCI_Info_PowerShellFunctionCalls_CollectionTime ON Info.PowerShellFunctionCalls (CollectionTime)
+ON [StagingData]
+GO
+CREATE NONCLUSTERED INDEX NCI_Info_PowerShellFunctionCalls_ServerName ON Info.PowerShellFunctionCalls (ServerName) WHERE ServerName is not null ON [StagingData]
+GO
+
+
+ALTER PROCEDURE [dbo].[usp_ETL_ServerInfo]
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRAN
+		;WITH CTE AS (
+			SELECT ServerName, [EnvironmentType], DNSHostName, IPAddress, Domain, OperatingSystem, SPVersion, Model, RAM, CPU, CollectionTime
+					,ROW_NUMBER()OVER(PARTITION BY ServerName ORDER BY DNSHostName DESC, CollectionTime) AS RowID
+			FROM Staging.ServerInfo
+			WHERE ServerName IS NOT NULL
+		)
+		INSERT [Info].[Server]
+		(ServerName, [EnvironmentType], DNSHostName, IPAddress, Domain, OperatingSystem, SPVersion, Model, RAM, CPU, CollectionTime)
+		SELECT ServerName, [EnvironmentType], DNSHostName, IPAddress, Domain, OperatingSystem, SPVersion, Model, RAM, CPU, CollectionTime
+		FROM CTE
+		WHERE RowID = 1;
+
+		DELETE [Staging].[ServerInfo]
+			WHERE ServerName IN (SELECT i.ServerName FROM [Info].[Server] AS i);
+	COMMIT TRAN
+END
+GO
+
+USE SQLDBATools;
+GO
+--DROP PROCEDURE [dbo].[usp_ETL_VolumeInfo]
+ALTER PROCEDURE [dbo].[usp_ETL_VolumeInfo]
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	BEGIN TRAN
+		-- Truncate table
+		TRUNCATE TABLE dbo.VolumeInfo;
+
+		;WITH CTE AS (
+			SELECT ServerName, VolumeName, CapacityGB, UsedSpaceGB, UsedSpacePercent, FreeSpaceGB, Label, CollectionTime
+					,ROW_NUMBER()OVER(PARTITION BY ServerName, VolumeName ORDER BY ServerName, VolumeName) AS RowID
+			FROM Staging.VolumeInfo
+			WHERE ServerName IS NOT NULL
+		)
+		INSERT dbo.VolumeInfo
+		(ServerName, VolumeName, CapacityGB, UsedSpaceGB, UsedSpacePercent, FreeSpaceGB, Label, CollectionTime)
+		SELECT ServerName, VolumeName, CapacityGB, UsedSpaceGB, UsedSpacePercent, FreeSpaceGB, Label, CollectionTime
+		FROM CTE
+		WHERE RowID = 1;
+
+		DELETE o
+		FROM [Staging].VolumeInfo AS o
+		WHERE EXISTS (SELECT i.ServerName FROM dbo.VolumeInfo AS i WHERE i.ServerName = o.ServerName AND i.VolumeName = o.VolumeName);
+	COMMIT TRAN
+END
+GO  
 
 IF OBJECT_ID('dbo.vw_DatabaseBackups') IS NULL
 	EXEC ('CREATE VIEW dbo.vw_DatabaseBackups AS SELECT 1 AS [Message]');

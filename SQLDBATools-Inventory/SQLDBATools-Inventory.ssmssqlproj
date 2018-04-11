@@ -51,6 +51,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1DBAPMTDB1:CORPORATE\adwivedi">
+          <Created>2018-04-09T11:47:47.3956584+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1DBAPMTDB1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>SQLDBATools</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
@@ -66,6 +78,12 @@
           <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
           <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>DatabaseMailProfile.sql</FullPath>
+        </FileNode>
+        <FileNode Name="dbareports.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>dbareports.sql</FullPath>
         </FileNode>
         <FileNode Name="SQLDBATools - DDL.sql">
           <AssociatedConnectionMoniker />

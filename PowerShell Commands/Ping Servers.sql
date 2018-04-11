@@ -1,7 +1,13 @@
 /*	PowerShell Command */
 $sizeThreshold_In_MB = 5;
+$pingResultPath = 'F:\PingMirroringPartners\';
+#$pingResultPath = '\\TUL1CORPWIT1\F$\PingMirroringPartners\';
 $pingResultFile = 'F:\PingMirroringPartners\pingResult';
-$names = @('Server01','Server01');
+$names = @('TUL1CIPXIDB2','TUL1CIPXIDB3');
+
+# Delete files older than 15 days
+$limit = (Get-Date).AddDays(-15);
+Get-ChildItem -Path $pingResultPath -Recurse -Force | Where-Object {$_.Name -like 'pingResult*' -and !$_.PSIsContainer -and $_.CreationTime -lt $limit } | Remove-Item -Force;
 
 if (Test-Path $pingResultFile -PathType Leaf)
 {
