@@ -53,3 +53,9 @@ Screenshot for modified versin of **`who_is_active_v11_30`**:-
 This project contains a procedure named [sp_HealthCheck] This procedure gives `currently running queries`, `CPU and Memory usage`, `Usage of Data & Log Volumes`, `Space utilization of data/log files`, `Lead Blockers`, and `session details performing Backup/Restore/Rollback`.
 
 ![](sp_HealthCheck/sp_HealthCheck.gif)
+
+### 4. Custom Log Shipping Script
+Log Shipping has many benefits and is often used a Disaster Recovery option. But, If you use Domain Account for SQL Services, then Log Shipping using Custom scripts could be established in much easier way than the default log shipping method. For this purpose, I have created by own Log Shipping procedure [dbo].[usp_DBAApplyTLogs]
+
+<b> [Latest Code of [usp_DBAApplyTLogs]](SQLDBA-SSMS-Solution/LogShipping/usp_DBAApplyTLogs.sql)</b>
+
