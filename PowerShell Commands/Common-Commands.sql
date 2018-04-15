@@ -21,3 +21,4 @@ New-PSDrive -Persist -Name "P" -PSProvider "FileSystem" -Root "\\Tul1cipedb3\g$"
 
 -- 7) Add color to Foreground and Background text
 write-host "[OK]" -ForegroundColor Cyan
+
