@@ -49,17 +49,17 @@
           <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>LogShipping.sql</FullPath>
         </FileNode>
-        <FileNode Name="PerformBackup.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:SQL-A:False:sa</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>SQL-A</AssociatedConnSrvName>
-          <AssociatedConnUserName>sa</AssociatedConnUserName>
-          <FullPath>PerformBackup.sql</FullPath>
-        </FileNode>
         <FileNode Name="PerformRestore.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:SQL-B:False:sa</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>SQL-B</AssociatedConnSrvName>
           <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>PerformRestore.sql</FullPath>
+        </FileNode>
+        <FileNode Name="ScriptOut-Backup-Restore.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
+          <FullPath>ScriptOut-Backup-Restore.sql</FullPath>
         </FileNode>
         <FileNode Name="usp_DBAApplyTLogs.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:False:sa</AssociatedConnectionMoniker>

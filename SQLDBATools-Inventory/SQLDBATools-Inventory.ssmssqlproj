@@ -79,6 +79,12 @@
           <AssociatedConnUserName />
           <FullPath>Add-ServerInfo.sql</FullPath>
         </FileNode>
+        <FileNode Name="Add-SQLInstanceInfo.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Add-SQLInstanceInfo.sql</FullPath>
+        </FileNode>
         <FileNode Name="DatabaseMail_Using_GMail.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:SQL-B:False:sa</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>SQL-B</AssociatedConnSrvName>

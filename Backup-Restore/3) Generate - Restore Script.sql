@@ -14,7 +14,7 @@ DECLARE
       ,@RowCount int;
 
 --1) specify database backup directory
-SET @BasePath = 'E:\files';
+SET @BasePath = 'G:\Backup\';
 
 --2) Overwrite DB ( 1=TRUE   OR   0=FALSE  )
 DECLARE	@do_overwrite_db TINYINT
@@ -38,7 +38,7 @@ SELECT @MasterData=substring(@MasterData, 3, 255)
 SELECT @MasterData=substring(@MasterData, 1, len(@MasterData) - charindex('\', reverse(@MasterData)))
 
 SELECT	@Target_Data_Path = COALESCE(CONVERT(NVARCHAR(250),SERVERPROPERTY('instancedefaultdatapath')), @MasterData+'\', '<Data File Location>')
-		,@Target_Log_Path = COALESCE(CONVERT(NVARCHAR(250),SERVERPROPERTY('instancedefaultlogpath')), @DefaultLog+'\', '<Log File Location>') 
+		,@Target_Log_Path = COALESCE(CONVERT(NVARCHAR(250),SERVERPROPERTY('instancedefaultlogpath')), @DefaultLog+'\', '<Log File Location>')
 PRINT '
 */ ';
 

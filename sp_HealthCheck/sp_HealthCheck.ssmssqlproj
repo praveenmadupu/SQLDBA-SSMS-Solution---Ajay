@@ -62,8 +62,8 @@
           <FullPath>CpuUtilizationHistory.sql</FullPath>
         </FileNode>
         <FileNode Name="sp_HealthCheck.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:ann1vespdb01:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>ann1vespdb01</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>sp_HealthCheck.sql</FullPath>
         </FileNode>
