@@ -13,5 +13,7 @@ select sys.schemas.name 'Schema'
 from sys.database_permissions join sys.objects on sys.database_permissions.major_id =      sys.objects.object_id join sys.schemas on sys.objects.schema_id = sys.schemas.schema_id join sys.database_principals on sys.database_permissions.grantee_principal_id =      sys.database_principals.principal_id order by 1, 2, 3, 5
 
 --	https://docs.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/xp-logininfo-transact-sql
+USE EIDR_Dedup
+GO
 EXEC XP_LOGININFO 'corporate\adwivedi'
 EXEC XP_LOGININFO 'CORPORATE\SQL Admins' ,'members'

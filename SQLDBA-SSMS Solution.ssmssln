@@ -27,6 +27,8 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "LogShipping", "LogShipping\
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "PermissionIssues", "PermissionIssues\PermissionIssues.ssmssqlproj", "{B511A519-C45A-4122-995C-D82C3CF5BE9C}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "InstanceMigration", "InstanceMigration\InstanceMigration.ssmssqlproj", "{CA8E5EEB-A00E-4E2B-9702-0C1A322AABA1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -43,8 +45,9 @@ Global
 		{819D9E21-3B8F-4503-B098-BE1FD5091B8B}.Default|Default.ActiveCfg = Default
 		{77970B04-2242-40A2-98C1-A70538432873}.Default|Default.ActiveCfg = Default
 		{033BA5C7-B799-40F0-B8BE-741D0E02F34E}.Default|Default.ActiveCfg = Default
-		{E754ECDA-3EC3-4413-A4DC-364111C7B16F}.Default|Default.ActiveCfg = Default
 		{B511A519-C45A-4122-995C-D82C3CF5BE9C}.Default|Default.ActiveCfg = Default
+		{A5F4E0BB-3DD5-44B1-BCD9-87A14DD73310}.Default|Default.ActiveCfg = Default
+		{CA8E5EEB-A00E-4E2B-9702-0C1A322AABA1}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

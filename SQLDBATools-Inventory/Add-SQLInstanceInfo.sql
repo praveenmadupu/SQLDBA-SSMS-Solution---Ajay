@@ -3,3 +3,4 @@ GO
 
 -- Get-SQLInstanceInfo
 -- Add-SQLInstanceInfo
+-- Fetch-SQLInstanceInfo

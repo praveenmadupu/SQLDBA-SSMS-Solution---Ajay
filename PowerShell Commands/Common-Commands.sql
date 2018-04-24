@@ -22,3 +22,20 @@ New-PSDrive -Persist -Name "P" -PSProvider "FileSystem" -Root "\\Tul1cipedb3\g$"
 -- 7) Add color to Foreground and Background text
 write-host "[OK]" -ForegroundColor Cyan
 
+-- 7) File exists or not
+[System.IO.File]::Exists($n)
+
+-- 8) Get all files on drive by Size
+Get-ChildItem -Path 'F:\' -Recurse -Force -ErrorAction SilentlyContinue | 
+    Select-Object Name, @{l='ParentPath';e={$_.DirectoryName}}, @{l='SizeBytes';e={$_.Length}}, @{l='Owner';e={((Get-ACL $_.FullName).Owner)}}, CreationTime, LastAccessTime, LastWriteTime, @{l='IsFolder';e={if($_.PSIsContainer) {1} else {0}}}, @{l='SizeMB';e={$_.Length/1mb}}, @{l='SizeGB';e={$_.Length/1gb}} |
+    Sort-Object -Property SizeBytes -Descending | Out-GridView
+
+-- 9) Check if -Verbose switch is used
+$PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent
+
+-- 10) Check if Module is installed
+if (Get-Module -ListAvailable -Name SqlServer) {
+    Write-Host "Module exists"
+} else {
+    Write-Host "Module does not exist"
+}
