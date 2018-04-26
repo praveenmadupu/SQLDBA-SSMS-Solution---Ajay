@@ -91,12 +91,6 @@
           <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>DatabaseMail_Using_GMail.sql</FullPath>
         </FileNode>
-        <FileNode Name="DatabaseMailProfile.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:False:sa</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
-          <AssociatedConnUserName>sa</AssociatedConnUserName>
-          <FullPath>DatabaseMailProfile.sql</FullPath>
-        </FileNode>
         <FileNode Name="dbareports.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>

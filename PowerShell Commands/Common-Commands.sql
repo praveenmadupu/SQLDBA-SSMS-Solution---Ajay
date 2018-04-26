@@ -39,3 +39,6 @@ if (Get-Module -ListAvailable -Name SqlServer) {
 } else {
     Write-Host "Module does not exist"
 }
+
+-- 11) Find path of SQLDBATools Module
+(Get-Module -ListAvailable SQLDBATools).Path

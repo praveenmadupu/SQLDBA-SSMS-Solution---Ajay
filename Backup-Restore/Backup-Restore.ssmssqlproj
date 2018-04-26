@@ -86,8 +86,8 @@
           <FullPath>1) Generate - Backup Script.sql</FullPath>
         </FileNode>
         <FileNode Name="2) Script Out DB Permissions in case of DB Refresh.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>2) Script Out DB Permissions in case of DB Refresh.sql</FullPath>
         </FileNode>
@@ -150,6 +150,12 @@
           <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Query - Restore History.sql</FullPath>
+        </FileNode>
+        <FileNode Name="RevLogin-Script.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>RevLogin-Script.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>
