@@ -67,53 +67,11 @@
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
-        <FileNode Name="[dbo].[usp_GetMail_4_SQLDBATools].sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>[dbo].[usp_GetMail_4_SQLDBATools].sql</FullPath>
-        </FileNode>
-        <FileNode Name="Add-ServerInfo.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>Add-ServerInfo.sql</FullPath>
-        </FileNode>
-        <FileNode Name="Add-SQLInstanceInfo.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>Add-SQLInstanceInfo.sql</FullPath>
-        </FileNode>
         <FileNode Name="DatabaseMail_Using_GMail.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:SQL-B:False:sa</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>SQL-B</AssociatedConnSrvName>
           <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>DatabaseMail_Using_GMail.sql</FullPath>
-        </FileNode>
-        <FileNode Name="dbareports.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>dbareports.sql</FullPath>
-        </FileNode>
-        <FileNode Name="Mailer - Database Backup History - Date.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>Mailer - Database Backup History - Date.sql</FullPath>
-        </FileNode>
-        <FileNode Name="SQLDBATools - DDL - New.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>SQLDBATools - DDL - New.sql</FullPath>
-        </FileNode>
-        <FileNode Name="SQLDBATools - DDL.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>SQLDBATools - DDL.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>
