@@ -42,3 +42,55 @@ if (Get-Module -ListAvailable -Name SqlServer) {
 
 -- 11) Find path of SQLDBATools Module
 (Get-Module -ListAvailable SQLDBATools).Path
+
+-- 12) Log entry into ErrorLogs table
+$MessageText = "Get-WmiObject : Access is denied. Failed in execution of Get-ServerInfo";
+Write-Host $MessageText -ForegroundColor Red;
+Add-CollectionError -ComputerName $ComputerName -Cmdlet 'Add-ServerInfo' -CommandText "Add-ServerInfo -ComputerName '$ComputerName'" -ErrorText $MessageText -Remark $null;
+return;
+
+-- 13) Querying using SQLProvider
+$computerName = 'TUL1CIPEDB2'
+
+Get-ChildItem SQLSERVER:\SQL\$computerName\DEFAULT
+$sqlInstance = Get-Item SQLSERVER:\SQL\$computerName\DEFAULT
+$sqlInstance | gm -MemberType Property
+
+$sqlInstance | select ComputerNamePhysicalNetBIOS, Name, Edition, ErrorLogPath, IsCaseSensitive, IsClustered,
+                            IsHadrEnabled, IsFullTextInstalled, LoginMode, NetName, PhysicalMemory,
+                            Processors, ServiceInstanceId, ServiceName, ServiceStartMode, 
+                            VersionString, Version, DatabaseEngineEdition
+
+$sqlInstance.Information | Select-Object * | fl
+$sqlInstance.Properties | Select-Object Name, Value | ft -AutoSize
+$sqlInstance.Configuration
+
+-- 14) Querying SqlServer using PowerShell
+$computerName = 'TUL1CIPEDB2'
+
+<# SMO #> 
+$server = New-Object Microsoft.SqlServer.Management.Smo.Server("$computerName")
+$server | Select-Object ComputerNamePhysicalNetBIOS, Name, Edition, ErrorLogPath, IsCaseSensitive, IsClustered,
+                            IsHadrEnabled, IsFullTextInstalled, LoginMode, NetName, PhysicalMemory,
+                            Processors, ServiceInstanceId, ServiceName, ServiceStartMode, 
+                            VersionString, Version, DatabaseEngineEdition
+
+$server.Configuration.MaxServerMemory
+$server.Configuration.CostThresholdForParallelism
+$server.Configuration.MinServerMemory
+$server.Configuration.MaxDegreeOfParallelism
+$server.Configuration.Properties | ft -AutoSize -Wrap
+                            
+<# SQL Provider #> 
+Get-ChildItem SQLSERVER:\SQL\$computerName\DEFAULT
+$sqlInstance = Get-Item SQLSERVER:\SQL\$computerName\DEFAULT
+$sqlInstance | gm -MemberType Property
+
+$sqlInstance | select ComputerNamePhysicalNetBIOS, Name, Edition, ErrorLogPath, IsCaseSensitive, IsClustered,
+                            IsHadrEnabled, IsFullTextInstalled, LoginMode, NetName, PhysicalMemory,
+                            Processors, ServiceInstanceId, ServiceName, ServiceStartMode, 
+                            VersionString, Version, DatabaseEngineEdition
+
+$sqlInstance.Information | Select-Object * | fl
+$sqlInstance.Properties | Select-Object Name, Value | ft -AutoSize
+$sqlInstance.Configuration 
