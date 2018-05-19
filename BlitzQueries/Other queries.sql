@@ -10,6 +10,8 @@ FROM sys.databases as d where d.name = 'tempdb';
 
 --	Get Socket, Physical Core, and Logical Core count from SQL Server Error Log
 EXEC master..xp_readerrorlog 0,1, N'Server process ID is'
+/* Lock pages in Memory permission */
+EXEC master..xp_readerrorlog 0,1, N'lock memory privilege was not granted.'
 EXEC master..xp_readerrorlog 0,1, N'System Manufacturer:', N'System Model'
 EXEC master..xp_readerrorlog 0,1, N'sockets',N'processors'
 EXEC master..xp_readerrorlog 0,1, N'Instant File Initialization'
@@ -180,6 +182,25 @@ SELECT q.PlanCount,
 		q.DistinctPlanCount,
 		st.text AS QueryText,
 		qp.query_plan AS QueryPlan
+FROM ( SELECT query_hash,
+				COUNT(DISTINCT(query_hash)) AS DistinctPlanCount,
+				COUNT(query_hash) AS PlanCount
+		FROM sys.dm_exec_query_stats
+		GROUP BY query_hash
+	) AS q		
+JOIN sys.dm_exec_query_stats qs ON q.query_hash = qs.query_hash
+CROSS APPLY sys.dm_exec_sql_text(qs.sql_handle) AS st
+CROSS APPLY sys.dm_exec_query_plan(qs.plan_handle) AS qp
+WHERE PlanCount > 1
+ORDER BY q.PlanCount DESC;
+
+
+/* Find queries with multiple plans */
+with tt as (
+SELECT q.PlanCount,
+		q.DistinctPlanCount,
+		st.text AS QueryText,
+		qp.query_plan AS QueryPlan
 		FROM ( SELECT query_hash,
 						COUNT(DISTINCT(query_hash)) AS DistinctPlanCount,
 						COUNT(query_hash) AS PlanCount
@@ -190,7 +211,13 @@ JOIN sys.dm_exec_query_stats qs ON q.query_hash = qs.query_hash
 CROSS APPLY sys.dm_exec_sql_text(qs.sql_handle) AS st
 CROSS APPLY sys.dm_exec_query_plan(qs.plan_handle) AS qp
 WHERE PlanCount > 1
-ORDER BY q.PlanCount DESC;
+)
+select * from tt where tt.QueryText not like 'select name as objectName from source where source_id%'
+	and tt.QueryText not like 'INSERT INTO #group1_search_results (ROW_ID, master_title ,program_id,parent_program_id)%'
+	and tt.QueryText not like 'INSERT INTO #group1_search_results_tv_source (source_id) SELECT TOP%'
+	and tt.QueryText not like 'INSERT INTO #record_count SELECT COUNT(source_base.source_id)%'
+	and tt.QueryText not like 'SELECT         program_base.[program_id] AS %'
+order by PlanCount desc
 
 --	How to examine IO subsystem latencies from within SQL Server
 	--	https://www.sqlskills.com/blogs/paul/how-to-examine-io-subsystem-latencies-from-within-sql-server/
@@ -286,6 +313,42 @@ INNER JOIN sys.indexes AS i
     AND ps.index_id = i.index_id
 WHERE forwarded_record_count > 0
 go
+
+/*	Find Forwarded Records using Cursor Method for VLDBs	*/
+use Cosmo
+go
+
+IF OBJECT_ID('tempdb..#HeapFragTable') IS NOT NULL
+	DROP TABLE #HeapFragTable;
+CREATE table #HeapFragTable
+(	dbName varchar(100), table_name varchar(100), forwarded_record_count int, avg_fragmentation_in_percent decimal(20,2), page_count bigint );
+declare @c_ObjectID int
+
+DECLARE curObjects CURSOR LOCAL FORWARD_ONLY FOR
+		select o.object_id
+		from sys.objects as o inner join sys.schemas as s on s.schema_id = o.schema_id
+		inner join sys.indexes as i on i.object_id = o.object_id
+		where o.type_desc = 'USER_TABLE'
+		and i.type_desc = 'HEAP'
+		
+OPEN curObjects  
+
+FETCH NEXT FROM curObjects INTO @c_ObjectID
+
+WHILE @@FETCH_STATUS = 0  
+BEGIN  
+	PRINT	@c_ObjectID;
+	insert into #HeapFragTable
+	SELECT DB_NAME() AS dbName, OBJECT_NAME(object_id) AS table_name, forwarded_record_count, avg_fragmentation_in_percent, page_count
+	FROM sys.dm_db_index_physical_stats (DB_ID(), @c_ObjectID, DEFAULT, DEFAULT, 'DETAILED');
+
+	FETCH NEXT FROM curObjects INTO @c_ObjectID
+END
+
+CLOSE curObjects;  
+DEALLOCATE curObjects; 
+
+SELECT * FROM #HeapFragTable;
 
 /* Find tables with forwarded records on All Databases*/
 	--	https://www.brentozar.com/archive/2016/07/fix-forwarded-records/
@@ -470,8 +533,52 @@ GROUP BY [W1].[RowNum]
 HAVING SUM ([W2].[Percentage]) - MAX( [W1].[Percentage] ) < 95; -- percentage threshold
 GO
 
---	Find VLF Counts
+/*	Fragmentation	*/
+SELECT OBJECT_NAME(ips.OBJECT_ID)
+ ,i.NAME
+ ,ips.index_id
+ ,index_type_desc
+ ,avg_fragmentation_in_percent
+ ,avg_page_space_used_in_percent
+ ,page_count
+FROM sys.dm_db_index_physical_stats(DB_ID(), NULL, NULL, NULL, 'SAMPLED') ips
+INNER JOIN sys.indexes i ON (ips.object_id = i.object_id)
+ AND (ips.index_id = i.index_id)
+ORDER BY avg_fragmentation_in_percent DESC
 
+/* Verify if tempdb files are of same size/autogrowth	*/        
+exec sp_helpdb 'tempdb';
+
+/* Un-indexes Foreign Keys	*/
+;WITH    fk_cte
+          AS ( SELECT   OBJECT_NAME(fk.referenced_object_id) pk_table ,
+                        c2.name pk_column ,
+                        kc.name pk_index_name ,
+                        OBJECT_NAME(fk.parent_object_id) fk_table ,
+                        c.name fk_column ,
+                        fk.name fk_name ,
+                        CASE WHEN i.object_id IS NOT NULL THEN 1 ELSE 0 END does_fk_has_index ,
+                        i.is_primary_key is_fk_a_pk_also ,
+                        i.is_unique is_index_on_fk_unique ,
+                        fk.*
+               FROM     sys.foreign_keys fk
+                        INNER JOIN sys.foreign_key_columns fkc ON fkc.constraint_object_id = fk.object_id
+                        INNER JOIN sys.columns c ON c.object_id = fk.parent_object_id AND c.column_id = fkc.parent_column_id
+                        LEFT  JOIN sys.columns c2 ON c2.object_id = fk.referenced_object_id AND c2.column_id = fkc.referenced_column_id
+                        LEFT JOIN sys.key_constraints kc ON kc.parent_object_id = fk.referenced_object_id AND kc.type = 'PK'
+                        LEFT JOIN sys.index_columns ic ON ic.object_id = c.object_id AND ic.column_id = c.column_id
+                        LEFT JOIN sys.indexes i ON i.object_id = ic.object_id AND i.index_id = ic.index_id
+             )
+    SELECT  * FROM    fk_cte
+       LEFT JOIN sys.dm_db_partition_stats ps on ps.object_id = fk_cte.parent_object_id and ps.index_id <= 1
+    WHERE   does_fk_has_index = 0 -- and fk_table = 'LineItems'
+    ORDER BY used_page_count desc
+
+
+--	Find VLF Counts
+EXEC [dbo].[usp_AnalyzeSpaceCapacity] @getLogInfo = 1;
+/* SQL Server Logs giving Warnings for high VLF counts */
+EXEC master..xp_readerrorlog 0,1, N'virtual log files which is excessive.'
 
 --	Foreign Keys Not Trusted.
 	--	https://BrentOzar.com/go/trust

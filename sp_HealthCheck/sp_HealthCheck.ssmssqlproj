@@ -15,6 +15,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="BAN-2ADWIVEDI-L:sa">
+          <Created>2018-05-02T12:10:57.9125048+05:30</Created>
+          <Type>SQL</Type>
+          <Server>BAN-2ADWIVEDI-L</Server>
+          <UserName>sa</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="TUL1CIPCNPDB1:CORPORATE\adwivedi">
           <Created>2018-04-06T08:47:55.3836373+05:30</Created>
           <Type>SQL</Type>
@@ -50,8 +62,8 @@
           <FullPath>0.2 - sp_HealthCheck.sql</FullPath>
         </FileNode>
         <FileNode Name="Certificate Based Authentication.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:ann1vespdb01:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>ann1vespdb01</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Certificate Based Authentication.sql</FullPath>
         </FileNode>

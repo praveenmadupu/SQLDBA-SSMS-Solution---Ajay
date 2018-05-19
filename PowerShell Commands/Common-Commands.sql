@@ -84,6 +84,11 @@ $server.Configuration.Properties | ft -AutoSize -Wrap
 <# SQL Provider #> 
 Get-ChildItem SQLSERVER:\SQL\$computerName\DEFAULT
 $sqlInstance = Get-Item SQLSERVER:\SQL\$computerName\DEFAULT
+$sqlInstance.Databases['DBA'].Schemas
+$sqlInstance.Databases['DBA'].Tables | Select-Object Schema, Name, RowCount
+Get-ChildItem SQLSERVER:\SQL\$computerName\DEFAULT\Databases\DBA\Tables | Select-Object Schema, Name, RowCount;
+(Get-Item SQLSERVER:\SQL\$computerName\DEFAULT\Databases\DBA\Tables).Collection | Select-Object Schema, Name, RowCount;
+
 $sqlInstance | gm -MemberType Property
 
 $sqlInstance | select ComputerNamePhysicalNetBIOS, Name, Edition, ErrorLogPath, IsCaseSensitive, IsClustered,
@@ -94,3 +99,133 @@ $sqlInstance | select ComputerNamePhysicalNetBIOS, Name, Edition, ErrorLogPath, 
 $sqlInstance.Information | Select-Object * | fl
 $sqlInstance.Properties | Select-Object Name, Value | ft -AutoSize
 $sqlInstance.Configuration 
+
+-- 15) Set Mail profile
+# Set computerName
+$computerName = 'TUL1CIPINXDB4'
+
+$srv = New-Object -TypeName Microsoft.SqlServer.Management.SMO.Server("$computerName");
+$sm = $srv.Mail.Profiles | Where-Object {$_.Name -eq $computerName};
+$srv.JobServer.AgentMailType = 'DatabaseMail';
+$srv.JobServer.DatabaseMailProfile = $sm.Name;
+$srv.JobServer.Alter();
+
+--	16) CollectionTime
+@{l='CollectionTime';e={(Get-Date).ToString("yyyy-MM-dd HH:mm:ss")}}
+
+-- 17) Out-GridView
+Get-Process|Where {$_.cpu -ne $null}|ForEach {New-Object -TypeName psObject -Property @{name=$_.Name;cpu=[double]$_.cpu}}|Out-GridView
+
+-- 18) Move *.sql Files & Folder from Source to Destination
+$sServer = 'SrvSource';
+$tServer = 'SrvDestination';
+
+$basePath = 'f$\mssqldata'
+
+# Find source folders
+$folders = Get-ChildItem "\\$sServer\$basePath" -Recurse | Where-Object {$_.PsIsContainer};
+
+# Create same folders on destination
+foreach($fldr in $folders)
+{
+    $newPath = $fldr.FullName -replace "\\\\$sServer\\", "\\\\$tServer\\";
+    $exists = ([System.IO.Directory]::Exists($newPath));
+
+    if($exists) {
+        Write-Host "Exists=> $newPath" -ForegroundColor Green;
+    } else {
+        Write-Host "NotExists=> $newPath" -ForegroundColor Yellow;
+        #[System.IO.Directory]::CreateDirectory($newPath);
+    }
+    #$fldr.FullName -replace "\\\\$sServer\\", "\\\\$tServer\\"
+}
+
+# Find source folders
+$sqlfiles = Get-ChildItem "\\$sServer\$basePath" -Recurse | Where-Object {$_.PsIsContainer -eq $false} | 
+                Where-Object {$_.Extension -eq '.sql' -or $_.Extension -eq '.bat'};
+
+# Create same folders on destination
+foreach($file in $sqlfiles)
+{
+    $newPath = $file.FullName -replace "\\\\$sServer\\", "\\\\$tServer\\";
+    $exists = ([System.IO.File]::Exists($newPath));
+
+    if($exists) {
+        Write-Host "Exists=> $newPath" -ForegroundColor Green;
+    } else {
+        Write-Host "NotExists=> $newPath" -ForegroundColor Yellow;
+        #Copy-Item "$($file.FullName)" -Destination "$newPath"
+    }
+}
+
+-- 16) Get Inventory Servers on Excel
+Import-Module SQLDBATools -DisableNameChecking;
+
+# Fetch ServerInstances from Inventory
+$tsqlInventory = @"
+select * from Info.Server
+"@;
+
+$Servers = (Invoke-Sqlcmd -ServerInstance $InventoryInstance -Database $InventoryDatabase -Query $tsqlInventory | Select-Object -ExpandProperty ServerName);
+$SqlInstance = @();
+
+
+foreach($server in $Servers)
+{
+    $r = Fetch-ServerInfo -ComputerName $server;
+    $SqlInstance += $r;
+}
+
+$SqlInstance | Export-Excel 'C:\temp\TivoSQLServerInventory.xlsx'
+
+
+-- 17) Group-Object & Measure-Object
+$PathOrFolder = 'E:\'
+$files = Get-ChildItem -Path $PathOrFolder -Recurse -File | ForEach-Object {
+                $Parent = (Split-Path -path $_.FullName);
+                New-Object psobject -Property @{
+                   Name = $_.Name;
+                   FullName = $_.FullName;
+                   Parent = $Parent;
+                   SizeBytes = $_.Length;
+                }
+            }
+
+$FolderWithSize = $files | Group-Object Parent | %{
+            New-Object psobject -Property @{
+                                            Parent = $_.Name
+                                            Sum = ($_.Group | Measure-Object SizeBytes -Sum).Sum
+                                           }
+        }
+
+--	18) 
+<# Script to Find databases which are not backed up in Last 7 Days
+#>
+
+$Server2Analyze = 'tul1cipxdb12';
+$DateSince = (Get-Date).AddDays(-7) # Last 7 days
+
+# Find Latest Bacukps
+$Backups = Get-DbaBackupHistory -SqlInstance $Server2Analyze -Type Full -Since $DateSince #'5/5/2018 00:00:00'
+
+$BackedDbs = $Backups | Select-Object -ExpandProperty Database -Unique
+
+# List of available dbs
+$dbs = Invoke-Sqlcmd -ServerInstance $Server2Analyze -Database master -Query "select name from sys.databases" | select -ExpandProperty name;
+
+$NotBackedDbs = @();
+foreach($db in $dbs)
+{
+    if($BackedDbs -contains $db){
+        Write-Host "$db is +nt";
+    }
+    else {
+        $NotBackedDbs += $db;
+    }
+}
+
+Write-Host "Returing Dbs for which backup is not there.." -ForegroundColor Green;
+$NotBackedDbs | Add-Member -NotePropertyName ServerName -NotePropertyValue $Server2Analyze -PassThru -Force | 
+    Out-GridView -Title "Not Backed Dbs"
+
+#Remove-Variable -Name NotBackedDbs

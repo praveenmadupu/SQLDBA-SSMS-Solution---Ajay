@@ -27,6 +27,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPEDB2:CORPORATE\adwivedi">
+          <Created>2018-05-11T10:48:03.2898116+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPEDB2</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="TUL1DBAPMTDB1:CORPORATE\adwivedi">
           <Created>2018-04-01T15:45:55.25382+05:30</Created>
           <Type>SQL</Type>
@@ -44,14 +56,14 @@
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="Blitz.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Blitz.sql</FullPath>
         </FileNode>
         <FileNode Name="BlitzCache.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>BlitzCache.sql</FullPath>
         </FileNode>
@@ -62,8 +74,8 @@
           <FullPath>blitzFirst.sql</FullPath>
         </FileNode>
         <FileNode Name="BlitzIndex.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>BlitzIndex.sql</FullPath>
         </FileNode>
@@ -73,6 +85,12 @@
           <AssociatedConnUserName />
           <FullPath>Blocking Tree.sql</FullPath>
         </FileNode>
+        <FileNode Name="Configure_PSSDiag.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Configure_PSSDiag.sql</FullPath>
+        </FileNode>
         <FileNode Name="CREATE TABLE [dbo].[whatIsRunning].sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
@@ -80,9 +98,9 @@
           <FullPath>CREATE TABLE [dbo].[whatIsRunning].sql</FullPath>
         </FileNode>
         <FileNode Name="Other queries.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:False:SA</AssociatedConnectionMoniker>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:False:sa</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
-          <AssociatedConnUserName>SA</AssociatedConnUserName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>Other queries.sql</FullPath>
         </FileNode>
         <FileNode Name="Perf Counters.sql">
@@ -98,8 +116,8 @@
           <FullPath>Querying Deadlocks From System_Health XEvent.sql</FullPath>
         </FileNode>
         <FileNode Name="WhatIsRunning.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>WhatIsRunning.sql</FullPath>
         </FileNode>
@@ -110,8 +128,8 @@
           <FullPath>who_is_active_v11_30(Modified).sql</FullPath>
         </FileNode>
         <FileNode Name="whoIsActive.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>whoIsActive.sql</FullPath>
         </FileNode>
@@ -119,11 +137,23 @@
     </LogicalFolder>
     <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
       <Items>
+        <FileNode Name="pssd.zip">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>pssd.zip</FullPath>
+        </FileNode>
         <FileNode Name="sp_whoIsActive.gif">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>sp_whoIsActive.gif</FullPath>
+        </FileNode>
+        <FileNode Name="SQLNexus.6.0.0.8.zip">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SQLNexus.6.0.0.8.zip</FullPath>
         </FileNode>
         <FileNode Name="WhatIsRunning.gif">
           <AssociatedConnectionMoniker />
