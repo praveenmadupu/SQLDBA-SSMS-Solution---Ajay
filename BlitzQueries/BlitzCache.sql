@@ -2,6 +2,7 @@ EXEC tempdb..sp_BlitzCache @Help = 1
 EXEC tempdb..sp_BlitzCache @ExpertMode = 1, @ExportToExcel = 1
 
 --	https://github.com/BrentOzarULTD/SQL-Server-First-Responder-Kit#common-sp_blitzcache-parameters
+EXEC master..sp_BlitzCache @Top = 50, @SortOrder = 'Reads' -- logical reads when PAGEIOLATCH_SH is most prominent wait type
 EXEC master..sp_BlitzCache @Top = 50, @SortOrder = 'CPU' -- logical reads when PAGEIOLATCH_SH is most prominent wait type
 EXEC master..sp_BlitzCache @Top = 50, @SortOrder = 'writes' -- logical reads when PAGEIOLATCH_SH is most prominent wait type
 EXEC master..sp_BlitzCache @Top = 50, @SortOrder = 'memory grant' -- logical reads when PAGEIOLATCH_SH is most prominent wait type

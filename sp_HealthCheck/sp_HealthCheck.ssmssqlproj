@@ -80,8 +80,8 @@
           <FullPath>sp_HealthCheck.sql</FullPath>
         </FileNode>
         <FileNode Name="Testing.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Testing.sql</FullPath>
         </FileNode>

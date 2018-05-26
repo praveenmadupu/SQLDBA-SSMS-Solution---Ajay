@@ -26,6 +26,35 @@ FROM	sys.dm_os_sys_info as i;
 --	Check Enabled Trace Flags
 DBCC TRACESTATUS(-1);
 
+--	Check Memory Consumption Report from SQL Server.
+	-- Analysis Plan Cache and Buffer Pages Distribution
+	-- Also, execute below query to get Buffer Pages Distribution Database wise
+DECLARE @total_buffer INT;
+
+SELECT @total_buffer = cntr_value
+FROM sys.dm_os_performance_counters 
+WHERE RTRIM([object_name]) LIKE '%Buffer Manager'
+AND counter_name = 'Database Pages';
+
+;WITH src AS
+(
+SELECT 
+database_id, db_buffer_pages = COUNT_BIG(*)
+FROM sys.dm_os_buffer_descriptors
+--WHERE database_id BETWEEN 5 AND 32766
+GROUP BY database_id
+)
+SELECT
+[db_name] = CASE [database_id] WHEN 32767 
+THEN 'Resource DB' 
+ELSE DB_NAME([database_id]) END,
+db_buffer_pages,
+db_buffer_MB = db_buffer_pages / 128,
+db_buffer_percent = CONVERT(DECIMAL(6,3), 
+db_buffer_pages * 100.0 / @total_buffer)
+FROM src
+ORDER BY db_buffer_MB DESC; 
+
 --	Check if compatibility Model of databases are up to date
 SELECT * FROM sys.databases as d
 	WHERE d.compatibility_level NOT IN (SELECT d1.compatibility_level FROM sys.databases as d1 WHERE d1.name = 'model');
@@ -42,6 +71,67 @@ select DB_NAME(ST.dbid) AS DBName, qs.execution_count, qs.query_hash, st.text fr
 		)
 	and st.text not like '%blitz%'
 	and st.text not like '%uhtdba%'
+
+--	============================================================================
+/*	Find Statistics Update Information	*/
+--	============================================================================
+SET NOCOUNT ON;
+DECLARE @baseQuery NVARCHAR(2000);
+DECLARE @mainQuery NVARCHAR(2000);
+SET @baseQuery = '
+SELECT	DB_NAME() as dbName
+		,i.name AS index_name
+		,i.type_desc
+		,STATS_DATE(i.object_id, index_id) AS StatsUpdated
+		,QUOTENAME(OBJECT_SCHEMA_NAME(i.object_id,DB_ID()))+''.''+QUOTENAME(o.name) as TableName
+		,o.create_date
+FROM sys.indexes as i
+INNER JOIN
+		sys.objects as o
+	ON	o.object_id = i.object_id
+WHERE	o.type_desc = ''USER_TABLE''
+	AND	i.type_desc <> ''HEAP''
+';
+
+IF OBJECT_ID('tempdb..#StatsInfo') IS NOT NULL
+	DROP TABLE #StatsInfo;
+CREATE table #StatsInfo
+(	dbName varchar(125), index_name varchar(125), IndexType varchar(50), StatsUpdatedDate datetime, TableName varchar(125), create_date datetime
+);
+declare @c_dbName varchar(125)
+
+DECLARE curDBs CURSOR LOCAL FORWARD_ONLY FOR
+		SELECT QUOTENAME(d.name) as dbName FROM sys.databases as d WHERE d.state_desc IN ('ONLINE') AND d.database_id > 4
+		
+OPEN curDBs  
+
+FETCH NEXT FROM curDBs INTO @c_dbName
+
+WHILE @@FETCH_STATUS = 0  
+BEGIN  
+	PRINT	@c_dbName;
+
+	SET @mainQuery = 'USE '+@c_dbName+';';
+	SET @mainQuery += @baseQuery;
+
+	INSERT INTO #StatsInfo
+	(	dbName, index_name, IndexType, StatsUpdatedDate, TableName, create_date	)
+	EXEC (@mainQuery);
+
+	FETCH NEXT FROM curDBs INTO @c_dbName
+END
+
+CLOSE curDBs;  
+DEALLOCATE curDBs; 
+
+SELECT	*,  
+		CASE WHEN DATEDIFF(dd,COALESCE(StatsUpdatedDate,create_date),GETDATE()) > 7 THEN 'Old Stats'
+				ELSE 'Stats OK'
+				END AS [Stats(OK/NotOK)]
+FROM #StatsInfo;
+GO
+--	============================================================================
+--	============================================================================
 
 --	https://blog.sqlauthority.com/2010/05/14/sql-server-find-most-expensive-queries-using-dmv/
 --	Find Most Expensive Queries
@@ -178,21 +268,32 @@ WHERE objtype = 'Adhoc'
 ORDER BY usecounts desc
 
 /* Find queries with multiple plans */
-SELECT q.PlanCount,
-		q.DistinctPlanCount,
-		st.text AS QueryText,
-		qp.query_plan AS QueryPlan
-FROM ( SELECT query_hash,
-				COUNT(DISTINCT(query_hash)) AS DistinctPlanCount,
-				COUNT(query_hash) AS PlanCount
-		FROM sys.dm_exec_query_stats
-		GROUP BY query_hash
-	) AS q		
-JOIN sys.dm_exec_query_stats qs ON q.query_hash = qs.query_hash
-CROSS APPLY sys.dm_exec_sql_text(qs.sql_handle) AS st
-CROSS APPLY sys.dm_exec_query_plan(qs.plan_handle) AS qp
-WHERE PlanCount > 1
-ORDER BY q.PlanCount DESC;
+;with cte_MultiPlanQueries AS
+(	select *, ROW_NUMBER()OVER(PARTITION BY qs.query_plan_hash ORDER BY qs.creation_time) as RowID
+			,COUNT(qs.sql_handle) OVER(PARTITION BY qs.query_plan_hash) as occurrences
+	from sys.dm_exec_query_stats as qs			
+	where qs.query_plan_hash in (select qsi.query_plan_hash from sys.dm_exec_query_stats as qsi
+								group by qsi.query_plan_hash
+								having COUNT(*) > 1
+								)
+)
+select	qs.query_hash, qs.query_plan_hash, occurrences as PlanCounts, 
+		qs.sql_handle, qs.statement_start_offset, qs.statement_end_offset, qs.plan_handle, 
+		qs.execution_count 
+		,st.text as BatchText
+		,[statement_text] = Substring(st.TEXT, (qs.statement_start_offset / 2) + 1, (
+				(
+					CASE qs.statement_end_offset
+						WHEN - 1
+							THEN Datalength(st.TEXT)
+						ELSE qs.statement_end_offset
+						END - qs.statement_start_offset
+					) / 2
+				) + 1)
+from cte_MultiPlanQueries as qs outer apply sys.dm_exec_sql_text(qs.sql_handle) as st
+	where qs.RowID <= 2
+	ORDER BY PlanCounts DESC, qs.query_plan_hash
+go
 
 
 /* Find queries with multiple plans */
@@ -253,9 +354,9 @@ JOIN sys.master_files AS [mf]
     ON [vfs].[database_id] = [mf].[database_id]
     AND [vfs].[file_id] = [mf].[file_id]
 -- WHERE [vfs].[file_id] = 2 -- log files
--- ORDER BY [Latency] DESC
+ORDER BY [Latency] DESC
 -- ORDER BY [ReadLatency] DESC
-ORDER BY [WriteLatency] DESC;
+--ORDER BY [WriteLatency] DESC;
 GO
 
 
@@ -314,65 +415,55 @@ INNER JOIN sys.indexes AS i
 WHERE forwarded_record_count > 0
 go
 
+
 /*	Find Forwarded Records using Cursor Method for VLDBs	*/
-use Cosmo
-go
+SET NOCOUNT ON;
+IF OBJECT_ID('tempdb..#objects') IS NOT NULL
+	DROP TABLE #objects;
+create table #objects
+(dbID int, objectID int);
+EXEC sp_msforeachdb '
+	use [?];
+	SET NOCOUNT ON;
+	insert #objects
+	(dbID, objectID)
+	select db_id() as dbID, o.object_id
+	from sys.objects as o inner join sys.schemas as s on s.schema_id = o.schema_id
+	inner join sys.indexes as i on i.object_id = o.object_id
+	where o.type_desc = ''USER_TABLE''
+	and i.type_desc = ''HEAP''
+';
+--select * from #objects;
 
 IF OBJECT_ID('tempdb..#HeapFragTable') IS NOT NULL
 	DROP TABLE #HeapFragTable;
 CREATE table #HeapFragTable
 (	dbName varchar(100), table_name varchar(100), forwarded_record_count int, avg_fragmentation_in_percent decimal(20,2), page_count bigint );
 declare @c_ObjectID int
+declare @c_dbID int
 
 DECLARE curObjects CURSOR LOCAL FORWARD_ONLY FOR
-		select o.object_id
-		from sys.objects as o inner join sys.schemas as s on s.schema_id = o.schema_id
-		inner join sys.indexes as i on i.object_id = o.object_id
-		where o.type_desc = 'USER_TABLE'
-		and i.type_desc = 'HEAP'
+		select dbID, objectID from #objects;
 		
 OPEN curObjects  
 
-FETCH NEXT FROM curObjects INTO @c_ObjectID
+FETCH NEXT FROM curObjects INTO @c_dbID, @c_ObjectID
 
 WHILE @@FETCH_STATUS = 0  
 BEGIN  
-	PRINT	@c_ObjectID;
+	--PRINT	@c_ObjectID;
 	insert into #HeapFragTable
-	SELECT DB_NAME() AS dbName, OBJECT_NAME(object_id) AS table_name, forwarded_record_count, avg_fragmentation_in_percent, page_count
-	FROM sys.dm_db_index_physical_stats (DB_ID(), @c_ObjectID, DEFAULT, DEFAULT, 'DETAILED');
+	SELECT DB_NAME(@c_dbID) AS dbName, OBJECT_NAME(object_id) AS table_name, forwarded_record_count, avg_fragmentation_in_percent, page_count
+	FROM sys.dm_db_index_physical_stats (@c_dbID, @c_ObjectID, DEFAULT, DEFAULT, 'DETAILED');
 
-	FETCH NEXT FROM curObjects INTO @c_ObjectID
+	FETCH NEXT FROM curObjects INTO @c_dbID, @c_ObjectID
 END
 
 CLOSE curObjects;  
 DEALLOCATE curObjects; 
 
-SELECT * FROM #HeapFragTable;
-
-/* Find tables with forwarded records on All Databases*/
-	--	https://www.brentozar.com/archive/2016/07/fix-forwarded-records/
-EXEC sp_msForEachDB '
-USE [?];
-SELECT	DBName, O.*
-FROM ( VALUES (DB_NAME()) ) DBs (DBName)
-LEFT JOIN
-	(
-		SELECT	OBJECT_NAME(ps.object_id) as TableName,
-				i.name as IndexName,
-				ps.index_type_desc,
-				ps.page_count,
-				ps.avg_fragmentation_in_percent,
-				ps.forwarded_record_count
-		FROM	sys.dm_db_index_physical_stats (DB_ID(), NULL, NULL, NULL, ''DETAILED'') AS ps
-		INNER JOIN sys.indexes AS i
-			ON ps.OBJECT_ID = i.OBJECT_ID  
-			AND ps.index_id = i.index_id
-		WHERE forwarded_record_count > 0
-	) AS O
-	ON	1 = 1
-'
-go
+SELECT * FROM #HeapFragTable WHERE forwarded_record_count > 0 and table_name is not null
+GO
 
 use VDP
 
@@ -533,21 +624,85 @@ GROUP BY [W1].[RowNum]
 HAVING SUM ([W2].[Percentage]) - MAX( [W1].[Percentage] ) < 95; -- percentage threshold
 GO
 
-/*	Fragmentation	*/
-SELECT OBJECT_NAME(ips.OBJECT_ID)
- ,i.NAME
- ,ips.index_id
- ,index_type_desc
- ,avg_fragmentation_in_percent
- ,avg_page_space_used_in_percent
- ,page_count
-FROM sys.dm_db_index_physical_stats(DB_ID(), NULL, NULL, NULL, 'SAMPLED') ips
-INNER JOIN sys.indexes i ON (ips.object_id = i.object_id)
- AND (ips.index_id = i.index_id)
-ORDER BY avg_fragmentation_in_percent DESC
+/*	Index Fragmentation	*/
+	-- Execute directly on Server using RDP
+USE Cosmo;
+select
+  db_name(ips.database_id) as DataBaseName,
+  object_name(ips.object_id) as ObjectName,
+  sch.name as SchemaName,
+  ind.name as IndexName,
+  ips.index_type_desc,
+  avg_fragmentation_in_percent as avg_fragmentation,
+  avg_page_space_used_in_percent,
+  page_count,
+  ps.row_count
+from sys.dm_db_index_physical_stats(DB_ID(),NULL,NULL,NULL,'LIMITED') as ips
+  inner join sys.tables as tbl
+    on ips.object_id = tbl.object_id
+  inner join sys.schemas as sch
+    on tbl.schema_id = sch.schema_id  
+  inner join sys.indexes as ind
+    on ips.index_id = ind.index_id and
+       ips.object_id = ind.object_id
+  inner join sys.dm_db_partition_stats as ps
+    on ps.object_id = ips.object_id and
+       ps.index_id = ips.index_id
 
 /* Verify if tempdb files are of same size/autogrowth	*/        
 exec sp_helpdb 'tempdb';
+
+/*	Unindexed Foreign Keys	*/
+WITH v_NonIndexedFKColumns AS (
+   SELECT 
+      Object_Name(a.parent_object_id) AS Table_Name
+      ,b.NAME AS Column_Name
+   FROM 
+      sys.foreign_key_columns a
+      ,sys.all_columns b
+      ,sys.objects c
+   WHERE 
+      a.parent_column_id = b.column_id
+      AND a.parent_object_id = b.object_id
+      AND b.object_id = c.object_id
+      AND c.is_ms_shipped = 0
+   EXCEPT
+   SELECT 
+      Object_name(a.Object_id)
+      ,b.NAME
+   FROM 
+      sys.index_columns a
+      ,sys.all_columns b
+      ,sys.objects c
+   WHERE 
+      a.object_id = b.object_id
+      AND a.key_ordinal = 1
+      AND a.column_id = b.column_id
+      AND a.object_id = c.object_id
+      AND c.is_ms_shipped = 0
+   )
+SELECT 
+   v.Table_Name AS NonIndexedCol_Table_Name
+   ,v.Column_Name AS NonIndexedCol_Column_Name             
+   ,fk.NAME AS Constraint_Name   
+   ,SCHEMA_NAME(fk.schema_id) AS Ref_Schema_Name       
+   ,object_name(fkc.referenced_object_id) AS Ref_Table_Name      
+   ,c2.NAME AS Ref_Column_Name         
+FROM 
+   v_NonIndexedFKColumns v
+   ,sys.all_columns c
+   ,sys.all_columns c2
+   ,sys.foreign_key_columns fkc
+   ,sys.foreign_keys fk
+WHERE 
+   v.Table_Name = Object_Name(fkc.parent_object_id)
+   AND v.Column_Name = c.NAME
+   AND fkc.parent_column_id = c.column_id
+   AND fkc.parent_object_id = c.object_id
+   AND fkc.referenced_column_id = c2.column_id
+   AND fkc.referenced_object_id = c2.object_id
+   AND fk.object_id = fkc.constraint_object_id
+ORDER BY 1,2
 
 /* Un-indexes Foreign Keys	*/
 ;WITH    fk_cte

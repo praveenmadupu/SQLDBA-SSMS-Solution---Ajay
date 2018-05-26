@@ -229,3 +229,9 @@ $NotBackedDbs | Add-Member -NotePropertyName ServerName -NotePropertyValue $Serv
     Out-GridView -Title "Not Backed Dbs"
 
 #Remove-Variable -Name NotBackedDbs
+
+--	19) Import Remove Server Module
+$session = New-PSSession -computerName TUL1DBAPMTDB1;
+Invoke-Command -scriptblock { Import-Module dbatools } -session $session;
+Import-PSSession -module dbatools -session $session;
+

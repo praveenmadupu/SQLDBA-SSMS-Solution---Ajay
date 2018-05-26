@@ -63,6 +63,30 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="tul1cipxdb12:CORPORATE\adwivedi">
+          <Created>2018-05-25T09:10:02.860935+05:30</Created>
+          <Type>SQL</Type>
+          <Server>tul1cipxdb12</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPXIDB2:CORPORATE\adwivedi">
+          <Created>2018-05-25T09:15:25.2033118+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPXIDB2</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="TUL1DBAPMTDB1:CORPORATE\adwivedi">
           <Created>2018-04-12T11:34:06.9103764+05:30</Created>
           <Type>SQL</Type>
@@ -146,8 +170,8 @@
           <FullPath>Query - Backup History.sql</FullPath>
         </FileNode>
         <FileNode Name="Query - Restore History.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPXIDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPXIDB2</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Query - Restore History.sql</FullPath>
         </FileNode>

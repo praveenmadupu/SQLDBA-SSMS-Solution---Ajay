@@ -85,5 +85,6 @@ WHERE	(case	when s.session_id != @@SPID
 				THEN 0
 				else null
 				end) = 1
+		
 ORDER BY [IsSqlJob], session_id;
 	

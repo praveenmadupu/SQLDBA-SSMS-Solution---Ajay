@@ -408,7 +408,7 @@ WHERE	(case	when s.session_id != @@SPID
 			select DatabaseId, DatabaseName, LogicalFileName, FileName, FileSize, SpaceUsed, FreeSpace, [SpaceUsed(%)]
 					--,FileSizeKB, SpaceUsedKB, FreeSpaceKB
 			from @FileSpaceDetails
-			where DatabaseId > 4
+			--where DatabaseId > 4
 			order by DatabaseName, FileSizeKB desc 
 		end
 
