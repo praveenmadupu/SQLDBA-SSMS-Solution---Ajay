@@ -772,3 +772,15 @@ FROM     SYS.DM_DB_INDEX_USAGE_STATS AS S
               AND I.INDEX_ID = S.INDEX_ID 
 WHERE    OBJECTPROPERTY(S.[OBJECT_ID],'IsUserTable') = 1
 AND		OBJECT_NAME(S.[OBJECT_ID]) = '0071 - CCDI Data Table' 
+
+/* find design issues */
+use Cosmo;
+select * from INFORMATION_SCHEMA.COLUMNS as c
+	where ( c.DATA_TYPE in ('nvarchar','bigint','ntext') or c.DATA_TYPE like 'n%' )
+	or ( c.CHARACTER_MAXIMUM_LENGTH > 125 and DATA_TYPE in ('varchar','nvarchar') )
+	or ( c.IS_NULLABLE = 'YES' )
+	or ( c.COLUMN_NAME like 'is%' and c.DATA_TYPE <> 'bit' )
+	or ( charindex('()',c.COLUMN_DEFAULT) > 0 )
+	or ( c.COLLATION_NAME <> 'SQL_Latin1_General_CP1_CI_AS' )
+	or ( c.DATA_TYPE IN ('binary','varbinary') )
+

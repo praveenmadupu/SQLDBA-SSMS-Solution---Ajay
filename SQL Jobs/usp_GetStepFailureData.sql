@@ -1,5 +1,5 @@
 --	http://www.sqlservercentral.com/articles/SQL+Server+Agent/67726/
-USE [master]
+USE DBA
 GO
 
 IF OBJECT_ID('dbo.usp_GetStepFailureData') IS NULL
@@ -7,7 +7,7 @@ IF OBJECT_ID('dbo.usp_GetStepFailureData') IS NULL
 GO
 
 /*
-	EXEC usp_GetStepFailureData 'Games Quarterly'
+	EXEC usp_GetStepFailureData 'CW Import AMG Video Data'
 */
 ALTER PROCEDURE usp_GetStepFailureData (@JobName VARCHAR(250))
 AS

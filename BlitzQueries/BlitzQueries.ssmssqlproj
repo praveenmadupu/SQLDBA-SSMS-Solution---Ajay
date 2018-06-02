@@ -39,6 +39,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPXIDB2:CORPORATE\adwivedi">
+          <Created>2018-05-27T08:04:32.4416897+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPXIDB2</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="TUL1DBAPMTDB1:CORPORATE\adwivedi">
           <Created>2018-04-01T15:45:55.25382+05:30</Created>
           <Type>SQL</Type>
@@ -98,8 +110,8 @@
           <FullPath>CREATE TABLE [dbo].[whatIsRunning].sql</FullPath>
         </FileNode>
         <FileNode Name="Other queries.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPXIDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPXIDB2</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Other queries.sql</FullPath>
         </FileNode>

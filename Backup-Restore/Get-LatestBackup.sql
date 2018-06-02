@@ -8,7 +8,7 @@ DECLARE @dbName VARCHAR(125),
 		@stopAtTime datetime;
 DECLARE @SQLString nvarchar(2000);  
 DECLARE @ParmDefinition nvarchar(500);  
---SET @dbName = 'Cosmo';
+SET @dbName = 'Cosmo';
 --SET @stopAtTime = '2018-04-16 23:40:00'
 
 IF OBJECT_ID('tempdb..#BackupHistory') IS NOT NULL

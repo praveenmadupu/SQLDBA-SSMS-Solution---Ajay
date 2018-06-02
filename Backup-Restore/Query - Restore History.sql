@@ -14,8 +14,19 @@
 	ON [rs].[backup_set_id] = [bs].[backup_set_id] 
 	INNER JOIN msdb..backupmediafamily bmf 
 	ON [bs].[media_set_id] = [bmf].[media_set_id] 
-	WHERE destination_database_name LIKE 'IDS_Turner%'
+	WHERE destination_database_name LIKE 'IDS_Turner'
 )
+select cast([restore_date] as date) as JobDate,[RestoreWindow]
+		,COUNT(*) AS FilesRestored
+		,CAST(SUM(backup_size)/1024.0/1024 AS decimal(20,2)) AS SumSize_TotalFiles_MB
+		,MIN([restore_date]) AS FirstFile_RestoreDate
+		,MAX([restore_date]) AS LastFile_RestoreDate
+		,DATEDIFF(minute,MIN([restore_date]),MAX([restore_date])) as [Duration(Min)]
+from T_RestoreHistory
+where [RestoreWindow] = '8PM Schedule'
+group by cast([restore_date] as date),[RestoreWindow]
+order by JobDate desc
+/*
 ,T_LargeSize AS
 (
 		SELECT	destination_database_name, restore_date, backup_start_date, source_database_name, backup_file_used_for_restore, backup_size, [backup_size(MB)]
@@ -28,7 +39,7 @@
 				,MIN(restore_date) OVER (PARTITION BY cast(restore_date as date) ,[RestoreWindow]) AS FirstFile_RestoreDate
 				,MAX(restore_date) OVER (PARTITION BY cast(restore_date as date) ,[RestoreWindow]) AS LastFile_RestoreDate		
 		FROM T_RestoreHistory
-			WHERE restore_date >= DATEADD(DD,-15,GETDATE())
+			WHERE restore_date >= DATEADD(DD,-20,GETDATE())
 			--AND [backup_size(MB)] >= 100
 			--ORDER BY [restore_date] DESC
 )
@@ -38,7 +49,7 @@ from T_LargeSize
 	and RestoreWindow = '8PM Schedule'
 	order by restore_date DESC
 --GO
-
+*/
 --declare @restore_date datetime
 --set @restore_date = '2018-05-24 21:18:40.173'
 --select @restore_date, case when DATEPART(hour,@restore_date) between 10 and 19 then '10AM Schedule' else '8PM Schedule' end
