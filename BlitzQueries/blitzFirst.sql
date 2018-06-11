@@ -1,1 +1,1 @@
-exec tempdb..sp_BlitzFirst @ExpertMode = 1, @Seconds = 300
+exec DBA..sp_BlitzFirst @ExpertMode = 1, @Seconds = 300
