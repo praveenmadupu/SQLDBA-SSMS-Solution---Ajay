@@ -3,60 +3,12 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="ann1vespdb01:CORPORATE\adwivedi">
-          <Created>2018-04-11T12:24:51.7711923+05:30</Created>
-          <Type>SQL</Type>
-          <Server>ann1vespdb01</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
         <ConnectionNode Name="BAN-2ADWIVEDI-L:sa">
           <Created>2018-05-02T12:10:57.9125048+05:30</Created>
           <Type>SQL</Type>
           <Server>BAN-2ADWIVEDI-L</Server>
           <UserName>sa</UserName>
           <Authentication>SQL</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="TUL1CIPCNPDB1:CORPORATE\adwivedi">
-          <Created>2018-04-06T08:47:55.3836373+05:30</Created>
-          <Type>SQL</Type>
-          <Server>TUL1CIPCNPDB1</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="TUL1CIPEDB2:CORPORATE\adwivedi">
-          <Created>2018-04-01T17:41:38.4899581+05:30</Created>
-          <Type>SQL</Type>
-          <Server>TUL1CIPEDB2</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB>master</InitialDB>
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="TUL1CIPXIDB2:CORPORATE\adwivedi">
-          <Created>2018-06-07T13:56:29.3662118+05:30</Created>
-          <Type>SQL</Type>
-          <Server>TUL1CIPXIDB2</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
           <InitialDB />
           <LoginTimeout>30</LoginTimeout>
           <ExecutionTimeout>0</ExecutionTimeout>
@@ -74,14 +26,14 @@
           <FullPath>__01) Log all Activities using sp_WhoIsActive.sql</FullPath>
         </FileNode>
         <FileNode Name="0.2 - sp_HealthCheck.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>0.2 - sp_HealthCheck.sql</FullPath>
         </FileNode>
         <FileNode Name="Certificate Based Authentication.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Certificate Based Authentication.sql</FullPath>
         </FileNode>
@@ -92,8 +44,8 @@
           <FullPath>CpuUtilizationHistory.sql</FullPath>
         </FileNode>
         <FileNode Name="Extract Data From sp_WhoIsActive Collection.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPXIDB2:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPXIDB2</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Extract Data From sp_WhoIsActive Collection.sql</FullPath>
         </FileNode>
@@ -104,14 +56,14 @@
           <FullPath>Find - What is Deleting Data.sql</FullPath>
         </FileNode>
         <FileNode Name="sp_HealthCheck.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>sp_HealthCheck.sql</FullPath>
         </FileNode>
         <FileNode Name="Testing.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Testing.sql</FullPath>
         </FileNode>

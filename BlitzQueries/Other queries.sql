@@ -2,11 +2,39 @@
 	https://www.sqlshack.com/searching-the-sql-server-query-plan-cache/
 	https://blog.sqlauthority.com/2014/07/29/sql-server-ssms-top-queries-by-cpu-and-io/
 */
+
+--	https://www.brentozar.com/archive/2015/05/sql-server-version-detection/
+SELECT	[version],
+    common_version = SUBSTRING([version], 1, CHARINDEX('.', version) + 1 ),
+    major = PARSENAME(CONVERT(VARCHAR(32), [version]), 4),
+    minor = PARSENAME(CONVERT(VARCHAR(32), [version]), 3),
+    build = PARSENAME(CONVERT(varchar(32), [version]), 2),
+    revision = PARSENAME(CONVERT(VARCHAR(32), [version]), 1)
+FROM (	SELECT CAST(SERVERPROPERTY('ProductVersion') AS NVARCHAR(128)) AS [version] ) AS B
+
+/*	When was SQL Server Installed/Latest Instance Migration	*/
+SELECT @@SERVERNAME AS [ServerName], create_date AS [SQL Server Install Date]
+FROM sys.server_principals WITH (NOLOCK)
+WHERE name = N'NT AUTHORITY\SYSTEM'
+OR name = N'NT AUTHORITY\NETWORK SERVICE' OPTION (RECOMPILE)
+GO
+
 --	Check when was the system started
 SELECT	@@servername as SvrName,
 		getdate() as CurrentDate, create_date as ServiceStartDate, 
 		DATEDIFF(day,create_date, GETDATE()) as ServiceStartDays 
 FROM sys.databases as d where d.name = 'tempdb';
+
+-- Get selected server properties (SQL Server 2014)  (Query 3) (Server Properties)
+SELECT	SERVERPROPERTY('MachineName') AS [MachineName], SERVERPROPERTY('ServerName') AS [ServerName],  
+		SERVERPROPERTY('InstanceName') AS [Instance], SERVERPROPERTY('IsClustered') AS [IsClustered], 
+		SERVERPROPERTY('ComputerNamePhysicalNetBIOS') AS [ComputerNamePhysicalNetBIOS], 
+		SERVERPROPERTY('Edition') AS [Edition], SERVERPROPERTY('ProductLevel') AS [ProductLevel], 
+		SERVERPROPERTY('ProductVersion') AS [ProductVersion], SERVERPROPERTY('ProcessID') AS [ProcessID],
+		SERVERPROPERTY('Collation') AS [Collation], SERVERPROPERTY('IsFullTextInstalled') AS [IsFullTextInstalled], 
+		SERVERPROPERTY('IsIntegratedSecurityOnly') AS [IsIntegratedSecurityOnly],
+		SERVERPROPERTY('IsHadrEnabled') AS [IsHadrEnabled], SERVERPROPERTY('HadrManagerStatus') AS [HadrManagerStatus],
+		SERVERPROPERTY('IsXTPSupported') AS [IsXTPSupported];
 
 --	Get Socket, Physical Core, and Logical Core count from SQL Server Error Log
 EXEC master..xp_readerrorlog 0,1, N'Server process ID is'
