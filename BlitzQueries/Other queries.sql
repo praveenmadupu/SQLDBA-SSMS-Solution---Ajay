@@ -25,6 +25,9 @@ SELECT	@@servername as SvrName,
 		DATEDIFF(day,create_date, GETDATE()) as ServiceStartDays 
 FROM sys.databases as d where d.name = 'tempdb';
 
+-- Current RAM share of SQL Server
+select m.total_physical_memory_kb/1024/1024 as [Ram(GB)], system_memory_state_desc from sys.dm_os_sys_memory as m
+
 -- Get selected server properties (SQL Server 2014)  (Query 3) (Server Properties)
 SELECT	SERVERPROPERTY('MachineName') AS [MachineName], SERVERPROPERTY('ServerName') AS [ServerName],  
 		SERVERPROPERTY('InstanceName') AS [Instance], SERVERPROPERTY('IsClustered') AS [IsClustered], 
@@ -348,7 +351,7 @@ select * from tt where tt.QueryText not like 'select name as objectName from sou
 	and tt.QueryText not like 'SELECT         program_base.[program_id] AS %'
 order by PlanCount desc
 
---	How to examine IO subsystem latencies from within SQL Server
+--	How to examine IO subsystem latencies from within SQL Server (Disk Latency)
 	--	https://www.sqlskills.com/blogs/paul/how-to-examine-io-subsystem-latencies-from-within-sql-server/
 	--	https://sqlperformance.com/2015/03/io-subsystem/monitoring-read-write-latency
 	--	https://www.brentozar.com/blitz/slow-storage-reads-writes/
@@ -387,10 +390,11 @@ ORDER BY [Latency] DESC
 --ORDER BY [WriteLatency] DESC;
 GO
 
-
--- Current RAM share of SQL Server
-select 32767/1024 [total gb], 30719/1024 [sql gb]
-go
+/*	 Look at pending I/O requests by file	*/
+SELECT DB_NAME(mf.database_id) AS [Database] , mf.physical_name ,r.io_pending , r.io_pending_ms_ticks , r.io_type , fs.num_of_reads , fs.num_of_writes
+FROM sys.dm_io_pending_io_requests AS r INNER JOIN sys.dm_io_virtual_file_stats(NULL, NULL) AS fs ON r.io_handle = fs.file_handle INNER JOIN sys.master_files AS mf ON fs.database_id = mf.database_id
+AND fs.file_id = mf.file_id
+ORDER BY r.io_pending , r.io_pending_ms_ticks DESC ;
 
 
 /*	active tables without clustered index	 */

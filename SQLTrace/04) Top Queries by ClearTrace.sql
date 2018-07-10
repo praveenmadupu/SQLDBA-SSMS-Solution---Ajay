@@ -1,10 +1,10 @@
 --	https://www.scalesql.com/cleartrace/
-
+select @@servername, db_name()
 USE [DBASQLTrace]
 GO
 
 DECLARE @serverName nvarchar(255)
-SET @serverName = 'TUL1CIPEDB2';
+SET @serverName = 'TUL1CIPEDB2' --'TUL1CIPCNPDB1' --'TUL1CIPEDB2';
 
 --	SELECT [TraceID], [TraceName] FROM [dbo].[CTTrace];
 
@@ -42,7 +42,7 @@ WHERE LEN([ServerName]) = 0
 		[dbo].[CTApplication] as a
 		on a.ApplicationID = s.ApplicationID
 	--WHERE srv.ServerName = @serverName	
-	--WHERE TraceID IN (0) /* SELECT [TraceID], [TraceName] FROM [dbo].[CTTrace]; */
+	WHERE TraceID IN (2) /* SELECT [TraceID], [TraceName] FROM [dbo].[CTTrace]; */
 )
 ,tAggregated AS 
 (
@@ -108,5 +108,6 @@ left join
 left join
 	[dbo].[CTApplication] as a
 	on a.ApplicationID = s.ApplicationID
+where td.NormalizedTextData = 'EXEC [DBO].[USP_GETRICHMEDIAURLSFORVALIDATION] @URLSOURCE={STR}'
 ORDER BY [Reads] DESC;
 */

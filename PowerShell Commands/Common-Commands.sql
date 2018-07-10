@@ -235,3 +235,21 @@ $session = New-PSSession -computerName TUL1DBAPMTDB1;
 Invoke-Command -scriptblock { Import-Module dbatools } -session $session;
 Import-PSSession -module dbatools -session $session;
 
+--	20) Remove Files Older than 2 Days
+DECLARE @result int;
+DECLARE @_errorMSG VARCHAR(500);  
+
+EXEC @result = xp_cmdshell 'PowerShell.exe -noprofile -command "Get-ChildItem $path -Recurse | Select-Object FullName, LastAccessTime, PSIsContainer | Where-Object {$_.PSIsContainer -eq $false -and $_.LastAccessTime -lt (Get-Date).AddDays(-2) } #| Remove-Item"' ,no_output;  
+
+IF (@result = 0) 
+BEGIN 
+	PRINT 'PowerShell script successfully executed.';	
+END
+ELSE
+BEGIN
+	SET @_errorMSG = 'PowerShell script execution has failed.';
+	IF (select CAST(LEFT(CAST(SERVERPROPERTY('ProductVersion') AS VARCHAR(50)),charindex('.',CAST(SERVERPROPERTY('ProductVersion') AS VARCHAR(50)))-1) AS INT)) >= 12
+		EXECUTE sp_executesql N'THROW 50000,@_errorMSG,1',N'@_errorMSG VARCHAR(200)', @_errorMSG;
+	ELSE
+		EXECUTE sp_executesql N'RAISERROR (@_errorMSG, 16, 1)', N'@_errorMSG VARCHAR(200)', @_errorMSG;
+END

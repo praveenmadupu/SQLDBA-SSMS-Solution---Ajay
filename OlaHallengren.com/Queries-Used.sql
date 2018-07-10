@@ -1,23 +1,20 @@
-USE DBA
---	OlaHallengren - DatabaseBackup - Configurable @Directory Backup Folder Names
---	Modified By Ajay Dwivedi
+--	https://ola.hallengren.com/sql-server-backup.html
 
--- [backupfile] = ServerName_DatabaseName_BackupType_yyyymmdd_hhmmss.bak
-
-EXEC [dbo].[DatabaseBackup]	
-		@Databases = 'USER_DATABASES', 
-
-		--@Directory = 'E:\Backup\**DATABASENAME**', 
-			/* Output like 'E:\Backup\DatabaseName\backupfile.bak' */
-
-		--@Directory = 'E:\Backup\**DATABASENAME**\**BACKUPTYPE**', 
-			/* Output like 'E:\Backup\DatabaseName\BackupType\backupfile.bak' */
-
-		--@Directory = 'E:\Backup', 
-			/* Output like 'E:\Backup\ServerName\DatabaseName\BackupType\backupfile.bak' */
-
-		@Directory = 'E:\Backup\*', 
-			/* Output like 'E:\Backup\backupfile.bak' */
-
+--	Full Backups
+EXEC DBA.dbo.[DatabaseBackup]
+		@Databases = 'ALL_DATABASES',
+		@Directory = 'E:\Backup', /* Output like 'E:\Backup\backupfile.bak' */ 
+		@DirectoryStructure = NULL, /* Do not create directory structure */
 		@BackupType = 'FULL', 
-		@Compress = 'y'
+		@Compress = 'Y'
+		,@CleanupTime = 168 -- 1 week
+		,@CleanupMode = 'AFTER_BACKUP';
+
+--	Diff Backups
+EXEC DBA.dbo.[DatabaseBackup]
+		@Databases = 'USER_DATABASES',
+		@Directory = 'E:\Backup', /* Output like 'E:\Backup\backupfile.bak' */ 
+		@DirectoryStructure = NULL, /* Do not create directory structure */
+		@BackupType = 'DIFF', 
+		@FileExtensionDiff = 'diff',
+		@Compress = 'Y'
