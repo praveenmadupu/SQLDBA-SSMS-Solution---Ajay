@@ -7,6 +7,8 @@ EXEC sp_WhoIsActive @get_full_inner_text=1, @get_transaction_info=1, @get_task_i
 --	EXEC sp_WhoIsActive @help = 1;
 
 EXEC sp_healthcheck @p_getExecutionPlan = 1;
+--	EXEC [dbo].[sp_HealthCheck] '?'
+
 /*
 $instance = 'ANN1VESPDB01';
 $excelPath = "C:\Temp\$instance.xlsx";

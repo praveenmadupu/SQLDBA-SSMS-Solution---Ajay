@@ -1,3 +1,6 @@
+DECLARE @_specificLoginName VARCHAR(250);
+SET @_specificLoginName = '';
+
 DECLARE 
     @sql VARCHAR(2048)
     ,@sort INT 

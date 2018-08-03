@@ -45,6 +45,8 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Extended Events", "Extended
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Baselining", "Baselining\Baselining.ssmssqlproj", "{DAB50F5A-426A-4F81-9B01-E7A48FABB538}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Blocking Alert", "Blocking Alert\Blocking Alert.ssmssqlproj", "{0AD76D32-E3F9-4382-9C1A-152E8439B86B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -68,10 +70,11 @@ Global
 		{87B45E28-8552-4150-B3FC-7EF7A397DC20}.Default|Default.ActiveCfg = Default
 		{104F2EAB-0151-4942-8A8E-BC32078E48C7}.Default|Default.ActiveCfg = Default
 		{3061CF18-9C99-463A-9171-4CC2AB624B1E}.Default|Default.ActiveCfg = Default
-		{EAFD25B5-653F-4EF7-B8E0-5EEA5CE5E067}.Default|Default.ActiveCfg = Default
 		{49ADEE38-CEB3-4F9D-A157-F6CFAF37A687}.Default|Default.ActiveCfg = Default
 		{2D2CED0F-54CC-4689-B369-E125AF2DF4ED}.Default|Default.ActiveCfg = Default
 		{DAB50F5A-426A-4F81-9B01-E7A48FABB538}.Default|Default.ActiveCfg = Default
+		{07497EB4-AE8D-4C6D-A4A0-A454C1A96445}.Default|Default.ActiveCfg = Default
+		{0AD76D32-E3F9-4382-9C1A-152E8439B86B}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

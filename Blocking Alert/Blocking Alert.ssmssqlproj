@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<SqlWorkbenchSqlProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="Blocking Alert">
+  <Items>
+    <LogicalFolder Name="Connections" Type="2" Sorted="true">
+      <Items />
+    </LogicalFolder>
+    <LogicalFolder Name="Queries" Type="0" Sorted="true">
+      <Items>
+        <FileNode Name="0. Overview.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>0. Overview.sql</FullPath>
+        </FileNode>
+        <FileNode Name="1. Set 'Blocked Process Threshold' to 20 Seconds.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>1. Set 'Blocked Process Threshold' to 20 Seconds.sql</FullPath>
+        </FileNode>
+        <FileNode Name="2. Create table [dbo].[WhoIsActive_ResultSets].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>2. Create table [dbo].[WhoIsActive_ResultSets].sql</FullPath>
+        </FileNode>
+        <FileNode Name="3. Create Job [DBA - Log_With_sp_WhoIsActive].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>3. Create Job [DBA - Log_With_sp_WhoIsActive].sql</FullPath>
+        </FileNode>
+        <FileNode Name="4. Create Alert [Blocked Process Threshold greator than 5 Minutes].sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>4. Create Alert [Blocked Process Threshold greator than 5 Minutes].sql</FullPath>
+        </FileNode>
+        <FileNode Name="5. Fetch Blocking Information.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>5. Fetch Blocking Information.sql</FullPath>
+        </FileNode>
+      </Items>
+    </LogicalFolder>
+    <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
+      <Items />
+    </LogicalFolder>
+  </Items>
+</SqlWorkbenchSqlProject>
