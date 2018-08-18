@@ -2,45 +2,76 @@
 <SqlWorkbenchSqlProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="Blocking Alert">
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
-      <Items />
+      <Items>
+        <ConnectionNode Name="BAN-2ADWIVEDI-L:sa">
+          <Created>2018-08-18T14:41:54.9895374+05:30</Created>
+          <Type>SQL</Type>
+          <Server>BAN-2ADWIVEDI-L</Server>
+          <UserName>sa</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+      </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
+        <FileNode Name="__1. Create Blocking Scenario.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
+          <FullPath>__1. Create Blocking Scenario.sql</FullPath>
+        </FileNode>
+        <FileNode Name="__2. Cleanup Script.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>__2. Cleanup Script.sql</FullPath>
+        </FileNode>
         <FileNode Name="0. Overview.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>0. Overview.sql</FullPath>
         </FileNode>
-        <FileNode Name="1. Set 'Blocked Process Threshold' to 20 Seconds.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>1. Set 'Blocked Process Threshold' to 20 Seconds.sql</FullPath>
+        <FileNode Name="1. Add DBAGroup Operator.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
+          <FullPath>1. Add DBAGroup Operator.sql</FullPath>
         </FileNode>
-        <FileNode Name="2. Create table [dbo].[WhoIsActive_ResultSets].sql">
+        <FileNode Name="2. Set 'Blocked Process Threshold' to 20 Seconds.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
-          <FullPath>2. Create table [dbo].[WhoIsActive_ResultSets].sql</FullPath>
+          <FullPath>2. Set 'Blocked Process Threshold' to 20 Seconds.sql</FullPath>
         </FileNode>
-        <FileNode Name="3. Create Job [DBA - Log_With_sp_WhoIsActive].sql">
+        <FileNode Name="3. Create table [dbo].[WhoIsActive_ResultSets].sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
-          <FullPath>3. Create Job [DBA - Log_With_sp_WhoIsActive].sql</FullPath>
+          <FullPath>3. Create table [dbo].[WhoIsActive_ResultSets].sql</FullPath>
         </FileNode>
-        <FileNode Name="4. Create Alert [Blocked Process Threshold greator than 5 Minutes].sql">
+        <FileNode Name="4. Create Job [DBA - Log_With_sp_WhoIsActive].sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
-          <FullPath>4. Create Alert [Blocked Process Threshold greator than 5 Minutes].sql</FullPath>
+          <FullPath>4. Create Job [DBA - Log_With_sp_WhoIsActive].sql</FullPath>
         </FileNode>
-        <FileNode Name="5. Fetch Blocking Information.sql">
+        <FileNode Name="5. Create Alert [Blocked Process Threshold greator than 5 Minutes].sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
-          <FullPath>5. Fetch Blocking Information.sql</FullPath>
+          <FullPath>5. Create Alert [Blocked Process Threshold greator than 5 Minutes].sql</FullPath>
+        </FileNode>
+        <FileNode Name="6. Fetch Blocking Information.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>6. Fetch Blocking Information.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

@@ -3,6 +3,18 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
+        <ConnectionNode Name="BAN-2ADWIVEDI-L:CORPORATE\adwivedi">
+          <Created>2018-08-18T10:02:08.2062691+05:30</Created>
+          <Type>SQL</Type>
+          <Server>BAN-2ADWIVEDI-L</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="BAN-2ADWIVEDI-L:sa">
           <Created>2018-06-08T07:59:10.2483302+05:30</Created>
           <Type>SQL</Type>
@@ -38,8 +50,8 @@
           <FullPath>__Resources.sql</FullPath>
         </FileNode>
         <FileNode Name="01) Get Replication Jobs.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>01) Get Replication Jobs.sql</FullPath>
         </FileNode>

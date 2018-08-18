@@ -2,14 +2,27 @@
 <SqlWorkbenchSqlProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="PermissionIssues">
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
-      <Items />
+      <Items>
+        <ConnectionNode Name="BAN-2ADWIVEDI-L:Ajay">
+          <Created>2018-08-14T17:20:48.0518556+05:30</Created>
+          <Type>SQL</Type>
+          <Server>BAN-2ADWIVEDI-L</Server>
+          <UserName>Ajay</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+      </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="GetPermissions.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:False:Ajay</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
+          <AssociatedConnUserName>Ajay</AssociatedConnUserName>
           <FullPath>GetPermissions.sql</FullPath>
         </FileNode>
       </Items>

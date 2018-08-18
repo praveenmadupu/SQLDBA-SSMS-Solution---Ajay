@@ -3,6 +3,30 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
+        <ConnectionNode Name="BAN-2ADWIVEDI-L:Ajay">
+          <Created>2018-08-14T17:21:09.3478556+05:30</Created>
+          <Type>SQL</Type>
+          <Server>BAN-2ADWIVEDI-L</Server>
+          <UserName>Ajay</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB>master</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="BAN-2ADWIVEDI-L:CORPORATE\adwivedi">
+          <Created>2018-08-09T18:42:12.7701224+05:30</Created>
+          <Type>SQL</Type>
+          <Server>BAN-2ADWIVEDI-L</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="BAN-2ADWIVEDI-L:sa">
           <Created>2018-03-19T20:26:08.4165732+05:30</Created>
           <Type>SQL</Type>
@@ -80,9 +104,9 @@
           <FullPath>7) Copy Latest Full backup to Location - Using BackupHistory.sql</FullPath>
         </FileNode>
         <FileNode Name="8) Fix Orphan Logins for All DBs.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:False:Ajay</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
+          <AssociatedConnUserName>Ajay</AssociatedConnUserName>
           <FullPath>8) Fix Orphan Logins for All DBs.sql</FullPath>
         </FileNode>
         <FileNode Name="Get-LatestBackup.sql">
@@ -98,8 +122,8 @@
           <FullPath>Query - Backup History.sql</FullPath>
         </FileNode>
         <FileNode Name="Query - Restore History.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Query - Restore History.sql</FullPath>
         </FileNode>
