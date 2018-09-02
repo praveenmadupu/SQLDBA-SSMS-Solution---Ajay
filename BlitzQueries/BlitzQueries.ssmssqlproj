@@ -3,6 +3,30 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
+        <ConnectionNode Name="BAN-1ADWIVEDI-L:CORPORATE\adwivedi">
+          <Created>2018-09-01T13:08:49.8186142+05:30</Created>
+          <Type>SQL</Type>
+          <Server>BAN-1ADWIVEDI-L</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="BAN-1ADWIVEDI-L:sa">
+          <Created>2018-09-02T12:40:53.3626993+05:30</Created>
+          <Type>SQL</Type>
+          <Server>BAN-1ADWIVEDI-L</Server>
+          <UserName>sa</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB>master</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="BAN-2ADWIVEDI-L:sa">
           <Created>2018-06-13T16:03:02.7281313+05:30</Created>
           <Type>SQL</Type>
@@ -62,8 +86,8 @@
           <FullPath>CREATE TABLE [dbo].[whatIsRunning].sql</FullPath>
         </FileNode>
         <FileNode Name="Other queries.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-1ADWIVEDI-L:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>BAN-1ADWIVEDI-L</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Other queries.sql</FullPath>
         </FileNode>
@@ -92,9 +116,9 @@
           <FullPath>who_is_active_v11_30(Modified).sql</FullPath>
         </FileNode>
         <FileNode Name="whoIsActive.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-1ADWIVEDI-L:False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>BAN-1ADWIVEDI-L</AssociatedConnSrvName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>whoIsActive.sql</FullPath>
         </FileNode>
       </Items>
