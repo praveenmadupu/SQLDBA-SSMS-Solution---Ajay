@@ -39,6 +39,30 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPEDB2:CORPORATE\adwivedi">
+          <Created>2018-09-12T12:33:02.1376732+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPEDB2</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="TUL1DBAPMTDB1:CORPORATE\adwivedi">
+          <Created>2018-09-11T14:42:11.1544332+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1DBAPMTDB1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>DBA</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
@@ -84,6 +108,12 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>CREATE TABLE [dbo].[whatIsRunning].sql</FullPath>
+        </FileNode>
+        <FileNode Name="Detect n Reduce High VLFs.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Detect n Reduce High VLFs.sql</FullPath>
         </FileNode>
         <FileNode Name="Other queries.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-1ADWIVEDI-L:True</AssociatedConnectionMoniker>

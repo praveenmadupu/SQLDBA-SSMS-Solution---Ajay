@@ -68,9 +68,9 @@
           <FullPath>CpuUtilizationHistory.sql</FullPath>
         </FileNode>
         <FileNode Name="Extract Data From sp_WhoIsActive Collection.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-1ADWIVEDI-L:False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-1ADWIVEDI-L:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>BAN-1ADWIVEDI-L</AssociatedConnSrvName>
-          <AssociatedConnUserName>sa</AssociatedConnUserName>
+          <AssociatedConnUserName />
           <FullPath>Extract Data From sp_WhoIsActive Collection.sql</FullPath>
         </FileNode>
         <FileNode Name="Find - What is Deleting Data.sql">

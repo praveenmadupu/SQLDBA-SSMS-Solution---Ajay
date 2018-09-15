@@ -47,6 +47,8 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Baselining", "Baselining\Ba
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Blocking Alert", "Blocking Alert\Blocking Alert.ssmssqlproj", "{0AD76D32-E3F9-4382-9C1A-152E8439B86B}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Deadlock_Detection_SQLTrace", "Deadlock_Detection_SQLTrace\Deadlock_Detection_SQLTrace.ssmssqlproj", "{2A3AE999-5A88-4B57-8812-5F674B2C1E36}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -73,8 +75,9 @@ Global
 		{49ADEE38-CEB3-4F9D-A157-F6CFAF37A687}.Default|Default.ActiveCfg = Default
 		{2D2CED0F-54CC-4689-B369-E125AF2DF4ED}.Default|Default.ActiveCfg = Default
 		{DAB50F5A-426A-4F81-9B01-E7A48FABB538}.Default|Default.ActiveCfg = Default
-		{07497EB4-AE8D-4C6D-A4A0-A454C1A96445}.Default|Default.ActiveCfg = Default
 		{0AD76D32-E3F9-4382-9C1A-152E8439B86B}.Default|Default.ActiveCfg = Default
+		{85EEF888-2B95-4C98-AE08-B527A935F661}.Default|Default.ActiveCfg = Default
+		{2A3AE999-5A88-4B57-8812-5F674B2C1E36}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
