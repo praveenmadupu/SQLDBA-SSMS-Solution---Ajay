@@ -3,6 +3,18 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
+        <ConnectionNode Name="(local):CORPORATE\adwivedi">
+          <Created>2018-12-09T11:11:40.0512101+05:30</Created>
+          <Type>SQL</Type>
+          <Server>(local)</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>TivoSQLInventory_Ajay</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="BAN-1ADWIVEDI-L:CORPORATE\adwivedi">
           <Created>2018-09-10T12:00:49.9603368+05:30</Created>
           <Type>SQL</Type>
@@ -67,11 +79,149 @@
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
+        <FileNode Name="__01) SQLDBATools_DDLs.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>__01) SQLDBATools_DDLs.sql</FullPath>
+        </FileNode>
+        <FileNode Name="__02) Scripts.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>__02) Scripts.sql</FullPath>
+        </FileNode>
+        <FileNode Name="__03) Issues_In_Inventory.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>__03) Issues_In_Inventory.sql</FullPath>
+        </FileNode>
+        <FileNode Name="__04) Common Errors.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>__04) Common Errors.sql</FullPath>
+        </FileNode>
+        <FileNode Name="__05) Job-DataCollection.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>__05) Job-DataCollection.sql</FullPath>
+        </FileNode>
+        <FileNode Name="__06_Setup [DBA] db.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>__06_Setup [DBA] db.sql</FullPath>
+        </FileNode>
+        <FileNode Name="__07) HADR Alerts.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>__07) HADR Alerts.sql</FullPath>
+        </FileNode>
+        <FileNode Name="__08) Job-JAMS-DataCollection.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>__08) Job-JAMS-DataCollection.sql</FullPath>
+        </FileNode>
+        <FileNode Name="__09) PowerShell Collection Failure Mail.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>__09) PowerShell Collection Failure Mail.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Agent Job Testing.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Agent Job Testing.sql</FullPath>
+        </FileNode>
+        <FileNode Name="BackupInfo as XML.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-1ADWIVEDI-L:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>BAN-1ADWIVEDI-L</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>BackupInfo as XML.sql</FullPath>
+        </FileNode>
         <FileNode Name="DatabaseMail_Using_GMail.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-1ADWIVEDI-L:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>BAN-1ADWIVEDI-L</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>DatabaseMail_Using_GMail.sql</FullPath>
+        </FileNode>
+        <FileNode Name="DatabaseMailProfile.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>DatabaseMailProfile.sql</FullPath>
+        </FileNode>
+        <FileNode Name="dbo.usp_GetMail_4_JAMS.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>dbo.usp_GetMail_4_JAMS.sql</FullPath>
+        </FileNode>
+        <FileNode Name="dbo.usp_GetMail_4_SQLDBATools.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>dbo.usp_GetMail_4_SQLDBATools.sql</FullPath>
+        </FileNode>
+        <FileNode Name="ExecuteScripts4AllServers.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>ExecuteScripts4AllServers.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Mailer - Database Backup History - Date.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Mailer - Database Backup History - Date.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Monitoring Queries.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Monitoring Queries.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Powershell Script - CmdExec.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Powershell Script - CmdExec.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Powershell Script - xp_cmdshell.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Powershell Script - xp_cmdshell.sql</FullPath>
+        </FileNode>
+        <FileNode Name="RITM0042946__AlwaysOn.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>RITM0042946__AlwaysOn.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SQL Support.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SQL Support.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SqlAgentJob - cmdExec Type.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SqlAgentJob - cmdExec Type.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Update Server Details.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Update Server Details.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

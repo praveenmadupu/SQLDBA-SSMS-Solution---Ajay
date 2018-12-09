@@ -49,6 +49,8 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Blocking Alert", "Blocking 
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Deadlock_Detection_SQLTrace", "Deadlock_Detection_SQLTrace\Deadlock_Detection_SQLTrace.ssmssqlproj", "{2A3AE999-5A88-4B57-8812-5F674B2C1E36}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Sep26-Presentation", "Sep26-Presentation\Sep26-Presentation.ssmssqlproj", "{20351268-D56B-4BCF-A2D9-B1EF8E9791F7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -76,8 +78,9 @@ Global
 		{2D2CED0F-54CC-4689-B369-E125AF2DF4ED}.Default|Default.ActiveCfg = Default
 		{DAB50F5A-426A-4F81-9B01-E7A48FABB538}.Default|Default.ActiveCfg = Default
 		{0AD76D32-E3F9-4382-9C1A-152E8439B86B}.Default|Default.ActiveCfg = Default
-		{85EEF888-2B95-4C98-AE08-B527A935F661}.Default|Default.ActiveCfg = Default
 		{2A3AE999-5A88-4B57-8812-5F674B2C1E36}.Default|Default.ActiveCfg = Default
+		{9F02490B-F37E-4165-AF54-89439CBFC7E7}.Default|Default.ActiveCfg = Default
+		{20351268-D56B-4BCF-A2D9-B1EF8E9791F7}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

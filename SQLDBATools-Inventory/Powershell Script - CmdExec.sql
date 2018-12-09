@@ -1,0 +1,1 @@
+powershell.exe -ExecutionPolicy Bypass .  'C:\Program Files\WindowsPowerShell\Modules\SQLDBATools\Cmdlets\Wrapper-DatabaseBackupInfo.ps1';
