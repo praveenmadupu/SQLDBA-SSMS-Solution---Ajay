@@ -75,6 +75,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="tul1dbapmtdb1\sql2016:CORPORATE\adwivedi">
+          <Created>2018-12-10T16:31:19.2166027+05:30</Created>
+          <Type>SQL</Type>
+          <Server>tul1dbapmtdb1\sql2016</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
@@ -199,6 +211,12 @@
           <AssociatedConnUserName />
           <FullPath>Powershell Script - xp_cmdshell.sql</FullPath>
         </FileNode>
+        <FileNode Name="Quiz_DDLs.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Quiz_DDLs.sql</FullPath>
+        </FileNode>
         <FileNode Name="RITM0042946__AlwaysOn.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
@@ -226,7 +244,38 @@
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
-      <Items />
+      <Items>
+        <FileNode Name="1. Create VHDs using Diskpart.ps1">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>1. Create VHDs using Diskpart.ps1</FullPath>
+        </FileNode>
+        <FileNode Name="2. Create VMs.ps1">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>2. Create VMs.ps1</FullPath>
+        </FileNode>
+        <FileNode Name="3. Installing a Guest OS into a VM.ps1">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>3. Installing a Guest OS into a VM.ps1</FullPath>
+        </FileNode>
+        <FileNode Name="4. Post OS Installation - Initialize Other Disk Drives.ps1">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>4. Post OS Installation - Initialize Other Disk Drives.ps1</FullPath>
+        </FileNode>
+        <FileNode Name="5. Post OS Installation - Add Shared Folders VirtualBox.ps1">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>5. Post OS Installation - Add Shared Folders VirtualBox.ps1</FullPath>
+        </FileNode>
+      </Items>
     </LogicalFolder>
   </Items>
 </SqlWorkbenchSqlProject>
