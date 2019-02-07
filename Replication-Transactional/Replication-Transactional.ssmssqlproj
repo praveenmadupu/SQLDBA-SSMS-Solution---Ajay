@@ -3,58 +3,10 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="BAN-1ADWIVEDI-L:CORPORATE\adwivedi">
-          <Created>2018-09-20T11:54:29.3275695+05:30</Created>
+        <ConnectionNode Name="TUL1DBAPMTDB1\SQL2016:CORPORATE\adwivedi">
+          <Created>2019-02-07T08:21:10.6829677+05:30</Created>
           <Type>SQL</Type>
-          <Server>BAN-1ADWIVEDI-L</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="BAN-2ADWIVEDI-L:CORPORATE\adwivedi">
-          <Created>2018-08-18T10:02:08.2062691+05:30</Created>
-          <Type>SQL</Type>
-          <Server>BAN-2ADWIVEDI-L</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="BAN-2ADWIVEDI-L:sa">
-          <Created>2018-06-08T07:59:10.2483302+05:30</Created>
-          <Type>SQL</Type>
-          <Server>BAN-2ADWIVEDI-L</Server>
-          <UserName>sa</UserName>
-          <Authentication>SQL</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="BAN-2ADWIVEDI-L\SQL2014:sa">
-          <Created>2018-06-07T19:31:03.6552896+05:30</Created>
-          <Type>SQL</Type>
-          <Server>BAN-2ADWIVEDI-L\SQL2014</Server>
-          <UserName>sa</UserName>
-          <Authentication>SQL</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName />
-        </ConnectionNode>
-        <ConnectionNode Name="TUL1CIPEDB2DEV:CORPORATE\adwivedi">
-          <Created>2018-09-20T12:32:08.784291+05:30</Created>
-          <Type>SQL</Type>
-          <Server>TUL1CIPEDB2DEV</Server>
+          <Server>TUL1DBAPMTDB1\SQL2016</Server>
           <UserName />
           <Authentication>Windows Authentication</Authentication>
           <InitialDB />
@@ -68,32 +20,44 @@
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="__Resources.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2DEV:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPEDB2DEV</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>__Resources.sql</FullPath>
         </FileNode>
         <FileNode Name="1 - Get Replication Jobs.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2DEV:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPEDB2DEV</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>1 - Get Replication Jobs.sql</FullPath>
         </FileNode>
         <FileNode Name="2 - Configuring the Distributor.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2DEV:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPEDB2DEV</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2016:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2016</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>2 - Configuring the Distributor.sql</FullPath>
         </FileNode>
+        <FileNode Name="3 - Setting - Publication - Backup_Restore.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2016:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2016</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>3 - Setting - Publication - Backup_Restore.sql</FullPath>
+        </FileNode>
         <FileNode Name="3 - Setting up Tran Repl Publication.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2DEV:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPEDB2DEV</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2016:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2016</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>3 - Setting up Tran Repl Publication.sql</FullPath>
         </FileNode>
+        <FileNode Name="4 - Setting - Subscription - Backup_Restore.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2016:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2016</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>4 - Setting - Subscription - Backup_Restore.sql</FullPath>
+        </FileNode>
         <FileNode Name="4 - Setting up Tran Repl Subscription.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2DEV:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPEDB2DEV</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2016:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2016</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>4 - Setting up Tran Repl Subscription.sql</FullPath>
         </FileNode>
@@ -104,10 +68,16 @@
           <FullPath>5 - Testing a transactional replication topology.sql</FullPath>
         </FileNode>
         <FileNode Name="6 - Remove Replication.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-1ADWIVEDI-L:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>BAN-1ADWIVEDI-L</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>6 - Remove Replication.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Backup-Restore.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2016:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2016</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Backup-Restore.sql</FullPath>
         </FileNode>
         <FileNode Name="Undistributed Commands.sql">
           <AssociatedConnectionMoniker />

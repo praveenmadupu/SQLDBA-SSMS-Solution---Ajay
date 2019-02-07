@@ -146,16 +146,22 @@
           <FullPath>Query - Backup History.sql</FullPath>
         </FileNode>
         <FileNode Name="Query - Restore History.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Query - Restore History.sql</FullPath>
         </FileNode>
         <FileNode Name="RevLogin-Script.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>RevLogin-Script.sql</FullPath>
+        </FileNode>
+        <FileNode Name="ScriptOut - RESTORE With REPLACE.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>ScriptOut - RESTORE With REPLACE.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

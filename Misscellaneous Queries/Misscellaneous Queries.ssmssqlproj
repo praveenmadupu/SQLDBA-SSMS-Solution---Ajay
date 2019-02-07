@@ -133,6 +133,12 @@
           <AssociatedConnUserName />
           <FullPath>Maintainence - Delete files older than 72 hours.sql</FullPath>
         </FileNode>
+        <FileNode Name="Maintainence - Delete folder-files older than 120 hours.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Maintainence - Delete folder-files older than 120 hours.sql</FullPath>
+        </FileNode>
         <FileNode Name="Return Query Output as HTML Table.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-1ADWIVEDI-L:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>BAN-1ADWIVEDI-L</AssociatedConnSrvName>

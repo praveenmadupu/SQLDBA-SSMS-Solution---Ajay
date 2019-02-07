@@ -1,6 +1,5 @@
 USE [master]
 GO
-
 /****** Object:  Database [SQLDBATools]    Script Date: 4/10/2018 7:10:02 AM ******/
 CREATE DATABASE [SQLDBATools] ON  PRIMARY 
 ( NAME = N'SQLDBATools', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL10_50.MSSQLSERVER\MSSQL\DATA\SQLDBATools.mdf' , SIZE = 2097152KB , MAXSIZE = UNLIMITED, FILEGROWTH = 1048576KB ), 

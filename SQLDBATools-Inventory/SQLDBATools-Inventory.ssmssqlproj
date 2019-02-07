@@ -91,11 +91,41 @@
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
+        <FileNode Name="__00) Normal Queries.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>__00) Normal Queries.sql</FullPath>
+        </FileNode>
+        <FileNode Name="__01) SQLDBATools - Create Database.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>__01) SQLDBATools - Create Database.sql</FullPath>
+        </FileNode>
+        <FileNode Name="__01) SQLDBATools_DDL - Create Tables.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>__01) SQLDBATools_DDL - Create Tables.sql</FullPath>
+        </FileNode>
+        <FileNode Name="__01) SQLDBATools_DDL - Procedures.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>__01) SQLDBATools_DDL - Procedures.sql</FullPath>
+        </FileNode>
         <FileNode Name="__01) SQLDBATools_DDLs.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>__01) SQLDBATools_DDLs.sql</FullPath>
+        </FileNode>
+        <FileNode Name="__02) CollectionErrors.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1dbapmtdb1\sql2016:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1dbapmtdb1\sql2016</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>__02) CollectionErrors.sql</FullPath>
         </FileNode>
         <FileNode Name="__02) Scripts.sql">
           <AssociatedConnectionMoniker />
@@ -157,6 +187,12 @@
           <AssociatedConnUserName />
           <FullPath>BackupInfo as XML.sql</FullPath>
         </FileNode>
+        <FileNode Name="Common Errors.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Common Errors.sql</FullPath>
+        </FileNode>
         <FileNode Name="DatabaseMail_Using_GMail.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-1ADWIVEDI-L:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>BAN-1ADWIVEDI-L</AssociatedConnSrvName>
@@ -187,6 +223,30 @@
           <AssociatedConnUserName />
           <FullPath>ExecuteScripts4AllServers.sql</FullPath>
         </FileNode>
+        <FileNode Name="HADR Alerts.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>HADR Alerts.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Issues_In_Inventory.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Issues_In_Inventory.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Job-DataCollection.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Job-DataCollection.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Job-JAMS-DataCollection.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Job-JAMS-DataCollection.sql</FullPath>
+        </FileNode>
         <FileNode Name="Mailer - Database Backup History - Date.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
@@ -198,6 +258,12 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Monitoring Queries.sql</FullPath>
+        </FileNode>
+        <FileNode Name="PowerShell Collection Failure Mail.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>PowerShell Collection Failure Mail.sql</FullPath>
         </FileNode>
         <FileNode Name="Powershell Script - CmdExec.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
@@ -223,6 +289,18 @@
           <AssociatedConnUserName />
           <FullPath>RITM0042946__AlwaysOn.sql</FullPath>
         </FileNode>
+        <FileNode Name="Scripts.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Scripts.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Setup [DBA] db.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Setup [DBA] db.sql</FullPath>
+        </FileNode>
         <FileNode Name="SQL Support.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
@@ -235,9 +313,15 @@
           <AssociatedConnUserName />
           <FullPath>SqlAgentJob - cmdExec Type.sql</FullPath>
         </FileNode>
-        <FileNode Name="Update Server Details.sql">
+        <FileNode Name="SQLDBATools_DDLs.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SQLDBATools_DDLs.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Update Server Details.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Update Server Details.sql</FullPath>
         </FileNode>
