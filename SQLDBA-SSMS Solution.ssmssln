@@ -35,8 +35,6 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Hekathon", "Hekathon\Hekath
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Experiments", "Experiments\Experiments.ssmssqlproj", "{87B45E28-8552-4150-B3FC-7EF7A397DC20}"
 EndProject
-Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Transactional Replication", "Transactional Replication\Transactional Replication.ssmssqlproj", "{104F2EAB-0151-4942-8A8E-BC32078E48C7}"
-EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Replication-Transactional", "Replication-Transactional\Replication-Transactional.ssmssqlproj", "{3061CF18-9C99-463A-9171-4CC2AB624B1E}"
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "SQLTrace", "SQLTrace\SQLTrace.ssmssqlproj", "{49ADEE38-CEB3-4F9D-A157-F6CFAF37A687}"
@@ -72,15 +70,14 @@ Global
 		{58A07269-15CC-4732-8DD3-AFFEF21B8CEB}.Default|Default.ActiveCfg = Default
 		{1AF2A8C9-C92B-4B06-BEAD-C010628B2588}.Default|Default.ActiveCfg = Default
 		{87B45E28-8552-4150-B3FC-7EF7A397DC20}.Default|Default.ActiveCfg = Default
-		{104F2EAB-0151-4942-8A8E-BC32078E48C7}.Default|Default.ActiveCfg = Default
 		{3061CF18-9C99-463A-9171-4CC2AB624B1E}.Default|Default.ActiveCfg = Default
 		{49ADEE38-CEB3-4F9D-A157-F6CFAF37A687}.Default|Default.ActiveCfg = Default
 		{2D2CED0F-54CC-4689-B369-E125AF2DF4ED}.Default|Default.ActiveCfg = Default
 		{DAB50F5A-426A-4F81-9B01-E7A48FABB538}.Default|Default.ActiveCfg = Default
 		{0AD76D32-E3F9-4382-9C1A-152E8439B86B}.Default|Default.ActiveCfg = Default
 		{2A3AE999-5A88-4B57-8812-5F674B2C1E36}.Default|Default.ActiveCfg = Default
-		{9F02490B-F37E-4165-AF54-89439CBFC7E7}.Default|Default.ActiveCfg = Default
 		{20351268-D56B-4BCF-A2D9-B1EF8E9791F7}.Default|Default.ActiveCfg = Default
+		{25D4C3A4-EB57-412B-83A7-CAC4E9CCA796}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

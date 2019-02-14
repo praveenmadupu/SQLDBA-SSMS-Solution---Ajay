@@ -10,9 +10,10 @@ EXEC sp_addsubscription
 --BEGIN Backup Params
 @sync_type = N'initialize with backup',
 @backupdevicetype = 'disk',
-@backupdevicename = 'G:\MSSQLData\SQL2016_Backup\TivoSQLInventory\FULL\TivoSQLInventory_FULL_20190206_225446.bak'
+@backupdevicename = 'G:\MSSQLData\SQL2016_Backup\TivoSQLInventory\FULL\TivoSQLInventory_FULL_20190214_025710.bak'
 --END Backup Params
 GO
+
 
 -- Create distribution agent
 USE [TivoSQLInventory];

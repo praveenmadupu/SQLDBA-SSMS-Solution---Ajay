@@ -110,9 +110,9 @@
           <FullPath>blitzFirst.sql</FullPath>
         </FileNode>
         <FileNode Name="BlitzIndex.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:False:sa</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
-          <AssociatedConnUserName>sa</AssociatedConnUserName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:ANN1VESPDB01:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>ANN1VESPDB01</AssociatedConnSrvName>
+          <AssociatedConnUserName />
           <FullPath>BlitzIndex.sql</FullPath>
         </FileNode>
         <FileNode Name="Blocking Tree.sql">

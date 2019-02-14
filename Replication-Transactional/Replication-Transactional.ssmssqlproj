@@ -3,6 +3,18 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
+        <ConnectionNode Name="ANN1VESPDB01:CORPORATE\adwivedi">
+          <Created>2019-02-14T10:19:41.9768258+05:30</Created>
+          <Type>SQL</Type>
+          <Server>ANN1VESPDB01</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>AMGExtra</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="TUL1DBAPMTDB1\SQL2016:CORPORATE\adwivedi">
           <Created>2019-02-07T08:21:10.6829677+05:30</Created>
           <Type>SQL</Type>
@@ -20,8 +32,8 @@
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="__Resources.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:ANN1VESPDB01:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>ANN1VESPDB01</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>__Resources.sql</FullPath>
         </FileNode>
@@ -62,14 +74,14 @@
           <FullPath>4 - Setting up Tran Repl Subscription.sql</FullPath>
         </FileNode>
         <FileNode Name="5 - Testing a transactional replication topology.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2016:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2016</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>5 - Testing a transactional replication topology.sql</FullPath>
         </FileNode>
         <FileNode Name="6 - Remove Replication.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2016:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2016</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>6 - Remove Replication.sql</FullPath>
         </FileNode>
@@ -78,6 +90,12 @@
           <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2016</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Backup-Restore.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SQLQuery1.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SQLQuery1.sql</FullPath>
         </FileNode>
         <FileNode Name="Undistributed Commands.sql">
           <AssociatedConnectionMoniker />

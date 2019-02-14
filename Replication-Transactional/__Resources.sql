@@ -14,7 +14,7 @@ Rules:-
 1) Log Reader agent always resides at Distributor
 2) Distribution Agent 
 	> resides at Distributer for "Push" subscription
-	> resides at Publisher for "Pull" subscription
+	> resides at Subscriber for "Pull" subscription
 
 Find Replication Jobs using query "01) Get Replication Jobs.sql"
 
