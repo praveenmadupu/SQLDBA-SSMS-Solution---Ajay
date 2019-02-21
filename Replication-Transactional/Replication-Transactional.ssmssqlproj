@@ -67,6 +67,12 @@
           <AssociatedConnUserName />
           <FullPath>4 - Setting - Subscription - Backup_Restore.sql</FullPath>
         </FileNode>
+        <FileNode Name="4 - Setting - Subscription - ReplicationSupportOnly.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2016:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2016</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>4 - Setting - Subscription - ReplicationSupportOnly.sql</FullPath>
+        </FileNode>
         <FileNode Name="4 - Setting up Tran Repl Subscription.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2016:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2016</AssociatedConnSrvName>
@@ -91,11 +97,11 @@
           <AssociatedConnUserName />
           <FullPath>Backup-Restore.sql</FullPath>
         </FileNode>
-        <FileNode Name="SQLQuery1.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+        <FileNode Name="Repl - ReplicationSupportOnly.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2016:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2016</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>SQLQuery1.sql</FullPath>
+          <FullPath>Repl - ReplicationSupportOnly.sql</FullPath>
         </FileNode>
         <FileNode Name="Undistributed Commands.sql">
           <AssociatedConnectionMoniker />
@@ -106,7 +112,20 @@
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
-      <Items />
+      <Items>
+        <FileNode Name="Script to be Run on POS-STAGING-2014.txt">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Script to be Run on POS-STAGING-2014.txt</FullPath>
+        </FileNode>
+        <FileNode Name="Script To Run on POS-COSMO-2008.txt">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Script To Run on POS-COSMO-2008.txt</FullPath>
+        </FileNode>
+      </Items>
     </LogicalFolder>
   </Items>
 </SqlWorkbenchSqlProject>

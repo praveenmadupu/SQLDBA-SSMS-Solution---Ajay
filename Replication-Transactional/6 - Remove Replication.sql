@@ -13,7 +13,7 @@ GO
 
 -- Remove replication objects from the subscription database on MYSUB.
 DECLARE @subscriptionDB AS sysname
-SET @subscriptionDB = N'distribution'
+SET @subscriptionDB = N'TivoSQLInventory_Dev'
 
 -- Remove replication objects from a subscription database (if necessary).
 USE master

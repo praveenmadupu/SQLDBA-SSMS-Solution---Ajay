@@ -10,6 +10,8 @@
 USE [TivoSQLInventory];
 GO
 
+exec sp_helppublication @publication = 'DIMS_Dev'  
+
 EXEC sp_replicationdboption @dbname = N'TivoSQLInventory', 
 	-- Can be "subscribe", "publish", "merge publish"
 	-- and "sync with backup"
@@ -17,8 +19,8 @@ EXEC sp_replicationdboption @dbname = N'TivoSQLInventory',
     @value = N'true';
 
 -- ** Validate the new Log Reader SQL Server Agent Job **
-EXEC sp_addpublication @publication = N'DIMS',
-	@description = N'Transactional publication for database ''TivoSQLInventory'' from Publisher ''TUL1DBAPMTDB1\SQL2016''.',
+EXEC sp_addpublication @publication = N'DIMS_Dev',
+	@description = N'Transactional publication for database ''TivoSQLInventory_Dev'' from Publisher ''TUL1DBAPMTDB1\SQL2016''.',
     @sync_method = N'concurrent',
 	@retention = 0, 
 	@allow_push = N'true', 
