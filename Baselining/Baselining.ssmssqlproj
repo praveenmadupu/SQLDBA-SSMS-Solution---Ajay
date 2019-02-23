@@ -67,11 +67,11 @@
           <AssociatedConnUserName />
           <FullPath>Baseline with [sp_BlitzFirst].sql</FullPath>
         </FileNode>
-        <FileNode Name="FileStats - AsOf - Delta (15mins).sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>
+        <FileNode Name="FileStats - AsOf - Delta.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>FileStats - AsOf - Delta (15mins).sql</FullPath>
+          <FullPath>FileStats - AsOf - Delta.sql</FullPath>
         </FileNode>
         <FileNode Name="FileStats - AsOf.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
@@ -133,11 +133,11 @@
           <AssociatedConnUserName />
           <FullPath>WaitStats - Cumulative - AsOf - sp_Blitz.sql</FullPath>
         </FileNode>
-        <FileNode Name="WaitStats - Delta (15mins) - AsOf - Paul Randal - sp_Blitz.sql">
+        <FileNode Name="WaitStats - Delta - AsOf - Paul Randal - sp_Blitz.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>WaitStats - Delta (15mins) - AsOf - Paul Randal - sp_Blitz.sql</FullPath>
+          <FullPath>WaitStats - Delta - AsOf - Paul Randal - sp_Blitz.sql</FullPath>
         </FileNode>
         <FileNode Name="WaitStats - During - Paul Randal - sp_Blitz.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>

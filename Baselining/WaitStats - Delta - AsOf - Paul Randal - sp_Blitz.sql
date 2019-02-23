@@ -106,7 +106,7 @@ WITH [Waits] AS
         )
     AND [waiting_tasks_count_delta] > 0
     )
-SELECT @p_CheckDate AS [@p_CheckDate],
+SELECT DATEDIFF(MINUTE,d.CheckDate_Lower, @p_CheckDate) AS [Delta(min)], @p_CheckDate AS [@p_CheckDate],
     MAX ([W1].[wait_type]) AS [WaitType],
     CAST (MAX ([W1].[WaitS]) AS DECIMAL (16,2)) AS [Wait_S],
     CAST (MAX ([W1].[ResourceS]) AS DECIMAL (16,2)) AS [Resource_S],
@@ -119,6 +119,7 @@ SELECT @p_CheckDate AS [@p_CheckDate],
     CAST ('https://www.sqlskills.com/help/waits/' + MAX ([W1].[wait_type]) as XML) AS [Help/Info URL]
 FROM [Waits] AS [W1]
 INNER JOIN [Waits] AS [W2] ON [W2].[RowNum] <= [W1].[RowNum]
-GROUP BY [W1].[RowNum]
+CROSS JOIN (SELECT MAX(CheckDate) as CheckDate_Lower FROM BlitzFirst_FileStats as i WHERE i.CheckDate < @p_CheckDate) as d
+GROUP BY [W1].[RowNum], d.CheckDate_Lower
 HAVING SUM ([W2].[Percentage]) - MAX( [W1].[Percentage] ) < 95; -- percentage threshold
 GO
