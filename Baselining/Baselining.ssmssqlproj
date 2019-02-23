@@ -27,6 +27,30 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="tul1cipcnpdb1:CORPORATE\adwivedi">
+          <Created>2019-02-22T19:00:59.0595599+05:30</Created>
+          <Type>SQL</Type>
+          <Server>tul1cipcnpdb1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPEDB2:CORPORATE\adwivedi">
+          <Created>2019-02-22T19:15:33.3565599+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPEDB2</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
@@ -37,47 +61,29 @@
           <AssociatedConnUserName />
           <FullPath>Agent Operator [Ajay Dwivedi].sql</FullPath>
         </FileNode>
-        <FileNode Name="AsOf - IO-Disk Latencies - Delta (15mins).sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>AsOf - IO-Disk Latencies - Delta (15mins).sql</FullPath>
-        </FileNode>
-        <FileNode Name="AsOf - IO-Disk Latencies.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>AsOf - IO-Disk Latencies.sql</FullPath>
-        </FileNode>
-        <FileNode Name="AsOf - PerfMon Counters - Delta.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>AsOf - PerfMon Counters - Delta.sql</FullPath>
-        </FileNode>
-        <FileNode Name="AsOf - Waits Cumulative - Paul Randal - sp_Blitz.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>AsOf - Waits Cumulative - Paul Randal - sp_Blitz.sql</FullPath>
-        </FileNode>
-        <FileNode Name="AsOf - Waits Delta (15mins) - Paul Randal - sp_Blitz.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>AsOf - Waits Delta (15mins) - Paul Randal - sp_Blitz.sql</FullPath>
-        </FileNode>
-        <FileNode Name="AsOf - What's Running.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>AsOf - What's Running.sql</FullPath>
-        </FileNode>
         <FileNode Name="Baseline with [sp_BlitzFirst].sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Baseline with [sp_BlitzFirst].sql</FullPath>
+        </FileNode>
+        <FileNode Name="FileStats - AsOf - Delta (15mins).sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>FileStats - AsOf - Delta (15mins).sql</FullPath>
+        </FileNode>
+        <FileNode Name="FileStats - AsOf.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>FileStats - AsOf.sql</FullPath>
+        </FileNode>
+        <FileNode Name="FileStats - During.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>FileStats - During.sql</FullPath>
         </FileNode>
         <FileNode Name="Job [DBA - FirstResponderKit_Collect_PerformanceData].sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
@@ -97,6 +103,12 @@
           <AssociatedConnUserName />
           <FullPath>Optimize [DBA] database.sql</FullPath>
         </FileNode>
+        <FileNode Name="PerfMon - AsOf - Delta.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>PerfMon - AsOf - Delta.sql</FullPath>
+        </FileNode>
         <FileNode Name="SELECT permission to All Users.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
@@ -114,6 +126,30 @@
           <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Testing.sql</FullPath>
+        </FileNode>
+        <FileNode Name="WaitStats - Cumulative - AsOf - sp_Blitz.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>WaitStats - Cumulative - AsOf - sp_Blitz.sql</FullPath>
+        </FileNode>
+        <FileNode Name="WaitStats - Delta (15mins) - AsOf - Paul Randal - sp_Blitz.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>WaitStats - Delta (15mins) - AsOf - Paul Randal - sp_Blitz.sql</FullPath>
+        </FileNode>
+        <FileNode Name="WaitStats - During - Paul Randal - sp_Blitz.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>WaitStats - During - Paul Randal - sp_Blitz.sql</FullPath>
+        </FileNode>
+        <FileNode Name="What was Running - AsOf.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>What was Running - AsOf.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

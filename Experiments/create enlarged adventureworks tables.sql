@@ -31,7 +31,7 @@
 
 
 
-USE [AdventureWorks2014];
+USE [AdventureWorks];
 GO
 
 IF OBJECT_ID('Sales.SalesOrderHeaderEnlarged') IS NOT NULL

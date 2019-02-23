@@ -49,6 +49,10 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Deadlock_Detection_SQLTrace
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Sep26-Presentation", "Sep26-Presentation\Sep26-Presentation.ssmssqlproj", "{20351268-D56B-4BCF-A2D9-B1EF8E9791F7}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Architecture-Choices-That-Affect-Performance", "Architecture-Choices-That-Affect-Performance\Architecture-Choices-That-Affect-Performance.ssmssqlproj", "{F5F6C8E4-5A14-47D3-83A0-3E4FE233E85A}"
+EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "StackExchange Data Dump", "StackExchange Data Dump\StackExchange Data Dump.ssmssqlproj", "{139A6092-0980-432F-A292-015ABA228C5C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -77,7 +81,9 @@ Global
 		{0AD76D32-E3F9-4382-9C1A-152E8439B86B}.Default|Default.ActiveCfg = Default
 		{2A3AE999-5A88-4B57-8812-5F674B2C1E36}.Default|Default.ActiveCfg = Default
 		{20351268-D56B-4BCF-A2D9-B1EF8E9791F7}.Default|Default.ActiveCfg = Default
-		{25D4C3A4-EB57-412B-83A7-CAC4E9CCA796}.Default|Default.ActiveCfg = Default
+		{A49CBB53-EDED-4C59-A53D-1559C54E02CF}.Default|Default.ActiveCfg = Default
+		{F5F6C8E4-5A14-47D3-83A0-3E4FE233E85A}.Default|Default.ActiveCfg = Default
+		{139A6092-0980-432F-A292-015ABA228C5C}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
