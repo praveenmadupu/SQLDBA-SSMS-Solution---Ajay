@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<SqlWorkbenchSqlProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="StackOverflow">
+  <Items>
+    <LogicalFolder Name="Connections" Type="2" Sorted="true">
+      <Items>
+        <ConnectionNode Name="LOCALHOST:CORPORATE\adwivedi">
+          <Created>2019-02-28T00:21:32.967198+05:30</Created>
+          <Type>SQL</Type>
+          <Server>LOCALHOST</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="tul1dbapmtdb1:CORPORATE\adwivedi">
+          <Created>2019-02-27T20:05:24.7963984+05:30</Created>
+          <Type>SQL</Type>
+          <Server>tul1dbapmtdb1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>StackOverflow</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+      </Items>
+    </LogicalFolder>
+    <LogicalFolder Name="Queries" Type="0" Sorted="true">
+      <Items>
+        <FileNode Name="Create [dbo].[PostTags] table.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Create [dbo].[PostTags] table.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Find Myself, Brent, Sam, and Others.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1dbapmtdb1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1dbapmtdb1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Find Myself, Brent, Sam, and Others.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Help.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Help.sql</FullPath>
+        </FileNode>
+        <FileNode Name="How many upvotes do I have for each tag.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1dbapmtdb1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1dbapmtdb1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>How many upvotes do I have for each tag.sql</FullPath>
+        </FileNode>
+        <FileNode Name="How Unsung am I.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1dbapmtdb1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1dbapmtdb1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>How Unsung am I.sql</FullPath>
+        </FileNode>
+      </Items>
+    </LogicalFolder>
+    <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
+      <Items />
+    </LogicalFolder>
+  </Items>
+</SqlWorkbenchSqlProject>

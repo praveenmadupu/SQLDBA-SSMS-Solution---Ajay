@@ -27,6 +27,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="LOCALHOST:CORPORATE\adwivedi">
+          <Created>2019-02-27T12:02:20.934242+05:30</Created>
+          <Type>SQL</Type>
+          <Server>LOCALHOST</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="tul1cipcnpdb1:CORPORATE\adwivedi">
           <Created>2019-02-22T19:00:59.0595599+05:30</Created>
           <Type>SQL</Type>
@@ -121,6 +133,12 @@
           <AssociatedConnUserName />
           <FullPath>sp_Blitz Views Extra.sql</FullPath>
         </FileNode>
+        <FileNode Name="SQLQuery1.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SQLQuery1.sql</FullPath>
+        </FileNode>
         <FileNode Name="Testing.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
@@ -146,8 +164,8 @@
           <FullPath>WaitStats - During - Paul Randal - sp_Blitz.sql</FullPath>
         </FileNode>
         <FileNode Name="What was Running - AsOf.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>What was Running - AsOf.sql</FullPath>
         </FileNode>
