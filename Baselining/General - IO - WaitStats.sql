@@ -1,8 +1,43 @@
-USE DBA
--- select distinct CheckDate from dbo.BlitzFirst order by CheckDate DESC
 
-DECLARE @p_CheckDate datetimeoffset
-SET @p_CheckDate = '2019-03-12 22:00:01.5485793 -04:00';
+--	How to examine IO subsystem latencies from within SQL Server (Disk Latency)
+	--	https://www.sqlskills.com/blogs/paul/how-to-examine-io-subsystem-latencies-from-within-sql-server/
+	--	https://sqlperformance.com/2015/03/io-subsystem/monitoring-read-write-latency
+	--	https://www.brentozar.com/blitz/slow-storage-reads-writes/
+SELECT
+    [ReadLatency] =
+        CASE WHEN [num_of_reads] = 0
+            THEN 0 ELSE ([io_stall_read_ms] / [num_of_reads]) END,
+    [WriteLatency] =
+        CASE WHEN [num_of_writes] = 0
+            THEN 0 ELSE ([io_stall_write_ms] / [num_of_writes]) END,
+    [Latency] =
+        CASE WHEN ([num_of_reads] = 0 AND [num_of_writes] = 0)
+            THEN 0 ELSE ([io_stall] / ([num_of_reads] + [num_of_writes])) END,
+    [AvgBPerRead] =
+        CASE WHEN [num_of_reads] = 0
+            THEN 0 ELSE ([num_of_bytes_read] / [num_of_reads]) END,
+    [AvgBPerWrite] =
+        CASE WHEN [num_of_writes] = 0
+            THEN 0 ELSE ([num_of_bytes_written] / [num_of_writes]) END,
+    [AvgBPerTransfer] =
+        CASE WHEN ([num_of_reads] = 0 AND [num_of_writes] = 0)
+            THEN 0 ELSE
+                (([num_of_bytes_read] + [num_of_bytes_written]) /
+                ([num_of_reads] + [num_of_writes])) END,
+    LEFT ([mf].[physical_name], 2) AS [Drive],
+    DB_NAME ([vfs].[database_id]) AS [DB],
+    [mf].[physical_name]
+FROM
+    sys.dm_io_virtual_file_stats (NULL,NULL) AS [vfs]
+JOIN sys.master_files AS [mf]
+    ON [vfs].[database_id] = [mf].[database_id]
+    AND [vfs].[file_id] = [mf].[file_id]
+-- WHERE [vfs].[file_id] = 2 -- log files
+ORDER BY [Latency] DESC
+-- ORDER BY [ReadLatency] DESC
+--ORDER BY [WriteLatency] DESC;
+GO
+
 
 --	Get Cumulative Waits on Server
 	-- https://www.sqlskills.com/blogs/paul/wait-statistics-or-please-tell-me-where-it-hurts/
@@ -16,9 +51,8 @@ WITH [Waits] AS
         [waiting_tasks_count] AS [WaitCount],
         100.0 * [wait_time_ms] / SUM ([wait_time_ms]) OVER() AS [Percentage],
         ROW_NUMBER() OVER(ORDER BY [wait_time_ms] DESC) AS [RowNum]
-    FROM [DBA].[dbo].[BlitzFirst_WaitStats]
-	WHERE CheckDate = @p_CheckDate
-    AND [wait_type] NOT IN (
+    FROM sys.dm_os_wait_stats
+    WHERE [wait_type] NOT IN (
         -- These wait types are almost 100% never a problem and so they are
         -- filtered out to avoid them skewing the results. Click on the URL
         -- for more information.
@@ -106,7 +140,7 @@ WITH [Waits] AS
         )
     AND [waiting_tasks_count] > 0
     )
-SELECT @p_CheckDate AS [@p_CheckDate],
+SELECT
     MAX ([W1].[wait_type]) AS [WaitType],
     CAST (MAX ([W1].[WaitS]) AS DECIMAL (16,2)) AS [Wait_S],
     CAST (MAX ([W1].[ResourceS]) AS DECIMAL (16,2)) AS [Resource_S],

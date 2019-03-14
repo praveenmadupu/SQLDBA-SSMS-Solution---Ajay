@@ -51,6 +51,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="localhost:CORPORATE\adwivedi">
+          <Created>2019-03-12T15:39:37.4275152+05:30</Created>
+          <Type>SQL</Type>
+          <Server>localhost</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="SQL-B:sa">
           <Created>2018-04-02T16:59:34.0050767+05:30</Created>
           <Type>SQL</Type>
@@ -186,6 +198,12 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Tempdb_Usage.sql</FullPath>
+        </FileNode>
+        <FileNode Name="TempDb-Shrink-LogFile-Loop.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>TempDb-Shrink-LogFile-Loop.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

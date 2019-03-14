@@ -2,7 +2,7 @@ USE DBA;
 -- select distinct CheckDate from dbo.BlitzFirst order by CheckDate DESC
 
 DECLARE @p_CheckDate datetimeoffset
-SET @p_CheckDate = '2019-02-22 02:20:00.6443164 -06:00';
+SET @p_CheckDate = '2019-03-07 05:00:00.7291387 -06:00';
 
 --	Get Cumulative Waits on Server
 	-- https://www.sqlskills.com/blogs/paul/wait-statistics-or-please-tell-me-where-it-hurts/

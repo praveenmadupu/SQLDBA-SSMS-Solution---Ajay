@@ -79,6 +79,12 @@
           <AssociatedConnUserName />
           <FullPath>Baseline with [sp_BlitzFirst].sql</FullPath>
         </FileNode>
+        <FileNode Name="Export-Excel.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Export-Excel.sql</FullPath>
+        </FileNode>
         <FileNode Name="FileStats - AsOf - Delta.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
@@ -96,6 +102,12 @@
           <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>FileStats - During.sql</FullPath>
+        </FileNode>
+        <FileNode Name="General - IO - WaitStats.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>General - IO - WaitStats.sql</FullPath>
         </FileNode>
         <FileNode Name="Job [DBA - FirstResponderKit_Collect_PerformanceData].sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
@@ -121,6 +133,12 @@
           <AssociatedConnUserName />
           <FullPath>PerfMon - AsOf - Delta.sql</FullPath>
         </FileNode>
+        <FileNode Name="PerfMon - During.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>PerfMon - During.sql</FullPath>
+        </FileNode>
         <FileNode Name="SELECT permission to All Users.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
@@ -132,12 +150,6 @@
           <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>sp_Blitz Views Extra.sql</FullPath>
-        </FileNode>
-        <FileNode Name="SQLQuery1.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>SQLQuery1.sql</FullPath>
         </FileNode>
         <FileNode Name="Testing.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
@@ -164,10 +176,16 @@
           <FullPath>WaitStats - During - Paul Randal - sp_Blitz.sql</FullPath>
         </FileNode>
         <FileNode Name="What was Running - AsOf.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>What was Running - AsOf.sql</FullPath>
+        </FileNode>
+        <FileNode Name="What was Running - During - WhoIsActive.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>What was Running - During - WhoIsActive.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

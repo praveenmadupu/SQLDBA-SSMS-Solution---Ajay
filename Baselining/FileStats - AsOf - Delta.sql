@@ -3,7 +3,7 @@ USE DBA;
 -- select distinct CheckDate from dbo.BlitzFirst order by CheckDate DESC
 
 DECLARE @p_CheckDate datetimeoffset
-SET @p_CheckDate = '2019-02-23 03:00:01.0121662 -06:00';
+SET @p_CheckDate = '2019-03-07 05:00:00.7291387 -06:00';
 
 --	How to examine IO subsystem latencies from within SQL Server (Disk Latency)
 	--	https://www.sqlskills.com/blogs/paul/how-to-examine-io-subsystem-latencies-from-within-sql-server/

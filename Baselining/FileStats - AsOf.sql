@@ -1,7 +1,8 @@
 -- select distinct CheckDate from dbo.BlitzFirst order by CheckDate DESC
+USE DBA;
 
 DECLARE @p_CheckDate datetimeoffset
-SET @p_CheckDate = '2019-02-20 23:30:00.9048392 -05:00';
+SET @p_CheckDate = '2019-03-12 22:00:01.5485793 -04:00';
 
 --	How to examine IO subsystem latencies from within SQL Server (Disk Latency)
 	--	https://www.sqlskills.com/blogs/paul/how-to-examine-io-subsystem-latencies-from-within-sql-server/
@@ -34,6 +35,7 @@ SELECT
                 ([num_of_reads] + [num_of_writes])) END    
 FROM [dbo].[BlitzFirst_FileStats]
 WHERE CheckDate = @p_CheckDate
+--AND DatabaseName = 'tempdb'
 ORDER BY [Latency] DESC
 -- ORDER BY [ReadLatency] DESC
 --ORDER BY [WriteLatency] DESC;
