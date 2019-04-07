@@ -5,6 +5,9 @@ IF OBJECT_ID('dbo.usp_GetLogWalkJobHistoryAlert_Suppress') IS NULL
 	EXEC('CREATE PROCEDURE [dbo].[usp_GetLogWalkJobHistoryAlert_Suppress] AS SELECT 1 AS [Dummy];')
 GO
 
+USE [DBA]
+GO
+
 ALTER PROCEDURE [dbo].[usp_GetLogWalkJobHistoryAlert_Suppress] 
 		@p_JobName VARCHAR(125) = NULL,
 		@p_GetSessionRequestDetails BIT = 0,
@@ -40,6 +43,7 @@ BEGIN
 	DECLARE @_collection_time_start datetime;
 	DECLARE @_collection_time_end datetime;
 	DECLARE @IsBlockingIssue BIT;
+	DECLARE @_SendMailRequired BIT;
 	DECLARE @_mailSubject VARCHAR(255)
 			,@_mailBody VARCHAR(4000);
 	IF OBJECT_ID('DBA..LogWalkThresholdInstance') IS NULL
@@ -48,6 +52,7 @@ BEGIN
 	IF @p_Verbose = 1
 		PRINT 'Initilizing local variables..';
 	SET @IsBlockingIssue = 0;
+	SET @_SendMailRequired = 1;
 
 
 	IF @p_Help = 1
@@ -263,8 +268,9 @@ BEGIN
 				IF OBJECT_ID('tempdb..#JobSessionBlockers') IS NOT NULL AND (@p_Verbose = 1 OR @p_GetSessionRequestDetails = 1)
 					SELECT	Q.*, DENSE_RANK()OVER(ORDER BY J.collection_time ASC) AS CollectionBatchNO, J.*
 					FROM	(	SELECT	'What Was Running' AS RunningQuery	) AS Q
-					CROSS JOIN
-							#JobSessionBlockers AS J;
+					FULL OUTER JOIN
+							#JobSessionBlockers AS J
+						ON	1 = 1;
 
 			END -- Populate #JobSessionBlockers
 
@@ -278,6 +284,10 @@ BEGIN
 				BEGIN
 					IF EXISTS (SELECT * FROM @T_JobHistory h WHERE h.Run_Status = 0 AND h.RID = @p_NoOfContinousFailuresThreshold AND h.Instance_Id IN (SELECT e.Instance_Id FROM DBA..LogWalkThresholdInstance AS e WHERE e.JobName = @p_JobName))
 					BEGIN
+						IF @p_Verbose = 1
+							PRINT 'Setting @_SendMailRequired = 0';
+						SET @_SendMailRequired = 0;
+						
 						PRINT '
 Exception is present to suppress failure notification @p_SuppressNotification.
 Incase this is not required, Kindly execute below query:-
@@ -300,6 +310,14 @@ DELETE FROM DBA..LogWalkThresholdInstance WHERE JobName = '''+@p_JobName+''';
 
 						INSERT DBA..LogWalkThresholdInstance
 						SELECT @p_JobName, instance_id FROM	@T_JobHistory WHERE Run_Status = 0 AND RID = @p_NoOfContinousFailuresThreshold;
+
+						IF @p_Verbose = 1
+						BEGIN
+							SELECT	Q.*, J.*
+							FROM	(	SELECT	'SELECT * FROM DBA..LogWalkThresholdInstance' AS RunningQuery	) AS Q
+							CROSS JOIN
+									DBA..LogWalkThresholdInstance AS J;
+						END
 					END
 					ELSE
 					BEGIN -- Else @p_SuppressNotification
@@ -318,11 +336,25 @@ STATUS: 		Failed
 MESSAGES:		Job '+QUOTENAME(@p_JobName)+' COULD NOT obtain EXCLUSIVE access of underlying database to start its activity. 
 RCA:			Kindly execute below query to find out details of Blockers.
 
-			EXEC DBA..[usp_GetLogWalkJobHistoryAlert] @p_JobName = '''+@p_JobName+''' ,@p_GetSessionRequestDetails = 1;
-			-- OR --
-			SELECT * FROM [DBA]..[WhoIsActive_ResultSets] as r WHERE r.program_name = ''SQL Job = '+@p_JobName+'''
-						AND (r.collection_time >= '''+CAST(@_collection_time_start AS VARCHAR(30))+''' AND r.collection_time <= '''+CAST(@_collection_time_end AS VARCHAR(30))+''');
 
+		;WITH T_JobCaptures AS
+		(
+			SELECT [dd hh:mm:ss.mss], [dd hh:mm:ss.mss (avg)], [session_id], [sql_text], [sql_command], [login_name], [wait_info], [tasks], [tran_log_writes], [CPU], [tempdb_allocations], [tempdb_current], [blocking_session_id], [blocked_session_count], [reads], [writes], [context_switches], [physical_io], [physical_reads], [locks], [used_memory], [status], [tran_start_time], [open_tran_count], [percent_complete], [host_name], [database_name], [program_name], [additional_info], [start_time], [login_time], [request_id], [collection_time]
+			FROM [DBA]..[WhoIsActive_ResultSets] as r
+			WHERE r.program_name = ''SQL Job = '+@p_JobName+'''
+				AND (r.collection_time >= '''+CAST(@_collection_time_start AS VARCHAR(30))+''' AND r.collection_time <= '''+CAST(@_collection_time_end AS VARCHAR(30))+''')
+			--
+			UNION ALL
+			--
+			SELECT r.[dd hh:mm:ss.mss], r.[dd hh:mm:ss.mss (avg)], r.[session_id], r.[sql_text], r.[sql_command], r.[login_name], r.[wait_info], r.[tasks], r.[tran_log_writes], r.[CPU], r.[tempdb_allocations], r.[tempdb_current], r.[blocking_session_id], r.[blocked_session_count], r.[reads], r.[writes], r.[context_switches], r.[physical_io], r.[physical_reads], r.[locks], r.[used_memory], r.[status], r.[tran_start_time], r.[open_tran_count], r.[percent_complete], r.[host_name], r.[database_name], r.[program_name], r.[additional_info], r.[start_time], r.[login_time], r.[request_id], r.[collection_time]
+			FROM T_JobCaptures AS j
+			INNER JOIN [DBA]..[WhoIsActive_ResultSets] as r
+				ON r.collection_time = j.collection_time
+				AND j.blocking_session_id = r.session_id
+		)
+		SELECT	*
+		FROM	T_JobCaptures
+		ORDER BY collection_time;
 
 '
 							FROM	@T_JobHistory as jh
@@ -340,6 +372,10 @@ RCA:			Kindly execute below query to find out details of Blockers.
 				IF EXISTS (SELECT * FROM @T_JobHistory h WHERE h.RID = 1 AND h.Instance_Id IN (SELECT e.Instance_Id FROM DBA..LogWalkThresholdInstance AS e WHERE e.JobName = @p_JobName))
 				BEGIN
 					IF @p_Verbose = 1
+						PRINT 'Setting @_SendMailRequired = 0';
+					SET @_SendMailRequired = 0;
+					
+					IF @p_Verbose = 1
 					BEGIN
 						PRINT '
 Exception is present to suppress failure notification @p_SuppressNotification.
@@ -349,18 +385,7 @@ DELETE FROM DBA..LogWalkThresholdInstance WHERE JobName = '''+@p_JobName+''';
 '
 					END
 				END
-				
-				IF @p_SuppressNotification = 1
-				BEGIN
-					IF @p_Verbose = 1
-						PRINT 'Inside @p_SuppressNotification = 1 block';
-					
-					DELETE FROM DBA..LogWalkThresholdInstance WHERE JobName = @p_JobName;
-
-					INSERT DBA..LogWalkThresholdInstance
-					SELECT @p_JobName, instance_id FROM	@T_JobHistory WHERE Run_Status = 0 AND RID = 1;
-				END
-				ELSE -- Send Mail
+				ELSE
 				BEGIN -- Block when @p_SuppressNotification is NOT used for latest job failure
 					IF @p_SendMail = 1
 					BEGIN
@@ -377,12 +402,27 @@ Kindly check Job Step Error Message'
 						WHERE	jh.RID = 1;
 					END -- If @p_SendMail
 				END -- Block when @p_SuppressNotification is NOT used for latest job failure
+				
+				IF @p_SuppressNotification = 1
+				BEGIN
+					IF @p_Verbose = 1
+						PRINT 'Inside @p_SuppressNotification = 1 block';
+					
+					DELETE FROM DBA..LogWalkThresholdInstance WHERE JobName = @p_JobName;
+
+					INSERT DBA..LogWalkThresholdInstance
+					SELECT @p_JobName, instance_id FROM	@T_JobHistory WHERE Run_Status = 0 AND RID = 1;
+				END
+				
+				--ELSE -- Send Mail
+				
+				
 			END -- Block for Non-Blocking Issue 
 			ELSE
 				PRINT 'Job ['+@p_JobName+'] has not crossed threshold of '+cast(@p_NoOfContinousFailuresThreshold as varchar(2))+ ' continous failures. No action required.';
 
 			-- Send Mail
-			IF @NoOfContinousFailures <> 0 AND @p_SendMail = 1
+			IF @NoOfContinousFailures <> 0 AND @p_SendMail = 1 AND @_SendMailRequired = 1
 			BEGIN
 				IF @p_Verbose = 1
 					PRINT 'Sending mail..';
