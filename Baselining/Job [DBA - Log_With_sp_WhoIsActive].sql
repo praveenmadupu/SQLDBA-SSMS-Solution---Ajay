@@ -134,3 +134,80 @@ QuitWithRollback:
 EndSave:
 GO
 
+USE [msdb]
+GO
+
+/****** Object:  Job [DBA - Log_With_sp_WhoIsActive - Cleanup]    Script Date: 4/8/2019 10:04:21 PM ******/
+BEGIN TRANSACTION
+DECLARE @ReturnCode INT
+SELECT @ReturnCode = 0
+/****** Object:  JobCategory [DBA]    Script Date: 4/8/2019 10:04:21 PM ******/
+IF NOT EXISTS (SELECT name FROM msdb.dbo.syscategories WHERE name=N'DBA' AND category_class=1)
+BEGIN
+EXEC @ReturnCode = msdb.dbo.sp_add_category @class=N'JOB', @type=N'LOCAL', @name=N'DBA'
+IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
+
+END
+
+DECLARE @jobId BINARY(16)
+EXEC @ReturnCode =  msdb.dbo.sp_add_job @job_name=N'DBA - Log_With_sp_WhoIsActive - Cleanup', 
+		@enabled=1, 
+		@notify_level_eventlog=2, 
+		@notify_level_email=2, 
+		@notify_level_netsend=0, 
+		@notify_level_page=0, 
+		@delete_level=0, 
+		@description=N'Cleanup job to clear data older than 60 days
+
+SET NOCOUNT ON;
+delete from dbo.WhoIsActive_ResultSets
+	where collection_time <= DATEADD(DD,-60,GETDATE())', 
+		@category_name=N'DBA', 
+		@owner_login_name=N'sa', 
+		--@notify_email_operator_name=N'AMGDBAs', 
+		@job_id = @jobId OUTPUT
+IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
+/****** Object:  Step [Purge-Data-Older-Than-60-Days]    Script Date: 4/8/2019 10:04:21 PM ******/
+EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'Purge-Data-Older-Than-60-Days', 
+		@step_id=1, 
+		@cmdexec_success_code=0, 
+		@on_success_action=1, 
+		@on_success_step_id=0, 
+		@on_fail_action=2, 
+		@on_fail_step_id=0, 
+		@retry_attempts=1, 
+		@retry_interval=7, 
+		@os_run_priority=0, @subsystem=N'TSQL', 
+		@command=N'SET NOCOUNT ON;
+SET QUOTED_IDENTIFIER ON;
+delete from dbo.WhoIsActive_ResultSets
+	where collection_time <= DATEADD(DD,-60,GETDATE())', 
+		@database_name=N'DBA', 
+		@flags=0
+IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
+EXEC @ReturnCode = msdb.dbo.sp_update_job @job_id = @jobId, @start_step_id = 1
+IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
+EXEC @ReturnCode = msdb.dbo.sp_add_jobschedule @job_id=@jobId, @name=N'2 Times a week', 
+		@enabled=1, 
+		@freq_type=8, 
+		@freq_interval=35, 
+		@freq_subday_type=1, 
+		@freq_subday_interval=0, 
+		@freq_relative_interval=0, 
+		@freq_recurrence_factor=1, 
+		@active_start_date=20190408, 
+		@active_end_date=99991231, 
+		@active_start_time=235700, 
+		@active_end_time=235959, 
+		@schedule_uid=N'8f0b13cd-1933-4061-9a79-3f7175abea97'
+IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
+EXEC @ReturnCode = msdb.dbo.sp_add_jobserver @job_id = @jobId, @server_name = N'(local)'
+IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
+COMMIT TRANSACTION
+GOTO EndSave
+QuitWithRollback:
+    IF (@@TRANCOUNT > 0) ROLLBACK TRANSACTION
+EndSave:
+GO
+
+
