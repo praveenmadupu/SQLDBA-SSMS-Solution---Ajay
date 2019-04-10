@@ -27,10 +27,10 @@ GO
 USE DBA
 GO
 ALTER TABLE dbo.[WhoIsActive_ResultSets]
-	ADD [TimeInMinutes] AS (cast(LEFT([dd hh:mm:ss.mss],2) as int) * 24 * 60)
-			+ (cast(SUBSTRING([dd hh:mm:ss.mss],4,2) as int) * 60)
-			+ cast(SUBSTRING([dd hh:mm:ss.mss],7,2) as int) PERSISTED
+	ADD [TimeInMinutes]  AS (((CONVERT([bigint],left([dd hh:mm:ss.mss],charindex(' ',[dd hh:mm:ss.mss])-(1)),0)*(24))*(60)+CONVERT([int],substring([dd hh:mm:ss.mss],charindex(' ',[dd hh:mm:ss.mss])+(1),(2)),0)*(60))+CONVERT([int],substring([dd hh:mm:ss.mss],charindex(':',[dd hh:mm:ss.mss])+(1),(2)),0)) 
 GO
+
+
 
 --	Step 03: Add a clustered Index
 CREATE CLUSTERED INDEX [CI_WhoIsActive_ResultSets] ON [dbo].[WhoIsActive_ResultSets]
