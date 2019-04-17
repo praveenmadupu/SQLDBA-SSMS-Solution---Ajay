@@ -193,6 +193,12 @@
           <AssociatedConnUserName />
           <FullPath>who_is_active_v11_30(Modified).sql</FullPath>
         </FileNode>
+        <FileNode Name="who_is_active_v11_32(Modified).sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>who_is_active_v11_32(Modified).sql</FullPath>
+        </FileNode>
         <FileNode Name="whoIsActive.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>

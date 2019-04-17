@@ -151,6 +151,12 @@
           <AssociatedConnUserName />
           <FullPath>sp_Blitz Views Extra.sql</FullPath>
         </FileNode>
+        <FileNode Name="TempDb-Usage-Culprits.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>TempDb-Usage-Culprits.sql</FullPath>
+        </FileNode>
         <FileNode Name="Testing.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
@@ -186,6 +192,12 @@
           <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>What was Running - During - WhoIsActive.sql</FullPath>
+        </FileNode>
+        <FileNode Name="What Was Running.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>What Was Running.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

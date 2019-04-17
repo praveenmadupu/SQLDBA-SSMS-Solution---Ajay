@@ -75,6 +75,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1DBAPMTDB1:CORPORATE\adwivedi">
+          <Created>2019-04-17T14:40:24.8827992+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1DBAPMTDB1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>master</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="tul1dbapmtdb1\sql2016:CORPORATE\adwivedi">
           <Created>2018-12-10T16:31:19.2166027+05:30</Created>
           <Type>SQL</Type>
@@ -212,8 +224,8 @@
           <FullPath>dbo.usp_GetMail_4_JAMS.sql</FullPath>
         </FileNode>
         <FileNode Name="dbo.usp_GetMail_4_SQLDBATools.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>dbo.usp_GetMail_4_SQLDBATools.sql</FullPath>
         </FileNode>
@@ -248,8 +260,8 @@
           <FullPath>Job-JAMS-DataCollection.sql</FullPath>
         </FileNode>
         <FileNode Name="Mailer - Database Backup History - Date.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Mailer - Database Backup History - Date.sql</FullPath>
         </FileNode>

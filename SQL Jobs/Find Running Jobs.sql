@@ -22,3 +22,9 @@ from msdb..sysjobs J with (nolock)
 inner join master..sysprocesses RP with (nolock)
 on RP.program_name like 'SQLAgent - TSQL JobStep (Job ' + master.dbo.fn_varbintohexstr(convert(binary(16),J.job_id )) + '%'
 */
+
+SELECT * FROM DBA.dbo.SqlAgentJobs
+
+use DBA;
+
+select QUOTENAME(c.COLUMN_NAME) AS COLUMN_NAME, c.DATA_TYPE from INFORMATION_SCHEMA.columns c where c.table_name = 'SqlAgentJobs'

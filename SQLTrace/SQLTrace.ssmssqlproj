@@ -15,6 +15,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="tul1cipcnpdb1:CORPORATE\adwivedi">
+          <Created>2019-04-17T12:37:28.2635776+05:30</Created>
+          <Type>SQL</Type>
+          <Server>tul1cipcnpdb1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="TUL1DBAPMTDB1:CORPORATE\adwivedi">
           <Created>2018-09-12T11:48:07.9686732+05:30</Created>
           <Type>SQL</Type>
@@ -32,8 +44,8 @@
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="01) Trace Definition (SQL 2008 R2).sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>01) Trace Definition (SQL 2008 R2).sql</FullPath>
         </FileNode>
@@ -44,8 +56,8 @@
           <FullPath>02) Trace Related Queries.sql</FullPath>
         </FileNode>
         <FileNode Name="03) DBA - SQLTrace_Stop.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>03) DBA - SQLTrace_Stop.sql</FullPath>
         </FileNode>

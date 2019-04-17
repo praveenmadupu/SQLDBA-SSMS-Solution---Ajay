@@ -854,3 +854,31 @@ select * from INFORMATION_SCHEMA.COLUMNS as c
 	or ( c.COLLATION_NAME <> 'SQL_Latin1_General_CP1_CI_AS' )
 	or ( c.DATA_TYPE IN ('binary','varbinary') )
 
+
+/* Find All Indexes with Poor Utilization */
+TRUNCATE TABLE tempdb..Indexes;
+
+EXEC sp_msforeachdb '
+USE [?];
+INSERT tempdb..Indexes
+SELECT   DB_NAME() as DbName,
+		 OBJECT_NAME(S.[OBJECT_ID]) AS [OBJECT NAME], 
+         I.[NAME] AS [INDEX NAME], 
+         USER_SEEKS, 
+         USER_SCANS, 
+         USER_LOOKUPS, 
+         USER_UPDATES
+FROM     SYS.DM_DB_INDEX_USAGE_STATS AS S 
+         INNER JOIN SYS.INDEXES AS I 
+           ON I.[OBJECT_ID] = S.[OBJECT_ID] 
+              AND I.INDEX_ID = S.INDEX_ID 
+WHERE    OBJECTPROPERTY(S.[OBJECT_ID],''IsUserTable'') = 1 
+'
+go
+
+SELECT @@SERVERNAME as srvName, *, [reads] = (USER_SEEKS+USER_SCANS+USER_LOOKUPS), [Writes] = USER_UPDATES
+FROM tempdb..Indexes
+WHERE [INDEX NAME] is not null
+and dbName NOT IN ('master','model','msdb','tempdb')
+and ( (USER_SEEKS+USER_SCANS+USER_LOOKUPS)=0 or (USER_SEEKS+USER_SCANS+USER_LOOKUPS) < USER_UPDATES)
+GO
