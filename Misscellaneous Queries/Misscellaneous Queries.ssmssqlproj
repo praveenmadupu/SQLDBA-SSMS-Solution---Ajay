@@ -211,6 +211,12 @@
           <AssociatedConnUserName />
           <FullPath>TempDb-Shrink-LogFile-Loop.sql</FullPath>
         </FileNode>
+        <FileNode Name="VSCode-Settings-General.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>VSCode-Settings-General.sql</FullPath>
+        </FileNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
