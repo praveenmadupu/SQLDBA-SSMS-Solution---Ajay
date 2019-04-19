@@ -52,7 +52,7 @@ BEGIN
 	IF @p_Verbose = 1
 		PRINT 'Initilizing local variables..';
 	SET @IsBlockingIssue = 0;
-	SET @_SendMailRequired = 1;
+	SET @_SendMailRequired = 0;
 
 
 	IF @p_Help = 1
@@ -282,6 +282,7 @@ BEGIN
 
 				IF @p_Verbose = 1
 				BEGIN
+					
 					IF EXISTS (SELECT * FROM @T_JobHistory h WHERE h.Run_Status = 0 AND h.RID = @p_NoOfContinousFailuresThreshold AND h.Instance_Id IN (SELECT e.Instance_Id FROM DBA..LogWalkThresholdInstance AS e WHERE e.JobName = @p_JobName))
 					BEGIN
 						IF @p_Verbose = 1
@@ -300,7 +301,7 @@ DELETE FROM DBA..LogWalkThresholdInstance WHERE JobName = '''+@p_JobName+''';
 				-- If Job has been failing for more than @p_NoOfContinousFailuresThreshold with consideration of Exception @p_SuppressNotification
 				IF ((SELECT COUNT(*) FROM @T_JobHistory WHERE Run_Status = 0 AND RID <= @p_NoOfContinousFailuresThreshold AND Instance_Id NOT IN (SELECT e.Instance_Id FROM DBA..LogWalkThresholdInstance AS e WHERE e.JobName = @p_JobName)) = @p_NoOfContinousFailuresThreshold)
 				BEGIN -- block if failure issue is found
-					
+
 					IF @p_SuppressNotification = 1
 					BEGIN
 						IF @p_Verbose = 1
@@ -321,6 +322,9 @@ DELETE FROM DBA..LogWalkThresholdInstance WHERE JobName = '''+@p_JobName+''';
 					END
 					ELSE
 					BEGIN -- Else @p_SuppressNotification
+						IF @p_Verbose = 1
+							PRINT 'Setting @_SendMailRequired = 1';
+						SET @_SendMailRequired = 1
 
 						IF @p_SendMail = 1
 						BEGIN
@@ -339,20 +343,20 @@ RCA:			Kindly execute below query to find out details of Blockers.
 
 		;WITH T_JobCaptures AS
 		(
-			SELECT [dd hh:mm:ss.mss], [dd hh:mm:ss.mss (avg)], [session_id], [sql_text], [sql_command], [login_name], [wait_info], [tasks], [tran_log_writes], [CPU], [tempdb_allocations], [tempdb_current], [blocking_session_id], [blocked_session_count], [reads], [writes], [context_switches], [physical_io], [physical_reads], [locks], [used_memory], [status], [tran_start_time], [open_tran_count], [percent_complete], [host_name], [database_name], [program_name], [additional_info], [start_time], [login_time], [request_id], [collection_time]
+			SELECT [collection_time], [dd hh:mm:ss.mss], [session_id], [sql_command], [login_name], [wait_info], [tasks], [tran_log_writes], [CPU], [tempdb_allocations], [tempdb_current], [blocking_session_id], [blocked_session_count], [reads], [writes], [context_switches], [physical_io], [physical_reads], [locks], [used_memory], [status], [tran_start_time], [open_tran_count], [percent_complete], [host_name], [database_name], [program_name], [additional_info], [start_time], [login_time], [request_id]
 			FROM [DBA]..[WhoIsActive_ResultSets] as r
 			WHERE r.program_name = ''SQL Job = '+@p_JobName+'''
 				AND (r.collection_time >= '''+CAST(@_collection_time_start AS VARCHAR(30))+''' AND r.collection_time <= '''+CAST(@_collection_time_end AS VARCHAR(30))+''')
 			--
 			UNION ALL
 			--
-			SELECT r.[dd hh:mm:ss.mss], r.[dd hh:mm:ss.mss (avg)], r.[session_id], r.[sql_text], r.[sql_command], r.[login_name], r.[wait_info], r.[tasks], r.[tran_log_writes], r.[CPU], r.[tempdb_allocations], r.[tempdb_current], r.[blocking_session_id], r.[blocked_session_count], r.[reads], r.[writes], r.[context_switches], r.[physical_io], r.[physical_reads], r.[locks], r.[used_memory], r.[status], r.[tran_start_time], r.[open_tran_count], r.[percent_complete], r.[host_name], r.[database_name], r.[program_name], r.[additional_info], r.[start_time], r.[login_time], r.[request_id], r.[collection_time]
+			SELECT r.[collection_time], r.[dd hh:mm:ss.mss], r.[session_id], r.[sql_command], r.[login_name], r.[wait_info], r.[tasks], r.[tran_log_writes], r.[CPU], r.[tempdb_allocations], r.[tempdb_current], r.[blocking_session_id], r.[blocked_session_count], r.[reads], r.[writes], r.[context_switches], r.[physical_io], r.[physical_reads], r.[locks], r.[used_memory], r.[status], r.[tran_start_time], r.[open_tran_count], r.[percent_complete], r.[host_name], r.[database_name], r.[program_name], r.[additional_info], r.[start_time], r.[login_time], r.[request_id]
 			FROM T_JobCaptures AS j
 			INNER JOIN [DBA]..[WhoIsActive_ResultSets] as r
 				ON r.collection_time = j.collection_time
 				AND j.blocking_session_id = r.session_id
 		)
-		SELECT	*
+		SELECT	DENSE_RANK()OVER(ORDER BY collection_Time ASC) AS CollectionBatch, *
 		FROM	T_JobCaptures
 		ORDER BY collection_time;
 
@@ -362,6 +366,19 @@ RCA:			Kindly execute below query to find out details of Blockers.
 						END -- If @p_SendMail
 					END -- Else @p_SuppressNotification
 				END -- block if failure issue is found
+				ELSE
+				BEGIN
+					IF @p_Verbose = 1
+						PRINT 'Verifying if @_SendMailRequired should be set to 0';
+					
+					IF @p_NoOfContinousFailuresThreshold > @NoOfContinousFailures
+					BEGIN
+						SET @_SendMailRequired = 0;
+						IF @p_Verbose = 1
+							PRINT 'Setting @_SendMailRequired = 0';
+					END
+
+				END
 			END -- Block -> Logic if Job Failure is due to Blocking Issue
 			ELSE IF @NoOfContinousFailures <> 0 AND @IsBlockingIssue = 0
 			BEGIN -- Block for Non-Blocking Issue 
@@ -387,6 +404,7 @@ DELETE FROM DBA..LogWalkThresholdInstance WHERE JobName = '''+@p_JobName+''';
 				END
 				ELSE
 				BEGIN -- Block when @p_SuppressNotification is NOT used for latest job failure
+					
 					IF @p_SendMail = 1
 					BEGIN
 						SELECT @_mailBody = 'Dear DBA Team,
@@ -413,6 +431,12 @@ Kindly check Job Step Error Message'
 					INSERT DBA..LogWalkThresholdInstance
 					SELECT @p_JobName, instance_id FROM	@T_JobHistory WHERE Run_Status = 0 AND RID = 1;
 				END
+				ELSE
+				BEGIN
+					IF @p_Verbose = 1
+						PRINT 'Setting @_SendMailRequired = 1';
+					SET @_SendMailRequired = 1
+				END
 				
 				--ELSE -- Send Mail
 				
@@ -424,8 +448,6 @@ Kindly check Job Step Error Message'
 			-- Send Mail
 			IF @NoOfContinousFailures <> 0 AND @p_SendMail = 1 AND @_SendMailRequired = 1
 			BEGIN
-				IF @p_Verbose = 1
-					PRINT 'Sending mail..';
 				SET @_mailSubject = 'SQL Agent Job '+QUOTENAME(@p_JobName)+' Failed for '+cast(@NoOfContinousFailures as varchar(2))+ ' times';
 				SET @_mailBody += '
 
@@ -433,13 +455,22 @@ Kindly check Job Step Error Message'
 Thanks & Regards,
 SQL Alerts
 It-Ops-DBA@tivo.com
-
 -- Alert Coming from SQL Agent Job [DBA Log Walk Alerts]
 		';
+
+				IF @p_Verbose = 1
+				BEGIN
+					PRINT 'Mail body';
+					PRINT @_mailBody;
+
+					PRINT 'Sending mail..';
+
+				END
+				
 				EXEC msdb..sp_send_dbmail
 							@profile_name = @@servername,
 							@recipients = @p_Mail_TO,
-							@copy_recipients = @p_Mail_CC,
+							@copy_recipients =  @p_Mail_CC,
 							@subject = @_mailSubject,
 							@body = @_mailBody;
 			END
@@ -447,5 +478,3 @@ It-Ops-DBA@tivo.com
 	END -- Else portion of @p_Help = 1
 END -- Procedure Body
 GO
-
-
