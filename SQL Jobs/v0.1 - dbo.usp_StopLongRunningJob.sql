@@ -209,7 +209,7 @@ BEGIN
 			@body_format = 'HTML',
 			--@recipients = 'ajay.dwivedi@tivo.com',  
 			@recipients = 'IT-Ops-DBA@tivo.com',
-			@copy_recipients= 'james.wilkinson@tivo.com',
+			--@copy_recipients= 'james.wilkinson@tivo.com',
 			@body = @_mailBody,  
 			@subject = @_mailSubject ;
 	

@@ -21,10 +21,12 @@ ALTER PROCEDURE [dbo].[usp_GetLogWalkJobHistoryAlert_Suppress]
 AS
 BEGIN 
 	/*
-		Version:		1.0
+		Version:		1.1
 		Created By:		Ajay Kumar Dwivedi
 		Created Date:	17-Mar-2019
+		Updated Date:	20-Apr-2019
 		Purpose:		To have custom alerting system for Log Walk jobs
+		Modification:	20-Apr-2019 - Corrected Notification mail where mail was received without body
 	*/
 	SET NOCOUNT ON;
 

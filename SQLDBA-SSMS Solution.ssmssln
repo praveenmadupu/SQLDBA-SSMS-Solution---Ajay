@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# SQL Server Management Studio Solution File, Format Version 14.00
-VisualStudioVersion = 14.0.23107.0
+# SQL Server Management Studio Solution File, Format Version 18.00
+VisualStudioVersion = 15.0.27428.2015
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "BlitzQueries", "BlitzQueries\BlitzQueries.ssmssqlproj", "{34D3C094-4DA1-4402-BCC7-D7D3C964B2AD}"
 EndProject
@@ -55,6 +55,8 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "StackExchange Data Dump", "
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "StackOverflow", "StackOverflow\StackOverflow.ssmssqlproj", "{3EC2A162-B1E8-492C-97D4-6C97A7D43E9A}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "TempDb-Issues", "TempDb-Issues\TempDb-Issues.ssmssqlproj", "{EBD80353-46F6-483D-B3A7-B3FC61B016FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -85,10 +87,14 @@ Global
 		{20351268-D56B-4BCF-A2D9-B1EF8E9791F7}.Default|Default.ActiveCfg = Default
 		{F5F6C8E4-5A14-47D3-83A0-3E4FE233E85A}.Default|Default.ActiveCfg = Default
 		{139A6092-0980-432F-A292-015ABA228C5C}.Default|Default.ActiveCfg = Default
-		{03E616A2-516C-4AC0-A9D1-467A98DF12F1}.Default|Default.ActiveCfg = Default
 		{3EC2A162-B1E8-492C-97D4-6C97A7D43E9A}.Default|Default.ActiveCfg = Default
+		{765D3ADD-1160-4DB9-90FA-5C42EACD481A}.Default|Default.ActiveCfg = Default
+		{EBD80353-46F6-483D-B3A7-B3FC61B016FA}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8153F083-4AC5-41ED-8201-5CF4F4E8F2E1}
 	EndGlobalSection
 EndGlobal
