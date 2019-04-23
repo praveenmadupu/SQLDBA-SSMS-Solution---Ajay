@@ -4,6 +4,7 @@ GO
 DECLARE @p_collection_time datetime2
 SET @p_collection_time = '2019-04-23 02:45:09.033';
 
+/*
 IF OBJECT_ID('tempdb..#T') IS NOT NULL
 	DROP TABLE #T;
 
@@ -47,27 +48,53 @@ SELECT	[BLOCKING_TREE] = N'    ' + REPLICATE (N'|         ', LEN (LEVEL)/4 - 1)
 							END
 						+	CAST (SPID AS NVARCHAR (10)) + N' ' + BATCH
 FROM BLOCKERS ORDER BY LEVEL ASC;
+*/
 
-;WITH T_ResultSet AS
+;WITH T_BLOCKERS AS
 (
-	SELECT  [collection_time], [TimeInMinutes], [session_id], 
+	-- Find block Leaders
+	SELECT	[collection_time], [TimeInMinutes], [session_id], 
 			[sql_text] = REPLACE(REPLACE(REPLACE(REPLACE(CAST(COALESCE([sql_command],[sql_text]) AS VARCHAR(MAX)),char(13),''),CHAR(10),''),'<?query --',''),'--?>',''), 
 			[login_name], 
 			[wait_info], [blocking_session_id], [blocked_session_count], [locks], 
-			[status], [tran_start_time], [open_tran_count], [host_name], [database_name], [program_name]		
-	FROM [DBA].[dbo].WhoIsActive_ResultSets AS r
-	WHERE r.collection_Time = @p_collection_time
+			[status], [tran_start_time], [open_tran_count], [host_name], [database_name], [program_name],
+			[LEVEL] = CAST (REPLICATE ('0', 4-LEN (CAST (r.session_id AS VARCHAR))) + CAST (r.session_id AS VARCHAR) AS VARCHAR (1000))
+	FROM	[DBA].[dbo].WhoIsActive_ResultSets AS r
+	WHERE	r.collection_Time = @p_collection_time
+		AND	(ISNULL(r.blocking_session_id,0) = 0 OR ISNULL(r.blocking_session_id,0) = r.session_id)
+		AND EXISTS (SELECT * FROM [DBA].[dbo].WhoIsActive_ResultSets AS R2 WHERE R2.collection_Time = r.collection_Time AND ISNULL(R2.blocking_session_id,0) = r.session_id AND ISNULL(R2.blocking_session_id,0) <> R2.session_id)
+	--
+	UNION ALL
+	--
+	SELECT	r.[collection_time], r.[TimeInMinutes], r.[session_id], 
+			[sql_text] = REPLACE(REPLACE(REPLACE(REPLACE(CAST(COALESCE(r.[sql_command],r.[sql_text]) AS VARCHAR(MAX)),char(13),''),CHAR(10),''),'<?query --',''),'--?>',''), 
+			r.[login_name], 
+			r.[wait_info], r.[blocking_session_id], r.[blocked_session_count], r.[locks], 
+			r.[status], r.[tran_start_time], r.[open_tran_count], r.[host_name], r.[database_name], r.[program_name],
+			CAST (B.LEVEL + RIGHT (CAST ((1000 + r.session_id) AS VARCHAR (100)), 4) AS VARCHAR (1000)) AS LEVEL
+	FROM	[DBA].[dbo].WhoIsActive_ResultSets AS r
+	INNER JOIN 
+			T_BLOCKERS AS B
+		ON	r.collection_time = B.collection_time
+		AND	r.blocking_session_id = B.session_id
+	WHERE	r.blocking_session_id <> r.session_id
 )
-SELECT	[collection_time], [session_id], [blocking_session_id], 
+SELECT	[collection_time], 
+		[BLOCKING_TREE] = N'    ' + REPLICATE (N'|         ', LEN (LEVEL)/4 - 1) 
+						+	CASE	WHEN (LEN(LEVEL)/4 - 1) = 0
+									THEN 'HEAD -  '
+									ELSE '|------  ' 
+							END
+						+	CAST (r.session_id AS NVARCHAR (10)) + N' ' + (CASE WHEN LEFT(r.[sql_text],1) = '(' THEN SUBSTRING(r.[sql_text],CHARINDEX('exec',r.[sql_text]),LEN(r.[sql_text]))  ELSE r.[sql_text] END),
+		[session_id], [blocking_session_id], 
 		w.[WaitTime(Seconds)],
-		--[sql_text] = (CASE WHEN LEFT([sql_text],1) = '(' THEN SUBSTRING([sql_text],CHARINDEX('exec',[sql_text]),LEN([sql_text]))  ELSE [sql_text] END), 
 		[sql_commad] = CONVERT(XML, '<?query -- '+char(13)
 						+ (CASE WHEN LEFT([sql_text],1) = '(' THEN SUBSTRING([sql_text],CHARINDEX('exec',[sql_text]),LEN([sql_text]))  ELSE [sql_text] END)
 						+ char(13)+'--?>'), 
 		[host_name], [database_name], [login_name], [program_name],
 		[wait_info], [blocked_session_count], [locks], 
 		[tran_start_time], [open_tran_count]
-FROM	T_ResultSet AS r
+FROM	T_BLOCKERS AS r
 OUTER APPLY
 	(	
 		select	lock_text,								
@@ -90,3 +117,4 @@ OUTER APPLY
 										END
 		) as wi
 	) AS w
+ORDER BY LEVEL ASC;
