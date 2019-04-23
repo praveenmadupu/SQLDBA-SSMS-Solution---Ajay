@@ -127,6 +127,12 @@
           <AssociatedConnUserName />
           <FullPath>Create Perfmon Collector.sql</FullPath>
         </FileNode>
+        <FileNode Name="Cross-Server-Database-Tables-RowCount-Comparision.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Cross-Server-Database-Tables-RowCount-Comparision.sql</FullPath>
+        </FileNode>
         <FileNode Name="dbo.usp_ConvertQuery2HTMLTable.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:False:sa</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>

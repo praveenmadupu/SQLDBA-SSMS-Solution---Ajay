@@ -87,8 +87,13 @@ FROM src
 ORDER BY db_buffer_MB DESC; 
 
 --	Check if compatibility Model of databases are up to date
-SELECT * FROM sys.databases as d
-	WHERE d.compatibility_level NOT IN (SELECT d1.compatibility_level FROM sys.databases as d1 WHERE d1.name = 'model');
+SELECT	[dbName] = d.name, d.create_date, d.collation_name, 
+		[model_compatibility_level] = (SELECT d1.compatibility_level FROM sys.databases as d1 WHERE d1.name = 'model'), d.compatibility_level,
+		d.user_access_desc, d.is_read_only, d.is_auto_close_on, d.is_auto_shrink_on, d.state_desc,
+		d.is_in_standby, d.snapshot_isolation_state_desc, d.recovery_model_desc, 
+		d.is_auto_create_stats_on, d.is_auto_update_stats_on, d.is_auto_update_stats_async_on, d.log_reuse_wait_desc
+FROM sys.databases as d
+	--WHERE d.compatibility_level NOT IN (SELECT d1.compatibility_level FROM sys.databases as d1 WHERE d1.name = 'model');
 	
 --	Ad hoc queries, and m/r settings
 select * from sys.configurations c where c.name in ('optimize for ad hoc workloads','max degree of parallelism','max server memory (MB)','min server memory (MB)')

@@ -12,7 +12,7 @@ SET @destination_table = 'DBA.dbo.WhoIsActive_ResultSets';
 
 DECLARE @schema VARCHAR(4000) ;
 --	Specify all your proc parameters here
-EXEC DBA..sp_WhoIsActive @get_plans=2, @get_full_inner_text=1, @get_transaction_info=1, @get_task_info=2, @get_locks=1, 
+EXEC DBA..sp_WhoIsActive @get_plans=2, @get_full_inner_text=0, @get_transaction_info=1, @get_task_info=2, @get_locks=1, 
 					@get_avg_time=1, @get_additional_info=1,@find_block_leaders=1, @get_outer_command =1
 					,@return_schema = 1
 					,@schema = @schema OUTPUT ;
@@ -51,7 +51,7 @@ GO
 DECLARE	@destination_table VARCHAR(4000);
 SET @destination_table = 'DBA.dbo.WhoIsActive_ResultSets';
 
-EXEC DBA..sp_WhoIsActive @get_full_inner_text=1, @get_transaction_info=1, @get_task_info=2, @get_locks=1, 
+EXEC DBA..sp_WhoIsActive @get_full_inner_text=0, @get_transaction_info=1, @get_task_info=2, @get_locks=1, 
 					@get_avg_time=1, @get_additional_info=1,@find_block_leaders=1, @get_outer_command =1,
 					@get_plans=2,
             @destination_table = @destination_table ;
@@ -103,7 +103,7 @@ EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'Log acti
 		@command=N'DECLARE	@destination_table VARCHAR(4000);
 SET @destination_table = ''DBA.dbo.WhoIsActive_ResultSets'';
 
-EXEC DBA..sp_WhoIsActive @get_full_inner_text=1, @get_transaction_info=1, @get_task_info=2, @get_locks=1, @get_avg_time=1, @get_additional_info=1,@find_block_leaders=1, @get_outer_command =1	
+EXEC DBA..sp_WhoIsActive @get_full_inner_text=0, @get_transaction_info=1, @get_task_info=2, @get_locks=1, @get_avg_time=1, @get_additional_info=1,@find_block_leaders=1, @get_outer_command =1	
 					,@get_plans=2,
             @destination_table = @destination_table ;', 
 		@database_name=N'DBA', 
