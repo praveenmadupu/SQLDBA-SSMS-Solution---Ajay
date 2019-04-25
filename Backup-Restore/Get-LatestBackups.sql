@@ -3,7 +3,7 @@
 --------------------------------------------------------------------------------- 
 ;WITH T_bkpHistory as
 (
-SELECT ROW_NUMBER()over(partition by bs.database_name order by bs.backup_finish_date desc) as RowID,
+SELECT --ROW_NUMBER()over(partition by bs.database_name order by bs.backup_finish_date desc) as RowID,
 		CONVERT(CHAR(100), SERVERPROPERTY('Servername')) AS SERVER
 	,bs.database_name
 	,bs.backup_start_date
@@ -28,11 +28,9 @@ SELECT ROW_NUMBER()over(partition by bs.database_name order by bs.backup_finish_
 	,is_copy_only
 FROM msdb.dbo.backupmediafamily AS bmf
 INNER JOIN msdb.dbo.backupset AS bs ON bmf.media_set_id = bs.media_set_id
-WHERE bs.type='D' --and database_name=''
-	--database_name = 'Staging'
+WHERE bs.backup_start_date >= (select max(bsi.backup_start_date) FROM msdb.dbo.backupmediafamily AS bmfi INNER JOIN msdb.dbo.backupset AS bsi ON bmfi.media_set_id = bsi.media_set_id where bsi.database_name = bs.database_name and bsi.type = 'D')
+AND database_name = 'RGS'
 )
-select (select sum(backup_size_MB)/1024 from T_bkpHistory where RowID = 1) as bkp_size_total_GB,
-		* 
+select * 
 from T_bkpHistory
-where RowID = 1
-ORDER BY backup_size_MB desc
+ORDER BY backup_start_date

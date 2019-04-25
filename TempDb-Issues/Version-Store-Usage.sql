@@ -11,7 +11,7 @@ select * from DBA..WhoIsActive_ResultSets r where r.collection_time = (select ma
 	and r.session_id in (select v.session_id from sys.dm_tran_active_snapshot_database_transactions v);
 
 --	Find all the transactions currently maintaining an active version store 
-select	GETDATE() AS runtime, (a.elapsed_time_seconds/60) as elapsed_time_minutes, a.*,b.kpid,b.blocked,b.lastwaittype,b.waitresource,db_name(b.dbid) as database_name,
+select	GETDATE() AS collection_time, (a.elapsed_time_seconds/60) as elapsed_time_minutes, a.*,b.kpid,b.blocked,b.lastwaittype,b.waitresource,db_name(b.dbid) as database_name,
 		b.cpu,b.physical_io,b.memusage,b.login_time,b.last_batch,b.open_tran,b.status,b.hostname,
 		CASE LEFT(b.program_name,15)
             WHEN 'SQLAgent - TSQL' THEN 
@@ -23,7 +23,8 @@ select	GETDATE() AS runtime, (a.elapsed_time_seconds/60) as elapsed_time_minutes
             END as Program_name,
 		b.cmd,b.loginame,request_id
 from sys.dm_tran_active_snapshot_database_transactions a inner join sys.sysprocesses b on a.session_id = b.spid
---where open_tran <> 0
+where open_tran <> 0
+AND (a.elapsed_time_seconds/60) >= 180
 order by elapsed_time_minutes desc;
 
 
