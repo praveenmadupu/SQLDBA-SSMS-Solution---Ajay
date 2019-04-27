@@ -105,7 +105,19 @@ SET @destination_table = ''DBA.dbo.WhoIsActive_ResultSets'';
 
 EXEC DBA..sp_WhoIsActive @get_full_inner_text=0, @get_transaction_info=1, @get_task_info=2, @get_locks=1, @get_avg_time=1, @get_additional_info=1,@find_block_leaders=1, @get_outer_command =1	
 					,@get_plans=2,
-            @destination_table = @destination_table ;', 
+            @destination_table = @destination_table ;
+			
+update w
+set query_plan = qp.query_plan
+--select w.collection_time, w.session_id, w.sql_command, w.additional_info
+--		,qp.query_plan
+from [DBA].[dbo].WhoIsActive_ResultSets AS w
+join sys.dm_exec_requests as r
+on w.session_id = r.session_id and w.request_id = r.request_id
+outer apply sys.dm_exec_text_query_plan(r.plan_handle, r.statement_start_offset, r.statement_end_offset) as qp
+where w.collection_time = (select max(ri.collection_time) from [DBA].[dbo].WhoIsActive_ResultSets AS ri)
+and w.query_plan IS NULL and qp.query_plan is not null;
+			', 
 		@database_name=N'DBA', 
 		@flags=0
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback

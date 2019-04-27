@@ -7,8 +7,8 @@ DECLARE @c_collection_time datetime2;
 
 -- Populate table & Variables
 INSERT @T_CollectionTimes
-SELECT DISTINCT collection_time FROM [DBA].[dbo].WhoIsActive_ResultSets 
-	WHERE collection_time >= '2019-04-25 01:45:00.000' AND collection_time <= '2019-04-25 02:15:00.000';
+SELECT DISTINCT collection_time FROM [DBA].[dbo].WhoIsActive_ResultSets r
+	WHERE r.collection_time >= 'Apr 25 2019  9:30PM' AND r.collection_time <= 'Apr 26 2019  6:00AM'
 
 DECLARE cur_CollectionTimes CURSOR LOCAL FAST_FORWARD READ_ONLY FOR SELECT collection_time FROM @T_CollectionTimes;
 OPEN cur_CollectionTimes;
@@ -25,7 +25,7 @@ BEGIN
 				[sql_text] = REPLACE(REPLACE(REPLACE(REPLACE(CAST(COALESCE([sql_command],[sql_text]) AS VARCHAR(MAX)),char(13),''),CHAR(10),''),'<?query --',''),'--?>',''), 
 				[login_name], [wait_info], [blocking_session_id], [blocked_session_count], [locks], 
 				[status], [tran_start_time], [open_tran_count], [host_name], [database_name], [program_name], additional_info,
-				r.[CPU], r.[tempdb_allocations], r.[tempdb_current], r.[reads], r.[writes], r.[physical_io], r.[physical_reads], r.[query_plan],
+				r.[CPU], r.[tempdb_allocations], r.[tempdb_current], r.[reads], r.[writes], r.[physical_io], r.[physical_reads], --r.[query_plan],
 				[LEVEL] = CAST (REPLICATE ('0', 4-LEN (CAST (r.session_id AS VARCHAR))) + CAST (r.session_id AS VARCHAR) AS VARCHAR (1000))
 		FROM	[DBA].[dbo].WhoIsActive_ResultSets AS r
 		WHERE	r.collection_Time = @c_collection_time
@@ -38,7 +38,7 @@ BEGIN
 				[sql_text] = REPLACE(REPLACE(REPLACE(REPLACE(CAST(COALESCE(r.[sql_command],r.[sql_text]) AS VARCHAR(MAX)),char(13),''),CHAR(10),''),'<?query --',''),'--?>',''), 
 				r.[login_name], r.[wait_info], r.[blocking_session_id], r.[blocked_session_count], r.[locks], 
 				r.[status], r.[tran_start_time], r.[open_tran_count], r.[host_name], r.[database_name], r.[program_name], r.additional_info,
-				r.[CPU], r.[tempdb_allocations], r.[tempdb_current], r.[reads], r.[writes], r.[physical_io], r.[physical_reads], r.[query_plan],
+				r.[CPU], r.[tempdb_allocations], r.[tempdb_current], r.[reads], r.[writes], r.[physical_io], r.[physical_reads], --r.[query_plan],
 				CAST (B.LEVEL + RIGHT (CAST ((1000 + r.session_id) AS VARCHAR (100)), 4) AS VARCHAR (1000)) AS LEVEL
 		FROM	[DBA].[dbo].WhoIsActive_ResultSets AS r
 		INNER JOIN 
@@ -62,7 +62,7 @@ BEGIN
 							+ (CASE WHEN LEFT([sql_text],1) = '(' THEN SUBSTRING([sql_text],CHARINDEX('exec',[sql_text]),LEN([sql_text]))  ELSE [sql_text] END)
 							+ char(13)+'--?>'), 
 			[host_name], [database_name], [login_name], [program_name],	[wait_info], [blocked_session_count], [locks], [tran_start_time], [open_tran_count], additional_info
-			,r.[CPU], r.[tempdb_allocations], r.[tempdb_current], r.[reads], r.[writes], r.[physical_io], r.[physical_reads], r.[query_plan]
+			,r.[CPU], r.[tempdb_allocations], r.[tempdb_current], r.[reads], r.[writes], r.[physical_io], r.[physical_reads] --, r.[query_plan]
 	FROM	T_BLOCKERS AS r
 	OUTER APPLY
 		(	

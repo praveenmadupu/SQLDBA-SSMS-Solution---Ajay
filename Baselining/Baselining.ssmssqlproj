@@ -63,6 +63,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPXDB20:CORPORATE\adwivedi">
+          <Created>2019-04-26T17:21:38.4950478+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPXDB20</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="TUL1MDQ1WDP01:CORPORATE\adwivedi">
           <Created>2019-04-24T13:48:50.816533+05:30</Created>
           <Type>SQL</Type>
@@ -206,8 +218,8 @@
           <FullPath>What Was Running - BlockingTree - At - Moment.sql</FullPath>
         </FileNode>
         <FileNode Name="What Was Running - BlockingTree - During.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPXDB20:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPXDB20</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>What Was Running - BlockingTree - During.sql</FullPath>
         </FileNode>

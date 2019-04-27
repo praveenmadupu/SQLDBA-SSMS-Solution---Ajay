@@ -57,6 +57,8 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "StackOverflow", "StackOverf
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "TempDb-Issues", "TempDb-Issues\TempDb-Issues.ssmssqlproj", "{EBD80353-46F6-483D-B3A7-B3FC61B016FA}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "ServiceBroker-SingleService", "ServiceBroker-SingleService\ServiceBroker-SingleService.ssmssqlproj", "{FC215972-4485-4B29-82C1-4DDD218D9303}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -88,8 +90,9 @@ Global
 		{F5F6C8E4-5A14-47D3-83A0-3E4FE233E85A}.Default|Default.ActiveCfg = Default
 		{139A6092-0980-432F-A292-015ABA228C5C}.Default|Default.ActiveCfg = Default
 		{3EC2A162-B1E8-492C-97D4-6C97A7D43E9A}.Default|Default.ActiveCfg = Default
-		{765D3ADD-1160-4DB9-90FA-5C42EACD481A}.Default|Default.ActiveCfg = Default
 		{EBD80353-46F6-483D-B3A7-B3FC61B016FA}.Default|Default.ActiveCfg = Default
+		{3F525156-268D-47A4-AB56-ADE7A2F06F3C}.Default|Default.ActiveCfg = Default
+		{FC215972-4485-4B29-82C1-4DDD218D9303}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

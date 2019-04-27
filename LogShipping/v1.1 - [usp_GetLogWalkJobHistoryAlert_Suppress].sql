@@ -332,7 +332,8 @@ DELETE FROM DBA..LogWalkThresholdInstance WHERE JobName = '''+@p_JobName+''';
 						BEGIN
 							-- From -> SQL Alerts - TUL1CIPRDB1 <SQLAlerts@tivo.com>
 							
-							SELECT @_mailBody = 'Dear DSG-Team,
+							SELECT /*
+							@_mailBody = 'Dear DSG-Team,
 
 SQL Agent Job '+QUOTENAME(@p_JobName)+' has been failing for '+cast(@NoOfContinousFailures as varchar(2))+ ' times continously.
 
@@ -362,7 +363,55 @@ RCA:			Kindly execute below query to find out details of Blockers.
 		FROM	T_JobCaptures
 		ORDER BY collection_time;
 
+' */
+							@_mailBody = 'Dear DSG-Team,
+
+SQL Agent Job '+QUOTENAME(@p_JobName)+' has been failing for '+cast(@NoOfContinousFailures as varchar(2))+ ' times continously.
+
+LAST JOB RUN:		'+CAST(jh.RunDateTime AS varchar(50))+'
+DURATION:		'+CAST(jh.RunDurationMinutes AS varchar(10))+' Minutes
+STATUS: 		Failed
+MESSAGES:		Job '+QUOTENAME(@p_JobName)+' COULD NOT obtain EXCLUSIVE access of underlying database to start its activity. 
+RCA:			Kindly execute below query to find out details of Blockers.
+
+
+		;WITH T_JobCaptures AS
+		(
+			SELECT [dd hh:mm:ss.mss], [dd hh:mm:ss.mss (avg)], [session_id], [sql_text], [sql_command], [login_name], [wait_info], [tasks], [tran_log_writes], [CPU], [tempdb_allocations], [tempdb_current], [blocking_session_id], [blocked_session_count], [reads], [writes], [context_switches], [physical_io], [physical_reads], [locks], [used_memory], [status], [tran_start_time], [open_tran_count], [percent_complete], [host_name], [database_name], [program_name], [additional_info], [start_time], [login_time], [request_id], [collection_time]
+				,[sql_query] = REPLACE(REPLACE(REPLACE(REPLACE(CAST(COALESCE([sql_text],[sql_command]) AS VARCHAR(MAX)),char(13),''''),CHAR(10),''''),''<?query --'',''''),''--?>'','''')
+				,[LEVEL] = CAST (REPLICATE (''0'', 4-LEN (CAST (r.session_id AS VARCHAR))) + CAST (r.session_id AS VARCHAR) AS VARCHAR (1000))
+			FROM [DBA]..[WhoIsActive_ResultSets] as r
+			WHERE r.collection_time >= '''+CAST(@_collection_time_start AS VARCHAR(30))+''' AND r.collection_time <= '''+CAST(@_collection_time_end AS VARCHAR(30))+'''
+			AND	(ISNULL(r.blocking_session_id,0) = 0 OR ISNULL(r.blocking_session_id,0) = r.session_id)
+			AND EXISTS (SELECT * FROM [DBA].[dbo].WhoIsActive_ResultSets AS R2 WHERE R2.collection_Time = r.collection_Time AND ISNULL(R2.blocking_session_id,0) = r.session_id AND ISNULL(R2.blocking_session_id,0) <> R2.session_id AND R2.program_name = ''SQL Job = '+@p_JobName+''')
+			--
+			UNION ALL
+			--
+			SELECT r.[dd hh:mm:ss.mss], r.[dd hh:mm:ss.mss (avg)], r.[session_id], r.[sql_text], r.[sql_command], r.[login_name], r.[wait_info], r.[tasks], r.[tran_log_writes], r.[CPU], r.[tempdb_allocations], r.[tempdb_current], r.[blocking_session_id], r.[blocked_session_count], r.[reads], r.[writes], r.[context_switches], r.[physical_io], r.[physical_reads], r.[locks], r.[used_memory], r.[status], r.[tran_start_time], r.[open_tran_count], r.[percent_complete], r.[host_name], r.[database_name], r.[program_name], r.[additional_info], r.[start_time], r.[login_time], r.[request_id], r.[collection_time]
+				,[sql_query] = REPLACE(REPLACE(REPLACE(REPLACE(CAST(COALESCE(r.[sql_text],r.[sql_command]) AS VARCHAR(MAX)),char(13),''''),CHAR(10),''''),''<?query --'',''''),''--?>'','''')
+				,[LEVEL] = CAST (b.LEVEL + RIGHT (CAST ((1000 + r.session_id) AS VARCHAR (100)), 4) AS VARCHAR (1000))
+			FROM T_JobCaptures AS b
+			INNER JOIN [DBA]..[WhoIsActive_ResultSets] as r
+				ON r.collection_time = B.collection_time
+				AND	r.blocking_session_id = B.session_id
+			WHERE	r.blocking_session_id <> r.session_id
+		)
+		SELECT	[collection_time], 
+				[BLOCKING_TREE] = N''    '' + REPLICATE (N''|         '', LEN (LEVEL)/4 - 1) 
+								+	CASE	WHEN (LEN(LEVEL)/4 - 1) = 0
+											THEN ''HEAD -  ''
+											ELSE ''|------  '' 
+									END
+								+	CAST (r.session_id AS NVARCHAR (10)) + N'' '' + (CASE WHEN LEFT(r.[sql_query],1) = ''('' THEN SUBSTRING(r.[sql_query],CHARINDEX(''exec'',r.[sql_query]),LEN(r.[sql_query]))  ELSE r.[sql_query] END),
+				[session_id], [blocking_session_id], 				
+				[sql_text], 
+				[host_name], [database_name], [login_name], [program_name],	[wait_info], [blocked_session_count], [locks], [tran_start_time], [open_tran_count], additional_info
+				,r.[CPU], r.[tempdb_allocations], r.[tempdb_current], r.[reads], r.[writes], r.[physical_io], r.[physical_reads] --, r.[query_plan]
+		FROM	T_JobCaptures as r
+		ORDER BY r.collection_time, LEVEL ASC;
+
 '
+		
 							FROM	@T_JobHistory as jh
 							WHERE	jh.RID = 1;
 						END -- If @p_SendMail

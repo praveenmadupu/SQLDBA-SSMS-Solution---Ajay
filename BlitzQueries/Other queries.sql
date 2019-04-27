@@ -49,6 +49,14 @@ EXEC master..xp_readerrorlog 0,1, N'Instant File Initialization'
 EXEC master..xp_readerrorlog 0,1, N'Server is listening on'
 EXEC master..xp_readerrorlog 0,1, N'Dedicated admin connection support'
 
+--	Page Life Expectancy (Ideal)
+;WITH T_BufferPool as
+(	SELECT [BufferPoolSize(GB)] = (COUNT_BIG(*)*8)/1024/1024  FROM sys.dm_os_buffer_descriptors )
+
+SELECT [BufferPoolSize(GB)], [Ideal(PageLifeExpectancy)] = ([BufferPoolSize(GB)]/4)*300 FROM T_BufferPool;
+
+
+
 --	Hardware Information from SQL Server 2016
 SELECT	i.cpu_count as [Logical_CPU_Count], physical_memory_kb/1024 as [Physical Memory(MB)], i.virtual_machine_type_desc
 		,i.sqlserver_start_time

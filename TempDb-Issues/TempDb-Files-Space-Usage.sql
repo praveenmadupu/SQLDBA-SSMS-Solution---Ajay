@@ -4,8 +4,8 @@ DECLARE @p_LogFileUsedSpaceThreshold_gb numeric(20,2);
 DECLARE @p_VersionStoreThreshold_gb numeric(20,2);
 DECLARE @verbose BIT = 0;
 
-SET @p_DataFileUsedSpaceThreshold_gb = 73.0;
-SET @p_LogFileUsedSpaceThreshold_gb = 65.0;
+SET @p_DataFileUsedSpaceThreshold_gb = 80.0;
+SET @p_LogFileUsedSpaceThreshold_gb = 90.0;
 SET @p_VersionStoreThreshold_gb = 200;
 /*
 	For Log File => with oldest transaction of 134 minutes, Space Used was 55 GB
@@ -114,6 +114,10 @@ DECLARE @_collect_whoIsActive_ResultSets bit;
 DECLARE @_isLogSizeCrossed bit;
 DECLARE @_isDataSizeCrossed bit;
 DECLARE @_isVersionStoreIssue bit;
+DECLARE @_dataFileCurrentSpaceUsed numeric(20,2);
+DECLARE @_logFileCurrentSpaceUsed numeric(20,2);
+DECLARE @_dataFileGrowthInLast2Hours numeric(20,2);
+DECLARE @_logFileGrowthInLast2Hours numeric(20,2);
 SET @_collection_time = GETDATE();
 SET @_collect_whoIsActive_ResultSets = 0;
 SET @_isLogSizeCrossed = 0;
@@ -245,6 +249,23 @@ BEGIN
 
 END
 
+SELECT	@_dataFileCurrentSpaceUsed = MAX((CASE WHEN f.type_desc = 'ROWS' THEN spaceUsed_gb ELSE 0 END)), @_logFileCurrentSpaceUsed = MAX((CASE WHEN f.type_desc = 'LOG' THEN spaceUsed_gb ELSE 0 END))
+FROM	DBA.dbo.DatabaseFileSpaceUsage AS f
+WHERE	f.collection_time = @_collection_time
+AND		f.dbName = 'tempdb';
+
+;WITH T_DbFilesCollection_2Hours AS
+(
+	SELECT	[Data_Max_SpaceUsed_gb] = MAX((CASE WHEN f.type_desc = 'ROWS' THEN spaceUsed_gb ELSE 0 END))
+			,[Data_Min_SpaceUsed_gb] = MIN((CASE WHEN f.type_desc = 'ROWS' THEN spaceUsed_gb ELSE 0 END))
+			,[Log_Max_SpaceUsed_gb] = MAX((CASE WHEN f.type_desc = 'ROWS' THEN spaceUsed_gb ELSE 0 END))
+			,[Log_Min_SpaceUsed_gb] = MIN((CASE WHEN f.type_desc = 'ROWS' THEN spaceUsed_gb ELSE 0 END))
+	FROM	DBA.dbo.DatabaseFileSpaceUsage AS f WHERE f.collection_time >= DATEADD(HOUR,-2,@_collection_time) AND f.dbName = 'tempdb'
+)
+SELECT	@_dataFileGrowthInLast2Hours = [Data_Max_SpaceUsed_gb] - [Data_Min_SpaceUsed_gb]
+		,@_logFileGrowthInLast2Hours = [Log_Max_SpaceUsed_gb] - [Log_Min_SpaceUsed_gb]
+FROM	T_DbFilesCollection_2Hours AS f;
+
 SET @_collection_time = GETDATE();
 IF (@_isLogSizeCrossed = 1 OR @_isDataSizeCrossed = 1 OR @_isVersionStoreIssue = 1)
 BEGIN
@@ -254,8 +275,12 @@ BEGIN
 
 Tempdb data or log files used space value has crossed below threshold values:-
 '+(CASE WHEN @_isDataSizeCrossed = 1 THEN CHAR(13)+'    @p_DataFileUsedSpaceThreshold_gb = '+CAST(@p_DataFileUsedSpaceThreshold_gb AS VARCHAR(50)) ELSE '' END)
+ +(CASE WHEN @_isDataSizeCrossed = 1 THEN CHAR(13)+'        Current Data File Size(gb) = '+CAST(@_dataFileCurrentSpaceUsed AS VARCHAR(50)) ELSE '' END)
  +(CASE WHEN @_isLogSizeCrossed = 1 THEN CHAR(13)+'    @p_LogFileUsedSpaceThreshold_gb = '+CAST(@p_LogFileUsedSpaceThreshold_gb AS VARCHAR(50)) ELSE '' END)
+ +(CASE WHEN @_isLogSizeCrossed = 1 THEN CHAR(13)+'        Current Log File Size(gb) = '+CAST(@_logFileCurrentSpaceUsed AS VARCHAR(50)) ELSE '' END)
  +(CASE WHEN @_isVersionStoreIssue = 1 THEN CHAR(13)+'    @p_VersionStoreThreshold_gb = '+CAST(@p_VersionStoreThreshold_gb AS VARCHAR(50)) ELSE '' END)+'
+'+(CASE WHEN @_isDataSizeCrossed = 1 THEN CHAR(13)+'    Data File Growth in last 2 Hours(gb) = '+CAST(@_dataFileGrowthInLast2Hours AS VARCHAR(50)) ELSE '' END)
+ +(CASE WHEN @_isLogSizeCrossed = 1 THEN CHAR(13)+'    Log File Growth in last 2 Hours(gb) = '+CAST(@_logFileGrowthInLast2Hours AS VARCHAR(50)) ELSE '' END)+'
 
 
 Kindly execute below queries to troubleshoot:-
