@@ -39,19 +39,31 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1MDPDWMSH3C1:CORPORATE\adwivedi">
+          <Created>2019-04-29T20:20:26.3712703+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1MDPDWMSH3C1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="01) Trace Definition (SQL 2008 R2).sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1MDPDWMSH3C1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1MDPDWMSH3C1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>01) Trace Definition (SQL 2008 R2).sql</FullPath>
         </FileNode>
         <FileNode Name="02) Trace Related Queries.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1MDPDWMSH3C1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1MDPDWMSH3C1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>02) Trace Related Queries.sql</FullPath>
         </FileNode>
@@ -62,8 +74,8 @@
           <FullPath>03) DBA - SQLTrace_Stop.sql</FullPath>
         </FileNode>
         <FileNode Name="04) Top Queries by ClearTrace.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>04) Top Queries by ClearTrace.sql</FullPath>
         </FileNode>

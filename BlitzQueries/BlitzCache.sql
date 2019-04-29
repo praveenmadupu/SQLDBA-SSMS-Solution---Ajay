@@ -8,8 +8,8 @@ EXEC master..sp_BlitzCache @Top = 50, @SortOrder = 'writes' -- logical reads whe
 EXEC master..sp_BlitzCache @Top = 50, @SortOrder = 'memory grant' -- logical reads when PAGEIOLATCH_SH is most prominent wait type
 
 --	Analyze using Procedure Name
-exec master..sp_BlitzCache @StoredProcName = 'dbo.usp_rm_get_source_logo_gaps_Ajay'
-exec master..sp_BlitzCache @StoredProcName = 'dbo.usp_rm_get_source_logo_gaps'
+exec master..sp_BlitzCache @StoredProcName = 'usp_rm_get_source_logo_gaps_Ajay'
+exec master..sp_BlitzCache @StoredProcName = 'usp_rm_get_source_logo_gaps'
 
 --	Analyze using Query Hash in case SQL Code is not procedure
 exec tempdb..sp_BlitzCache @OnlyQueryHashes = '0x998533A642130191'
