@@ -18,13 +18,13 @@ exec sp_trace_setstatus 2, 2;
 "C:\Program Files\Microsoft Corporation\RMLUtils\ReadTrace.exe" -IE:\PerformanceAnalysis\2018, June 18 - Publisher Trace\TUL1CIPCNPDB1_19Jun2018_0230AM\TUL1CIPCNPDB1_19Jun2018_0230AM.trc -oE:\PerformanceAnalysis -f
 
 --	Find Common Trace Events for Query Performance
-select * from sys.trace_events te where te.trace_event_id in (10,12,13,16,17,41,42,43,45,98);
+select * from sys.trace_events te where te.trace_event_id in (10,12,13,16,17,42,43,98,122);
 select * from sys.trace_events te where te.name like '%plan%';
 
 select	eb.trace_event_id, eb.trace_column_id, tc.name, te.name
-		,'exec sp_trace_setevent @TraceID, '+cast(eb.trace_event_id as varchar(5))+', '+cast(eb.trace_column_id as varchar(5))+', @on; --'+te.name+'.'+tc.name as [sp_trace_setevent]
+		,cast('exec sp_trace_setevent @TraceID, '+cast(eb.trace_event_id as varchar(5))+', '+cast(eb.trace_column_id as varchar(5))+', @on;' as char(50))+'--'+te.name+'.'+tc.name as [sp_trace_setevent]
 from sys.trace_event_bindings eb join sys.trace_columns tc on tc.trace_column_id = eb.trace_column_id join sys.trace_events te on te.trace_event_id = eb.trace_event_id
-where eb.trace_event_id in (10,12,13,16,17,41,42,43,45);
+where eb.trace_event_id in (10,12,13,16,17,42,43,98,122);
 
 -- Find Trace Events for Running Trace
 select * from sys.trace_events te where te.trace_event_id in (select eventid from sys.fn_trace_geteventinfo ( 2 ));
@@ -32,4 +32,4 @@ select * from sys.trace_events te where te.trace_event_id in (select eventid fro
 -- Find Trace Filters for Running Trace
 select * from fn_trace_getfilterinfo (2);
 select * from sys.trace_columns tc where tc.trace_column_id in (select columnid from fn_trace_getfilterinfo (2));
-select * from sys.trace_columns tc where tc.name like '%Login%'
+select * from sys.trace_columns tc where tc.name like '%ApplicationName%'
