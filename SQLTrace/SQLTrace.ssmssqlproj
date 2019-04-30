@@ -15,6 +15,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="localhost:CORPORATE\adwivedi">
+          <Created>2019-04-29T22:46:07.5096289+05:30</Created>
+          <Type>SQL</Type>
+          <Server>localhost</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="tul1cipcnpdb1:CORPORATE\adwivedi">
           <Created>2019-04-17T12:37:28.2635776+05:30</Created>
           <Type>SQL</Type>
@@ -34,6 +46,18 @@
           <UserName />
           <Authentication>Windows Authentication</Authentication>
           <InitialDB>master</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="TUL1DBAPMTDB1\SQL2017:CORPORATE\adwivedi">
+          <Created>2019-04-30T12:04:38.153546+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1DBAPMTDB1\SQL2017</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
           <LoginTimeout>30</LoginTimeout>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
@@ -74,8 +98,8 @@
           <FullPath>03) DBA - SQLTrace_Stop.sql</FullPath>
         </FileNode>
         <FileNode Name="04) Top Queries by ClearTrace.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2017:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2017</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>04) Top Queries by ClearTrace.sql</FullPath>
         </FileNode>

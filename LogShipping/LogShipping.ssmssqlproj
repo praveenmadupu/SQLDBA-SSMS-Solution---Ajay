@@ -97,9 +97,15 @@
           <AssociatedConnUserName />
           <FullPath>usp_DBAApplyTLogs.sql</FullPath>
         </FileNode>
+        <FileNode Name="v0.0 - dbo.fn_IsJobRunning.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipxdb19:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipxdb19</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>v0.0 - dbo.fn_IsJobRunning.sql</FullPath>
+        </FileNode>
         <FileNode Name="v1.0 - [usp_GetMail_4_SQLAlerts].sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPXDB20:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPXDB20</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipxdb19:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipxdb19</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>v1.0 - [usp_GetMail_4_SQLAlerts].sql</FullPath>
         </FileNode>
@@ -110,8 +116,8 @@
           <FullPath>v1.1 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql</FullPath>
         </FileNode>
         <FileNode Name="v1.2 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPXDB20:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPXDB20</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipxdb19:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipxdb19</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>v1.2 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql</FullPath>
         </FileNode>

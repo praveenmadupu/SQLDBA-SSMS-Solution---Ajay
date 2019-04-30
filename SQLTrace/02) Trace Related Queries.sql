@@ -19,12 +19,13 @@ exec sp_trace_setstatus 2, 2;
 
 --	Find Common Trace Events for Query Performance
 select * from sys.trace_events te where te.trace_event_id in (10,12,13,16,17,42,43,98,122);
-select * from sys.trace_events te where te.name like '%plan%';
+select * from sys.trace_events te where te.name like '%stmt%';
 
 select	eb.trace_event_id, eb.trace_column_id, tc.name, te.name
 		,cast('exec sp_trace_setevent @TraceID, '+cast(eb.trace_event_id as varchar(5))+', '+cast(eb.trace_column_id as varchar(5))+', @on;' as char(50))+'--'+te.name+'.'+tc.name as [sp_trace_setevent]
 from sys.trace_event_bindings eb join sys.trace_columns tc on tc.trace_column_id = eb.trace_column_id join sys.trace_events te on te.trace_event_id = eb.trace_event_id
-where eb.trace_event_id in (10,12,13,16,17,42,43,98,122);
+--where eb.trace_event_id in (10,12,13,16,17,42,43,98,122);
+where eb.trace_event_id in (41,45);
 
 -- Find Trace Events for Running Trace
 select * from sys.trace_events te where te.trace_event_id in (select eventid from sys.fn_trace_geteventinfo ( 2 ));
@@ -33,3 +34,9 @@ select * from sys.trace_events te where te.trace_event_id in (select eventid fro
 select * from fn_trace_getfilterinfo (2);
 select * from sys.trace_columns tc where tc.trace_column_id in (select columnid from fn_trace_getfilterinfo (2));
 select * from sys.trace_columns tc where tc.name like '%ApplicationName%'
+
+
+-- Get Collected Trace into SQL Table
+SELECT * INTO SQLTraceResults_EU_Apr29
+FROM ::fn_trace_gettable('H:\Performance-Issues\Data-Collections\TUL1MDPDWMSH3C1\TUL1MDPDWMSH3C1_29Apr2019_0220PM.trc', default)
+
