@@ -87,6 +87,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1MDPDWMSH3C1:CORPORATE\adwivedi">
+          <Created>2019-05-04T23:08:19.9947424+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1MDPDWMSH3C1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>master</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
@@ -114,6 +126,12 @@
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>BCP-QueryOut.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Combine-Perfmon-BLG-Files.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1MDPDWMSH3C1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1MDPDWMSH3C1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Combine-Perfmon-BLG-Files.sql</FullPath>
         </FileNode>
         <FileNode Name="Command Prompt.sql">
           <AssociatedConnectionMoniker />

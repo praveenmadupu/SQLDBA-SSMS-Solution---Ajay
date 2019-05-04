@@ -5,7 +5,7 @@
 declare @fileFolderPath varchar(500);
 declare @tracefile nvarchar(256);
 
-set @fileFolderPath = 'W:\DBA\SQLTrace\';
+set @fileFolderPath = 'E:\DBA\SQLTrace\';
 SELECT @tracefile = @fileFolderPath+@@serverName+'_'+DATENAME(DAY,GETDATE())+CAST(DATENAME(MONTH,GETDATE()) AS VARCHAR(3))
 							+DATENAME(YEAR,GETDATE())+'_'+REPLACE(REPLACE(RIGHT(CONVERT(VARCHAR, GETDATE(), 100),7),':',''), ' ','0');
 
@@ -152,6 +152,64 @@ exec sp_trace_setevent @TraceID, 17, 11, @on;     --ExistingConnection.LoginName
 exec sp_trace_setevent @TraceID, 17, 12, @on;     --ExistingConnection.SPID
 exec sp_trace_setevent @TraceID, 17, 13, @on;     --ExistingConnection.Duration
 exec sp_trace_setevent @TraceID, 17, 14, @on;     --ExistingConnection.StartTime
+exec sp_trace_setevent @TraceID, 40, 1, @on;      --SQL:StmtStarting.TextData
+exec sp_trace_setevent @TraceID, 40, 3, @on;      --SQL:StmtStarting.DatabaseID
+exec sp_trace_setevent @TraceID, 40, 4, @on;      --SQL:StmtStarting.TransactionID
+exec sp_trace_setevent @TraceID, 40, 5, @on;      --SQL:StmtStarting.LineNumber
+exec sp_trace_setevent @TraceID, 40, 6, @on;      --SQL:StmtStarting.NTUserName
+exec sp_trace_setevent @TraceID, 40, 7, @on;      --SQL:StmtStarting.NTDomainName
+exec sp_trace_setevent @TraceID, 40, 64, @on;     --SQL:StmtStarting.SessionLoginName
+exec sp_trace_setevent @TraceID, 40, 66, @on;     --SQL:StmtStarting.GroupID
+exec sp_trace_setevent @TraceID, 40, 49, @on;     --SQL:StmtStarting.RequestID
+exec sp_trace_setevent @TraceID, 40, 50, @on;     --SQL:StmtStarting.XactSequence
+exec sp_trace_setevent @TraceID, 40, 51, @on;     --SQL:StmtStarting.EventSequence
+exec sp_trace_setevent @TraceID, 40, 55, @on;     --SQL:StmtStarting.IntegerData2
+exec sp_trace_setevent @TraceID, 40, 60, @on;     --SQL:StmtStarting.IsSystem
+exec sp_trace_setevent @TraceID, 40, 61, @on;     --SQL:StmtStarting.Offset
+exec sp_trace_setevent @TraceID, 40, 26, @on;     --SQL:StmtStarting.ServerName
+exec sp_trace_setevent @TraceID, 40, 27, @on;     --SQL:StmtStarting.EventClass
+exec sp_trace_setevent @TraceID, 40, 29, @on;     --SQL:StmtStarting.NestLevel
+exec sp_trace_setevent @TraceID, 40, 30, @on;     --SQL:StmtStarting.State
+exec sp_trace_setevent @TraceID, 40, 35, @on;     --SQL:StmtStarting.DatabaseName
+exec sp_trace_setevent @TraceID, 40, 41, @on;     --SQL:StmtStarting.LoginSid
+exec sp_trace_setevent @TraceID, 40, 8, @on;      --SQL:StmtStarting.HostName
+exec sp_trace_setevent @TraceID, 40, 9, @on;      --SQL:StmtStarting.ClientProcessID
+exec sp_trace_setevent @TraceID, 40, 10, @on;     --SQL:StmtStarting.ApplicationName
+exec sp_trace_setevent @TraceID, 40, 11, @on;     --SQL:StmtStarting.LoginName
+exec sp_trace_setevent @TraceID, 40, 12, @on;     --SQL:StmtStarting.SPID
+exec sp_trace_setevent @TraceID, 40, 14, @on;     --SQL:StmtStarting.StartTime
+exec sp_trace_setevent @TraceID, 41, 1, @on;      --SQL:StmtCompleted.TextData
+exec sp_trace_setevent @TraceID, 41, 3, @on;      --SQL:StmtCompleted.DatabaseID
+exec sp_trace_setevent @TraceID, 41, 4, @on;      --SQL:StmtCompleted.TransactionID
+exec sp_trace_setevent @TraceID, 41, 5, @on;      --SQL:StmtCompleted.LineNumber
+exec sp_trace_setevent @TraceID, 41, 6, @on;      --SQL:StmtCompleted.NTUserName
+exec sp_trace_setevent @TraceID, 41, 7, @on;      --SQL:StmtCompleted.NTDomainName
+exec sp_trace_setevent @TraceID, 41, 64, @on;     --SQL:StmtCompleted.SessionLoginName
+exec sp_trace_setevent @TraceID, 41, 66, @on;     --SQL:StmtCompleted.GroupID
+exec sp_trace_setevent @TraceID, 41, 49, @on;     --SQL:StmtCompleted.RequestID
+exec sp_trace_setevent @TraceID, 41, 50, @on;     --SQL:StmtCompleted.XactSequence
+exec sp_trace_setevent @TraceID, 41, 51, @on;     --SQL:StmtCompleted.EventSequence
+exec sp_trace_setevent @TraceID, 41, 55, @on;     --SQL:StmtCompleted.IntegerData2
+exec sp_trace_setevent @TraceID, 41, 60, @on;     --SQL:StmtCompleted.IsSystem
+exec sp_trace_setevent @TraceID, 41, 61, @on;     --SQL:StmtCompleted.Offset
+exec sp_trace_setevent @TraceID, 41, 26, @on;     --SQL:StmtCompleted.ServerName
+exec sp_trace_setevent @TraceID, 41, 27, @on;     --SQL:StmtCompleted.EventClass
+exec sp_trace_setevent @TraceID, 41, 29, @on;     --SQL:StmtCompleted.NestLevel
+exec sp_trace_setevent @TraceID, 41, 35, @on;     --SQL:StmtCompleted.DatabaseName
+exec sp_trace_setevent @TraceID, 41, 41, @on;     --SQL:StmtCompleted.LoginSid
+exec sp_trace_setevent @TraceID, 41, 48, @on;     --SQL:StmtCompleted.RowCounts
+exec sp_trace_setevent @TraceID, 41, 14, @on;     --SQL:StmtCompleted.StartTime
+exec sp_trace_setevent @TraceID, 41, 15, @on;     --SQL:StmtCompleted.EndTime
+exec sp_trace_setevent @TraceID, 41, 16, @on;     --SQL:StmtCompleted.Reads
+exec sp_trace_setevent @TraceID, 41, 17, @on;     --SQL:StmtCompleted.Writes
+exec sp_trace_setevent @TraceID, 41, 18, @on;     --SQL:StmtCompleted.CPU
+exec sp_trace_setevent @TraceID, 41, 25, @on;     --SQL:StmtCompleted.IntegerData
+exec sp_trace_setevent @TraceID, 41, 8, @on;      --SQL:StmtCompleted.HostName
+exec sp_trace_setevent @TraceID, 41, 9, @on;      --SQL:StmtCompleted.ClientProcessID
+exec sp_trace_setevent @TraceID, 41, 10, @on;     --SQL:StmtCompleted.ApplicationName
+exec sp_trace_setevent @TraceID, 41, 11, @on;     --SQL:StmtCompleted.LoginName
+exec sp_trace_setevent @TraceID, 41, 12, @on;     --SQL:StmtCompleted.SPID
+exec sp_trace_setevent @TraceID, 41, 13, @on;     --SQL:StmtCompleted.Duration
 exec sp_trace_setevent @TraceID, 42, 1, @on;      --SP:Starting.TextData
 exec sp_trace_setevent @TraceID, 42, 2, @on;      --SP:Starting.BinaryData
 exec sp_trace_setevent @TraceID, 42, 3, @on;      --SP:Starting.DatabaseID
@@ -211,92 +269,36 @@ exec sp_trace_setevent @TraceID, 43, 9, @on;      --SP:Completed.ClientProcessID
 exec sp_trace_setevent @TraceID, 43, 10, @on;     --SP:Completed.ApplicationName
 exec sp_trace_setevent @TraceID, 43, 11, @on;     --SP:Completed.LoginName
 exec sp_trace_setevent @TraceID, 43, 12, @on;     --SP:Completed.SPID
-exec sp_trace_setevent @TraceID, 98, 2, @on;      --Showplan Statistics Profile.BinaryData
-exec sp_trace_setevent @TraceID, 98, 3, @on;      --Showplan Statistics Profile.DatabaseID
-exec sp_trace_setevent @TraceID, 98, 4, @on;      --Showplan Statistics Profile.TransactionID
-exec sp_trace_setevent @TraceID, 98, 5, @on;      --Showplan Statistics Profile.LineNumber
-exec sp_trace_setevent @TraceID, 98, 7, @on;      --Showplan Statistics Profile.NTDomainName
-exec sp_trace_setevent @TraceID, 98, 8, @on;      --Showplan Statistics Profile.HostName
-exec sp_trace_setevent @TraceID, 98, 64, @on;     --Showplan Statistics Profile.SessionLoginName
-exec sp_trace_setevent @TraceID, 98, 66, @on;     --Showplan Statistics Profile.GroupID
-exec sp_trace_setevent @TraceID, 98, 35, @on;     --Showplan Statistics Profile.DatabaseName
-exec sp_trace_setevent @TraceID, 98, 41, @on;     --Showplan Statistics Profile.LoginSid
-exec sp_trace_setevent @TraceID, 98, 49, @on;     --Showplan Statistics Profile.RequestID
-exec sp_trace_setevent @TraceID, 98, 50, @on;     --Showplan Statistics Profile.XactSequence
-exec sp_trace_setevent @TraceID, 98, 51, @on;     --Showplan Statistics Profile.EventSequence
-exec sp_trace_setevent @TraceID, 98, 60, @on;     --Showplan Statistics Profile.IsSystem
-exec sp_trace_setevent @TraceID, 98, 25, @on;     --Showplan Statistics Profile.IntegerData
-exec sp_trace_setevent @TraceID, 98, 26, @on;     --Showplan Statistics Profile.ServerName
-exec sp_trace_setevent @TraceID, 98, 27, @on;     --Showplan Statistics Profile.EventClass
-exec sp_trace_setevent @TraceID, 98, 28, @on;     --Showplan Statistics Profile.ObjectType
-exec sp_trace_setevent @TraceID, 98, 29, @on;     --Showplan Statistics Profile.NestLevel
-exec sp_trace_setevent @TraceID, 98, 34, @on;     --Showplan Statistics Profile.ObjectName
-exec sp_trace_setevent @TraceID, 98, 9, @on;      --Showplan Statistics Profile.ClientProcessID
-exec sp_trace_setevent @TraceID, 98, 10, @on;     --Showplan Statistics Profile.ApplicationName
-exec sp_trace_setevent @TraceID, 98, 11, @on;     --Showplan Statistics Profile.LoginName
-exec sp_trace_setevent @TraceID, 98, 12, @on;     --Showplan Statistics Profile.SPID
-exec sp_trace_setevent @TraceID, 98, 14, @on;     --Showplan Statistics Profile.StartTime
-exec sp_trace_setevent @TraceID, 98, 22, @on;     --Showplan Statistics Profile.ObjectID
-exec sp_trace_setevent @TraceID, 122, 1, @on;     --Showplan XML.TextData
-exec sp_trace_setevent @TraceID, 122, 2, @on;     --Showplan XML.BinaryData
-exec sp_trace_setevent @TraceID, 122, 3, @on;     --Showplan XML.DatabaseID
-exec sp_trace_setevent @TraceID, 122, 4, @on;     --Showplan XML.TransactionID
-exec sp_trace_setevent @TraceID, 122, 5, @on;     --Showplan XML.LineNumber
-exec sp_trace_setevent @TraceID, 122, 7, @on;     --Showplan XML.NTDomainName
-exec sp_trace_setevent @TraceID, 122, 60, @on;    --Showplan XML.IsSystem
-exec sp_trace_setevent @TraceID, 122, 64, @on;    --Showplan XML.SessionLoginName
-exec sp_trace_setevent @TraceID, 122, 66, @on;    --Showplan XML.GroupID
-exec sp_trace_setevent @TraceID, 122, 34, @on;    --Showplan XML.ObjectName
-exec sp_trace_setevent @TraceID, 122, 35, @on;    --Showplan XML.DatabaseName
-exec sp_trace_setevent @TraceID, 122, 41, @on;    --Showplan XML.LoginSid
-exec sp_trace_setevent @TraceID, 122, 49, @on;    --Showplan XML.RequestID
-exec sp_trace_setevent @TraceID, 122, 50, @on;    --Showplan XML.XactSequence
-exec sp_trace_setevent @TraceID, 122, 51, @on;    --Showplan XML.EventSequence
-exec sp_trace_setevent @TraceID, 122, 22, @on;    --Showplan XML.ObjectID
-exec sp_trace_setevent @TraceID, 122, 25, @on;    --Showplan XML.IntegerData
-exec sp_trace_setevent @TraceID, 122, 26, @on;    --Showplan XML.ServerName
-exec sp_trace_setevent @TraceID, 122, 27, @on;    --Showplan XML.EventClass
-exec sp_trace_setevent @TraceID, 122, 28, @on;    --Showplan XML.ObjectType
-exec sp_trace_setevent @TraceID, 122, 29, @on;    --Showplan XML.NestLevel
-exec sp_trace_setevent @TraceID, 122, 8, @on;     --Showplan XML.HostName
-exec sp_trace_setevent @TraceID, 122, 9, @on;     --Showplan XML.ClientProcessID
-exec sp_trace_setevent @TraceID, 122, 10, @on;    --Showplan XML.ApplicationName
-exec sp_trace_setevent @TraceID, 122, 11, @on;    --Showplan XML.LoginName
-exec sp_trace_setevent @TraceID, 122, 12, @on;    --Showplan XML.SPID
-exec sp_trace_setevent @TraceID, 122, 14, @on;    --Showplan XML.StartTime
-
-exec sp_trace_setevent @TraceID, 41, 1, @on;      --SQL:StmtCompleted.TextData
-exec sp_trace_setevent @TraceID, 41, 3, @on;      --SQL:StmtCompleted.DatabaseID
-exec sp_trace_setevent @TraceID, 41, 4, @on;      --SQL:StmtCompleted.TransactionID
-exec sp_trace_setevent @TraceID, 41, 5, @on;      --SQL:StmtCompleted.LineNumber
-exec sp_trace_setevent @TraceID, 41, 6, @on;      --SQL:StmtCompleted.NTUserName
-exec sp_trace_setevent @TraceID, 41, 7, @on;      --SQL:StmtCompleted.NTDomainName
-exec sp_trace_setevent @TraceID, 41, 64, @on;     --SQL:StmtCompleted.SessionLoginName
-exec sp_trace_setevent @TraceID, 41, 66, @on;     --SQL:StmtCompleted.GroupID
-exec sp_trace_setevent @TraceID, 41, 49, @on;     --SQL:StmtCompleted.RequestID
-exec sp_trace_setevent @TraceID, 41, 50, @on;     --SQL:StmtCompleted.XactSequence
-exec sp_trace_setevent @TraceID, 41, 51, @on;     --SQL:StmtCompleted.EventSequence
-exec sp_trace_setevent @TraceID, 41, 55, @on;     --SQL:StmtCompleted.IntegerData2
-exec sp_trace_setevent @TraceID, 41, 60, @on;     --SQL:StmtCompleted.IsSystem
-exec sp_trace_setevent @TraceID, 41, 61, @on;     --SQL:StmtCompleted.Offset
-exec sp_trace_setevent @TraceID, 41, 26, @on;     --SQL:StmtCompleted.ServerName
-exec sp_trace_setevent @TraceID, 41, 27, @on;     --SQL:StmtCompleted.EventClass
-exec sp_trace_setevent @TraceID, 41, 29, @on;     --SQL:StmtCompleted.NestLevel
-exec sp_trace_setevent @TraceID, 41, 35, @on;     --SQL:StmtCompleted.DatabaseName
-exec sp_trace_setevent @TraceID, 41, 41, @on;     --SQL:StmtCompleted.LoginSid
-exec sp_trace_setevent @TraceID, 41, 48, @on;     --SQL:StmtCompleted.RowCounts
-exec sp_trace_setevent @TraceID, 41, 14, @on;     --SQL:StmtCompleted.StartTime
-exec sp_trace_setevent @TraceID, 41, 15, @on;     --SQL:StmtCompleted.EndTime
-exec sp_trace_setevent @TraceID, 41, 16, @on;     --SQL:StmtCompleted.Reads
-exec sp_trace_setevent @TraceID, 41, 17, @on;     --SQL:StmtCompleted.Writes
-exec sp_trace_setevent @TraceID, 41, 18, @on;     --SQL:StmtCompleted.CPU
-exec sp_trace_setevent @TraceID, 41, 25, @on;     --SQL:StmtCompleted.IntegerData
-exec sp_trace_setevent @TraceID, 41, 8, @on;      --SQL:StmtCompleted.HostName
-exec sp_trace_setevent @TraceID, 41, 9, @on;      --SQL:StmtCompleted.ClientProcessID
-exec sp_trace_setevent @TraceID, 41, 10, @on;     --SQL:StmtCompleted.ApplicationName
-exec sp_trace_setevent @TraceID, 41, 11, @on;     --SQL:StmtCompleted.LoginName
-exec sp_trace_setevent @TraceID, 41, 12, @on;     --SQL:StmtCompleted.SPID
-exec sp_trace_setevent @TraceID, 41, 13, @on;     --SQL:StmtCompleted.Duration
+exec sp_trace_setevent @TraceID, 44, 1, @on;      --SP:StmtStarting.TextData
+exec sp_trace_setevent @TraceID, 44, 3, @on;      --SP:StmtStarting.DatabaseID
+exec sp_trace_setevent @TraceID, 44, 4, @on;      --SP:StmtStarting.TransactionID
+exec sp_trace_setevent @TraceID, 44, 5, @on;      --SP:StmtStarting.LineNumber
+exec sp_trace_setevent @TraceID, 44, 6, @on;      --SP:StmtStarting.NTUserName
+exec sp_trace_setevent @TraceID, 44, 7, @on;      --SP:StmtStarting.NTDomainName
+exec sp_trace_setevent @TraceID, 44, 55, @on;     --SP:StmtStarting.IntegerData2
+exec sp_trace_setevent @TraceID, 44, 60, @on;     --SP:StmtStarting.IsSystem
+exec sp_trace_setevent @TraceID, 44, 61, @on;     --SP:StmtStarting.Offset
+exec sp_trace_setevent @TraceID, 44, 62, @on;     --SP:StmtStarting.SourceDatabaseID
+exec sp_trace_setevent @TraceID, 44, 64, @on;     --SP:StmtStarting.SessionLoginName
+exec sp_trace_setevent @TraceID, 44, 66, @on;     --SP:StmtStarting.GroupID
+exec sp_trace_setevent @TraceID, 44, 34, @on;     --SP:StmtStarting.ObjectName
+exec sp_trace_setevent @TraceID, 44, 35, @on;     --SP:StmtStarting.DatabaseName
+exec sp_trace_setevent @TraceID, 44, 41, @on;     --SP:StmtStarting.LoginSid
+exec sp_trace_setevent @TraceID, 44, 49, @on;     --SP:StmtStarting.RequestID
+exec sp_trace_setevent @TraceID, 44, 50, @on;     --SP:StmtStarting.XactSequence
+exec sp_trace_setevent @TraceID, 44, 51, @on;     --SP:StmtStarting.EventSequence
+exec sp_trace_setevent @TraceID, 44, 22, @on;     --SP:StmtStarting.ObjectID
+exec sp_trace_setevent @TraceID, 44, 26, @on;     --SP:StmtStarting.ServerName
+exec sp_trace_setevent @TraceID, 44, 27, @on;     --SP:StmtStarting.EventClass
+exec sp_trace_setevent @TraceID, 44, 28, @on;     --SP:StmtStarting.ObjectType
+exec sp_trace_setevent @TraceID, 44, 29, @on;     --SP:StmtStarting.NestLevel
+exec sp_trace_setevent @TraceID, 44, 30, @on;     --SP:StmtStarting.State
+exec sp_trace_setevent @TraceID, 44, 8, @on;      --SP:StmtStarting.HostName
+exec sp_trace_setevent @TraceID, 44, 9, @on;      --SP:StmtStarting.ClientProcessID
+exec sp_trace_setevent @TraceID, 44, 10, @on;     --SP:StmtStarting.ApplicationName
+exec sp_trace_setevent @TraceID, 44, 11, @on;     --SP:StmtStarting.LoginName
+exec sp_trace_setevent @TraceID, 44, 12, @on;     --SP:StmtStarting.SPID
+exec sp_trace_setevent @TraceID, 44, 14, @on;     --SP:StmtStarting.StartTime
 exec sp_trace_setevent @TraceID, 45, 1, @on;      --SP:StmtCompleted.TextData
 exec sp_trace_setevent @TraceID, 45, 3, @on;      --SP:StmtCompleted.DatabaseID
 exec sp_trace_setevent @TraceID, 45, 4, @on;      --SP:StmtCompleted.TransactionID
@@ -333,7 +335,30 @@ exec sp_trace_setevent @TraceID, 45, 10, @on;     --SP:StmtCompleted.Application
 exec sp_trace_setevent @TraceID, 45, 11, @on;     --SP:StmtCompleted.LoginName
 exec sp_trace_setevent @TraceID, 45, 12, @on;     --SP:StmtCompleted.SPID
 exec sp_trace_setevent @TraceID, 45, 13, @on;     --SP:StmtCompleted.Duration
-
+exec sp_trace_setevent @TraceID, 162, 1, @on;     --User Error Message.TextData
+exec sp_trace_setevent @TraceID, 162, 3, @on;     --User Error Message.DatabaseID
+exec sp_trace_setevent @TraceID, 162, 4, @on;     --User Error Message.TransactionID
+exec sp_trace_setevent @TraceID, 162, 6, @on;     --User Error Message.NTUserName
+exec sp_trace_setevent @TraceID, 162, 7, @on;     --User Error Message.NTDomainName
+exec sp_trace_setevent @TraceID, 162, 8, @on;     --User Error Message.HostName
+exec sp_trace_setevent @TraceID, 162, 9, @on;     --User Error Message.ClientProcessID
+exec sp_trace_setevent @TraceID, 162, 10, @on;    --User Error Message.ApplicationName
+exec sp_trace_setevent @TraceID, 162, 11, @on;    --User Error Message.LoginName
+exec sp_trace_setevent @TraceID, 162, 12, @on;    --User Error Message.SPID
+exec sp_trace_setevent @TraceID, 162, 14, @on;    --User Error Message.StartTime
+exec sp_trace_setevent @TraceID, 162, 20, @on;    --User Error Message.Severity
+exec sp_trace_setevent @TraceID, 162, 26, @on;    --User Error Message.ServerName
+exec sp_trace_setevent @TraceID, 162, 27, @on;    --User Error Message.EventClass
+exec sp_trace_setevent @TraceID, 162, 30, @on;    --User Error Message.State
+exec sp_trace_setevent @TraceID, 162, 31, @on;    --User Error Message.Error
+exec sp_trace_setevent @TraceID, 162, 35, @on;    --User Error Message.DatabaseName
+exec sp_trace_setevent @TraceID, 162, 41, @on;    --User Error Message.LoginSid
+exec sp_trace_setevent @TraceID, 162, 49, @on;    --User Error Message.RequestID
+exec sp_trace_setevent @TraceID, 162, 50, @on;    --User Error Message.XactSequence
+exec sp_trace_setevent @TraceID, 162, 51, @on;    --User Error Message.EventSequence
+exec sp_trace_setevent @TraceID, 162, 60, @on;    --User Error Message.IsSystem
+exec sp_trace_setevent @TraceID, 162, 64, @on;    --User Error Message.SessionLoginName
+exec sp_trace_setevent @TraceID, 162, 66, @on;    --User Error Message.GroupID
 /*
 -- Set the Filters on Reads >= 10000
 declare @intfilter int
