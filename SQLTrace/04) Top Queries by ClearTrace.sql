@@ -1,10 +1,10 @@
 --	https://www.scalesql.com/cleartrace/
-select @@servername, db_name()
-USE [TUL1MDPDWMSH3C1_EU_Apr29]
+--select @@servername, db_name()
+USE TUL1MDPDWMSH2C1_May02
 GO
 
 DECLARE @serverName nvarchar(255)
-SET @serverName = 'TUL1MDPDWMSH3C1' --'TUL1CIPCNPDB1' --'TUL1CIPEDB2';
+SET @serverName = 'TUL1MDPDWMSH2C1' --'TUL1CIPCNPDB1' --'TUL1CIPEDB2';
 
 --	SELECT [TraceID], [TraceName] FROM [dbo].[CTTrace];
 
@@ -46,7 +46,7 @@ WHERE LEN([ServerName]) = 0
 )
 ,tAggregated AS 
 (
-	SELECT	TOP 200 ServerName, CalendarDate
+	SELECT	ServerName, CalendarDate
 			,[Item] = NormalizedTextData
 			,[ExecutionCounts] = SUM(ExecutionCount)
 			,[CPU] = SUM(CPU)
@@ -59,9 +59,8 @@ WHERE LEN([ServerName]) = 0
 			,[Writes_Min] = MIN(Writes)
 	FROM	tSummary
 	GROUP BY ServerName, CalendarDate, NormalizedTextData
-	ORDER BY [Reads] DESC
 )
-SELECT	TOP (100) ServerName, CalendarDate, Item as SqlCode, ExecutionCounts, CPU, Reads, AverageReads = Reads/ExecutionCounts, Writes, Duration
+SELECT	TOP (15) ServerName, CalendarDate, Item as SqlCode, ExecutionCounts, CPU, Reads, AverageReads = Reads/ExecutionCounts, Writes, Duration
 		/*
 		,[SampleText01] = (
 				SELECT	TOP 1 t.SampleTextData
@@ -83,7 +82,8 @@ SELECT	TOP (100) ServerName, CalendarDate, Item as SqlCode, ExecutionCounts, CPU
 			)
 		*/
 FROM	tAggregated AS a
-ORDER BY (Reads+[Writes]) DESC
+--ORDER BY (Reads+[Writes]) DESC
+ORDER BY [Duration] DESC
 
 
 /*	01) Base Query	*/
@@ -108,6 +108,6 @@ left join
 left join
 	[dbo].[CTApplication] as a
 	on a.ApplicationID = s.ApplicationID
-where td.NormalizedTextData = 'EXEC [DBO].[USP_GETRICHMEDIAURLSFORVALIDATION] @URLSOURCE={STR}'
+--where td.NormalizedTextData = 'EXEC [DBO].[USP_GETRICHMEDIAURLSFORVALIDATION] @URLSOURCE={STR}'
 ORDER BY [Reads] DESC;
 */

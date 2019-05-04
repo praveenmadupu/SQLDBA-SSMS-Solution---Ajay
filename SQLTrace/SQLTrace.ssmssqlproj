@@ -97,6 +97,36 @@
           <AssociatedConnUserName />
           <FullPath>03) DBA - SQLTrace_Stop.sql</FullPath>
         </FileNode>
+        <FileNode Name="04) ClearTrace-Top-15-Batches-By-CPU.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2017:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2017</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>04) ClearTrace-Top-15-Batches-By-CPU.sql</FullPath>
+        </FileNode>
+        <FileNode Name="04) ClearTrace-Top-15-Batches-By-Duration.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2017:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2017</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>04) ClearTrace-Top-15-Batches-By-Duration.sql</FullPath>
+        </FileNode>
+        <FileNode Name="04) ClearTrace-Top-15-Batches-By-IO.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2017:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2017</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>04) ClearTrace-Top-15-Batches-By-IO.sql</FullPath>
+        </FileNode>
+        <FileNode Name="04) ClearTrace-Top-15-Statements-By-Duration.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2017:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2017</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>04) ClearTrace-Top-15-Statements-By-Duration.sql</FullPath>
+        </FileNode>
+        <FileNode Name="04) ClearTrace-Top-15-Statements-By-IO.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2017:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2017</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>04) ClearTrace-Top-15-Statements-By-IO.sql</FullPath>
+        </FileNode>
         <FileNode Name="04) Top Queries by ClearTrace.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2017:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2017</AssociatedConnSrvName>
