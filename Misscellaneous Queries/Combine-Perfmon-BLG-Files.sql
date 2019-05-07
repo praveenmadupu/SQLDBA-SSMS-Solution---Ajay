@@ -1,4 +1,4 @@
-/*
+/*	METHOD 01:
 	Combine multiple PerfMon files into One
 */
 $sqlDiagOutputFolder = 'H:\Performance-Issues\Data-Collections\TUL1MDPDWMSH2C1\output_MAY_02';
@@ -13,5 +13,26 @@ $blgFile4 = "H:\Performance-Issues\Data-Collections\TUL1MDPDWMSH2C1\output_MAY_0
 $combinedFile = "H:\Performance-Issues\Data-Collections\TUL1MDPDWMSH2C1\output_MAY_02\SQLDIAG_Combined.BLG"
 
 $AllArgs =  @($blgFile1,$blgFile2,$blgFile3,$blgFile4,  '-f', 'bin', '-o',  $combinedFile)
+
+& 'relog.exe' $AllArgs
+
+
+
+
+
+/*	METHOD 02:
+	Combine multiple PerfMon files into One
+*/
+
+$sqlDiagOutputFolder = '\\tul1dbapmtdb1\H$\Performance-Issues\Data-Collections\TUL1MDPDWMSH2C1\output_MAY_02';
+$perfmonFiles = Get-ChildItem $sqlDiagOutputFolder | Where-Object {$_.Extension -eq '.BLG'};
+
+$AllArgs = @();
+$combinedFile = "$sqlDiagOutputFolder\SQLDIAG_Combined.BLG";
+for($counter=1;$counter -le $perfmonFiles.Count;$counter++) {
+    New-Variable -Name "blgFile$counter" -Value $perfmonFiles[$counter].FullName -Force;
+    $AllArgs += $perfmonFiles[$counter].FullName;
+}
+$AllArgs += @('-f', 'bin', '-o',  $combinedFile);
 
 & 'relog.exe' $AllArgs

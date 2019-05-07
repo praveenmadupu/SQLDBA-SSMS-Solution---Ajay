@@ -37,6 +37,12 @@
           <AssociatedConnUserName />
           <FullPath>TempDb-Files-Space-Usage.sql</FullPath>
         </FileNode>
+        <FileNode Name="v0.0 - [usp_getDatabaseFileSpaceUsageNotification].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>v0.0 - [usp_getDatabaseFileSpaceUsageNotification].sql</FullPath>
+        </FileNode>
         <FileNode Name="Version-Store-Usage.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>

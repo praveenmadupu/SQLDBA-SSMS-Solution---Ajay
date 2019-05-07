@@ -75,6 +75,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1DBAPMTDB1\SQL2017:CORPORATE\adwivedi">
+          <Created>2019-05-05T20:21:30.8442514+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1DBAPMTDB1\SQL2017</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="TUL1MDPDWMSH3C1:CORPORATE\adwivedi">
           <Created>2019-04-30T22:52:42.9922593+05:30</Created>
           <Type>SQL</Type>
@@ -145,6 +157,12 @@
           <AssociatedConnUserName />
           <FullPath>General - IO - WaitStats.sql</FullPath>
         </FileNode>
+        <FileNode Name="Generate-Workload-StackOverflow.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2017:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2017</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Generate-Workload-StackOverflow.sql</FullPath>
+        </FileNode>
         <FileNode Name="Job [DBA - FirstResponderKit_Collect_PerformanceData].sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
@@ -186,6 +204,12 @@
           <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>sp_Blitz Views Extra.sql</FullPath>
+        </FileNode>
+        <FileNode Name="StackOverflow-TopQueries.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2017:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2017</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>StackOverflow-TopQueries.sql</FullPath>
         </FileNode>
         <FileNode Name="TempDb-Usage-Culprits.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
