@@ -14,21 +14,12 @@ AS
 BEGIN -- Procedure Body
 	/*
 		Created By:			Ajay Dwivedi
-		Created Date:		May 05, 2019
-		Updated Date:		
-		Version:			0.0
-		Purpose:			Get Email notification if Used Space cross threshold value
+		Version:			0.1
+		Modifications:		May 05, 2019 - Get Email notification if Used Space cross threshold value
+							May 13, 2019 - Adding Functionality to Check for Blocking if Issue is with Log File Growth
 	*/
 
 	set nocount on;
-	--DECLARE @p_DataFileUsedSpaceThreshold_gb numeric(20,2);
-	--DECLARE @p_LogFileUsedSpaceThreshold_gb numeric(20,2);
-	--DECLARE @p_VersionStoreThreshold_gb numeric(20,2);
-	--DECLARE @p_Verbose BIT = 0;
-
-	--SET @p_DataFileUsedSpaceThreshold_gb = 80.0;
-	--SET @p_LogFileUsedSpaceThreshold_gb = 90.0;
-	--SET @p_VersionStoreThreshold_gb = 200;
 	/*
 		For Log File => with oldest transaction of 134 minutes, Space Used was 55 GB
 		For Data File => check allocation of internal objects, version_store etc
@@ -173,6 +164,7 @@ BEGIN -- Procedure Body
 	DECLARE @_isLogSizeCrossed bit;
 	DECLARE @_isDataSizeCrossed bit;
 	DECLARE @_isVersionStoreIssue bit;
+	DECLARE @_isBlockingFound bit;
 	DECLARE @_dataFileCurrentSpaceUsed numeric(20,2);
 	DECLARE @_logFileCurrentSpaceUsed numeric(20,2);
 	DECLARE @_dataFileGrowthInLast2Hours numeric(20,2);
@@ -185,6 +177,7 @@ BEGIN -- Procedure Body
 	SET @_isLogSizeCrossed = 0;
 	SET @_isDataSizeCrossed = 0;
 	SET @_isVersionStoreIssue = 0;
+	SET @_isBlockingFound = 0;
 
 	IF @p_Verbose = 1
 		PRINT 'Purging data older than 60 days from base collection tables [DBA]..[DatabaseFileSpaceUsage], [DBA]..[DatabaseFileSpaceUsage_Internals], [DBA]..[DatabaseOpenTransactions], [DBA]..[VersionStoreActiveTransactions]';
@@ -385,6 +378,13 @@ BEGIN -- Procedure Body
 		PRINT '@_logFileGrowthInLast2Hours = '+CAST(@_logFileGrowthInLast2Hours AS VARCHAR(25));
 	END
 
+	IF @p_verbose = 1
+		PRINT 'Checking if blocking is also found..';
+	IF EXISTS (SELECT * FROM DBA.dbo.WhoIsActive_ResultSets r WHERE r.collection_time = (SELECT	MAX(ri.collection_time)	FROM dbo.WhoIsActive_ResultSets as ri WHERE	ri.collection_time <= @_collection_time ) )
+	BEGIN
+		SET @_isBlockingFound = 1;
+	END
+
 	SET @_collection_time = GETDATE();
 	IF @p_verbose = 1
 		PRINT 'Checking if @_isLogSizeCrossed = 1 OR @_isDataSizeCrossed = 1 OR @_isVersionStoreIssue = 1';
@@ -408,15 +408,16 @@ BEGIN -- Procedure Body
 
 	Kindly execute below queries to troubleshoot:-
 	'+(CASE WHEN @_isDataSizeCrossed = 1 OR @_isLogSizeCrossed = 1 THEN CHAR(13)+'    SELECT ''Current Files Usage'' as [QueryType], * FROM DBA.dbo.DatabaseFileSpaceUsage WHERE dbName = '''+@p_DbName+''' AND collection_time = '''+CAST(@_collection_time AS VARCHAR(30))+''';'+CHAR(13) ELSE '' END)
-	+(CASE WHEN @_isVersionStoreIssue = 1 OR @_isDataSizeCrossed = 1 OR @_isLogSizeCrossed = 1 THEN CHAR(13)+'    SELECT ''WhoIsActive ResultSet'' as QueryType, * FROM DBA.dbo.WhoIsActive_ResultSets r WHERE r.collection_time = (select min(i.collection_time) from DBA.dbo.WhoIsActive_ResultSets i where i.collection_time >= CAST('''+CAST(@_collection_time AS VARCHAR(30))+''' AS smalldatetime));'+CHAR(13) ELSE '' END)
+	+(CASE WHEN @_isVersionStoreIssue = 1 OR @_isDataSizeCrossed = 1 OR @_isLogSizeCrossed = 1 THEN CHAR(13)+'    SELECT ''WhoIsActive ResultSet'' as QueryType, * FROM DBA.dbo.WhoIsActive_ResultSets r WHERE r.collection_time = (select min(i.collection_time) from DBA.dbo.WhoIsActive_ResultSets i where i.collection_time >= CAST('''+CAST(@_collection_time AS VARCHAR(30))+''' AS smalldatetime)) ORDER BY r.session_id;'+CHAR(13) ELSE '' END)
 	+(CASE WHEN @_isVersionStoreIssue = 1 OR @_isDataSizeCrossed = 1 THEN CHAR(13)+'    SELECT ''TempDb Space Allocation Details'' as QueryType, * FROM DBA.dbo.DatabaseFileSpaceUsage_Internals WHERE collection_time = '''+CAST(@_collection_time AS VARCHAR(30))+''';'+CHAR(13) ELSE '' END)
 	+(CASE WHEN @_isLogSizeCrossed = 1 THEN CHAR(13)+'    SELECT ''Open Transactions on '+@p_dbName+''' as QueryType, * FROM DBA.dbo.DatabaseOpenTransactions WHERE dbName = '''+@p_DbName+''' AND collection_time = '''+CAST(@_collection_time AS VARCHAR(30))+''';'+CHAR(13) ELSE '' END)
+	+(CASE WHEN @_isBlockingFound = 1 AND @_isLogSizeCrossed = 1 THEN CHAR(13)+'    EXEC DBA.dbo.usp_WhoIsActive_Blocking @p_Collection_time_Start = '''+CAST(@_collection_time AS VARCHAR(30))+''';'+CHAR(13) ELSE '' END)
 	+(CASE WHEN @_isVersionStoreIssue = 1 THEN CHAR(13)+'    SELECT ''Open Transactions using VersionStore'' as QueryType, * FROM DBA.dbo.VersionStoreActiveTransactions WHERE collection_time = '''+CAST(@_collection_time AS VARCHAR(30))+''';'+CHAR(13) ELSE '' END)
 	+CHAR(13)+'
 
-	Thanks & Regards,
-	DBA Alerts,
-	-- Alert coming from job [DBA - '+@p_dbName+' - Space Utilization - Alert]
+Thanks & Regards,
+DBA Alerts,
+-- Alert coming from job [DBA - '+@p_dbName+' - Space Utilization - Alert]
 	';
 
 		IF @p_verbose = 1

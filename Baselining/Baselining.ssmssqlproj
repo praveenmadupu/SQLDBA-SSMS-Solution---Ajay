@@ -151,6 +151,12 @@
           <AssociatedConnUserName />
           <FullPath>FileStats - During.sql</FullPath>
         </FileNode>
+        <FileNode Name="fn_GetLatestCollectionTime.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>fn_GetLatestCollectionTime.sql</FullPath>
+        </FileNode>
         <FileNode Name="General - IO - WaitStats.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
@@ -223,6 +229,18 @@
           <AssociatedConnUserName />
           <FullPath>Testing.sql</FullPath>
         </FileNode>
+        <FileNode Name="usp_WhoIsActive_Blocking.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>usp_WhoIsActive_Blocking.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Vw_WhoIsActive_Blocking.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Vw_WhoIsActive_Blocking.sql</FullPath>
+        </FileNode>
         <FileNode Name="WaitStats - Cumulative - AsOf - sp_Blitz.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
@@ -258,6 +276,12 @@
           <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>What Was Running - BlockingTree - During.sql</FullPath>
+        </FileNode>
+        <FileNode Name="What Was Running - BlockingTree (At Moment) - BareBone.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>What Was Running - BlockingTree (At Moment) - BareBone.sql</FullPath>
         </FileNode>
         <FileNode Name="What was Running - During - WhoIsActive.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>

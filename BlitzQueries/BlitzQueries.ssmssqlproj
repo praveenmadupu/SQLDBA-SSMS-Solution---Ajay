@@ -217,11 +217,17 @@
           <AssociatedConnUserName />
           <FullPath>SQL Server 2008 R2 Diagnostic Information Queries.sql</FullPath>
         </FileNode>
-        <FileNode Name="SQLQuery1.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+        <FileNode Name="SQLQuery2.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>SQLQuery1.sql</FullPath>
+          <FullPath>SQLQuery2.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Vw_WhoIsActive_Blocking.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Vw_WhoIsActive_Blocking.sql</FullPath>
         </FileNode>
         <FileNode Name="WhatIsRunning.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>

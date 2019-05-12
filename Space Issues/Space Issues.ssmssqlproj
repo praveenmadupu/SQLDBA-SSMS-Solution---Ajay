@@ -3,6 +3,18 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
+        <ConnectionNode Name="(local):CORPORATE\adwivedi">
+          <Created>2019-05-10T15:56:14.9298728+05:30</Created>
+          <Type>SQL</Type>
+          <Server>(local)</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="TUL1CIPEDB2:CORPORATE\adwivedi">
           <Created>2019-02-16T23:40:02.0690562+05:30</Created>
           <Type>SQL</Type>
@@ -15,13 +27,25 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="tul1cipxdb98:CORPORATE\adwivedi">
+          <Created>2019-05-10T15:57:39.3409079+05:30</Created>
+          <Type>SQL</Type>
+          <Server>tul1cipxdb98</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="Get-DbSize.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipxdb98:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipxdb98</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Get-DbSize.sql</FullPath>
         </FileNode>
