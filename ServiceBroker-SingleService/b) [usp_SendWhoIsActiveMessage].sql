@@ -10,8 +10,8 @@ AS
 BEGIN
 	/*
 		Created By:		Ajay Dwivedi
-		Updated Date:	Apr 26, 2019
-		Modification:	(26-Apr-2019) Creating Proc for 1st time
+		Version:		0.0
+		Modifications:	(26-Apr-2019) Creating Proc for 1st time
 	*/
 
 	-- Begin a conversation and send a request message

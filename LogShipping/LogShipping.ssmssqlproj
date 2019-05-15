@@ -15,6 +15,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="Ann1vesPDb01:CORPORATE\adwivedi">
+          <Created>2019-05-13T12:37:26.9125294+05:30</Created>
+          <Type>SQL</Type>
+          <Server>Ann1vesPDb01</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>DBA</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="localhost:CORPORATE\adwivedi">
           <Created>2019-04-21T00:04:15.8443321+05:30</Created>
           <Type>SQL</Type>
@@ -120,6 +132,12 @@
           <AssociatedConnSrvName>tul1cipxdb19</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>v1.2 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql</FullPath>
+        </FileNode>
+        <FileNode Name="v1.3 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipxdb19:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipxdb19</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>v1.3 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

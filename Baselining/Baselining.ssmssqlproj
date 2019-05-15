@@ -63,6 +63,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="tul1cipxdb19:CORPORATE\adwivedi">
+          <Created>2019-05-13T12:40:49.2631164+05:30</Created>
+          <Type>SQL</Type>
+          <Server>tul1cipxdb19</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="TUL1CIPXDB20:CORPORATE\adwivedi">
           <Created>2019-04-26T17:21:38.4950478+05:30</Created>
           <Type>SQL</Type>
@@ -152,8 +164,8 @@
           <FullPath>FileStats - During.sql</FullPath>
         </FileNode>
         <FileNode Name="fn_GetLatestCollectionTime.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipxdb19:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipxdb19</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>fn_GetLatestCollectionTime.sql</FullPath>
         </FileNode>
@@ -176,8 +188,8 @@
           <FullPath>Job [DBA - FirstResponderKit_Collect_PerformanceData].sql</FullPath>
         </FileNode>
         <FileNode Name="Job [DBA - Log_With_sp_WhoIsActive].sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipxdb19:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipxdb19</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Job [DBA - Log_With_sp_WhoIsActive].sql</FullPath>
         </FileNode>
@@ -230,8 +242,8 @@
           <FullPath>Testing.sql</FullPath>
         </FileNode>
         <FileNode Name="usp_WhoIsActive_Blocking.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipxdb19:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipxdb19</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>usp_WhoIsActive_Blocking.sql</FullPath>
         </FileNode>

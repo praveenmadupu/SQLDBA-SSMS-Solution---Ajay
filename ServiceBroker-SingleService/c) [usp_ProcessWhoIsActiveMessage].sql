@@ -10,7 +10,7 @@ AS
 BEGIN -- Procedure body
 	/*
 		Created By:		Ajay Dwivedi
-		Updated Date:	Apr 26, 2019
+		Version:		0.0
 		Modification:	(26-Apr-2019) Creating Proc for 1st time
 	*/
 	SET NOCOUNT ON;
@@ -55,29 +55,7 @@ BEGIN -- Procedure body
 					EXEC msdb..sp_start_job @job_name = 'DBA - Log_With_sp_WhoIsActive';
 				ELSE
 					PRINT 'Job ''DBA - Log_With_sp_WhoIsActive'' is already running.';
-				--BEGIN TRY
-					--DECLARE	@destination_table VARCHAR(4000);
-					--SET @destination_table = 'DBA.dbo.WhoIsActive_ResultSets';
-
-					--EXEC DBA..sp_WhoIsActive @get_full_inner_text=0, @get_transaction_info=1, @get_task_info=2, @get_locks=1, 
-					--					@get_avg_time=1, @get_additional_info=1,@find_block_leaders=1, @get_outer_command =1,
-					--					@get_plans=2,
-					--			@destination_table = @destination_table ;
 					SET @isExecutedOnce = 1;
-				--END TRY
-				--BEGIN CATCH
-					
-					--SELECT @_ErrorMessage = 'Error No: '+cast(ERROR_NUMBER() as varchar(20))+char(13)+char(10)
-					--					+	'Error Severity: '+cast(ERROR_SEVERITY() as varchar(20))+char(13)+char(10)
-					--					+	'Error State: '+cast(ERROR_STATE() as varchar(50))+char(13)+char(10)
-					--					+	'Error Procedure: '+(ERROR_PROCEDURE())+char(13)+char(10)
-					--					+	'Error Line: '+cast(ERROR_LINE() as varchar(50))+char(13)+char(10)
-					--					+	'Error Message: '+(ERROR_MESSAGE())+char(13)+char(10);
-
-					--SET @_ErrorMessage = 'DBA..usp_ProcessWhoIsActiveMessage => '+char(13)+char(10)+@_ErrorMessage;
-
-					--PRINT @_ErrorMessage;
-				--END CATCH
 			END
 
 			END CONVERSATION @conversation_handle;

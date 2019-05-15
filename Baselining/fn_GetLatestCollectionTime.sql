@@ -1,7 +1,8 @@
 USE DBA
 GO
 
-DROP FUNCTION dbo.fn_GetNextCollectionTime
+IF EXISTS (SELECT * FROM   sys.objects WHERE  object_id = OBJECT_ID('dbo.fn_GetNextCollectionTime') AND type IN ( N'FN', N'IF', N'TF', N'FS', N'FT' ))
+	DROP FUNCTION dbo.fn_GetNextCollectionTime
 GO
 
 CREATE FUNCTION dbo.fn_GetNextCollectionTime (@p_Collection_Time datetime = NULL)

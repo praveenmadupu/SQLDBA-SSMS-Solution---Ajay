@@ -8,10 +8,9 @@ ALTER FUNCTION dbo.fn_IsJobRunning(@p_JobName VARCHAR(2000))
 	RETURNS BIT
 AS
 BEGIN
-	/*
-		Created By:		Ajay Dwivedi
-		Created Date:	Apr 07, 2019
+	/*	Created By:			Ajay Dwivedi
 		Version:			0.0
+		Modifications:		(Apr 07, 2019) - Created for 1st Time
 	*/
 	DECLARE @returnValue BIT
 	SET @returnValue = 0;

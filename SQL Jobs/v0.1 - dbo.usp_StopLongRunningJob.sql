@@ -5,27 +5,22 @@ IF OBJECT_ID('dbo.usp_StopLongRunningJob') IS NULL
 	EXECUTE ('CREATE PROCEDURE dbo.usp_StopLongRunningJob AS SELECT 1 as DummyCode;');
 GO
 
---EXEC dbo.usp_StopLongRunningJob @p_JobName = 'CW Labeling Staging', @p_TimeLimit_Minutes = 180
+-- EXEC dbo.usp_StopLongRunningJob @p_JobName = 'CW Labeling Staging', @p_TimeLimit_Minutes = 180
 
-ALTER PROCEDURE [dbo].[usp_StopLongRunningJob] @p_JobName VARCHAR(125), @p_TimeLimit_Minutes INT, @p_ForceJobStop BIT = 0
+ALTER PROCEDURE [dbo].[usp_StopLongRunningJob] @p_JobName VARCHAR(125), @p_TimeLimit_Minutes INT = 180, @p_ForceJobStop BIT = 1 , @p_recipients VARCHAR(1000) = 'It-Ops-DBA@tivo.com', @p_cc VARCHAR(1000) = NULL
 AS
 BEGIN
 	/*	Created By:			Ajay Dwivedi
-		Created Date:		19-Apr-2018
-		Modified Date:		29-Jan-2019
+		Version:			0.0
+		Modification:		May 12, 2019 - First Check in of code
 	*/
 
 	SET NOCOUNT ON;
 	SET ANSI_WARNINGS OFF;
 
-	--DECLARE @p_JobName VARCHAR(125)
-	--		,@p_TimeLimit_Minutes INT;
-
-	--SET @p_JobName = 'CW Labeling Staging';
-	--SET @p_TimeLimit_Minutes = 180;
-
 	DECLARE @_mailSubject VARCHAR(125);
 	DECLARE @_mailBody VARCHAR(2000);
+
 
 	--	Delete entries older than 7 days
 	IF OBJECT_ID('DBA..whatIsRunning') IS NOT NULL
@@ -208,8 +203,8 @@ BEGIN
 			--@profile_name = @@SERVERNAME,  
 			@body_format = 'HTML',
 			--@recipients = 'ajay.dwivedi@tivo.com',  
-			@recipients = 'IT-Ops-DBA@tivo.com',
-			--@copy_recipients= 'james.wilkinson@tivo.com',
+			@recipients = @p_recipients,
+			@copy_recipients= @p_cc,
 			@body = @_mailBody,  
 			@subject = @_mailSubject ;
 	
@@ -219,3 +214,5 @@ BEGIN
 END -- Procedure
 
 GO
+
+

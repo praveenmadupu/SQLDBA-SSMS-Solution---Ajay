@@ -12,7 +12,7 @@ IF OBJECT_ID('dbo.usp_WhoIsActive_Blocking') IS NULL
 GO
 
 ALTER PROCEDURE dbo.usp_WhoIsActive_Blocking 
-	@p_Collection_time_Start datetime = NULL, @p_Collection_time_End datetime = NULL,
+	@p_Collection_time_Start datetime = NULL, @p_Collection_time_End datetime = NULL, @p_Program_Name nvarchar(256) = NULL,
 	@p_Verbose bit = 0
 AS 
 BEGIN
@@ -52,7 +52,11 @@ BEGIN
 		FROM	[dbo].WhoIsActive_ResultSets AS r
 		WHERE	(r.collection_time >= @p_Collection_time_Start AND r.collection_time <= @p_Collection_time_End)
 			AND	(r.blocking_session_id IS NULL OR r.blocking_session_id = r.session_id)
-			AND EXISTS (SELECT R2.session_id FROM [dbo].WhoIsActive_ResultSets AS R2 WHERE R2.collection_Time = r.collection_Time AND R2.blocking_session_id IS NOT NULL AND R2.blocking_session_id = r.session_id AND R2.blocking_session_id <> R2.session_id)
+			AND EXISTS (SELECT R2.session_id FROM [dbo].WhoIsActive_ResultSets AS R2 
+						WHERE R2.collection_Time = r.collection_Time AND R2.blocking_session_id IS NOT NULL 
+							AND R2.blocking_session_id = r.session_id AND R2.blocking_session_id <> R2.session_id
+							AND (@p_Program_Name IS NULL OR R2.program_name = @p_Program_Name)
+						)
 		--	
 		UNION ALL
 		--

@@ -87,6 +87,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="tul1dbapmtdb1:CORPORATE\adwivedi">
+          <Created>2019-05-14T15:42:47.3704548+05:30</Created>
+          <Type>SQL</Type>
+          <Server>tul1dbapmtdb1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="TUL1MDPDWMSH3C1:CORPORATE\adwivedi">
           <Created>2019-05-04T23:08:19.9947424+05:30</Created>
           <Type>SQL</Type>
@@ -204,6 +216,12 @@
           <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>RoboCopy.sql</FullPath>
+        </FileNode>
+        <FileNode Name="sp_Kill.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1dbapmtdb1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1dbapmtdb1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>sp_Kill.sql</FullPath>
         </FileNode>
         <FileNode Name="SQL Server Error Logs.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:True</AssociatedConnectionMoniker>
