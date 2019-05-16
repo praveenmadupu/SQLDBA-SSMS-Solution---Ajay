@@ -39,6 +39,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1DBAPMTDB1:CORPORATE\adwivedi">
+          <Created>2019-05-15T18:36:38.0723958+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1DBAPMTDB1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>master</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
@@ -80,8 +92,8 @@
           <FullPath>3. Create table [dbo].[WhoIsActive_ResultSets].sql</FullPath>
         </FileNode>
         <FileNode Name="4. Create Job [DBA - Log_With_sp_WhoIsActive].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>4. Create Job [DBA - Log_With_sp_WhoIsActive].sql</FullPath>
         </FileNode>

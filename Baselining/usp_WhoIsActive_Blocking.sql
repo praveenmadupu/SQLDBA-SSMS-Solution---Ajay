@@ -18,6 +18,7 @@ AS
 BEGIN
 	/*	Created By:			Ajay Dwivedi (ajay.dwivedi2007@gmail.com)
 		Version:			0.0
+		Permission:			https://github.com/imajaydwivedi/SQLDBA-SSMS-Solution/blob/master/sp_HealthCheck/Certificate%20Based%20Authentication.sql
 		Updates:			May 12, 2019 - Get Blocking Details
 	*/
 	SET NOCOUNT ON;

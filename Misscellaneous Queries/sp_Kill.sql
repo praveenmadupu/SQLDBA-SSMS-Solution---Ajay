@@ -15,6 +15,7 @@ BEGIN -- Proc Body
 	/*	Created By:		Ajay Dwivedi
 		Version:		0.0
 		Permission:		https://dba.stackexchange.com/a/188193
+						https://github.com/imajaydwivedi/SQLDBA-SSMS-Solution/blob/master/sp_HealthCheck/Certificate%20Based%20Authentication.sql
 		Modifications:	May 14, 2019 - Creating procedure for 1st time
 	*/
 	SET NOCOUNT ON;

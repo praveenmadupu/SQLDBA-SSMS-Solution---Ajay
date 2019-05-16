@@ -188,9 +188,9 @@
           <FullPath>HADR or Mirroring.sql</FullPath>
         </FileNode>
         <FileNode Name="Kill All Session for DB.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:False:sa</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
-          <AssociatedConnUserName>sa</AssociatedConnUserName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
           <FullPath>Kill All Session for DB.sql</FullPath>
         </FileNode>
         <FileNode Name="Maintainence - Delete files older than 72 hours.sql">

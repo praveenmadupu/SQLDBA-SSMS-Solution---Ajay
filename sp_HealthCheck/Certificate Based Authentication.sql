@@ -58,6 +58,13 @@ CREATE USER [CodeSigningLogin] FROM CERTIFICATE [CodeSigningCertificate];
 GO
 GRANT EXECUTE ON dbo.usp_WhoIsActive_Blocking TO [CodeSigningLogin];
 GO
+
+
+/*	***************************************************************
+*	Sign Stored Procedure with CERTIFICATE
+*	**************************************************************/
+USE DBA
+GO
 ADD SIGNATURE TO [dbo].usp_WhoIsActive_Blocking
 	BY CERTIFICATE [CodeSigningCertificate]
 	WITH PASSWORD = '$tr0ngp@$$w0rd'
