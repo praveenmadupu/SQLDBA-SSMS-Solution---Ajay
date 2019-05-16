@@ -10,11 +10,11 @@ ALTER PROCEDURE dbo.sp_Kill @p_SpId SMALLINT = NULL,
 							@p_RollbackStatus BIT = NULL, @p_Force BIT = NULL, 
 							@p_AddAuthorizedSessionKiller BIT = 0,
 							@p_Help BIT = NULL, @p_Verbose BIT = 0
---WITH EXECUTE AS OWNER
 AS
 BEGIN -- Proc Body
 	/*	Created By:		Ajay Dwivedi
 		Version:		0.0
+		Permission:		https://dba.stackexchange.com/a/188193
 		Modifications:	May 14, 2019 - Creating procedure for 1st time
 	*/
 	SET NOCOUNT ON;
@@ -33,8 +33,10 @@ BEGIN -- Proc Body
 	DECLARE @_sessionDbName varchar(125);
 	DECLARE @_isKillerDbOwner BIT = 0;
 	DECLARE @_isKillerSysAdmin BIT = 0;
-	DECLARE @_SQLString nvarchar(2000);  
+	DECLARE @_SQLString nvarchar(MAX);  
 	DECLARE @_ParmDefinition nvarchar(500);
+
+	CREATE TABLE #DatabaseLoginConnections (ID INT IDENTITY(1,1), session_id INT NOT NULL, dbName varchar(225) NULL, login_name varchar(125) NULL);
 
 	IF OBJECT_ID('DBA..AuthorizedSessionKiller') IS NULL
 	BEGIN
@@ -54,10 +56,10 @@ BEGIN -- Proc Body
 	IF @p_Verbose = 1
 	BEGIN
 		PRINT 'Values of Parameters:- ';
-		PRINT CHAR(9)+'@p_SpId = '+CAST(ISNULL(@p_SpId,'NULL') AS VARCHAR(5));
+		PRINT CHAR(9)+'@p_SpId = '+(CASE WHEN @p_SpId IS NULL THEN 'NULL' ELSE CAST(@p_SpId AS VARCHAR(5)) END);
 		PRINT CHAR(9)+'@p_DbName = '+CAST(ISNULL(@p_DbName,'NULL') AS VARCHAR(255));
 		PRINT CHAR(9)+'@p_LoginName = '+CAST(ISNULL(@p_LoginName,'NULL') AS VARCHAR(255));
-		PRINT CHAR(9)+'@p_RollbackStatus = '+CAST(@p_RollbackStatus AS VARCHAR(5));
+		PRINT CHAR(9)+'@p_RollbackStatus = '+CAST(@p_RollbackStatus AS VARCHAR(5));		
 		PRINT CHAR(9)+'@p_Force = '+CAST(@p_Force AS VARCHAR(5));
 		PRINT CHAR(9)+'@p_AddAuthorizedSessionKiller = '+CAST(@p_AddAuthorizedSessionKiller AS VARCHAR(5));		
 		PRINT CHAR(9)+'@p_Help = '+CAST(@p_Help AS VARCHAR(5));
@@ -66,7 +68,7 @@ BEGIN -- Proc Body
 		PRINT CHAR(9)+'@_callerSPID = '+CAST(@_callerSPID AS VARCHAR(5));
 		PRINT CHAR(9)+'@_callerLoginName = '+ISNULL(@_callerLoginName, 'NULL');
 		PRINT CHAR(9)+'@_runningAsLoginName = '+ISNULL(@_runningAsLoginName,'NULL');
-		PRINT CHAR(9)+'@_isAuthorizedSessionKiller = '+CAST(@_isAuthorizedSessionKiller AS VARCHAR(5));		
+		PRINT CHAR(9)+'@_isAuthorizedSessionKiller = '+CAST(@_isAuthorizedSessionKiller AS VARCHAR(5));	
 	END
 
 	IF @p_Verbose = 1
@@ -321,7 +323,12 @@ BEGIN -- Proc Body
 			IF @p_Verbose = 1
 				PRINT CHAR(9)+'Check 04 - Verify if Killer is [sysadmin]';
 
-			SET @_SQLString = N'USE [master]; SELECT @p_isKillerSysAdmin_OUT = ISNULL(IS_SRVROLEMEMBER(''sysadmin'', @p_callerLoginName),0)';  
+			--SET @_SQLString = N'USE [master]; SELECT @p_isKillerSysAdmin_OUT = ISNULL(IS_SRVROLEMEMBER(''sysadmin'', @p_callerLoginName),0)';  
+			SET @_SQLString = N'USE [master]; EXECUTE AS LOGIN = @p_callerLoginName;
+IF (SELECT COUNT(*) FROM fn_my_permissions(NULL, ''SERVER'') as p WHERE p.permission_name IN (''CONNECT SQL'',''SHUTDOWN'',''VIEW SERVER STATE'',''ALTER SERVER STATE'',''CONTROL SERVER'',''ALTER ANY CONNECTION'')) = 6
+	SET @p_isKillerSysAdmin_OUT = 1
+ELSE
+	SET @p_isKillerSysAdmin_OUT = 1';
 			SET @_ParmDefinition = N'@p_callerLoginName varchar(125), @p_isKillerSysAdmin_OUT bit OUTPUT';
 
 			IF @p_Verbose = 1
@@ -422,7 +429,7 @@ BEGIN -- Proc Body
 	END
 
 	IF @p_SpId IS NOT NULL
-	BEGIN
+	BEGIN -- Begin [@p_SpId IS NOT NULL]
 		IF @p_Verbose = 1
 			PRINT 'Begin - [@p_SpId IS NOT NULL]';
 
@@ -437,6 +444,9 @@ BEGIN -- Proc Body
 
 		IF @_isAuthorizedSessionKiller = 1 OR @_isKillerSameAsKilled = 1 OR @_isKillerDbOwner = 1 OR @_isKillerSysAdmin = 1
 		BEGIN
+			IF @p_Verbose = 1
+				PRINT CHAR(9)+'Caller is allowed to kill sessions';
+
 			IF @p_RollbackStatus = 1
 				SET @_SQLString = N'KILL '+CAST(@p_SpId AS VARCHAR(10))+' WITH STATUSONLY;';  
 			ELSE
@@ -460,46 +470,115 @@ BEGIN -- Proc Body
 				END
 			END CATCH
 		END
+		ELSE
+		BEGIN
+			IF @p_Verbose = 1
+				PRINT CHAR(9)+'Caller is not allowed to kill sessions';
+			SET @_errorMSG = 'You '+QUOTENAME(@_callerLoginName)+' are not authorized to kill session as you do not fall in any of the following categories:-'+CHAR(10)
+							+CHAR(9)+'Check 01 - Is killer part of AuthorizedSessionKiller exception entry'
+							+CHAR(9)+'Check 02 - Verify if Killer is same as session owner'
+							+CHAR(9)+'Check 03 - Verify if Killer is [db_owner]'
+							+CHAR(9)+'Check 04 - Verify if Killer is [sysadmin]';
+
+			IF (select CAST(LEFT(CAST(SERVERPROPERTY('ProductVersion') AS VARCHAR(50)),charindex('.',CAST(SERVERPROPERTY('ProductVersion') AS VARCHAR(50)))-1) AS INT)) >= 12
+				EXECUTE sp_executesql N'THROW 50000,@_errorMSG,1',N'@_errorMSG VARCHAR(200)', @_errorMSG;
+			ELSE
+				EXECUTE sp_executesql N'RAISERROR (@_errorMSG, 16, 1)', N'@_errorMSG VARCHAR(200)', @_errorMSG;
+		END
 
 		IF @p_Verbose = 1
 			PRINT 'End - [@p_SpId IS NOT NULL]';
-	END
+	END -- End [@p_SpId IS NOT NULL]
+
+	-- Kill All connections of Database/Login
+	IF @p_SpId IS NULL AND (@p_AddAuthorizedSessionKiller IS NULL OR @p_AddAuthorizedSessionKiller <> 1) AND (@p_DbName IS NOT NULL OR @p_LoginName IS NOT NULL)
+	BEGIN -- Begin [Kill All connections of Database/Login]
+		IF @p_Verbose = 1
+			PRINT 'Begin - [Kill All connections of Database/Login]';
+
+		IF @p_Verbose = 1
+			PRINT CHAR(9)+'Validating if Killer is [Sysadmin] on server..';
+		IF @_isKillerSysAdmin = 1
+		BEGIN
+			IF @p_Verbose = 1
+				PRINT CHAR(9)+CHAR(9)+'Validation if Killer is [Sysadmin] on server has Passed.';
+				
+			IF @p_LoginName IS NOT NULL
+			BEGIN
+				IF @p_Verbose = 1
+					PRINT CHAR(9)+'Find/Populate #DatabaseLoginConnections if connections are there for Login '+QUOTENAME(@p_LoginName)+'..';
+									
+				INSERT #DatabaseLoginConnections (session_id, login_name)
+				SELECT	s.session_id, COALESCE(s.login_name, s.original_login_name)
+				FROM	sys.dm_exec_sessions as s
+				WHERE	COALESCE(s.login_name, s.original_login_name) = @p_LoginName;
+			END
+
+			IF @p_DbName IS NOT NULL
+			BEGIN
+				IF @p_Verbose = 1
+					PRINT CHAR(9)+'Find/Populate #DatabaseLoginConnections  if connections are there for database '+QUOTENAME(@p_DbName)+'..';
+									
+				INSERT #DatabaseLoginConnections (session_id, login_name, dbName)
+				SELECT s.session_id, s.login_name, DB_NAME(r.database_id) as dbName
+				FROM sys.dm_exec_sessions as s
+				INNER JOIN sys.dm_exec_requests as r on r.session_id = s.session_id
+				WHERE r.database_id = db_id(@p_DbName)
+				--
+				UNION
+				--
+				SELECT l.request_session_id, login_name = COALESCE(s.login_name, s.original_login_name), db_name(l.resource_database_id) as dbName 
+				FROM sys.dm_tran_locks as l left join sys.dm_exec_sessions as s on s.session_id = l.request_session_id
+				WHERE l.resource_type = 'DATABASE' AND l.resource_database_id = db_id(@p_DbName);
+			END
+
+			IF @p_Verbose = 1
+			BEGIN
+				PRINT CHAR(9)+'SELECT * FROM #DatabaseLoginConnections;';
+				SELECT Q.RunningQuery, c.* FROM #DatabaseLoginConnections as c
+				FULL OUTER JOIN
+				( SELECT 'SELECT * FROM #DatabaseLoginConnections' as RunningQuery ) AS Q
+				ON 1 = 1
+			END
+
+			IF EXISTS (SELECT * FROM #DatabaseLoginConnections)
+			BEGIN
+				IF @p_Verbose = 1
+					PRINT CHAR(9)+'Proceeding to kill connections for database/login..';
+
+				SET @_SQLString = '';
+				SELECT	@_SQLString = @_SQLString + 'BEGIN TRY'+CHAR(10)+CHAR(9)+'Kill ' + Convert(varchar(5), session_id) + ';'+CHAR(10)+'END TRY'+CHAR(10)+'BEGIN CATCH '+CHAR(10)+CHAR(9)+'PRINT ''Session ID '+Convert(varchar(5), session_id)+' does not exist anymore. ''; '+CHAR(10)+'END CATCH'+CHAR(10)+''
+				FROM (	SELECT	DISTINCT session_id FROM #DatabaseLoginConnections s 
+						WHERE	(@p_LoginName IS NULL OR s.login_name = @p_LoginName)
+							AND (@p_DbName IS NULL OR s.dbName = @p_DbName)
+					 ) AS s;
+
+				IF @p_Verbose = 1
+					PRINT CHAR(9)+'@_SQLString = '+CHAR(10)+@_SQLString;
+
+				EXEC (@_SQLString);
+
+				PRINT 'All connections are killed successfully.';
+			END
+		END
+		ELSE
+		BEGIN
+			IF @p_Verbose = 1
+				PRINT CHAR(9)+'Caller is not allowed to kill sessions at Database/Login level as it requires Sysadmin permission';
+			SET @_errorMSG = 'You '+QUOTENAME(@_callerLoginName)+' not allowed to kill sessions at Database/Login level as it requires Sysadmin permission';
+
+			IF (select CAST(LEFT(CAST(SERVERPROPERTY('ProductVersion') AS VARCHAR(50)),charindex('.',CAST(SERVERPROPERTY('ProductVersion') AS VARCHAR(50)))-1) AS INT)) >= 12
+				EXECUTE sp_executesql N'THROW 50000,@_errorMSG,1',N'@_errorMSG VARCHAR(200)', @_errorMSG;
+			ELSE
+				EXECUTE sp_executesql N'RAISERROR (@_errorMSG, 16, 1)', N'@_errorMSG VARCHAR(200)', @_errorMSG;
+		END
+
+		IF @p_Verbose = 1
+			PRINT 'End - [Kill All connections of Database/Login]';
+	END -- End [Kill All connections of Database/Login]
 	
 END	 -- Proc Body
 GO
 
-/*
-GRANT EXECUTE ON OBJECT::dbo.sp_Kill TO [public]
-GO
-
-EXEC sp_ms_marksystemobject 'sp_Kill'
-go
-
-CREATE CERTIFICATE [CodeSigningCertificate]
-	ENCRYPTION BY PASSWORD = 'YourDummyPasswordHere'
-	WITH EXPIRY_DATE = '2099-01-01'
-		,SUBJECT = 'DBA Code Signing Cert'
-GO
-
-CREATE LOGIN [CodeSigningLogin] FROM CERTIFICATE [CodeSigningCertificate];
-GO
---EXEC master..sp_addsrvrolemember @loginame = N'CodeSigningLogin', @rolename = N'sysadmin'
---GO
-GRANT VIEW SERVER STATE TO [CodeSigningLogin]
-GO
-GRANT ALTER ANY CONNECTION TO [CodeSigningLogin]
-GO
-USE DBA;
-CREATE USER [CodeSigningLogin] FOR LOGIN [CodeSigningLogin]
-GO
-EXEC sp_addrolemember @rolename = 'db_owner', @membername = 'CodeSigningLogin'  
-GO
-
-ADD SIGNATURE TO [dbo].[sp_Kill]
-	BY CERTIFICATE [CodeSigningCertificate]
-	WITH PASSWORD = 'YourDummyPasswordHere'
-GO
-
-*/
 
 --SELECT * FROM DBA.dbo.AuthorizedSessionKiller

@@ -1,4 +1,4 @@
-USE [DBA]
+USE DBA
 GO
 
 IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name='NCI_WhoIsActive_ResultSets__blocking_session_id' AND object_id = OBJECT_ID('dbo.WhoIsActive_ResultSets'))
@@ -11,7 +11,7 @@ IF OBJECT_ID('dbo.usp_WhoIsActive_Blocking') IS NULL
 	EXEC('CREATE PROCEDURE dbo.usp_WhoIsActive_Blocking AS SELECT 1 AS Dummy')
 GO
 
-ALTER PROCEDURE dbo.usp_WhoIsActive_Blocking 
+ALTER PROCEDURE dbo.usp_WhoIsActive_Blocking
 	@p_Collection_time_Start datetime = NULL, @p_Collection_time_End datetime = NULL, @p_Program_Name nvarchar(256) = NULL,
 	@p_Verbose bit = 0
 AS 
@@ -125,4 +125,3 @@ END
 GO
 
 --	EXEC DBA.dbo.usp_WhoIsActive_Blocking @p_Collection_time_Start = 'May 12 2019 11:30AM', @p_Collection_time_End = 'May 12 2019 01:30PM';
-
