@@ -26,7 +26,6 @@ GO
 ADD SIGNATURE TO [dbo].[sp_Kill]
 	BY CERTIFICATE [CodeSigningCertificate]
 	WITH PASSWORD = '$tr0ngp@$$w0rd'
-	--WITH PASSWORD = 'Work@Y0urBest'
 GO
 GRANT EXECUTE ON OBJECT::dbo.sp_Kill TO [public]
 GO
@@ -62,7 +61,6 @@ GO
 ADD SIGNATURE TO [dbo].usp_WhoIsActive_Blocking
 	BY CERTIFICATE [CodeSigningCertificate]
 	WITH PASSWORD = '$tr0ngp@$$w0rd'
-	--WITH PASSWORD = 'Work@Y0urBest'
 GO
 GRANT EXECUTE ON OBJECT::dbo.usp_WhoIsActive_Blocking TO [public]
 GO
