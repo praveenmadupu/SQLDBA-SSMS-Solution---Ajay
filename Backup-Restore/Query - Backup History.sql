@@ -25,5 +25,5 @@ SELECT TOP (100) CONVERT(CHAR(100), SERVERPROPERTY('Servername')) AS SERVER
 FROM msdb.dbo.backupmediafamily AS bmf
 INNER JOIN msdb.dbo.backupset AS bs ON bmf.media_set_id = bs.media_set_id
 WHERE --msdb..backupset.type='D' and database_name=''
-	database_name = 'Staging'
+	database_name = 'Cosmo'
 ORDER BY bs.backup_finish_date DESC
