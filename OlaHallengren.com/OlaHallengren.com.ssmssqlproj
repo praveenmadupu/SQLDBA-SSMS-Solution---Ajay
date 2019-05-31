@@ -15,6 +15,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="Ann1vespDb01:CORPORATE\adwivedi">
+          <Created>2019-05-27T14:14:12.8318316+05:30</Created>
+          <Type>SQL</Type>
+          <Server>Ann1vespDb01</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="BAN-2ADWIVEDI-L:CORPORATE\adwivedi">
           <Created>2018-08-18T10:01:14.0738564+05:30</Created>
           <Type>SQL</Type>
@@ -56,8 +68,8 @@
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="[IndexOptimize_Modified].sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPEDB2</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vespDb01:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>Ann1vespDb01</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>[IndexOptimize_Modified].sql</FullPath>
         </FileNode>

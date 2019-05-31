@@ -26,10 +26,13 @@ SELECT --ROW_NUMBER()over(partition by bs.database_name order by bs.backup_finis
 	,checkpoint_lsn
 	,database_backup_lsn
 	,is_copy_only
+	,is_snapshot
+	--bs.* --bmf.*
 FROM msdb.dbo.backupmediafamily AS bmf
 INNER JOIN msdb.dbo.backupset AS bs ON bmf.media_set_id = bs.media_set_id
-WHERE bs.backup_start_date >= (select max(bsi.backup_start_date) FROM msdb.dbo.backupmediafamily AS bmfi INNER JOIN msdb.dbo.backupset AS bsi ON bmfi.media_set_id = bsi.media_set_id where bsi.database_name = bs.database_name and bsi.type = 'D')
-AND database_name = 'RGS'
+WHERE bs.backup_start_date >= dateadd(day,-2,(select max(bsi.backup_start_date) FROM msdb.dbo.backupmediafamily AS bmfi INNER JOIN msdb.dbo.backupset AS bsi ON bmfi.media_set_id = bsi.media_set_id where bsi.database_name = bs.database_name and bsi.type = 'D'))
+AND database_name = 'Facebook'
+
 )
 select * 
 from T_bkpHistory

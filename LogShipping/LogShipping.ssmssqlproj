@@ -86,20 +86,20 @@
           <FullPath>[usp_GetLogWalkJobHistoryAlert].sql</FullPath>
         </FileNode>
         <FileNode Name="LogShipping.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>LogShipping.sql</FullPath>
         </FileNode>
         <FileNode Name="PerformRestore.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>PerformRestore.sql</FullPath>
         </FileNode>
         <FileNode Name="ScriptOut-Backup-Restore.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:Ann1vesPDb01:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>Ann1vesPDb01</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>ScriptOut-Backup-Restore.sql</FullPath>
         </FileNode>
@@ -132,6 +132,12 @@
           <AssociatedConnSrvName>TUL1CIPCWRDB1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>v1.1 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql</FullPath>
+        </FileNode>
+        <FileNode Name="v1.1 - [usp_GetMail_4_SQLAlerts].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipxdb19:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipxdb19</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>v1.1 - [usp_GetMail_4_SQLAlerts].sql</FullPath>
         </FileNode>
         <FileNode Name="v1.2 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipxdb19:True</AssociatedConnectionMoniker>
