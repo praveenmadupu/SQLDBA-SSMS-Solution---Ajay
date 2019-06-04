@@ -6,9 +6,9 @@ DECLARE @p_Target_Log_Path varchar(255) = 'E:\MSSQLData\Logs\';
 -- Input 03
 DECLARE @p_RestoreType varchar(20) = 'Log'; /* Full/Diff/Log */ 
 -- Input 04
-DECLARE @p_Leave_in_NORECOVERY_Mode bit = 0; /* Recover Database, means, Bring Online */ 
+DECLARE @p_Leave_in_NORECOVERY_Mode bit = 1; /* Recover Database, means, Bring Online */ 
 -- Input 05
-DECLARE @p_ReplaceExistingDatabase bit = 0;
+DECLARE @p_ReplaceExistingDatabase bit = 1;
 -- Input 06
 DECLARE @Databases nvarchar(max) = 'Staging'; 
 /*	-- https://ola.hallengren.com/sql-server-backup.html
@@ -20,7 +20,7 @@ DECLARE @p_Destination_ServerName VARCHAR(125) = 'YourDestinationServerNameHere'
 -- Input 08
 DECLARE @p_Destination_BackupLocation VARCHAR(255) = 'H:\backups\';
 -- Input 09
-DECLARE @p_Generate_RoboCopy_4_Backups bit = 1;
+DECLARE @p_Generate_RoboCopy_4_Backups bit = 0;
 
 DECLARE @SelectedDatabases TABLE (DatabaseName nvarchar(max),
                                     DatabaseType nvarchar(max),

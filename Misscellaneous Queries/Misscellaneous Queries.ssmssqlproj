@@ -146,8 +146,8 @@
           <FullPath>Combine-Perfmon-BLG-Files.sql</FullPath>
         </FileNode>
         <FileNode Name="Command Prompt.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Command Prompt.sql</FullPath>
         </FileNode>
@@ -204,6 +204,12 @@
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Maintainence - Delete folder-files older than 120 hours.sql</FullPath>
+        </FileNode>
+        <FileNode Name="PowerShell Commands.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>PowerShell Commands.sql</FullPath>
         </FileNode>
         <FileNode Name="Return Query Output as HTML Table.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-1ADWIVEDI-L:True</AssociatedConnectionMoniker>

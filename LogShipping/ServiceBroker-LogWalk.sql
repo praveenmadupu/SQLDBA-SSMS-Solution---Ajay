@@ -565,6 +565,7 @@ GO
 ALTER PROCEDURE dbo.usp_WhoIsActive_Blocking
 	@p_Collection_time_Start datetime = NULL, @p_Collection_time_End datetime = NULL, @p_Program_Name nvarchar(256) = NULL, @p_WaitTime_Seconds BIGINT = NULL,
 	@p_Help bit = 0, @p_Verbose bit = 0
+WITH EXECUTE AS OWNER
 AS 
 BEGIN
 	/*	Created By:			Ajay Dwivedi (ajay.dwivedi2007@gmail.com)
@@ -718,20 +719,13 @@ BEGIN
 												END
 						,[lock_time(2)] = CASE WHEN lock_text IS NOT NULL AND CHARINDEX(':',lock_text) <> 0
 												THEN CASE	WHEN CAST(SUBSTRING(lock_text,2,CHARINDEX('x:',lock_text)-2) AS INT) = 2
-															THEN CASE	WHEN CHARINDEX('/',lock_text) = 0
-																		THEN CAST(SUBSTRING(lock_text,6,CHARINDEX('ms)',lock_text)-6) AS bigint)
-																		ELSE CAST(SUBSTRING(lock_text,CHARINDEX('/',lock_text)+1,CHARINDEX('ms)',lock_text)-CHARINDEX('/',lock_text)-1) AS bigint)
-																		END
+															THEN CAST(SUBSTRING(lock_text,CHARINDEX('/',lock_text)+1,CHARINDEX('ms)',lock_text)-CHARINDEX('/',lock_text)-1) AS bigint)
 															ELSE NULL
 															END
 												ELSE NULL		
 												END
 						,[lock_time(x)] = CASE WHEN lock_text IS NOT NULL AND CHARINDEX(':',lock_text) <> 0
-												THEN CASE	WHEN CAST(SUBSTRING(lock_text,2,CHARINDEX('x:',lock_text)-2) AS INT) > 2 AND CHARINDEX('/',lock_text) = 0
-															THEN CAST(SUBSTRING(lock_text,6,CHARINDEX('ms)',lock_text)-6) AS bigint)
-															WHEN CAST(SUBSTRING(lock_text,2,CHARINDEX('x:',lock_text)-2) AS INT) > 2 AND (LEN(lock_text)-LEN(REPLACE(lock_text,'/','')) = 1)
-															THEN CAST(SUBSTRING(lock_text,CHARINDEX('/',lock_text)+1,CHARINDEX('ms)',lock_text)-CHARINDEX('/',lock_text)-1) AS bigint)
-															WHEN CAST(SUBSTRING(lock_text,2,CHARINDEX('x:',lock_text)-2) AS INT) > 2 AND (LEN(lock_text)-LEN(REPLACE(lock_text,'/','')) = 2)
+												THEN CASE	WHEN CAST(SUBSTRING(lock_text,2,CHARINDEX('x:',lock_text)-2) AS INT) > 2
 															THEN CAST(SUBSTRING(lock_text, CHARINDEX('/',lock_text,CHARINDEX('/',lock_text)+1)+1, CHARINDEX('ms)',lock_text)-CHARINDEX('/',lock_text,CHARINDEX('/',lock_text)+1)-1) AS bigint)
 															ELSE NULL
 															END

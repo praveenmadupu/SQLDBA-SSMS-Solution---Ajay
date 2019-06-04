@@ -11,6 +11,7 @@ ALTER PROCEDURE dbo.sp_Kill @p_SpId SMALLINT = NULL,
 							@p_RollbackStatus BIT = NULL, @p_Force BIT = NULL, 
 							@p_AddAuthorizedSessionKiller BIT = 0,
 							@p_Help BIT = NULL, @p_Verbose BIT = 0
+--WITH EXECUTE AS OWNER
 AS
 BEGIN -- Proc Body
 	/*	Created By:		Ajay Dwivedi
@@ -42,9 +43,9 @@ BEGIN -- Proc Body
 
 	CREATE TABLE #DatabaseLoginConnections (ID INT IDENTITY(1,1), session_id INT NOT NULL, dbName varchar(225) NULL, login_name varchar(125) NULL);
 
-	IF OBJECT_ID('dbo.AuthorizedSessionKiller') IS NULL
+	IF OBJECT_ID('DBA..AuthorizedSessionKiller') IS NULL
 	BEGIN
-		CREATE TABLE dbo.AuthorizedSessionKiller(ID INT IDENTITY(1,1), IsDbLevelPermission BIT NOT NULL DEFAULT 1, DbName varchar(125) NULL, LoginName varchar(125) NOT NULL, AddedBy varchar(125) NOT NULL, AddedOn datetime NOT NULL DEFAULT GETDATE());
+		CREATE TABLE DBA.dbo.AuthorizedSessionKiller(ID INT IDENTITY(1,1), IsDbLevelPermission BIT NOT NULL DEFAULT 1, DbName varchar(125) NULL, LoginName varchar(125) NOT NULL, AddedBy varchar(125) NOT NULL, AddedOn datetime NOT NULL DEFAULT GETDATE());
 	END
 
 	IF @p_Verbose = 1
@@ -298,7 +299,7 @@ BEGIN -- Proc Body
 			PRINT CHAR(9)+'Check 01 - Is killer part of AuthorizedSessionKiller exception entry';
 			PRINT CHAR(9)+CHAR(9)+'Before Check, @_isAuthorizedSessionKiller = '+CAST(@_isAuthorizedSessionKiller AS VARCHAR(5));	
 		END
-		IF EXISTS (SELECT * FROM dbo.AuthorizedSessionKiller as k WHERE k.LoginName = @_callerLoginName AND (k.DbName IS NULL OR k.DbName = COALESCE(@p_DbName,@_sessionDbName)) )
+		IF EXISTS (SELECT * FROM DBA.dbo.AuthorizedSessionKiller as k WHERE k.LoginName = @_callerLoginName AND (k.DbName IS NULL OR k.DbName = COALESCE(@p_DbName,@_sessionDbName)) )
 			SET @_isAuthorizedSessionKiller = 1;
 		IF @p_Verbose = 1
 			PRINT CHAR(9)+CHAR(9)+'After Check, @_isAuthorizedSessionKiller = '+CAST(@_isAuthorizedSessionKiller AS VARCHAR(5));	
@@ -416,9 +417,9 @@ ELSE
 		BEGIN
 			PRINT CHAR(9)+'Adding exception for login '+QUOTENAME(@p_LoginName)+' ..';
 			-- Validate the same login name + database is not already present
-			IF NOT EXISTS (SELECT * FROM dbo.AuthorizedSessionKiller as k WHERE k.LoginName = @p_LoginName AND ( CASE WHEN @p_DbName IS NOT NULL AND DbName = @p_DbName THEN 1 WHEN @p_DbName IS NULL THEN 1 ELSE 0 END) = 1)
+			IF NOT EXISTS (SELECT * FROM DBA.dbo.AuthorizedSessionKiller as k WHERE k.LoginName = @p_LoginName AND ( CASE WHEN @p_DbName IS NOT NULL AND DbName = @p_DbName THEN 1 WHEN @p_DbName IS NULL THEN 1 ELSE 0 END) = 1)
 			BEGIN
-				INSERT dbo.AuthorizedSessionKiller
+				INSERT DBA.dbo.AuthorizedSessionKiller
 				(IsDbLevelPermission, DbName, LoginName , AddedBy)
 				SELECT	[IsDbLevelPermission] = CASE WHEN @p_DbName IS NOT NULL THEN 1 ELSE 0 END
 						,@p_DbName	,@p_LoginName ,@_callerLoginName;
@@ -535,15 +536,15 @@ ELSE
 			IF @p_Verbose = 1
 				PRINT CHAR(9)+'Caller is not allowed to kill sessions';
 			SET @_errorMSG = 'You '+QUOTENAME(@_callerLoginName)+' are not authorized to kill session as you do not fall in any of the following categories:-'+CHAR(10)
-							+CHAR(9)+'Check 01 - Is killer part of AuthorizedSessionKiller exception entry'
-							+CHAR(9)+'Check 02 - Verify if Killer is same as session owner'
-							+CHAR(9)+'Check 03 - Verify if Killer is [db_owner]'
-							+CHAR(9)+'Check 04 - Verify if Killer is [sysadmin]';
+							+CHAR(10)+CHAR(9)+'Check 01 - Is killer part of AuthorizedSessionKiller exception entry'
+							+CHAR(10)+CHAR(9)+'Check 02 - Verify if Killer is same as session owner'
+							+CHAR(10)+CHAR(9)+'Check 03 - Verify if Killer is [db_owner]'
+							+CHAR(10)+CHAR(9)+'Check 04 - Verify if Killer is [sysadmin]';
 
 			IF (select CAST(LEFT(CAST(SERVERPROPERTY('ProductVersion') AS VARCHAR(50)),charindex('.',CAST(SERVERPROPERTY('ProductVersion') AS VARCHAR(50)))-1) AS INT)) >= 12
-				EXECUTE sp_executesql N'THROW 50000,@_errorMSG,1',N'@_errorMSG VARCHAR(200)', @_errorMSG;
+				EXECUTE sp_executesql N'THROW 50000,@_errorMSG,1',N'@_errorMSG VARCHAR(MAX)', @_errorMSG;
 			ELSE
-				EXECUTE sp_executesql N'RAISERROR (@_errorMSG, 16, 1)', N'@_errorMSG VARCHAR(200)', @_errorMSG;
+				EXECUTE sp_executesql N'RAISERROR (@_errorMSG, 16, 1)', N'@_errorMSG VARCHAR(MAX)', @_errorMSG;
 		END
 
 		IF @p_Verbose = 1
