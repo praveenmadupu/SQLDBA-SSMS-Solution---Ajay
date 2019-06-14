@@ -111,6 +111,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPRDB1:CORPORATE\adwivedi">
+          <Created>2019-06-07T13:14:16.770149+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPRDB1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>master</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
@@ -164,8 +176,8 @@
           <FullPath>7) Copy Latest Full backup to Location - Reading BackupFile.sql</FullPath>
         </FileNode>
         <FileNode Name="7) Copy Latest Full backup to Location - Using BackupHistory.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPRDB1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPRDB1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>7) Copy Latest Full backup to Location - Using BackupHistory.sql</FullPath>
         </FileNode>
@@ -199,11 +211,17 @@
           <AssociatedConnUserName />
           <FullPath>RevLogin-Script.sql</FullPath>
         </FileNode>
-        <FileNode Name="ScriptOut - RESTORE With REPLACE.sql">
+        <FileNode Name="ScriptOut - RESTORE With REPLACE - Multiple Dbs.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>ScriptOut - RESTORE With REPLACE.sql</FullPath>
+          <FullPath>ScriptOut - RESTORE With REPLACE - Multiple Dbs.sql</FullPath>
+        </FileNode>
+        <FileNode Name="ScriptOut - RESTORE With REPLACE - Single Db.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>ScriptOut - RESTORE With REPLACE - Single Db.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

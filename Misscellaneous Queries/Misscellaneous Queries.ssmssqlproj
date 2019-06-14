@@ -211,6 +211,12 @@
           <AssociatedConnUserName />
           <FullPath>PowerShell Commands.sql</FullPath>
         </FileNode>
+        <FileNode Name="Powershell-Add-Local-Administrator.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Powershell-Add-Local-Administrator.sql</FullPath>
+        </FileNode>
         <FileNode Name="Return Query Output as HTML Table.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-1ADWIVEDI-L:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>BAN-1ADWIVEDI-L</AssociatedConnSrvName>
@@ -230,8 +236,8 @@
           <FullPath>sp_Kill.sql</FullPath>
         </FileNode>
         <FileNode Name="SQL Server Error Logs.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SQL Server Error Logs.sql</FullPath>
         </FileNode>

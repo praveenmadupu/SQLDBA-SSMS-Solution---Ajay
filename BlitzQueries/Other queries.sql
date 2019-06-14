@@ -22,7 +22,8 @@ GO
 --	Check when was the system started
 SELECT	@@servername as SvrName,
 		getdate() as CurrentDate, create_date as ServiceStartDate, 
-		DATEDIFF(day,create_date, GETDATE()) as ServiceStartDays 
+		DATEDIFF(day,create_date, GETDATE()) as ServiceStartDays,
+		DATEDIFF(hour,create_date, GETDATE()) as ServiceStartHours
 FROM sys.databases as d where d.name = 'tempdb';
 
 -- Current RAM share of SQL Server
