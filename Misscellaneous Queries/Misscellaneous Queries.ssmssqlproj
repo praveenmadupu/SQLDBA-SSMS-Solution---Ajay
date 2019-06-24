@@ -193,6 +193,12 @@
           <AssociatedConnUserName />
           <FullPath>Kill All Session for DB.sql</FullPath>
         </FileNode>
+        <FileNode Name="Log-Off-Users-with-PowerShell.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Log-Off-Users-with-PowerShell.sql</FullPath>
+        </FileNode>
         <FileNode Name="Maintainence - Delete files older than 72 hours.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
@@ -212,8 +218,8 @@
           <FullPath>PowerShell Commands.sql</FullPath>
         </FileNode>
         <FileNode Name="Powershell-Add-Local-Administrator.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Powershell-Add-Local-Administrator.sql</FullPath>
         </FileNode>

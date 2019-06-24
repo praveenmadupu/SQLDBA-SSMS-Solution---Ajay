@@ -51,6 +51,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPRDB1:CORPORATE\adwivedi">
+          <Created>2019-06-20T06:01:53.5922074+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPRDB1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="tul1cipxdb19:CORPORATE\adwivedi">
           <Created>2019-04-19T21:22:01.0552845+05:30</Created>
           <Type>SQL</Type>
@@ -146,10 +158,16 @@
           <FullPath>v1.2 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql</FullPath>
         </FileNode>
         <FileNode Name="v1.3 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipxdb19:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>tul1cipxdb19</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPRDB1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPRDB1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>v1.3 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql</FullPath>
+        </FileNode>
+        <FileNode Name="v1.4 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPRDB1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPRDB1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>v1.4 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

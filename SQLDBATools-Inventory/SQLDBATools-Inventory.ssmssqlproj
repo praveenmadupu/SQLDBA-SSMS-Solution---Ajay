@@ -51,6 +51,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="localhost:CORPORATE\adwivedi">
+          <Created>2019-06-18T19:08:39.1747341+05:30</Created>
+          <Type>SQL</Type>
+          <Server>localhost</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="SQL-A:sa">
           <Created>2018-04-01T18:52:50.9528004+05:30</Created>
           <Type>SQL</Type>
@@ -258,6 +270,12 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Issues_In_Inventory.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Job [SQLDBATools - DataCollection - EventLogs].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Job [SQLDBATools - DataCollection - EventLogs].sql</FullPath>
         </FileNode>
         <FileNode Name="Job-DataCollection.sql">
           <AssociatedConnectionMoniker />

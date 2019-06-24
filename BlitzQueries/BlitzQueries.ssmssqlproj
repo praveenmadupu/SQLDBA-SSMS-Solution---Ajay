@@ -169,6 +169,12 @@
           <AssociatedConnUserName />
           <FullPath>Blocking Tree.sql</FullPath>
         </FileNode>
+        <FileNode Name="Buffer-Pool-Analysis.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:ANN1VESPDB01:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>ANN1VESPDB01</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Buffer-Pool-Analysis.sql</FullPath>
+        </FileNode>
         <FileNode Name="Configure_PSSDiag.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
@@ -176,10 +182,16 @@
           <FullPath>Configure_PSSDiag.sql</FullPath>
         </FileNode>
         <FileNode Name="CREATE TABLE [dbo].[whatIsRunning].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:ANN1VESPDB01:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>ANN1VESPDB01</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>CREATE TABLE [dbo].[whatIsRunning].sql</FullPath>
+        </FileNode>
+        <FileNode Name="Db-Design-Analysis.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:ANN1VESPDB01:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>ANN1VESPDB01</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Db-Design-Analysis.sql</FullPath>
         </FileNode>
         <FileNode Name="Detect n Reduce High VLFs - All Dbs.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>
@@ -205,6 +217,12 @@
           <AssociatedConnUserName />
           <FullPath>Perf Counters.sql</FullPath>
         </FileNode>
+        <FileNode Name="Plan-Cache-Analysis.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:ANN1VESPDB01:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>ANN1VESPDB01</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Plan-Cache-Analysis.sql</FullPath>
+        </FileNode>
         <FileNode Name="Querying Deadlocks From System_Health XEvent.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
@@ -222,12 +240,6 @@
           <AssociatedConnSrvName>ANN1VESPDB01</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SQL Server 2008 R2 Diagnostic Information Queries.sql</FullPath>
-        </FileNode>
-        <FileNode Name="SQLQuery2.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>SQLQuery2.sql</FullPath>
         </FileNode>
         <FileNode Name="Vw_WhoIsActive_Blocking.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>

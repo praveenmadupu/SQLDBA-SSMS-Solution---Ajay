@@ -27,7 +27,12 @@ SELECT	@@servername as SvrName,
 FROM sys.databases as d where d.name = 'tempdb';
 
 -- Current RAM share of SQL Server
-select m.total_physical_memory_kb/1024/1024 as [Ram(GB)], system_memory_state_desc from sys.dm_os_sys_memory as m
+select m.total_physical_memory_kb/1024/1024 as [Ram(GB)], system_memory_state_desc
+		,m.available_physical_memory_kb/1024 as [Available(MB)]
+		,convert(numeric(20,1),(m.available_physical_memory_kb*1.0)/1024/1024) as [Available(GB)]
+		,convert(numeric(20,1),(m.system_cache_kb*1.0)/1024/1024) as [Cache(GB)]
+		,convert(numeric(20,0),((m.available_physical_memory_kb-m.system_cache_kb))/1024) as [Free(MB)]
+from sys.dm_os_sys_memory as m
 
 -- Get selected server properties (SQL Server 2014)  (Query 3) (Server Properties)
 SELECT	SERVERPROPERTY('MachineName') AS [MachineName], SERVERPROPERTY('ServerName') AS [ServerName],  
