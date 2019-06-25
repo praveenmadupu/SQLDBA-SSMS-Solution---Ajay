@@ -57,6 +57,8 @@ where Ignore = 0
 --select * FROM dbo.SqlAgentJobs where Ignore = 0;
 
 
+SET NOCOUNT ON;
+
 IF OBJECT_ID('tempdb..#JobPastHistory') IS NOT NULL
 	DROP TABLE #JobPastHistory;
 ;with t_history as
@@ -121,9 +123,7 @@ IF OBJECT_ID('tempdb..#JobActivityMonitor') IS NOT NULL
 select	JobName = COALESCE(a.JobName, h.JobName), h.instance_id, [Running Since] = a.start_execution_date
 		,[<3-Hrs], [3-Hrs], [6-Hrs], [9-Hrs], [12-Hrs], [18-Hrs], [24-Hrs], [36-Hrs], [48-Hrs]
 into	#JobActivityMonitor
-from	t_jobActivityMonitor as a full outer join t_history_info as h on h.JobName = a.JobName;
-
---select * from #JobActivityMonitor
+from	t_jobActivityMonitor as a full outer join t_history_info as h on h.JobName = a.JobName
 
 -- Step 01 - Remove Previous Running Jobs ([Running Since] = NULL)
 UPDATE DBA.dbo.SqlAgentJobs
@@ -228,14 +228,19 @@ SET @tableHTML =  N'
 <p></p><br><br>
 Thanks & Regards,<br>
 SQLAlerts<br>
--- Alert from job [DBA - Long Running Jobs] 
+-- Alert from job [DBA - Long Running Jobs]
 	' ;  
 
-EXEC msdb.dbo.sp_send_dbmail 
-	@recipients='ajay.dwivedi2007@gmail.com',  
-    @subject = @subject,  
-    @body = @tableHTML,  
-    @body_format = 'HTML' ;
+IF @tableHTML IS NOT NULL
+BEGIN
+	EXEC msdb.dbo.sp_send_dbmail 
+		@recipients='It-Ops-DBA@tivo.com',  
+		@subject = @subject,  
+		@body = @tableHTML,  
+		@body_format = 'HTML' ;
+END
+ELSE
+	PRINT 'No Long Running job found.';
 
 SELECT * FROM DBA.dbo.SqlAgentJobs as j WHERE j.Ignore = 0	AND j.[Running Since] IS NOT NULL
 	--AND (DATEDIFF(MINUTE,[Running Since],GETDATE()) > [Expected-Max-Duration(Min)] AND DATEDIFF(MINUTE,[Running Since],GETDATE()) > 60)

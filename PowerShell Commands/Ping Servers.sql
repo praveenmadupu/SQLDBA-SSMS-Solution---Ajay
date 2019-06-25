@@ -1,9 +1,8 @@
 /*	PowerShell Command */
 $sizeThreshold_In_MB = 5;
 $pingResultPath = 'F:\PingMirroringPartners\';
-#$pingResultPath = '\\TUL1CORPWIT1\F$\PingMirroringPartners\';
 $pingResultFile = 'F:\PingMirroringPartners\pingResult';
-$names = @('TUL1CIPXIDB2','TUL1CIPXIDB3');
+$names = @('MyDatabaseServer01');
 
 # Delete files older than 15 days
 $limit = (Get-Date).AddDays(-15);
