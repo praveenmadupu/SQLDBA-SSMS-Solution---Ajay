@@ -3,6 +3,18 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
+        <ConnectionNode Name="(local):CORPORATE\adwivedi">
+          <Created>2019-08-01T13:07:36.7894036+05:30</Created>
+          <Type>SQL</Type>
+          <Server>(local)</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="ANN1VESPDB01:CORPORATE\adwivedi">
           <Created>2019-02-14T10:19:41.9768258+05:30</Created>
           <Type>SQL</Type>
@@ -108,6 +120,12 @@
           <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2016</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Backup-Restore.sql</FullPath>
+        </FileNode>
+        <FileNode Name="How-2-Enable-Agent-Logging.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>How-2-Enable-Agent-Logging.sql</FullPath>
         </FileNode>
         <FileNode Name="Repl - ReplicationSupportOnly.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2016:True</AssociatedConnectionMoniker>

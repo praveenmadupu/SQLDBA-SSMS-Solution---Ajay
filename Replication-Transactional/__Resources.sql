@@ -7,6 +7,8 @@ https://www.youtube.com/playlist?list=PLbkU_gVPZ7OT8gcTJQ0uTi9r4uyZJmUcP
 https://www.youtube.com/watch?v=UBdAAvMMGwo
 5) SQL Server Replication Scripts to get Replication Configuration Information
 https://www.mssqltips.com/sqlservertip/1808/sql-server-replication-scripts-to-get-replication-configuration-information/
+6) https://www.msqlserver.net/2015/03/the-subscriptions-have-been-marked.html
+7) https://docs.microsoft.com/en-us/sql/relational-databases/replication/troubleshoot-tran-repl-errors?view=sql-server-2017
 
 
 Rules:-

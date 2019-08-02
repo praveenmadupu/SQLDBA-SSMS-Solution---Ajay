@@ -3,6 +3,18 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
+        <ConnectionNode Name="(local):CORPORATE\adwivedi">
+          <Created>2019-07-07T20:38:32.0286356+05:30</Created>
+          <Type>SQL</Type>
+          <Server>(local)</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="BAN-1ADWIVEDI-L:CORPORATE\adwivedi">
           <Created>2018-08-28T18:54:33.17665+05:30</Created>
           <Type>SQL</Type>
@@ -56,9 +68,9 @@
           <FullPath>Get-SqlResult2Excel.sql</FullPath>
         </FileNode>
         <FileNode Name="Ping Servers.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:False:sa</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>BAN-2ADWIVEDI-L</AssociatedConnSrvName>
-          <AssociatedConnUserName>sa</AssociatedConnUserName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
           <FullPath>Ping Servers.sql</FullPath>
         </FileNode>
         <FileNode Name="QueryResults-2-Excel.sql">

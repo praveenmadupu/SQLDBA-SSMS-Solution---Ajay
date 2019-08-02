@@ -75,6 +75,30 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="sqlcluster\sql2017:sa">
+          <Created>2019-07-13T17:49:54.7905871+05:30</Created>
+          <Type>SQL</Type>
+          <Server>sqlcluster\sql2017</Server>
+          <UserName>sa</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="SqlCluster2016:sa">
+          <Created>2019-07-15T12:28:55.7283251+05:30</Created>
+          <Type>SQL</Type>
+          <Server>SqlCluster2016</Server>
+          <UserName>sa</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="tul1cipcnpdb1:CORPORATE\adwivedi">
           <Created>2019-04-21T22:12:15.4400118+05:30</Created>
           <Type>SQL</Type>
@@ -246,6 +270,24 @@
           <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SQL Server Error Logs.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SqlCluster-Troubleshooting.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SqlCluster-Troubleshooting.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Sql-Installation-Hosts.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Sql-Installation-Hosts.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Sql-Installation-Powershell-Codes.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Sql-Installation-Powershell-Codes.sql</FullPath>
         </FileNode>
         <FileNode Name="SSMS Tricks 01.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-1ADWIVEDI-L:True</AssociatedConnectionMoniker>

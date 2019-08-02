@@ -73,11 +73,11 @@
           <AssociatedConnUserName />
           <FullPath>Jobs_Schedule.sql</FullPath>
         </FileNode>
-        <FileNode Name="Mail-Notification-Long-Running-Jobs.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+        <FileNode Name="SQLDBATools - DataCollection - EventLogs.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>Mail-Notification-Long-Running-Jobs.sql</FullPath>
+          <FullPath>SQLDBATools - DataCollection - EventLogs.sql</FullPath>
         </FileNode>
         <FileNode Name="usp_GetStepFailureData.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-2ADWIVEDI-L:False:sa</AssociatedConnectionMoniker>
@@ -91,11 +91,23 @@
           <AssociatedConnUserName />
           <FullPath>v0.0 - dbo.fn_IsJobRunning.sql</FullPath>
         </FileNode>
+        <FileNode Name="v0.0 - Mail-Notification-Long-Running-Jobs.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>v0.0 - Mail-Notification-Long-Running-Jobs.sql</FullPath>
+        </FileNode>
         <FileNode Name="v0.1 - dbo.usp_StopLongRunningJob.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>v0.1 - dbo.usp_StopLongRunningJob.sql</FullPath>
+        </FileNode>
+        <FileNode Name="v0.1 - Mail-Notification-Long-Running-Jobs.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>v0.1 - Mail-Notification-Long-Running-Jobs.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

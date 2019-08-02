@@ -31,6 +31,7 @@ BEGIN
 						29-Apr-2019	- Add logic to send Blocking info to Slack Email
 						13-May-2019	- Modify the Blocking Mail Query with procedure DBA.dbo.usp_WhoIsActive_Blocking
 						20-Jun-2019 - @p_PerformAutoExecutionOfLogWalkJob - Add logic to run Log Walk Job if last execution was a failure due to blocking issue, and there are no Blockers
+						27-Jul-2019 - Adding JobSchedule & NextRunTime in Mailer Output
 	*/
 	SET NOCOUNT ON;
 
@@ -51,6 +52,8 @@ BEGIN
 	DECLARE @IsBlockingIssue BIT;
 	DECLARE @AreInDirectConnections BIT;
 	DECLARE @_SendMailRequired BIT;
+	DECLARE @JobSchedule varchar(255),
+			@NextRunTime datetime;
 	DECLARE @_mailSubject VARCHAR(255)
 			,@_mailBody VARCHAR(4000);
 	IF OBJECT_ID('DBA..LogWalkThresholdInstance') IS NULL
@@ -273,6 +276,90 @@ BEGIN
 				IF @p_Verbose = 1
 					SELECT [@_collection_time_start] = @_collection_time_start, [@_collection_time_end] = @_collection_time_end;
 
+				-- Find job schedule & NextRunTime
+				;WITH T_Schedules AS
+				(
+					select S.name AS JobName,
+						   SS.name AS ScheduleName,                    
+						   CASE(SS.freq_type)
+								WHEN 1  THEN 'Once'
+								WHEN 4  THEN 'Daily'
+								WHEN 8  THEN (case when (SS.freq_recurrence_factor > 1) then  'Every ' + convert(varchar(3),SS.freq_recurrence_factor) + ' Weeks'  else 'Weekly'  end)
+								WHEN 16 THEN (case when (SS.freq_recurrence_factor > 1) then  'Every ' + convert(varchar(3),SS.freq_recurrence_factor) + ' Months' else 'Monthly' end)
+								WHEN 32 THEN 'Every ' + convert(varchar(3),SS.freq_recurrence_factor) + ' Months' -- RELATIVE
+								WHEN 64 THEN 'SQL Startup'
+								WHEN 128 THEN 'SQL Idle'
+								ELSE '??'
+							END AS Frequency,  
+						   CASE
+								WHEN (freq_type = 1)                       then 'One time only'
+								WHEN (freq_type = 4 and freq_interval = 1) then 'Every Day'
+								WHEN (freq_type = 4 and freq_interval > 1) then 'Every ' + convert(varchar(10),freq_interval) + ' Days'
+								WHEN (freq_type = 8) then (select 'Weekly Schedule' = MIN(D1+ D2+D3+D4+D5+D6+D7 )
+															from (select SS.schedule_id,
+																			freq_interval, 
+																			'D1' = CASE WHEN (freq_interval & 1  <> 0) then 'Sun ' ELSE '' END,
+																			'D2' = CASE WHEN (freq_interval & 2  <> 0) then 'Mon '  ELSE '' END,
+																			'D3' = CASE WHEN (freq_interval & 4  <> 0) then 'Tue '  ELSE '' END,
+																			'D4' = CASE WHEN (freq_interval & 8  <> 0) then 'Wed '  ELSE '' END,
+																		'D5' = CASE WHEN (freq_interval & 16 <> 0) then 'Thu '  ELSE '' END,
+																			'D6' = CASE WHEN (freq_interval & 32 <> 0) then 'Fri '  ELSE '' END,
+																			'D7' = CASE WHEN (freq_interval & 64 <> 0) then 'Sat '  ELSE '' END
+																		from msdb..sysschedules ss
+																	where freq_type = 8
+																) as F
+															where schedule_id = SJ.schedule_id
+														)
+								WHEN (freq_type = 16) then 'Day ' + convert(varchar(2),freq_interval) 
+								WHEN (freq_type = 32) then (select  freq_rel + WDAY 
+															from (select SS.schedule_id,
+																			'freq_rel' = CASE(freq_relative_interval)
+																						WHEN 1 then 'First'
+																						WHEN 2 then 'Second'
+																						WHEN 4 then 'Third'
+																						WHEN 8 then 'Fourth'
+																						WHEN 16 then 'Last'
+																						ELSE '??'
+																						END,
+																		'WDAY'     = CASE (freq_interval)
+																						WHEN 1 then ' Sun'
+																						WHEN 2 then ' Mon'
+																						WHEN 3 then ' Tue'
+																						WHEN 4 then ' Wed'
+																						WHEN 5 then ' Thu'
+																						WHEN 6 then ' Fri'
+																						WHEN 7 then ' Sat'
+																						WHEN 8 then ' Day'
+																						WHEN 9 then ' Weekday'
+																						WHEN 10 then ' Weekend'
+																						ELSE '??'
+																						END
+																	from msdb..sysschedules SS
+																	where SS.freq_type = 32
+																	) as WS 
+															where WS.schedule_id = SS.schedule_id
+															) 
+							END AS Interval,
+							CASE (freq_subday_type)
+								WHEN 1 then   left(stuff((stuff((replicate('0', 6 - len(active_start_time)))+ convert(varchar(6),active_start_time),3,0,':')),6,0,':'),8)
+								WHEN 2 then 'Every ' + convert(varchar(10),freq_subday_interval) + ' seconds'
+								WHEN 4 then 'Every ' + convert(varchar(10),freq_subday_interval) + ' minutes'
+								WHEN 8 then 'Every ' + convert(varchar(10),freq_subday_interval) + ' hours'
+								ELSE '??'
+							END AS [Time],
+							CASE SJ.next_run_date
+								WHEN 0 THEN cast('n/a' as char(10))
+								ELSE convert(char(10), convert(datetime, convert(char(8),SJ.next_run_date)),120)  + ' ' + left(stuff((stuff((replicate('0', 6 - len(next_run_time)))+ convert(varchar(6),next_run_time),3,0,':')),6,0,':'),8)
+							END AS NextRunTime
+					from msdb.dbo.sysjobs S
+					left join msdb.dbo.sysjobschedules SJ on S.job_id = SJ.job_id  
+					left join msdb.dbo.sysschedules SS on SS.schedule_id = SJ.schedule_id
+					where s.name = @p_JobName
+				)
+				SELECT	@JobSchedule = Frequency + ' (' + Interval + ') - ' + [Time]
+						,@NextRunTime = NextRunTime
+				FROM T_Schedules;
+
 				-- Find Job Session along with its Blockers
 				IF OBJECT_ID('tempdb..#JobSessionBlockers') IS NOT NULL
 					DROP TABLE #JobSessionBlockers;
@@ -441,6 +528,8 @@ SQL Agent Job '+QUOTENAME(@p_JobName)+' has been failing for '+cast(@NoOfContino
 LAST JOB RUN:		'+CAST(jh.RunDateTime AS varchar(50))+'
 DURATION:		'+CAST(jh.RunDurationMinutes AS varchar(10))+' Minutes
 STATUS: 		Failed
+SCHEDULE:		'+ISNULL(@JobSchedule,'')+'
+NextRunTime:		'+ISNULL(CAST(@NextRunTime AS VARCHAR(40)),'')+'
 MESSAGES:		Job '+QUOTENAME(@p_JobName)+' COULD NOT obtain EXCLUSIVE access of underlying database to start its activity. 
 RCA:			Kindly execute below query to find out details of Blockers.
 
@@ -541,6 +630,8 @@ SQL Agent Job '+QUOTENAME(@p_JobName)+' has been failing for '+cast(@NoOfContino
 LAST JOB RUN:		'+CAST(jh.RunDateTime AS varchar(50))+'
 DURATION:		'+CAST(jh.RunDurationMinutes AS varchar(10))+' Minutes
 STATUS: 		Failed
+SCHEDULE:		'+ISNULL(@JobSchedule,'')+'
+NextRunTime:	'+ISNULL(CAST(@NextRunTime AS VARCHAR(40)),'')+'
 
 Kindly check Job Step Error Message' 
 						FROM	@T_JobHistory as jh
