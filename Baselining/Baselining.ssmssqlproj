@@ -223,6 +223,12 @@
           <AssociatedConnUserName />
           <FullPath>PerfMon - During.sql</FullPath>
         </FileNode>
+        <FileNode Name="PerfMon-DataCollection.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>PerfMon-DataCollection.sql</FullPath>
+        </FileNode>
         <FileNode Name="SELECT permission to All Users.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
