@@ -1,5 +1,5 @@
 DECLARE @p_JobName VARCHAR(125) = NULL;
-SET @p_JobName = 'DBA Log Walk - Restore Cosmo';
+SET @p_JobName = 'DBA Log Walk - Restore Staging as Staging';
 
 DECLARE @JobSchedule varchar(255);
 DECLARE @NextRunTime datetime;
@@ -84,6 +84,12 @@ DECLARE @NextRunTime datetime;
 	where s.name = @p_JobName
 )
 SELECT	*
-		--,@JobSchedule = Frequency + ' (' + Interval + ') - ' + [Time]
+		--TOP (1)
+		--@JobSchedule = Frequency + ' (' + Interval + ') - ' + [Time]
 		--,@NextRunTime = NextRunTime
-FROM T_Schedules;
+FROM T_Schedules
+WHERE CAST(NextRunTime AS DATETIME) >= GETDATE()
+ORDER BY CAST(NextRunTime AS DATETIME) ASC
+
+print @JobSchedule
+print @NextRunTime

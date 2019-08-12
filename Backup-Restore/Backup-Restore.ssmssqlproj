@@ -193,6 +193,12 @@
           <AssociatedConnUserName />
           <FullPath>Get-LatestBackups.sql</FullPath>
         </FileNode>
+        <FileNode Name="Query - Backup History - Path Finding.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPRDB1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPRDB1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Query - Backup History - Path Finding.sql</FullPath>
+        </FileNode>
         <FileNode Name="Query - Backup History.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>

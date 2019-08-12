@@ -51,6 +51,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPXDB20:CORPORATE\adwivedi">
+          <Created>2019-08-10T14:07:01.3153052+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPXDB20</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
@@ -68,8 +80,8 @@
           <FullPath>JobHistory_Duration.sql</FullPath>
         </FileNode>
         <FileNode Name="Jobs_Schedule.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPXDB20:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPXDB20</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Jobs_Schedule.sql</FullPath>
         </FileNode>

@@ -51,6 +51,7 @@ BEGIN
 	DECLARE @_collection_time_end datetime;
 	DECLARE @IsBlockingIssue BIT;
 	DECLARE @AreInDirectConnections BIT;
+	DECLARE @IsBaseCapturingDoneInLast5Minutes BIT;
 	DECLARE @_SendMailRequired BIT;
 	DECLARE @JobSchedule varchar(255),
 			@NextRunTime datetime;
@@ -356,9 +357,11 @@ BEGIN
 					left join msdb.dbo.sysschedules SS on SS.schedule_id = SJ.schedule_id
 					where s.name = @p_JobName
 				)
-				SELECT	@JobSchedule = Frequency + ' (' + Interval + ') - ' + [Time]
+				SELECT	TOP (1)
+						@JobSchedule = Frequency + ' (' + Interval + ') - ' + [Time]
 						,@NextRunTime = NextRunTime
-				FROM T_Schedules;
+				FROM T_Schedules
+				ORDER BY CAST(NextRunTime AS DATETIME) ASC;
 
 				-- Find Job Session along with its Blockers
 				IF OBJECT_ID('tempdb..#JobSessionBlockers') IS NOT NULL
@@ -562,38 +565,48 @@ RCA:			Kindly execute below query to find out details of Blockers.
 					IF @p_Verbose = 1
 						PRINT 'Logic processing when @p_PerformAutoExecutionOfLogWalkJob = 1';
 
+					-- Find if sp_WhoIsActive capturing is done within last 5 minutes
 					IF @p_Verbose = 1
-						PRINT 'Finding Direct/Indirect connections for database '+QUOTENAME(@p_DbName);
-					INSERT #DatabaseConnections (session_id, dbName, IsDirectConnection)
-					SELECT	session_id, dbName, MAX(IsDirectConnection) AS IsDirectConnection
-					FROM  (
-								SELECT s.session_id, DB_NAME(r.database_id) as dbName, 1 as IsDirectConnection
-								FROM sys.dm_exec_sessions as s
-								INNER JOIN sys.dm_exec_requests as r on r.session_id = s.session_id
-								WHERE r.database_id = db_id(@p_DbName)
-								--
-								UNION ALL
-								--
-								SELECT l.request_session_id, db_name(l.resource_database_id) as dbName, 0 as IsDirectConnection
-								FROM sys.dm_tran_locks as l left join sys.dm_exec_sessions as s on s.session_id = l.request_session_id
-								WHERE l.resource_type = 'DATABASE' AND l.resource_database_id = db_id(@p_DbName)
-								GROUP BY l.resource_database_id, l.request_session_id
-						  ) AS c
-					GROUP BY c.dbName, c.session_id;
-
-					IF NOT EXISTS(SELECT * FROM #DatabaseConnections WHERE dbName = @p_DbName AND IsDirectConnection = 0)
-					BEGIN
-						IF DBA.dbo.fn_IsJobRunning(@p_JobName) = 0
-						BEGIN
-							IF @p_Verbose = 1
-								PRINT 'Trying to start job '''+@p_JobName+'''';
-							EXEC msdb..sp_start_job @job_name = @p_JobName;
-						END
-						ELSE
-							PRINT 'Job '''+@p_JobName+''' is already running.';
-					END
+						PRINT 'Checking if sp_WhoIsActive capturing is done within last 5 minutes..';
+					IF EXISTS(SELECT * FROM dbo.WhoIsActive_ResultSets as r WHERE r.collection_time >= DATEADD(MINUTE,-5,GETDATE()))
+						SET @IsBaseCapturingDoneInLast5Minutes = 1;
 					ELSE
-						PRINT 'There are inDirect connections against '+QUOTENAME(@p_DbName)+' database. So cannot run Log Walk job.';
+					BEGIN
+						IF @p_Verbose = 1
+							PRINT '		Starting sp_WhoIsActive capturing..';
+						EXEC DBA.dbo.usp_SendWhoIsActiveMessage @p_JobName = @p_JobName;
+						WAITFOR DELAY '00:05';
+						SET @IsBaseCapturingDoneInLast5Minutes = 1;
+					END
+
+					IF @IsBaseCapturingDoneInLast5Minutes = 1
+					BEGIN
+						IF @p_Verbose = 1
+							PRINT ' Checking for Indirect connections for database '+QUOTENAME(@p_DbName);
+						;WITH t_results as
+						(	
+							SELECT @p_DbName as dbName, *
+							FROM [DBA]..[WhoIsActive_ResultSets] r 
+							WHERE r.collection_time >= DATEADD(MINUTE,-5,GETDATE())
+							AND r.database_name <> @p_DbName
+						)
+						SELECT * INTO #ActiveIndirectDbSessions from t_results as r
+						WHERE r.locks.exist( '/Database[@name=sql:column("dbName")]') = 1;
+
+						IF EXISTS(SELECT * FROM #ActiveIndirectDbSessions)
+							PRINT 'There are inDirect connections against '+QUOTENAME(@p_DbName)+' database. So cannot run Log Walk job.'; 
+						ELSE
+						BEGIN
+							IF DBA.dbo.fn_IsJobRunning(@p_JobName) = 0
+							BEGIN
+								IF @p_Verbose = 1
+									PRINT 'Trying to start job '''+@p_JobName+'''';
+								EXEC msdb..sp_start_job @job_name = @p_JobName;
+							END
+							ELSE
+								PRINT 'Job '''+@p_JobName+''' is already running.';
+						END
+					END					
 				END
 			END -- Block -> Logic if Job Failure is due to Blocking Issue
 			ELSE IF @NoOfContinousFailures <> 0 AND @IsBlockingIssue = 0
