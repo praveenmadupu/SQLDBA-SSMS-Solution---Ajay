@@ -5,14 +5,12 @@ IF OBJECT_ID('dbo.usp_GetLogWalkJobHistoryAlert_Suppress') IS NULL
 	EXEC('CREATE PROCEDURE [dbo].[usp_GetLogWalkJobHistoryAlert_Suppress] AS SELECT 1 AS [Dummy];')
 GO
 
-USE [DBA]
-GO
-
 ALTER PROCEDURE [dbo].[usp_GetLogWalkJobHistoryAlert_Suppress] 
 		@p_JobName VARCHAR(125) = NULL,
 		@p_GetSessionRequestDetails BIT = 0,
 		@p_Verbose BIT = 0,
 		@p_NoOfContinousFailuresThreshold TINYINT = 2,
+		@p_TimeIntervalForMailNotification INT = 30, -- in Minutes
 		@p_SuppressNotification TINYINT = 0,
 		@p_SendMail BIT = 0,
 		@p_Mail_TO VARCHAR(1000) = NULL,
@@ -24,7 +22,7 @@ ALTER PROCEDURE [dbo].[usp_GetLogWalkJobHistoryAlert_Suppress]
 AS
 BEGIN 
 	/*
-		Version:		1.4
+		Version:		1.5
 		Created By:		Ajay Kumar Dwivedi
 		Purpose:		To have custom alerting system for Log Walk jobs
 		Modifications:	20-Apr-2019 - Corrected Notification mail where mail was received without body
@@ -32,6 +30,7 @@ BEGIN
 						13-May-2019	- Modify the Blocking Mail Query with procedure DBA.dbo.usp_WhoIsActive_Blocking
 						20-Jun-2019 - @p_PerformAutoExecutionOfLogWalkJob - Add logic to run Log Walk Job if last execution was a failure due to blocking issue, and there are no Blockers
 						27-Jul-2019 - Adding JobSchedule & NextRunTime in Mailer Output
+						16-Aug-2019 - Adding @p_TimeIntervalForMailNotification - Time in minutes after which notification mail should be sent
 	*/
 	SET NOCOUNT ON;
 
@@ -52,6 +51,7 @@ BEGIN
 	DECLARE @IsBlockingIssue BIT;
 	DECLARE @AreInDirectConnections BIT;
 	DECLARE @IsBaseCapturingDoneInLast5Minutes BIT;
+	DECLARE @LastMailNotificationTimeInMinutes INT;
 	DECLARE @_SendMailRequired BIT;
 	DECLARE @JobSchedule varchar(255),
 			@NextRunTime datetime;
@@ -518,9 +518,18 @@ ORDER BY r.collection_time, LEVEL ASC;
 							END
 							
 							IF @p_Verbose = 1
-								PRINT 'Executing procedure DBA..[usp_GetMail_4_SQLAlerts];';
+								PRINT 'Checking if last mail was sent more than '+cast(@p_TimeIntervalForMailNotification as varchar(10))+' minutes (@p_TimeIntervalForMailNotification) ago.';
 
-							EXEC DBA..[usp_GetMail_4_SQLAlerts] @p_Option = 'JobBlockers', @p_JobName = @p_JobName, @p_recipients = @p_Mail_TO, @p_Verbose=@p_Verbose;
+							SET @LastMailNotificationTimeInMinutes = COALESCE((select datediff(MINUTE,max(si.sent_date),getdate()) from msdb.dbo.sysmail_sentitems as si where si.subject like '%'+@p_JobName+'%'),0 );
+
+							-- Send notification mail if threshold time is crossed
+							IF(@p_TimeIntervalForMailNotification <= @LastMailNotificationTimeInMinutes )
+							BEGIN
+								IF @p_Verbose = 1
+									PRINT 'Executing procedure DBA..[usp_GetMail_4_SQLAlerts];';
+								EXEC DBA..[usp_GetMail_4_SQLAlerts] @p_Option = 'JobBlockers', @p_JobName = @p_JobName, @p_recipients = @p_Mail_TO, @p_Verbose=@p_Verbose;
+							END
+														
 							--END
 							
 							SELECT 
@@ -703,17 +712,20 @@ It-Ops-DBA@tivo.com
 				BEGIN
 					PRINT 'Mail body';
 					PRINT @_mailBody;
-
-					PRINT 'Sending mail..';
-
 				END
 				
-				EXEC msdb..sp_send_dbmail
-							@profile_name = @@servername,
-							@recipients = @p_Mail_TO,
-							@copy_recipients =  @p_Mail_CC,
-							@subject = @_mailSubject,
-							@body = @_mailBody;
+				IF @p_Verbose = 1
+					PRINT 'Checking if last mail was sent more than '+cast(@p_TimeIntervalForMailNotification as varchar(10))+' minutes (@p_TimeIntervalForMailNotification) ago.';
+				-- Send notification mail if threshold time is crossed
+				IF(@p_TimeIntervalForMailNotification <= @LastMailNotificationTimeInMinutes )
+				BEGIN
+					EXEC msdb..sp_send_dbmail
+								@profile_name = @@servername,
+								@recipients = @p_Mail_TO,
+								@copy_recipients =  @p_Mail_CC,
+								@subject = @_mailSubject,
+								@body = @_mailBody;
+				END
 			END
 		END -- block if Job History is found
 	END -- Else portion of @p_Help = 1

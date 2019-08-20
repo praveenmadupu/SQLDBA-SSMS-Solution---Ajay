@@ -39,6 +39,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPXDB18:CORPORATE\adwivedi">
+          <Created>2019-08-16T16:18:06.0998693+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPXDB18</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="TUL1DBAPMTDB1:CORPORATE\adwivedi">
           <Created>2018-09-12T11:48:07.9686732+05:30</Created>
           <Type>SQL</Type>
@@ -86,8 +98,8 @@
           <FullPath>01) Trace Definition (SQL 2008 R2).sql</FullPath>
         </FileNode>
         <FileNode Name="02) Trace Related Queries.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1MDPDWMSH3C1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1MDPDWMSH3C1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPXDB18:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPXDB18</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>02) Trace Related Queries.sql</FullPath>
         </FileNode>

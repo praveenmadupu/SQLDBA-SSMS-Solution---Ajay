@@ -63,6 +63,30 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPXDB17:CORPORATE\adwivedi">
+          <Created>2019-08-18T09:10:25.8486751+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPXDB17</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPXDB18:CORPORATE\adwivedi">
+          <Created>2019-08-14T12:06:59.3405831+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPXDB18</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="tul1cipxdb19:CORPORATE\adwivedi">
           <Created>2019-04-19T21:22:01.0552845+05:30</Created>
           <Type>SQL</Type>
@@ -168,6 +192,12 @@
           <AssociatedConnSrvName>TUL1CIPXDB20</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>v1.4 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql</FullPath>
+        </FileNode>
+        <FileNode Name="v1.5 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCWRDB1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPCWRDB1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>v1.5 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

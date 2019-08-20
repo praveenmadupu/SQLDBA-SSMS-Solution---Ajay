@@ -111,6 +111,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPXDB20:CORPORATE\adwivedi">
+          <Created>2019-08-13T10:19:39.2876156+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPXDB20</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>master</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="tul1dbapmtdb1:CORPORATE\adwivedi">
           <Created>2019-05-14T15:42:47.3704548+05:30</Created>
           <Type>SQL</Type>
@@ -234,6 +246,12 @@
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Maintainence - Delete folder-files older than 120 hours.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Powershell - Stop - SQLServices.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPXDB20:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPXDB20</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Powershell - Stop - SQLServices.sql</FullPath>
         </FileNode>
         <FileNode Name="PowerShell Commands.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
