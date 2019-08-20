@@ -64,3 +64,18 @@ AND (CASE WHEN REPLACE(REPLACE(TRY_CONVERT(varchar(max),r.sql_text),char(10),'')
 ORDER BY [TimeInMinutes] desc
 GO
 */
+
+/*
+select  DENSE_RANK()OVER(ORDER BY collection_Time ASC) AS CollectionBatch, [collection_time], 
+		COUNT(session_id) OVER(PARTITION BY collection_Time) AS Session_Counts,
+		[TimeInMinutes], [dd hh:mm:ss.mss], [dd hh:mm:ss.mss (avg)], [session_id], [sql_text], [sql_command], [login_name], 
+		[wait_info], [tasks], [tran_log_writes], [CPU], [tempdb_allocations], [tempdb_current], [blocking_session_id], 
+		[blocked_session_count], [reads], [writes], [context_switches], [physical_io], [physical_reads], [query_plan], [locks], 
+		[used_memory], [status], [tran_start_time], [open_tran_count], [percent_complete], [host_name], [database_name], [program_name], 
+		[additional_info], [start_time], [login_time], [request_id] 
+from dbo.WhoIsActive_ResultSets r 
+where r.collection_time >= '2019-06-21 00:00:01.743' and r.collection_time <= '2019-06-22 00:00:01.743'
+order by collection_time asc
+
+
+*/
