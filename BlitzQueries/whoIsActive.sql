@@ -47,3 +47,20 @@ select * from sys.dm_os_tasks as t
 /*
 https://www.brentozar.com/archive/2014/11/many-cpus-parallel-query-using-sql-server/
 */
+
+/*
+SELECT  top 10 [srvName] = @@servername, DENSE_RANK()OVER(ORDER BY collection_Time ASC) AS CollectionBatch, [collection_time], [TimeInMinutes], [dd hh:mm:ss.mss], [session_id], [sql_text], [sql_command], [login_name], 
+		[wait_info], [tasks], [tran_log_writes], [CPU], [tempdb_allocations], [tempdb_current], [blocking_session_id], 
+		[blocked_session_count], [reads], [writes], [context_switches], [physical_io], [physical_reads], [query_plan], [locks], 
+		[used_memory], [status], [tran_start_time], [open_tran_count], [percent_complete], [host_name], [database_name], [program_name], 
+		[additional_info], [start_time], [login_time], [request_id]
+		--sql_handle = additional_info.value('(/additional_info/sql_handle)[1]','varchar(500)'),			
+		,query_hash = query_plan.value('(/ShowPlanXML/BatchSequence/Batch/Statements/StmtSimple/@QueryHash)[1]', 'varchar(500)')
+		,query_plan_hash = query_plan.value('(/ShowPlanXML/BatchSequence/Batch/Statements/StmtSimple/@QueryPlanHash)[1]', 'varchar(500)')
+FROM [DBA].[dbo].WhoIsActive_ResultSets AS r
+WHERE (CASE WHEN REPLACE(REPLACE(TRY_CONVERT(varchar(max),r.sql_text),char(10),''),char(13),'') like '%INSERT INTO DBO.![DELTA!_Music!_%'  ESCAPE '!' THEN 1 ELSE 0 END) = 1
+AND (CASE WHEN REPLACE(REPLACE(TRY_CONVERT(varchar(max),r.sql_text),char(10),''),char(13),'') like '%SELECT N.![ReleaseID!], N.![AlbumID!], N.![MediaFormatAttributeID!], N.![ProductFormAttributeID!]%'  ESCAPE '!' THEN 1 ELSE 0 END) = 1
+--AND [database_name] LIKE 'RoviMusicShipping_UK_%'
+ORDER BY [TimeInMinutes] desc
+GO
+*/
