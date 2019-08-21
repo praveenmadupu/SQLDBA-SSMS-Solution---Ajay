@@ -194,8 +194,8 @@
           <FullPath>v1.4 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql</FullPath>
         </FileNode>
         <FileNode Name="v1.5 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCWRDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPCWRDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPXDB18:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPXDB18</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>v1.5 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql</FullPath>
         </FileNode>

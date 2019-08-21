@@ -39,6 +39,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPRDB1:CORPORATE\adwivedi">
+          <Created>2019-08-21T10:26:38.0570294+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPRDB1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>master</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="tul1cipxdb98:CORPORATE\adwivedi">
           <Created>2019-05-10T15:57:39.3409079+05:30</Created>
           <Type>SQL</Type>
@@ -72,6 +84,12 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Get-VolumeInfo.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Invoke-DbaDbShrink.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPRDB1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPRDB1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Invoke-DbaDbShrink.sql</FullPath>
         </FileNode>
         <FileNode Name="Ola Log Backup.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPEDB2:True</AssociatedConnectionMoniker>

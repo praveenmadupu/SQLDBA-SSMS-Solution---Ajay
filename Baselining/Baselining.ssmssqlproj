@@ -39,6 +39,30 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPBIAPP1:CORPORATE\adwivedi">
+          <Created>2019-08-21T12:43:59.8900408+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPBIAPP1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPBIAPP2:CORPORATE\adwivedi">
+          <Created>2019-08-21T12:41:37.8867602+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPBIAPP2</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="tul1cipcnpdb1:CORPORATE\adwivedi">
           <Created>2019-02-22T19:00:59.0595599+05:30</Created>
           <Type>SQL</Type>
@@ -200,8 +224,8 @@
           <FullPath>Job [DBA - FirstResponderKit_Collect_PerformanceData].sql</FullPath>
         </FileNode>
         <FileNode Name="Job [DBA - Log_With_sp_WhoIsActive].sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPRDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPRDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPBIAPP1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPBIAPP1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Job [DBA - Log_With_sp_WhoIsActive].sql</FullPath>
         </FileNode>

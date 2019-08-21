@@ -3,6 +3,18 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
+        <ConnectionNode Name="(local):CORPORATE\adwivedi">
+          <Created>2019-08-20T17:13:40.8978696+05:30</Created>
+          <Type>SQL</Type>
+          <Server>(local)</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="tul1cipcnpdb1:CORPORATE\adwivedi">
           <Created>2019-04-21T19:26:00.4704679+05:30</Created>
           <Type>SQL</Type>
@@ -19,23 +31,29 @@
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
+        <FileNode Name="Alert-TempDb-Files-Space-Usage.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Alert-TempDb-Files-Space-Usage.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Find-Db-Files-Space-Usage.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Find-Db-Files-Space-Usage.sql</FullPath>
+        </FileNode>
         <FileNode Name="Find-Longest-Running-Query-TempLog.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Find-Longest-Running-Query-TempLog.sql</FullPath>
         </FileNode>
-        <FileNode Name="Find-TempDb-Space-Issues.sql">
+        <FileNode Name="Raw-Queries-TempDb-Space-Issues.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>Find-TempDb-Space-Issues.sql</FullPath>
-        </FileNode>
-        <FileNode Name="TempDb-Files-Space-Usage.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>tul1cipcnpdb1</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>TempDb-Files-Space-Usage.sql</FullPath>
+          <FullPath>Raw-Queries-TempDb-Space-Issues.sql</FullPath>
         </FileNode>
         <FileNode Name="v0.0 - [usp_getDatabaseFileSpaceUsageNotification].sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipcnpdb1:True</AssociatedConnectionMoniker>

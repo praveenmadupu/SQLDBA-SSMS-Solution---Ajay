@@ -520,7 +520,7 @@ ORDER BY r.collection_time, LEVEL ASC;
 							IF @p_Verbose = 1
 								PRINT 'Checking if last mail was sent more than '+cast(@p_TimeIntervalForMailNotification as varchar(10))+' minutes (@p_TimeIntervalForMailNotification) ago.';
 
-							SET @LastMailNotificationTimeInMinutes = COALESCE((select datediff(MINUTE,max(si.sent_date),getdate()) from msdb.dbo.sysmail_sentitems as si where si.subject like '%'+@p_JobName+'%'),0 );
+							SET @LastMailNotificationTimeInMinutes = COALESCE((select datediff(MINUTE,max(si.sent_date),getdate()) from msdb.dbo.sysmail_sentitems as si where si.subject like 'SQL Agent Job !['+@p_JobName+'%' ESCAPE '!'),0 );
 
 							-- Send notification mail if threshold time is crossed
 							IF(@p_TimeIntervalForMailNotification <= @LastMailNotificationTimeInMinutes )

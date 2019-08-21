@@ -2,7 +2,7 @@ SET NOCOUNT ON;
 
 declare @p_dbName varchar(100);
 declare @_backupFile varchar(2000);
-declare @_SourceServer varchar(255) = 'TUL1MDPDWMID01';
+declare @_SourceServer varchar(255) = 'YourSourceServer';
 declare @sqlRestoreText varchar(max);
 declare @tsqlFetchLastBackup varchar(max);
 declare @counter int = 1;
@@ -14,9 +14,9 @@ IF OBJECT_ID('tempdb..#Dbs') IS NOT NULL
 SELECT ROW_NUMBER()OVER(ORDER BY dbName) as ID, dbName
 INTO #Dbs
 FROM (VALUES
-			('Mosaic'),('MuzeUS'),('RCM_rovicore_20130710_NoMusic1a_en-US'),('Staging'),('Babel')
+			('MuzeUS'),('AMG_avg'),('Twitter'),('MuzeVideo'),('DSG_EU'),('Prism'), ('FaceBook'), ('MuzeUK')
 	) Databases(dbName);
-
+-- $SimpleDbs = @('MuzeUS', 'AMG_avg', 'Twitter', 'MuzeVideo', 'DSG_EU', 'Prism', 'FaceBook', 'MuzeUK')
 select @total_counts = count(*) from #Dbs;
 
 IF @_SourceServer IS NOT NULL
@@ -42,7 +42,7 @@ BEGIN
 		FROM @SourceBackups AS v
 		WHERE DbName = @p_dbName;
 
-		SET @_backupFile = CASE WHEN CHARINDEX(':',@_backupFile) > 0 THEN '\\TUL1MDPDWMID01\'+REPLACE(@_backupFile,':','$') ELSE @_backupFile END;
+		SET @_backupFile = CASE WHEN CHARINDEX(':',@_backupFile) > 0 THEN '\\'+@_SourceServer+'\'+REPLACE(@_backupFile,':','$') ELSE @_backupFile END;
 	END
 
 	set @sqlRestoreText = '
