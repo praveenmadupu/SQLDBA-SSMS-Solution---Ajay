@@ -1,22 +1,22 @@
 SET NOCOUNT ON;
 -- Input 01
-DECLARE @p_Target_Data_Path varchar(255) = 'W:\MSSQLData\Data\';
+DECLARE @p_Target_Data_Path varchar(255) = 'H:\MSSQLData\Data\';
 -- Input 02
-DECLARE @p_Target_Log_Path varchar(255) = 'E:\MSSQLData\Logs\'; 
+DECLARE @p_Target_Log_Path varchar(255) = 'E:\MSSQLData\Log\'; 
 -- Input 03
 DECLARE @p_RestoreType varchar(20) = 'Log'; /* Full/Diff/Log */ 
 -- Input 04
 DECLARE @p_Leave_in_NORECOVERY_Mode bit = 1; /* Recover Database, means, Bring Online */ 
 -- Input 05
-DECLARE @p_ReplaceExistingDatabase bit = 1;
+DECLARE @p_ReplaceExistingDatabase bit = 0;
 -- Input 06
-DECLARE @Databases nvarchar(max) = 'Staging'; 
+DECLARE @Databases nvarchar(max) = 'RCM_rovicore_20130710_NoMusic1a_en-US'; 
 /*	-- https://ola.hallengren.com/sql-server-backup.html
 	Select databases. The keywords SYSTEM_DATABASES, USER_DATABASES, ALL_DATABASES, and AVAILABILITY_GROUP_DATABASES are supported. The hyphen character (-) is used to exclude databases, and the percent character (%) is used for wildcard selection. All of these operations can be combined by using the comma (,).
 */
 
 -- Input 07
-DECLARE @p_Destination_ServerName VARCHAR(125) = 'YourDestinationServerNameHere';
+DECLARE @p_Destination_ServerName VARCHAR(125) = 'YourDestinationServer';
 -- Input 08
 DECLARE @p_Destination_BackupLocation VARCHAR(255) = 'H:\backups\';
 -- Input 09
@@ -258,7 +258,7 @@ WHERE CASE	WHEN	backup_type = 'Database'
 			THEN	1
 			WHEN	@p_RestoreType IN ('Diff','Log') AND backup_type = 'Differential' AND BackupOrderID = [BackupOrderID_LatestDiff]
 			THEN	1
-			WHEN	@p_RestoreType = 'Log' AND backup_type = 'Log'  AND BackupOrderID >= [BackupOrderID_LatestDiff]
+			WHEN	@p_RestoreType = 'Log' AND backup_type = 'Log'  AND BackupOrderID >= ISNULL([BackupOrderID_LatestDiff],0)
 			THEN	1
 			ELSE	0
 			END = 1
@@ -272,7 +272,7 @@ BEGIN
 	WHERE [hasToBeScriptedOut] = 1;
 END
 
--- SELECT * FROM #T_bkpHistory AS bh WHERE [hasToBeScriptedOut] = 1
+--	SELECT * FROM #T_bkpHistory AS bh WHERE [hasToBeScriptedOut] = 1
 
 -- If Full/Diff backups are to be copied on Destination before Restore, Generate RoboCopy statement
 IF @p_Generate_RoboCopy_4_Backups = 1
@@ -321,11 +321,14 @@ BEGIN
 			 ,REPLACE' ELSE '' END)+'			 
 	';
 
-	select @sqlRestoreText += --name, physical_name,
-	'		 ,MOVE N'''+name+''' TO N'''+(case when mf.type_desc = 'ROWS' then @p_Target_Data_Path ELSE @p_Target_Log_Path END )+ RIGHT(mf.physical_name,CHARINDEX('\',REVERSE(mf.physical_name))-1) +'''
-	'
-	from sys.master_files as mf 
-	where mf.database_id = DB_ID(@c_database_name);
+	IF @c_backup_type = 'Database'
+	BEGIN
+		select @sqlRestoreText += --name, physical_name,
+		'		 ,MOVE N'''+name+''' TO N'''+(case when mf.type_desc = 'ROWS' then @p_Target_Data_Path ELSE @p_Target_Log_Path END )+ RIGHT(mf.physical_name,CHARINDEX('\',REVERSE(mf.physical_name))-1) +'''
+		'
+		from sys.master_files as mf 
+		where mf.database_id = DB_ID(@c_database_name);
+	END
 
 	SET @sqlRestoreText += '
 	GO'
