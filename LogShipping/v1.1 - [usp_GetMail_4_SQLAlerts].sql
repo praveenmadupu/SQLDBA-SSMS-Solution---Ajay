@@ -1,11 +1,6 @@
 USE DBA
 GO
 
---	EXEC DBA..[usp_GetMail_4_SQLAlerts] @p_Option = 'JobBlockers' ,@p_recipients = 'ajay.dwivedi@tivo.com;Nasir.Malik@tivo.com'
---	EXEC DBA..[usp_GetMail_4_SQLAlerts] @p_Option = 'JobBlockers' ,@p_recipients = 'ajay.dwivedi@tivo.com;Nasir.Malik@tivo.com'
---	EXEC DBA..[usp_GetMail_4_SQLAlerts] @p_Option = 'JobBlockers' ,@p_recipients = 'ajay.dwivedi@tivo.com;Nasir.Malik@tivo.com'; 
---	EXEC DBA..[usp_GetMail_4_SQLAlerts] @p_Option = 'JobBlockers' ,@p_recipients = 'ajay.dwivedi@tivo.com;'; 
---	EXEC DBA..[usp_GetMail_4_SQLAlerts] @p_Option = 'JobBlockers' ,@p_recipients = 'ajay.dwivedi@tivo.com;' ,@p_Verbose = 1
 IF OBJECT_ID('dbo.usp_GetMail_4_SQLAlerts') IS NULL
 	EXEC ('CREATE PROCEDURE dbo.usp_GetMail_4_SQLAlerts AS SELECT 1 AS DummyToBeReplace;');
 GO

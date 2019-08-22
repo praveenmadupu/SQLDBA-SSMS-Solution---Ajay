@@ -2,134 +2,13 @@
 <SqlWorkbenchSqlProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="SQLDBATools-Inventory">
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
-      <Items>
-        <ConnectionNode Name="(local):CORPORATE\adwivedi">
-          <Created>2018-12-09T11:11:40.0512101+05:30</Created>
-          <Type>SQL</Type>
-          <Server>(local)</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB>TivoSQLInventory_Ajay</InitialDB>
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="BAN-1ADWIVEDI-L:CORPORATE\adwivedi">
-          <Created>2018-09-10T12:00:49.9603368+05:30</Created>
-          <Type>SQL</Type>
-          <Server>BAN-1ADWIVEDI-L</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="BAN-2ADWIVEDI-L:sa">
-          <Created>2018-03-24T08:35:01.0367062+05:30</Created>
-          <Type>SQL</Type>
-          <Server>BAN-2ADWIVEDI-L</Server>
-          <UserName>sa</UserName>
-          <Authentication>SQL</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="DC:sa">
-          <Created>2018-04-01T18:53:02.1573004+05:30</Created>
-          <Type>SQL</Type>
-          <Server>DC</Server>
-          <UserName>sa</UserName>
-          <Authentication>SQL</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="localhost:CORPORATE\adwivedi">
-          <Created>2019-06-18T19:08:39.1747341+05:30</Created>
-          <Type>SQL</Type>
-          <Server>localhost</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="SQL-A:sa">
-          <Created>2018-04-01T18:52:50.9528004+05:30</Created>
-          <Type>SQL</Type>
-          <Server>SQL-A</Server>
-          <UserName>sa</UserName>
-          <Authentication>SQL</Authentication>
-          <InitialDB>master</InitialDB>
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="SQL-B:sa">
-          <Created>2018-04-01T19:35:41.2288004+05:30</Created>
-          <Type>SQL</Type>
-          <Server>SQL-B</Server>
-          <UserName>sa</UserName>
-          <Authentication>SQL</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="TUL1CIPXDB20:CORPORATE\adwivedi">
-          <Created>2019-04-29T11:53:45.3920501+05:30</Created>
-          <Type>SQL</Type>
-          <Server>TUL1CIPXDB20</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="TUL1DBAPMTDB1:CORPORATE\adwivedi">
-          <Created>2019-04-17T14:40:24.8827992+05:30</Created>
-          <Type>SQL</Type>
-          <Server>TUL1DBAPMTDB1</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB>master</InitialDB>
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="tul1dbapmtdb1\sql2016:CORPORATE\adwivedi">
-          <Created>2018-12-10T16:31:19.2166027+05:30</Created>
-          <Type>SQL</Type>
-          <Server>tul1dbapmtdb1\sql2016</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-      </Items>
+      <Items />
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="__00) Normal Queries.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>__00) Normal Queries.sql</FullPath>
         </FileNode>
@@ -140,14 +19,14 @@
           <FullPath>__01) SQLDBATools - Create Database.sql</FullPath>
         </FileNode>
         <FileNode Name="__01) SQLDBATools_DDL - Create Tables.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>__01) SQLDBATools_DDL - Create Tables.sql</FullPath>
         </FileNode>
         <FileNode Name="__01) SQLDBATools_DDL - Procedures.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>__01) SQLDBATools_DDL - Procedures.sql</FullPath>
         </FileNode>
@@ -158,8 +37,8 @@
           <FullPath>__01) SQLDBATools_DDLs.sql</FullPath>
         </FileNode>
         <FileNode Name="__02) CollectionErrors.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1dbapmtdb1\sql2016:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>tul1dbapmtdb1\sql2016</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>__02) CollectionErrors.sql</FullPath>
         </FileNode>
@@ -218,8 +97,8 @@
           <FullPath>Agent Job Testing.sql</FullPath>
         </FileNode>
         <FileNode Name="BackupInfo as XML.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-1ADWIVEDI-L:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>BAN-1ADWIVEDI-L</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>BackupInfo as XML.sql</FullPath>
         </FileNode>
@@ -230,8 +109,8 @@
           <FullPath>Common Errors.sql</FullPath>
         </FileNode>
         <FileNode Name="DatabaseMail_Using_GMail.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:BAN-1ADWIVEDI-L:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>BAN-1ADWIVEDI-L</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>DatabaseMail_Using_GMail.sql</FullPath>
         </FileNode>
@@ -248,8 +127,8 @@
           <FullPath>dbo.usp_GetMail_4_JAMS.sql</FullPath>
         </FileNode>
         <FileNode Name="dbo.usp_GetMail_4_SQLDBATools.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPXDB20:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPXDB20</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>dbo.usp_GetMail_4_SQLDBATools.sql</FullPath>
         </FileNode>
@@ -272,8 +151,8 @@
           <FullPath>Issues_In_Inventory.sql</FullPath>
         </FileNode>
         <FileNode Name="Job [SQLDBATools - DataCollection - EventLogs].sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Job [SQLDBATools - DataCollection - EventLogs].sql</FullPath>
         </FileNode>
@@ -290,8 +169,8 @@
           <FullPath>Job-JAMS-DataCollection.sql</FullPath>
         </FileNode>
         <FileNode Name="Mailer - Database Backup History - Date.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1DBAPMTDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Mailer - Database Backup History - Date.sql</FullPath>
         </FileNode>
@@ -308,20 +187,20 @@
           <FullPath>PowerShell Collection Failure Mail.sql</FullPath>
         </FileNode>
         <FileNode Name="Powershell Script - CmdExec.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Powershell Script - CmdExec.sql</FullPath>
         </FileNode>
         <FileNode Name="Powershell Script - xp_cmdshell.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Powershell Script - xp_cmdshell.sql</FullPath>
         </FileNode>
         <FileNode Name="Quiz_DDLs.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Quiz_DDLs.sql</FullPath>
         </FileNode>
@@ -350,8 +229,8 @@
           <FullPath>SQL Support.sql</FullPath>
         </FileNode>
         <FileNode Name="SqlAgentJob - cmdExec Type.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>SqlAgentJob - cmdExec Type.sql</FullPath>
         </FileNode>
@@ -362,8 +241,8 @@
           <FullPath>SQLDBATools_DDLs.sql</FullPath>
         </FileNode>
         <FileNode Name="Update Server Details.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Update Server Details.sql</FullPath>
         </FileNode>
