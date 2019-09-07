@@ -2,7 +2,80 @@
 <SqlWorkbenchSqlProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="LogShipping">
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
-      <Items />
+      <Items>
+        <ConnectionNode Name="(local):CORPORATE\adwivedi">
+          <Created>2019-09-06T12:34:33.3432862+05:30</Created>
+          <Type>SQL</Type>
+          <Server>(local)</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPCWRDB1:CORPORATE\adwivedi">
+          <Created>2019-09-06T12:34:09.9908492+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPCWRDB1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPRDB1:CORPORATE\adwivedi">
+          <Created>2019-09-06T12:33:03.3620427+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPRDB1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPXDB17:CORPORATE\adwivedi">
+          <Created>2019-09-06T12:32:38.4613687+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPXDB17</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPXDB20:CORPORATE\adwivedi">
+          <Created>2019-09-06T12:10:47.3721186+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPXDB20</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="TUL1DBAPMTDB1\SQL2017:CORPORATE\adwivedi">
+          <Created>2019-09-06T12:01:42.8901499+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1DBAPMTDB1\SQL2017</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+      </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
@@ -85,8 +158,8 @@
           <FullPath>v1.4 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql</FullPath>
         </FileNode>
         <FileNode Name="v1.5 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>v1.5 - [usp_GetLogWalkJobHistoryAlert_Suppress].sql</FullPath>
         </FileNode>

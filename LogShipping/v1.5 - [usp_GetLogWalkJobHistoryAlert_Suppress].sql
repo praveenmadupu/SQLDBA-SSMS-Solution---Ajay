@@ -275,6 +275,23 @@ BEGIN
 				WHERE	h.RID <= @NoOfContinousFailures;
 
 				IF @p_Verbose = 1
+					PRINT char(10)+'Finding value for @LastMailNotificationTimeInMinutes..';
+
+				SET @LastMailNotificationTimeInMinutes = COALESCE((select datediff(MINUTE,max(si.sent_date),getdate()) from msdb.dbo.sysmail_sentitems as si where si.subject like 'SQL Agent Job !['+@p_JobName+'%' ESCAPE '!'),-1 );
+
+				IF @p_Verbose = 1
+				BEGIN
+					IF @LastMailNotificationTimeInMinutes = -1
+					BEGIN
+						PRINT '@LastMailNotificationTimeInMinutes = NULL';
+						PRINT 'No last failure mail found for job ''' + @p_JobName + '''';
+						SET @LastMailNotificationTimeInMinutes = 65000;
+					END
+					ELSE
+						PRINT '@LastMailNotificationTimeInMinutes = '+cast(@LastMailNotificationTimeInMinutes as varchar(20))+char(10);
+				END
+
+				IF @p_Verbose = 1
 					SELECT [@_collection_time_start] = @_collection_time_start, [@_collection_time_end] = @_collection_time_end;
 
 				-- Find job schedule & NextRunTime
@@ -520,7 +537,10 @@ ORDER BY r.collection_time, LEVEL ASC;
 							IF @p_Verbose = 1
 								PRINT 'Checking if last mail was sent more than '+cast(@p_TimeIntervalForMailNotification as varchar(10))+' minutes (@p_TimeIntervalForMailNotification) ago.';
 
-							SET @LastMailNotificationTimeInMinutes = COALESCE((select datediff(MINUTE,max(si.sent_date),getdate()) from msdb.dbo.sysmail_sentitems as si where si.subject like 'SQL Agent Job !['+@p_JobName+'%' ESCAPE '!'),0 );
+							--SET @LastMailNotificationTimeInMinutes = COALESCE((select datediff(MINUTE,max(si.sent_date),getdate()) from msdb.dbo.sysmail_sentitems as si where si.subject like 'SQL Agent Job !['+@p_JobName+'%' ESCAPE '!'),65000 );
+
+							IF @p_Verbose = 1
+								PRINT '@LastMailNotificationTimeInMinutes = '+COALESCE(cast(@LastMailNotificationTimeInMinutes as varchar(20)),'NULL');
 
 							-- Send notification mail if threshold time is crossed
 							IF(@p_TimeIntervalForMailNotification <= @LastMailNotificationTimeInMinutes )
@@ -716,6 +736,7 @@ It-Ops-DBA@tivo.com
 				
 				IF @p_Verbose = 1
 					PRINT 'Checking if last mail was sent more than '+cast(@p_TimeIntervalForMailNotification as varchar(10))+' minutes (@p_TimeIntervalForMailNotification) ago.';
+
 				-- Send notification mail if threshold time is crossed
 				IF(@p_TimeIntervalForMailNotification <= @LastMailNotificationTimeInMinutes )
 				BEGIN

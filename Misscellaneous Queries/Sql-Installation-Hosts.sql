@@ -19,3 +19,10 @@
 10.10.10.25		sqlcluster2016.contso.com
 10.10.10.26		sqlcluster
 10.10.10.26		sqlcluster.contso.com
+
+-- ~~~~ Adding SQL Server AlwaysOn Availability Groups to existing Failover Clusters ~~~~ --
+https://www.mssqltips.com/sqlservertip/3150/adding-sql-server-alwayson-availability-groups-to-existing-failover-clusters/
+-- ~~~~ Mounted Volumes ~~~~ --
+https://techcommunity.microsoft.com/t5/Premier-Field-Engineering/Adding-mount-points-to-a-WSFC-SQL-Cluster-FCI-Instance/ba-p/370541
+
+https://www.mssqltips.com/sqlservertip/2728/sql-server-2012-multisubnet-cluster-part-1/

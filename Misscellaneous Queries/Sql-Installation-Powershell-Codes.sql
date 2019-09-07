@@ -6,10 +6,10 @@ netsh advfirewall firewall add rule name="Microsoft iSCSI Software Target Servic
 netsh advfirewall firewall add rule name="Microsoft iSCSI Software Target Service" dir=in action=allow program="%SystemRoot%\System32\WinTarget.exe" enable=yes
 netsh advfirewall firewall add rule name="Microsoft iSCSI Software Target Service Status Proxy" dir=in action=allow program="%SystemRoot%\System32\WTStatusProxy.exe" enable=yes
 
-Netsh interface ipv4 set address "Ethernet" static 10.10.10.30
+Netsh interface ipv4 set address "Ethernet" static 10.10.10.21
 Netsh interface ipv4 set dnsservers "Ethernet" static 10.10.10.10 primary
-netdom renamecomputer %computername% /newname:TSQLPRD07
-netdom join TSQLPRD07 /domain:Contso.com
+netdom renamecomputer %computername% /newname:TSQLPRD01
+netdom join TSQLPRD01 /domain:Contso.com
 
 $Servers = 'tsqlprd01','tsqlprd02','tsqlprd03'
 $command = {
@@ -26,3 +26,8 @@ $command = {
     netsh advfirewall firewall add rule name="SQL Server Browser" dir=in action=allow protocol=UDP localport=1434 
 }
 Invoke-Command -ComputerName $Servers -ScriptBlock $command
+
+
+diskmgmt.msc
+KB2919355
+https://www.sqlnethub.com/blog/installing-sql-server-2016-on-windows-server-2012-r2/

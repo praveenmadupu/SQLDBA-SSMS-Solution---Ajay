@@ -158,20 +158,20 @@
           <FullPath>SQL Server Error Logs.sql</FullPath>
         </FileNode>
         <FileNode Name="SqlCluster-Troubleshooting.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SqlCluster-Troubleshooting.sql</FullPath>
         </FileNode>
         <FileNode Name="Sql-Installation-Hosts.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Sql-Installation-Hosts.sql</FullPath>
         </FileNode>
         <FileNode Name="Sql-Installation-Powershell-Codes.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Sql-Installation-Powershell-Codes.sql</FullPath>
         </FileNode>
