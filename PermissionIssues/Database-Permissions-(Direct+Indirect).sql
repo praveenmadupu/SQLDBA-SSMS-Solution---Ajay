@@ -1,5 +1,7 @@
 --	https://stackoverflow.com/q/7048839/4449743
 
+use msdb;
+
 SELECT DB_NAME() AS database_name
     , class
     , class_desc

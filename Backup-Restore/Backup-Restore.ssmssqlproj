@@ -26,8 +26,8 @@
           <FullPath>1) Generate - Backup Script.sql</FullPath>
         </FileNode>
         <FileNode Name="2) Script Out DB Permissions in case of DB Refresh.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>2) Script Out DB Permissions in case of DB Refresh.sql</FullPath>
         </FileNode>
@@ -68,8 +68,8 @@
           <FullPath>7) Copy Latest Full backup to Location - Reading BackupFile.sql</FullPath>
         </FileNode>
         <FileNode Name="7) Copy Latest Full backup to Location - Using BackupHistory.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>7) Copy Latest Full backup to Location - Using BackupHistory.sql</FullPath>
         </FileNode>

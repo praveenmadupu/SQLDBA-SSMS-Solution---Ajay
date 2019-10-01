@@ -15,6 +15,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="tul1cipbksdb2:CORPORATE\adwivedi">
+          <Created>2019-09-16T18:33:05.1612042+05:30</Created>
+          <Type>SQL</Type>
+          <Server>tul1cipbksdb2</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>master</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
@@ -42,6 +54,12 @@
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Common-Commands.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Find-Orphan-Databse-File-On-Disk.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipbksdb2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>tul1cipbksdb2</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Find-Orphan-Databse-File-On-Disk.sql</FullPath>
         </FileNode>
         <FileNode Name="Get-EventLog.sql">
           <AssociatedConnectionMoniker />

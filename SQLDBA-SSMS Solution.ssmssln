@@ -61,6 +61,8 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "ServiceBroker-SingleService
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Self-Service-Module-Signed-Tools", "Self-Service-Module-Signed-Tools\Self-Service-Module-Signed-Tools.ssmssqlproj", "{9B9DD5DB-FCD6-4B9F-9BC0-54DCAF827C99}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Linux", "Linux\Linux.ssmssqlproj", "{4C79BFF5-461D-4BF1-A467-30CC92F3170F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -94,8 +96,9 @@ Global
 		{3EC2A162-B1E8-492C-97D4-6C97A7D43E9A}.Default|Default.ActiveCfg = Default
 		{EBD80353-46F6-483D-B3A7-B3FC61B016FA}.Default|Default.ActiveCfg = Default
 		{FC215972-4485-4B29-82C1-4DDD218D9303}.Default|Default.ActiveCfg = Default
-		{F3B96938-7114-441A-BDD3-6CCE860974C7}.Default|Default.ActiveCfg = Default
 		{9B9DD5DB-FCD6-4B9F-9BC0-54DCAF827C99}.Default|Default.ActiveCfg = Default
+		{D7C03E94-F865-49CC-9621-7BC0BA8D588F}.Default|Default.ActiveCfg = Default
+		{4C79BFF5-461D-4BF1-A467-30CC92F3170F}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

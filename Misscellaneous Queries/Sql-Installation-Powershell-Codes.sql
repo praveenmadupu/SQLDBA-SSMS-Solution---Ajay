@@ -11,22 +11,13 @@ Netsh interface ipv4 set dnsservers "Ethernet" static 10.10.10.10 primary
 netdom renamecomputer %computername% /newname:TSQLPRD01
 netdom join TSQLPRD01 /domain:Contso.com
 
-$Servers = 'tsqlprd01','tsqlprd02','tsqlprd03'
+$Servers = 'SQL-A','SQL-B','SQL-C'
 $command = {
     netsh advfirewall firewall add rule name="SQL Server (MSSQLSERVER)" dir=in action=allow protocol=TCP localport=1433
+	netsh advfirewall firewall add rule name="SQL Server Browser" dir=in action=allow protocol=UDP localport=1434
+	netsh advfirewall firewall add rule name="Microsoft Availability Group Endpoint-TCP-5022" dir=in action=allow protocol=TCP localport=5022
 }
 Invoke-Command -ComputerName $Servers -ScriptBlock $command
-
-$command = {
-    netsh advfirewall firewall add rule name="SQL Server (SQL2017)" dir=in action=allow protocol=TCP localport=1432
-}
-Invoke-Command -ComputerName $Servers -ScriptBlock $command
-
-$command = {
-    netsh advfirewall firewall add rule name="SQL Server Browser" dir=in action=allow protocol=UDP localport=1434 
-}
-Invoke-Command -ComputerName $Servers -ScriptBlock $command
-
 
 diskmgmt.msc
 KB2919355

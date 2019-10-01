@@ -2,7 +2,44 @@
 <SqlWorkbenchSqlProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="Baselining">
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
-      <Items />
+      <Items>
+        <ConnectionNode Name="(local):CORPORATE\adwivedi">
+          <Created>2019-09-13T15:00:19.1557527+05:30</Created>
+          <Type>SQL</Type>
+          <Server>(local)</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>master</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="TUL1MDUTWDS1:CORPORATE\adwivedi">
+          <Created>2019-09-13T15:00:34.5134664+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1MDUTWDS1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="TUL1MDUTWDS2:CORPORATE\adwivedi">
+          <Created>2019-09-13T15:03:49.9757548+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1MDUTWDS2</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+      </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
@@ -67,8 +104,8 @@
           <FullPath>Job [DBA - FirstResponderKit_Collect_PerformanceData].sql</FullPath>
         </FileNode>
         <FileNode Name="Job [DBA - Log_With_sp_WhoIsActive].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1MDUTWDS2:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1MDUTWDS2</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Job [DBA - Log_With_sp_WhoIsActive].sql</FullPath>
         </FileNode>
@@ -193,10 +230,16 @@
           <FullPath>What was Running - During - WhoIsActive.sql</FullPath>
         </FileNode>
         <FileNode Name="What Was Running.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>What Was Running.sql</FullPath>
+        </FileNode>
+        <FileNode Name="WhoIsActive-Find-Execution-Stats-Per-Query.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>WhoIsActive-Find-Execution-Stats-Per-Query.sql</FullPath>
         </FileNode>
         <FileNode Name="Z__What Was Running - Blocking Wait Time.sql">
           <AssociatedConnectionMoniker />

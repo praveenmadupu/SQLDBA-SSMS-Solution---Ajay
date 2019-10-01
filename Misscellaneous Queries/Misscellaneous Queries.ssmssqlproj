@@ -85,6 +85,12 @@
           <AssociatedConnUserName />
           <FullPath>FOR XML PATH.sql</FullPath>
         </FileNode>
+        <FileNode Name="Get-EventLog-SQLCluster.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Get-EventLog-SQLCluster.sql</FullPath>
+        </FileNode>
         <FileNode Name="HADR or Mirroring.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
@@ -200,8 +206,8 @@
           <FullPath>Tell Me About Yourself.sql</FullPath>
         </FileNode>
         <FileNode Name="Tempdb_Usage.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Tempdb_Usage.sql</FullPath>
         </FileNode>
