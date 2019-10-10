@@ -4,9 +4,21 @@
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
         <ConnectionNode Name="(local):CORPORATE\adwivedi">
-          <Created>2019-08-27T11:18:08.0273271+05:30</Created>
+          <Created>2019-08-27T00:48:08.0273271-05:00</Created>
           <Type>SQL</Type>
           <Server>(local)</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="LOCALHOST:CORPORATE\adwivedi">
+          <Created>2019-10-04T09:05:12.0813596-05:00</Created>
+          <Type>SQL</Type>
+          <Server>LOCALHOST</Server>
           <UserName />
           <Authentication>Windows Authentication</Authentication>
           <InitialDB />
@@ -128,8 +140,8 @@
           <FullPath>Powershell - Stop - SQLServices.sql</FullPath>
         </FileNode>
         <FileNode Name="PowerShell Commands.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>PowerShell Commands.sql</FullPath>
         </FileNode>
@@ -138,6 +150,12 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Powershell-Add-Local-Administrator.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Replace-Words-In-Body-Text-HTML.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Replace-Words-In-Body-Text-HTML.sql</FullPath>
         </FileNode>
         <FileNode Name="Return Query Output as HTML Table.sql">
           <AssociatedConnectionMoniker />

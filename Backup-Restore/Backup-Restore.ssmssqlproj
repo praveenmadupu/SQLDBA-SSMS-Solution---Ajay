@@ -4,12 +4,48 @@
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
         <ConnectionNode Name="(local):CORPORATE\adwivedi">
-          <Created>2019-08-27T10:15:39.8361802+05:30</Created>
+          <Created>2019-08-26T23:45:39.8361802-05:00</Created>
           <Type>SQL</Type>
           <Server>(local)</Server>
           <UserName />
           <Authentication>Windows Authentication</Authentication>
           <InitialDB>master</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="LOCALHOST:CORPORATE\adwivedi">
+          <Created>2019-10-08T07:32:23.4522102-05:00</Created>
+          <Type>SQL</Type>
+          <Server>LOCALHOST</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPCNPDB1:CORPORATE\adwivedi">
+          <Created>2019-10-09T05:43:05.9153233-05:00</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPCNPDB1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPXDB20:CORPORATE\adwivedi">
+          <Created>2019-10-09T11:59:39.1977294-05:00</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPXDB20</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>DBA</InitialDB>
           <LoginTimeout>30</LoginTimeout>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
@@ -32,8 +68,8 @@
           <FullPath>2) Script Out DB Permissions in case of DB Refresh.sql</FullPath>
         </FileNode>
         <FileNode Name="3) Generate - Restore Script - BackupHistory.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>3) Generate - Restore Script - BackupHistory.sql</FullPath>
         </FileNode>
@@ -92,8 +128,8 @@
           <FullPath>Query - Backup History - Path Finding.sql</FullPath>
         </FileNode>
         <FileNode Name="Query - Backup History.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Query - Backup History.sql</FullPath>
         </FileNode>
@@ -104,8 +140,8 @@
           <FullPath>Query - Restore History.sql</FullPath>
         </FileNode>
         <FileNode Name="RevLogin-Script.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPXDB20:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPXDB20</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>RevLogin-Script.sql</FullPath>
         </FileNode>

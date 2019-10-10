@@ -4,7 +4,7 @@
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
         <ConnectionNode Name="(local):CORPORATE\adwivedi">
-          <Created>2019-08-22T17:19:33.2581521+05:30</Created>
+          <Created>2019-08-22T06:49:33.2581521-05:00</Created>
           <Type>SQL</Type>
           <Server>(local)</Server>
           <UserName />
@@ -15,8 +15,20 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="LOCALHOST:CORPORATE\adwivedi">
+          <Created>2019-10-04T09:27:18.2935143-05:00</Created>
+          <Type>SQL</Type>
+          <Server>LOCALHOST</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="tul1cipbksdb2:CORPORATE\adwivedi">
-          <Created>2019-09-16T17:09:31.5964044+05:30</Created>
+          <Created>2019-09-16T06:39:31.5964044-05:00</Created>
           <Type>SQL</Type>
           <Server>tul1cipbksdb2</Server>
           <UserName />
@@ -50,8 +62,8 @@
           <FullPath>blitzFirst.sql</FullPath>
         </FileNode>
         <FileNode Name="BlitzIndex.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>BlitzIndex.sql</FullPath>
         </FileNode>
@@ -62,8 +74,8 @@
           <FullPath>Blocking Tree.sql</FullPath>
         </FileNode>
         <FileNode Name="Buffer-Pool-Analysis.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Buffer-Pool-Analysis.sql</FullPath>
         </FileNode>
@@ -97,9 +109,15 @@
           <AssociatedConnUserName />
           <FullPath>Detect n Reduce High VLFs.sql</FullPath>
         </FileNode>
+        <FileNode Name="Fragmentation-Analysis.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Fragmentation-Analysis.sql</FullPath>
+        </FileNode>
         <FileNode Name="Other queries.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Other queries.sql</FullPath>
         </FileNode>

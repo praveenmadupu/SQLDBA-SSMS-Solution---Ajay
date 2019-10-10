@@ -1,8 +1,8 @@
 SET NOCOUNT ON;
 -- Input 01
-DECLARE @p_Target_Data_Path varchar(255) = 'H:\MSSQLData\Data\';
+DECLARE @p_Target_Data_Path varchar(255) = 'J:\MSSQLData\Data\';
 -- Input 02
-DECLARE @p_Target_Log_Path varchar(255) = 'E:\MSSQLData\Log\'; 
+DECLARE @p_Target_Log_Path varchar(255) = 'J:\MSSQLData\Logs\'; 
 -- Input 03
 DECLARE @p_RestoreType varchar(20) = 'Log'; /* Full/Diff/Log */ 
 -- Input 04
@@ -10,15 +10,15 @@ DECLARE @p_Leave_in_NORECOVERY_Mode bit = 1; /* Recover Database, means, Bring O
 -- Input 05
 DECLARE @p_ReplaceExistingDatabase bit = 0;
 -- Input 06
-DECLARE @Databases nvarchar(max) = 'RCM_rovicore_20130710_NoMusic1a_en-US'; 
+DECLARE @Databases nvarchar(max) = 'Staging'; 
 /*	-- https://ola.hallengren.com/sql-server-backup.html
 	Select databases. The keywords SYSTEM_DATABASES, USER_DATABASES, ALL_DATABASES, and AVAILABILITY_GROUP_DATABASES are supported. The hyphen character (-) is used to exclude databases, and the percent character (%) is used for wildcard selection. All of these operations can be combined by using the comma (,).
 */
 
 -- Input 07
-DECLARE @p_Destination_ServerName VARCHAR(125) = 'YourDestinationServer';
+DECLARE @p_Destination_ServerName VARCHAR(125) = 'TUL1CIPXDB17';
 -- Input 08
-DECLARE @p_Destination_BackupLocation VARCHAR(255) = 'H:\backups\';
+DECLARE @p_Destination_BackupLocation VARCHAR(255) = 'F:\backups\';
 -- Input 09
 DECLARE @p_Generate_RoboCopy_4_Backups bit = 0;
 

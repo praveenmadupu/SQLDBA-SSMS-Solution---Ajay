@@ -4,7 +4,7 @@
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
         <ConnectionNode Name="(local):CORPORATE\adwivedi">
-          <Created>2019-09-02T11:16:14.9489194+05:30</Created>
+          <Created>2019-09-02T00:46:14.9489194-05:00</Created>
           <Type>SQL</Type>
           <Server>(local)</Server>
           <UserName />
@@ -15,8 +15,20 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="LOCALHOST:CORPORATE\adwivedi">
+          <Created>2019-10-08T09:08:44.0054106-05:00</Created>
+          <Type>SQL</Type>
+          <Server>LOCALHOST</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="tul1cipbksdb2:CORPORATE\adwivedi">
-          <Created>2019-09-16T18:33:05.1612042+05:30</Created>
+          <Created>2019-09-16T08:03:05.1612042-05:00</Created>
           <Type>SQL</Type>
           <Server>tul1cipbksdb2</Server>
           <UserName />
@@ -78,6 +90,12 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Ping Servers.sql</FullPath>
+        </FileNode>
+        <FileNode Name="PowerShell-Efficient-Codes.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>PowerShell-Efficient-Codes.sql</FullPath>
         </FileNode>
         <FileNode Name="QueryResults-2-Excel.sql">
           <AssociatedConnectionMoniker />

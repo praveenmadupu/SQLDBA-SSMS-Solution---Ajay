@@ -1,11 +1,15 @@
 USE [DBA]
 GO
 
-IF OBJECT_ID('dbo.usp_GetLogWalkJobHistoryAlert_Suppress') IS NULL
-	EXEC('CREATE PROCEDURE [dbo].[usp_GetLogWalkJobHistoryAlert_Suppress] AS SELECT 1 AS [Dummy];')
+/****** Object:  StoredProcedure [dbo].[usp_GetLogWalkJobHistoryAlert_Suppress]    Script Date: 10/9/2019 10:28:03 AM ******/
+SET ANSI_NULLS ON
 GO
 
-ALTER PROCEDURE [dbo].[usp_GetLogWalkJobHistoryAlert_Suppress] 
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE PROCEDURE [dbo].[usp_GetLogWalkJobHistoryAlert_Suppress] 
 		@p_JobName VARCHAR(125) = NULL,
 		@p_GetSessionRequestDetails BIT = 0,
 		@p_Verbose BIT = 0,
@@ -22,7 +26,7 @@ ALTER PROCEDURE [dbo].[usp_GetLogWalkJobHistoryAlert_Suppress]
 AS
 BEGIN 
 	/*
-		Version:		1.6
+		Version:		1.5
 		Created By:		Ajay Kumar Dwivedi
 		Purpose:		To have custom alerting system for Log Walk jobs
 		Modifications:	20-Apr-2019 - Corrected Notification mail where mail was received without body
@@ -31,8 +35,6 @@ BEGIN
 						20-Jun-2019 - @p_PerformAutoExecutionOfLogWalkJob - Add logic to run Log Walk Job if last execution was a failure due to blocking issue, and there are no Blockers
 						27-Jul-2019 - Adding JobSchedule & NextRunTime in Mailer Output
 						16-Aug-2019 - Adding @p_TimeIntervalForMailNotification - Time in minutes after which notification mail should be sent
-						10-Oct-2019 - Resolved Bug - Conversion failed when converting date and/or time from character string. 
-									  This occurred ORDER BY clause of Select statement which tries to find last job schedule (@NextRunTime & @JobSchedule)
 	*/
 	SET NOCOUNT ON;
 
@@ -54,8 +56,6 @@ BEGIN
 	DECLARE @AreInDirectConnections BIT;
 	DECLARE @IsBaseCapturingDoneInLast5Minutes BIT;
 	DECLARE @LastMailNotificationTimeInMinutes INT;
-	DECLARE @LastSuccessfullExecutionTime datetime;
-	DECLARE @LastSuccessfullExecutionTime_Hours INT;
 	DECLARE @_SendMailRequired BIT;
 	DECLARE @JobSchedule varchar(255),
 			@NextRunTime datetime;
@@ -268,16 +268,6 @@ BEGIN
 				PRINT 'Job ['+@p_JobName+'] has been failing continously for last '+cast(@NoOfContinousFailures as varchar(2))+ ' times.'
 			END
 
-			-- Find Last Successfull execution
-			SELECT @LastSuccessfullExecutionTime = MAX(h.RunDateTime) FROM @T_JobHistory h WHERE h.Run_Status_Desc = 'Succeeded';
-			SET @LastSuccessfullExecutionTime_Hours = COALESCE(DATEDIFF(hour, @LastSuccessfullExecutionTime, GETDATE()),0);
-
-			IF @p_Verbose = 1
-			BEGIN
-				PRINT 'SELECT @LastSuccessfullExecutionTime as ''@LastSuccessfullExecutionTime'', @LastSuccessfullExecutionTime_Hours as ''@LastSuccessfullExecutionTime_Hours'';';
-				SELECT @LastSuccessfullExecutionTime as '@LastSuccessfullExecutionTime', @LastSuccessfullExecutionTime_Hours as '@LastSuccessfullExecutionTime_Hours';
-			END
-
 			-- If unchecked job failure is there, then find Blocking details
 			IF @NoOfContinousFailures <> 0
 			BEGIN -- Populate #JobSessionBlockers
@@ -306,11 +296,7 @@ BEGIN
 				END
 
 				IF @p_Verbose = 1
-				BEGIN
 					SELECT [@_collection_time_start] = @_collection_time_start, [@_collection_time_end] = @_collection_time_end;
-
-					PRINT 'Finding Job Schedule & NextRunTime..';
-				END
 
 				-- Find job schedule & NextRunTime
 				;WITH T_Schedules AS
@@ -390,18 +376,13 @@ BEGIN
 					from msdb.dbo.sysjobs S
 					left join msdb.dbo.sysjobschedules SJ on S.job_id = SJ.job_id  
 					left join msdb.dbo.sysschedules SS on SS.schedule_id = SJ.schedule_id
-					where SS.enabled = 1 and s.name = @p_JobName
+					where s.name = @p_JobName
 				)
-				SELECT	@JobSchedule = Frequency + ' (' + Interval + ') - ' + [Time]
+				SELECT	TOP (1)
+						@JobSchedule = Frequency + ' (' + Interval + ') - ' + [Time]
 						,@NextRunTime = NextRunTime
-				FROM T_Schedules as s
-				WHERE s.NextRunTime = (select MIN(NextRunTime) as NextRunTime_MIN from T_Schedules);
-
-				IF @p_Verbose = 1
-				BEGIN
-					PRINT '@JobSchedule = '+CAST(@JobSchedule AS VARCHAR(100))
-					PRINT '@NextRunTime = '+CAST(@NextRunTime AS VARCHAR(100));
-				END
+				FROM T_Schedules
+				ORDER BY CAST(NextRunTime AS DATETIME) ASC;
 
 				-- Find Job Session along with its Blockers
 				IF OBJECT_ID('tempdb..#JobSessionBlockers') IS NOT NULL
@@ -583,7 +564,6 @@ SQL Agent Job '+QUOTENAME(@p_JobName)+' has been failing for '+cast(@NoOfContino
 LAST JOB RUN:		'+CAST(jh.RunDateTime AS varchar(50))+'
 DURATION:		'+CAST(jh.RunDurationMinutes AS varchar(10))+' Minutes
 STATUS: 		Failed
-LAST SUCCESS: 		'+CAST(@LastSuccessfullExecutionTime AS varchar(50))+' ('+CAST(@LastSuccessfullExecutionTime_Hours AS varchar(10))+' Hours) 
 SCHEDULE:		'+ISNULL(@JobSchedule,'')+'
 NextRunTime:		'+ISNULL(CAST(@NextRunTime AS VARCHAR(40)),'')+'
 MESSAGES:		Job '+QUOTENAME(@p_JobName)+' COULD NOT obtain EXCLUSIVE access of underlying database to start its activity. 
@@ -613,7 +593,6 @@ RCA:			Kindly execute below query to find out details of Blockers.
 				END
 
 				-- Logic if Job Failure is due to Blocking Issue, and @p_PerformAutoExecutionOfLogWalkJob = 1
-				--SELECT @p_PerformAutoExecutionOfLogWalkJob = (CASE WHEN @p_PerformAutoExecutionOfLogWalkJob = 0 AND @LastSuccessfullExecutionTime_Hours >= 24.0 THEN 1 ELSE @p_PerformAutoExecutionOfLogWalkJob END);
 				IF @p_PerformAutoExecutionOfLogWalkJob = 1
 				BEGIN -- Block -> Logic if Job Failure is due to Blocking Issue
 					IF @p_Verbose = 1
@@ -707,7 +686,6 @@ SQL Agent Job '+QUOTENAME(@p_JobName)+' has been failing for '+cast(@NoOfContino
 LAST JOB RUN:		'+CAST(jh.RunDateTime AS varchar(50))+'
 DURATION:		'+CAST(jh.RunDurationMinutes AS varchar(10))+' Minutes
 STATUS: 		Failed
-LAST SUCCESS: 		'+CAST(@LastSuccessfullExecutionTime AS varchar(50))+' ('+CAST(@LastSuccessfullExecutionTime_Hours AS varchar(10))+' Hours) 
 SCHEDULE:		'+ISNULL(@JobSchedule,'')+'
 NextRunTime:	'+ISNULL(CAST(@NextRunTime AS VARCHAR(40)),'')+'
 
@@ -778,3 +756,5 @@ It-Ops-DBA@tivo.com
 	END -- Else portion of @p_Help = 1
 END -- Procedure Body
 GO
+
+

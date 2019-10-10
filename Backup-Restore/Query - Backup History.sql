@@ -1,7 +1,7 @@
 --------------------------------------------------------------------------------- 
 --Database Backups for all databases For Previous Week 
 --------------------------------------------------------------------------------- 
-SELECT TOP (10) CONVERT(CHAR(100), SERVERPROPERTY('Servername')) AS SERVER
+SELECT TOP 100 CONVERT(CHAR(100), SERVERPROPERTY('Servername')) AS SERVER
 	,bs.database_name
 	,bs.backup_start_date
 	,bs.backup_finish_date
@@ -11,6 +11,8 @@ SELECT TOP (10) CONVERT(CHAR(100), SERVERPROPERTY('Servername')) AS SERVER
 			THEN 'Database'
 		WHEN 'L'
 			THEN 'Log'
+		WHEN 'I'
+			THEN 'Diff'
 		END AS backup_type
 	,bs.backup_size
 	,bmf.logical_device_name
@@ -24,6 +26,5 @@ SELECT TOP (10) CONVERT(CHAR(100), SERVERPROPERTY('Servername')) AS SERVER
 	,is_copy_only
 FROM msdb.dbo.backupmediafamily AS bmf
 INNER JOIN msdb.dbo.backupset AS bs ON bmf.media_set_id = bs.media_set_id
-WHERE bs.type='D' and
-	database_name = 'CMS'
+WHERE database_name = 'Staging'
 ORDER BY bs.backup_finish_date DESC
