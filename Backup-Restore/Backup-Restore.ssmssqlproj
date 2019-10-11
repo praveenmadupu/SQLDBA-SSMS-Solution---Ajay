@@ -121,6 +121,12 @@
           <AssociatedConnUserName />
           <FullPath>Get-LatestBackups.sql</FullPath>
         </FileNode>
+        <FileNode Name="Jobs-Enable-Disable-TSQL.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Jobs-Enable-Disable-TSQL.sql</FullPath>
+        </FileNode>
         <FileNode Name="Query - Backup History - Path Finding.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
@@ -156,6 +162,12 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>ScriptOut - RESTORE With REPLACE - Single Db.sql</FullPath>
+        </FileNode>
+        <FileNode Name="v0.0 - Move Data and Log Files.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>v0.0 - Move Data and Log Files.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>
