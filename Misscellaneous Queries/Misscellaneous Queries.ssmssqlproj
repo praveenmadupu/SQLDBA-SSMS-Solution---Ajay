@@ -4,7 +4,7 @@
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
         <ConnectionNode Name="(local):CORPORATE\adwivedi">
-          <Created>2019-08-27T00:48:08.0273271-05:00</Created>
+          <Created>2019-08-27T11:18:08.0273271+05:30</Created>
           <Type>SQL</Type>
           <Server>(local)</Server>
           <UserName />
@@ -16,12 +16,24 @@
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
         <ConnectionNode Name="LOCALHOST:CORPORATE\adwivedi">
-          <Created>2019-10-04T09:05:12.0813596-05:00</Created>
+          <Created>2019-10-04T19:35:12.0813596+05:30</Created>
           <Type>SQL</Type>
           <Server>LOCALHOST</Server>
           <UserName />
           <Authentication>Windows Authentication</Authentication>
           <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPRDB1:CORPORATE\adwivedi">
+          <Created>2019-10-14T12:19:07.252486+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPRDB1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>master</InitialDB>
           <LoginTimeout>30</LoginTimeout>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
@@ -212,8 +224,8 @@
           <FullPath>System Memory Usage.sql</FullPath>
         </FileNode>
         <FileNode Name="TableSizeMetrics - RecordCount n PageCount.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPRDB1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPRDB1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>TableSizeMetrics - RecordCount n PageCount.sql</FullPath>
         </FileNode>

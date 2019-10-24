@@ -253,3 +253,34 @@ BEGIN
 	ELSE
 		EXECUTE sp_executesql N'RAISERROR (@_errorMSG, 16, 1)', N'@_errorMSG VARCHAR(200)', @_errorMSG;
 END
+
+--	21) Check if in Elevated Mode
+$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+$currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+
+--	22) Kill Robocopy
+taskkill /F /IM robocopy.exe
+
+--	23) Make DoubleHop Remoting
+$Server = 'RemoteServer'
+
+# Define Credentials
+[string]$userName = 'Contso\SQLServices'
+[string]$userPassword = 'SomeStrongPassword'
+
+# Crete credential Object
+[SecureString]$secureString = $userPassword | ConvertTo-SecureString -AsPlainText -Force;
+[PSCredential]$credentialObject = New-Object System.Management.Automation.PSCredential -ArgumentList $userName, $secureString;
+
+# Create PSSessionConfig
+Invoke-Command -ComputerName $Server -ScriptBlock { Register-PSSessionConfiguration -Name SQLDBATools -RunAsCredential $Using:credentialObject -Force -WarningAction Ignore}
+
+$scriptBlock = {
+    $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent());
+    $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator);
+    Copy-Item '\\tul1it1\it\SQL_Server_Setups\2014\Developer' -Destination E:\ -Recurse;
+}
+
+Invoke-Command -ComputerName $Server -ScriptBlock $scriptBlock -ConfigurationName SQLDBATools;
+
+--	24) Get Caller details

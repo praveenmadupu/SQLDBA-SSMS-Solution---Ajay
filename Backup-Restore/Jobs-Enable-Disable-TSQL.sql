@@ -2,15 +2,15 @@ USE DBA
 GO
 
 /*	
-StagingTurkey / StatingFiltered / MosaicFiltered and MosaicFiltered
-
-CW Labeling Mosaic
-CW Labeling Staging
+SMU Change Tracking Version
+Replication jobs (only for Babel)
 DataMart Filtering Mosaic
 DataMart Filtering Staging Filtered
 DataMart Filtering Staging Turkey
-
-SP28 days 28 days on XDB13
+CW Labeling Mosaic
+CW Labeling Staging
+CW AMG Music Delta Pull
+CW Import AMG Video Data
 
 */
 
@@ -19,7 +19,7 @@ EXEC msdb.dbo.sp_update_job  @job_name = N'''+j.name+''', @enabled = 0 ;
 GO
 '
 from msdb..sysjobs_view j 
-where j.name in ('CW Labeling Mosaic','CW Labeling Staging','DataMart Filtering Mosaic','DataMart Filtering Staging Filtered','DataMart Filtering Staging Turkey')
+where j.name in ('SMU Change Tracking Version' ,'DataMart Filtering Mosaic' ,'DataMart Filtering Staging Filtered' ,'DataMart Filtering Staging Turkey' ,'CW Labeling Mosaic' ,'CW Labeling Staging' ,'CW AMG Music Delta Pull' ,'CW Import AMG Video Data')
 and j.enabled = 1
 
 

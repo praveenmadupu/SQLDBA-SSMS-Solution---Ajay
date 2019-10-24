@@ -13,4 +13,6 @@ document.body.innerHTML = document.body.innerHTML.replace(/5.21/g, '7.21');
 
 /*	Edit PDF
 	https://www.sejda.com/pdf-editor
+	Convert-2-Secure-PDF
+	http://www.pdfprotectfree.com/
 */

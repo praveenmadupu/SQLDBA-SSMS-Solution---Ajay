@@ -4,7 +4,7 @@
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
         <ConnectionNode Name="(local):CORPORATE\adwivedi">
-          <Created>2019-09-02T00:46:14.9489194-05:00</Created>
+          <Created>2019-09-02T11:16:14.9489194+05:30</Created>
           <Type>SQL</Type>
           <Server>(local)</Server>
           <UserName />
@@ -16,7 +16,7 @@
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
         <ConnectionNode Name="LOCALHOST:CORPORATE\adwivedi">
-          <Created>2019-10-08T09:08:44.0054106-05:00</Created>
+          <Created>2019-10-08T19:38:44.0054106+05:30</Created>
           <Type>SQL</Type>
           <Server>LOCALHOST</Server>
           <UserName />
@@ -28,12 +28,24 @@
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
         <ConnectionNode Name="tul1cipbksdb2:CORPORATE\adwivedi">
-          <Created>2019-09-16T08:03:05.1612042-05:00</Created>
+          <Created>2019-09-16T18:33:05.1612042+05:30</Created>
           <Type>SQL</Type>
           <Server>tul1cipbksdb2</Server>
           <UserName />
           <Authentication>Windows Authentication</Authentication>
           <InitialDB>master</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="TUL1DBAPMTDB1\SQL2017:CORPORATE\adwivedi">
+          <Created>2019-10-22T07:19:09.3695183+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1DBAPMTDB1\SQL2017</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
           <LoginTimeout>30</LoginTimeout>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
@@ -67,11 +79,29 @@
           <AssociatedConnUserName />
           <FullPath>Common-Commands.sql</FullPath>
         </FileNode>
+        <FileNode Name="Different-Files-Between-Paths.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2017:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2017</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Different-Files-Between-Paths.sql</FullPath>
+        </FileNode>
+        <FileNode Name="EnhancedHtml.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2017:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2017</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>EnhancedHtml.sql</FullPath>
+        </FileNode>
         <FileNode Name="Find-Orphan-Databse-File-On-Disk.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipbksdb2:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>tul1cipbksdb2</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Find-Orphan-Databse-File-On-Disk.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Get-CPU.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Get-CPU.sql</FullPath>
         </FileNode>
         <FileNode Name="Get-EventLog.sql">
           <AssociatedConnectionMoniker />
@@ -102,6 +132,18 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>QueryResults-2-Excel.sql</FullPath>
+        </FileNode>
+        <FileNode Name="RoboCopy-Mirror-Entire-Drive.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>RoboCopy-Mirror-Entire-Drive.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Save-Credentials.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Save-Credentials.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

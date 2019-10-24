@@ -9,19 +9,19 @@
 SET NOCOUNT ON;
 
 -- INPUT 01 -> Path for Data Files
-DECLARE @p_Old_Data_Path varchar(255) = 'K:\'; -- Leave NULL if no change required
-DECLARE @p_New_Data_Path varchar(255) = 'Q:\'; -- Leave NULL if no change required
+DECLARE @p_Old_Data_Path varchar(255) = 'P:\'; -- Leave NULL if no change required
+DECLARE @p_New_Data_Path varchar(255) = 'O:\'; -- Leave NULL if no change required
 
 -- INPUT 02 -> Path for Log Files
-DECLARE @p_Old_Log_Path varchar(255) = 'L:'; -- Leave NULL if no change required
-DECLARE @p_New_Log_Path varchar(255) = 'Q:'; -- Leave NULL if no change required
+DECLARE @p_Old_Log_Path varchar(255) = 'P:'; -- Leave NULL if no change required
+DECLARE @p_New_Log_Path varchar(255) = 'O:'; -- Leave NULL if no change required
 
 -- INPUT 03 -> Comma separated list of Databases
 IF OBJECT_ID('tempdb..#Dbs2Consider') IS NOT NULL
 	DROP TABLE #Dbs2Consider;
 SELECT d.database_id, d.name, d.recovery_model_desc INTO #Dbs2Consider FROM sys.databases as d
 	WHERE d.database_id > 4 
-	AND d.name IN ('MosaicFiltered')--,'StagingFiltered','StagingTurkey','MosaicFiltered','MosaicFiltered')
+	AND d.name IN ('RCM_rovicore_20130710_NoMusic1a_en-US')--,'StagingFiltered','StagingTurkey','MosaicFiltered','MosaicFiltered')
 
 --	Parameter Validations
 DECLARE @NewLineChar AS CHAR(2) = CHAR(13) + CHAR(10)
