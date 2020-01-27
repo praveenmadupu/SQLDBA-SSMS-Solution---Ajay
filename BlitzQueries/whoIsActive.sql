@@ -63,6 +63,15 @@ AND (CASE WHEN REPLACE(REPLACE(TRY_CONVERT(varchar(max),r.sql_text),char(10),'')
 --AND [database_name] LIKE 'RoviMusicShipping_UK_%'
 ORDER BY [TimeInMinutes] desc
 GO
+
+use DBA
+
+select r.collection_time, * from dba..WhoIsActive_ResultSets r
+	where r.collection_time >= DATEADD(hour,-200,getdate())
+	and (CASE WHEN REPLACE(REPLACE(CONVERT(varchar(max),r.sql_text),char(10),''),char(13),'') like '%SELECT ![Program ID!], ![Keyword ID!], Weight, Delta%'  ESCAPE '!' THEN 1 ELSE 0 END) = 1
+AND (CASE WHEN REPLACE(REPLACE(CONVERT(varchar(max),r.sql_text),char(10),''),char(13),'') like '%JOIN Babel.dbo.ProviderMapping pm ON pm.ProviderValue = filter.id AND pm.ProviderID = 2 AND pm.ObjectTypeID = 2 AND pm.IsActive = 1%'  ESCAPE '!' THEN 1 ELSE 0 END) = 1
+ORDER BY [TimeInMinutes] desc
+GO
 */
 
 /*

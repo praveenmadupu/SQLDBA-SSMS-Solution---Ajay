@@ -80,8 +80,8 @@
           <FullPath>3) Generate - Restore Script - DiskFiles.sql</FullPath>
         </FileNode>
         <FileNode Name="4) Script Out DB_Owner from Source.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>4) Script Out DB_Owner from Source.sql</FullPath>
         </FileNode>
@@ -134,14 +134,14 @@
           <FullPath>Query - Backup History - Path Finding.sql</FullPath>
         </FileNode>
         <FileNode Name="Query - Backup History.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Query - Backup History.sql</FullPath>
         </FileNode>
         <FileNode Name="Query - Restore History.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Query - Restore History.sql</FullPath>
         </FileNode>

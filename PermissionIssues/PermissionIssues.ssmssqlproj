@@ -4,12 +4,24 @@
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
         <ConnectionNode Name="(local):CORPORATE\adwivedi">
-          <Created>2019-10-09T12:06:01.6270855-05:00</Created>
+          <Created>2019-10-09T22:36:01.6270855+05:30</Created>
           <Type>SQL</Type>
           <Server>(local)</Server>
           <UserName />
           <Authentication>Windows Authentication</Authentication>
           <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="localhost:CORPORATE\adwivedi">
+          <Created>2019-12-18T13:16:47.9965226+05:30</Created>
+          <Type>SQL</Type>
+          <Server>localhost</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>master</InitialDB>
           <LoginTimeout>30</LoginTimeout>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
@@ -26,8 +38,8 @@
           <FullPath>Database-Permissions-(Direct+Indirect).sql</FullPath>
         </FileNode>
         <FileNode Name="GetPermissions.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>GetPermissions.sql</FullPath>
         </FileNode>

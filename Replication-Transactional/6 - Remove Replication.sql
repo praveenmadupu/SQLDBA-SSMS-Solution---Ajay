@@ -7,20 +7,23 @@
 SELECT @@SERVERNAME as srvName
 GO
 
--- Script out existing replication settings
+-- Step 01 - Script out Publication from Publication Server
+	--	Replication > Local Publications > [PubDatabase]: PubName > Right Click > Generate Scripts..
 
-
-
--- Remove replication objects from the subscription database on MYSUB.
-DECLARE @subscriptionDB AS sysname
-SET @subscriptionDB = N'TivoSQLInventory_Dev'
-
--- Remove replication objects from a subscription database (if necessary).
-USE master
-EXEC sp_removedbreplication @subscriptionDB
+-- Step 02 - Execute below query on Subscriber Server.
+	-- This removes replication from subscriber database
+USE <<SubscriberDatabase>>
+EXEC sp_removedbreplication
 GO
 
--- Remove replication from [distribution] database
-use [master]
-exec sp_dropdistributor @no_checks = 1
+-- Step 03 - Delete publication from Publisher server
+	--	Replication > Local Publications > [PubDatabase]: PubName > Right Click > Delete
+	--	Execute below query to make sure publication is removed.
+USE <<PublicationDatabase>>
+EXEC sp_removedbreplication
 GO
+
+-- Step 04 - Make sure all the replication jobs get removed with above step
+	-- Log Reader agent job on Distributor server
+	-- Distribution agent job on Distributor(push)/Subscriber(pull) server
+

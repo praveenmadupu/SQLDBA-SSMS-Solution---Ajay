@@ -18,7 +18,7 @@ EXEC sp_replicationdboption @dbname = N'TivoSQLInventory',
     @optname = N'publish', -- any type of publication
     @value = N'true';
 
--- ** Validate the new Log Reader SQL Server Agent Job **
+-- ** Validate the new Log Reader SQL Server Agent Job created after adding publication with below query **
 EXEC sp_addpublication @publication = N'DIMS_Dev',
 	@description = N'Transactional publication for database ''TivoSQLInventory_Dev'' from Publisher ''TUL1DBAPMTDB1\SQL2016''.',
     @sync_method = N'concurrent',

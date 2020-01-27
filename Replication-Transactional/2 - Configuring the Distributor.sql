@@ -7,7 +7,7 @@ EXEC sp_get_distributor;
 GO
 
 -- Add the distributor
-EXEC sp_adddistributor @distributor = N'TUL1DBAPMTDB1\SQL2016',
+EXEC sp_adddistributor @distributor = N'TUL1SQLPOC01',
     @password = N'Pa$$w0rd'; 
 GO
 
@@ -27,7 +27,7 @@ GO
 -- Database name is configurable
 -- Keep note of the path for the data and log file
 -- Default data file is just 5MBs so consider @data_file_size
-EXEC sp_adddistributiondb @database = N'TivoSQLInventory_Distributor',
+EXEC sp_adddistributiondb @database = N'distribution',
     @data_folder = N'F:\MSSQLData\SQL2016_Data\', @log_folder = N'F:\MSSQLData\SQL2016_Log\',
     @log_file_size = 2, @min_distretention = 0, @max_distretention = 72,
     @history_retention = 48;

@@ -20,8 +20,8 @@
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="__00) Normal Queries.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>__00) Normal Queries.sql</FullPath>
         </FileNode>
@@ -32,8 +32,8 @@
           <FullPath>__01) SQLDBATools - Create Database.sql</FullPath>
         </FileNode>
         <FileNode Name="__01) SQLDBATools_DDL - Create Tables.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>__01) SQLDBATools_DDL - Create Tables.sql</FullPath>
         </FileNode>
@@ -224,8 +224,8 @@
           <FullPath>RITM0042946__AlwaysOn.sql</FullPath>
         </FileNode>
         <FileNode Name="Scripts.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Scripts.sql</FullPath>
         </FileNode>

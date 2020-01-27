@@ -56,8 +56,8 @@
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="All Query Against Servers.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>All Query Against Servers.sql</FullPath>
         </FileNode>
@@ -90,6 +90,12 @@
           <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2017</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>EnhancedHtml.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Find-ChangedDatabases-Since-Date.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Find-ChangedDatabases-Since-Date.sql</FullPath>
         </FileNode>
         <FileNode Name="Find-Orphan-Databse-File-On-Disk.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipbksdb2:True</AssociatedConnectionMoniker>

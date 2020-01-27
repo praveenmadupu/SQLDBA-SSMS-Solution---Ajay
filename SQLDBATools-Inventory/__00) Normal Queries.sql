@@ -103,3 +103,35 @@ INSERT dbo.Application
 SELECT ltrim(rtrim(Category)), ltrim(rtrim(BusinessUnit)), ltrim(rtrim(BusinessOwner)), ltrim(rtrim(TechnicalOwner)), ltrim(rtrim(SecondaryTechnicalOwner))
 FROM #Application
 
+
+
+--	BEGIN: Query to Get Update Column =============================================================================
+declare @compQuery varchar(4000);
+declare @columnName varchar(125);
+declare @tableName varchar(225);
+
+set @tableName = 'dbo.Server'
+
+DECLARE col_cursor CURSOR LOCAL FAST_FORWARD FOR   
+	SELECT Column_Name
+	FROM INFORMATION_SCHEMA.COLUMNS c
+	where c.TABLE_SCHEMA+'.'+c.TABLE_NAME = @tableName
+	order by c.ORDINAL_POSITION;
+
+OPEN col_cursor; 
+FETCH NEXT FROM col_cursor INTO @columnName;
+
+WHILE @@FETCH_STATUS = 0  
+BEGIN 
+	SET @compQuery = '
+	UPDATE I SET '+QUOTENAME(@columnName)+' = N.'+QUOTENAME(@columnName)+'
+	FROM #StagingServerInfo as N INNER JOIN	[dbo].[Server] as I ON	I.FQDN = N.FQDN	WHERE N.RowID = 1 AND N.[NeedUpdate] = 1
+		AND N.'+QUOTENAME(@columnName)+' IS NOT NULL AND ISNULL(I.'+QUOTENAME(@columnName)+','''') <> N.'+QUOTENAME(@columnName)+';'
+
+	PRINT @compQuery;
+	FETCH NEXT FROM col_cursor INTO @columnName;
+END
+
+CLOSE vendor_cursor;  
+DEALLOCATE vendor_cursor;  
+--	END: Query to Get Update Column =============================================================================

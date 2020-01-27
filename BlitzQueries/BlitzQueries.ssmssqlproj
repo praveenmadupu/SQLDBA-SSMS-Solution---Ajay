@@ -39,10 +39,28 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1CIPXDB17:CORPORATE\adwivedi">
+          <Created>2019-11-06T12:00:46.9564943+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1CIPXDB17</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>master</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
+        <FileNode Name="__DiagManager-PssDiag-SqlNexus.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>__DiagManager-PssDiag-SqlNexus.sql</FullPath>
+        </FileNode>
         <FileNode Name="Blitz.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
@@ -56,8 +74,8 @@
           <FullPath>BlitzCache.sql</FullPath>
         </FileNode>
         <FileNode Name="blitzFirst.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>blitzFirst.sql</FullPath>
         </FileNode>
@@ -68,8 +86,8 @@
           <FullPath>BlitzIndex.sql</FullPath>
         </FileNode>
         <FileNode Name="Blocking Tree.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Blocking Tree.sql</FullPath>
         </FileNode>
@@ -80,8 +98,8 @@
           <FullPath>Buffer-Pool-Analysis.sql</FullPath>
         </FileNode>
         <FileNode Name="Configure_PSSDiag.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Configure_PSSDiag.sql</FullPath>
         </FileNode>
@@ -108,6 +126,12 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Detect n Reduce High VLFs.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Find-Indirect-Connections.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPXDB17:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1CIPXDB17</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Find-Indirect-Connections.sql</FullPath>
         </FileNode>
         <FileNode Name="Fragmentation-Analysis.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
@@ -188,8 +212,8 @@
           <FullPath>Vw_WhoIsActive_Blocking.sql</FullPath>
         </FileNode>
         <FileNode Name="WhatIsRunning.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>WhatIsRunning.sql</FullPath>
         </FileNode>

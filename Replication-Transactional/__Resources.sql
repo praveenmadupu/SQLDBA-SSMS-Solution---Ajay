@@ -10,6 +10,8 @@ https://www.mssqltips.com/sqlservertip/1808/sql-server-replication-scripts-to-ge
 6) https://www.msqlserver.net/2015/03/the-subscriptions-have-been-marked.html
 7) https://docs.microsoft.com/en-us/sql/relational-databases/replication/troubleshoot-tran-repl-errors?view=sql-server-2017
 
+8) Add article to transactional publication without generating new snapshot
+https://dba.stackexchange.com/questions/12725/add-article-to-transactional-publication-without-generating-new-snapshot
 
 Rules:-
 -----
@@ -19,4 +21,3 @@ Rules:-
 	> resides at Subscriber for "Pull" subscription
 
 Find Replication Jobs using query "01) Get Replication Jobs.sql"
-

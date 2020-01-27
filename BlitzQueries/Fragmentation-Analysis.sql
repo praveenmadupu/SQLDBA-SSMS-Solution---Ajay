@@ -1,36 +1,45 @@
 # Script to Get Fragmentation Stats for All Dbs on Multiple Servers (in Parallel Jobs)
-$dbServers = @('TUL1CIPBIAPP1','TUL1CIPBIAPP2','TUL1CIPBIAPP3','TUL1CIPXDB18','TUL1SUB2008');
+$dbServers = @('TUL1CIPCNPDB1','TUL1CIPEDB2','TUL1CIPXDB13');
 
 $dbQuery = @"
 select d.name 
 from sys.databases as d 
 where not(d.source_database_id IS NOT NULL or d.state_desc = 'OFFLINE' or d.database_id <= 4)
+and d.compatibility_level = (select m.compatibility_level from sys.databases as m where m.name = 'model')
 "@;
 
 $IndexQuery = @"
 select	@@serverName as ServerName,
 		db_name(ips.database_id) as DataBaseName,
-		object_name(ips.object_id) as ObjectName,
-		sch.name as SchemaName,
+		sch.name + '.' + object_name(ips.object_id) as TableName,
 		ind.name as IndexName,
 		ips.index_type_desc,
+		ips.alloc_unit_type_desc,
+		ODefrag.UpdatedTime as OlaIndexDefrag,
 		avg_fragmentation_in_percent as avg_fragmentation,
 		avg_page_space_used_in_percent,
 		page_count,
-		ps.row_count,
-		STATS_DATE(ind.object_id, ind.index_id) AS StatsUpdated
+		ps.row_count		
+		--,sts.name as StatsName
+		,sp.last_updated as stats_last_updated
+		,sp.rows as stats_rows
+		,sp.modification_counter as stats_modification_counter
+		,STATS_DATE(ind.object_id, ind.index_id) AS StatsUpdated
+		,OSts.UpdatedTime AS OlaStatsUpdated
+		,[DeFrag_Filter = {PageCount >= 1000}] = case when ips.page_count >= 100 then 'Yes' else 'No' end
+		,[Stats_Filter = {ModifiedStatistics}] = case when sp.modification_counter > 0 then 'Yes' else 'No' end
+		,[Stats_Filter = {@StatisticsModificationLevel}] = case when SQRT(ps.row_count * 1000) >= sp.modification_counter then 'Yes' else 'No' end
 from sys.dm_db_index_physical_stats(DB_ID(),NULL,NULL,NULL,'LIMITED') as ips
-  inner join sys.tables as tbl
-    on ips.object_id = tbl.object_id
-  inner join sys.schemas as sch
-    on tbl.schema_id = sch.schema_id  
-  inner join sys.indexes as ind
-    on ips.index_id = ind.index_id and
-       ips.object_id = ind.object_id
-  inner join sys.dm_db_partition_stats as ps
-    on ps.object_id = ips.object_id and
-       ps.index_id = ips.index_id
-where page_count >= 1000;
+inner join sys.indexes as ind on ips.index_id = ind.index_id and ips.object_id = ind.object_id
+inner join sys.tables as tbl on ips.object_id = tbl.object_id
+inner join sys.schemas as sch on tbl.schema_id = sch.schema_id
+inner join sys.dm_db_partition_stats as ps on ps.object_id = ips.object_id and ps.index_id = ips.index_id
+left join sys.stats as sts on sts.object_id = ind.object_id
+cross apply sys.dm_db_stats_properties(ind.object_id, sts.stats_id) as sp
+outer apply (SELECT MAX(cl.EndTime) as UpdatedTime FROM DBA..CommandLog as cl WHERE cl.DatabaseName = DB_NAME() and tbl.name = cl.ObjectName and sch.name = cl.SchemaName and ind.name = cl.IndexName AND cl.CommandType = 'UPDATE_STATISTICS') AS OSts
+outer apply (SELECT MAX(cl.EndTime) as UpdatedTime FROM DBA..CommandLog as cl WHERE cl.DatabaseName = DB_NAME() and tbl.name = cl.ObjectName and sch.name = cl.SchemaName and ind.name = cl.IndexName AND cl.CommandType = 'ALTER_INDEX') AS ODefrag
+where sts.name = ind.name
+order by avg_fragmentation DESC
 "@;
 
 foreach($srv in $dbServers) {
@@ -67,6 +76,7 @@ while($Jobs_Yet2Process -ne $null); # keep looping if jobs are still in progress
 
 # Save to Excel
 $IndexAnalysisResult | Export-Excel -Path C:\Temp\IndexAnalysisResult.xlsx -WorksheetName 'IndexAnalysisResult';
+
 
 # Find Jobs with Failures
 $Jobs_Issue = Get-Job -Name IndexStats* | 

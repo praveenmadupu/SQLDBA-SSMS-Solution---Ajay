@@ -104,8 +104,8 @@
           <FullPath>Job [DBA - FirstResponderKit_Collect_PerformanceData].sql</FullPath>
         </FileNode>
         <FileNode Name="Job [DBA - Log_With_sp_WhoIsActive].sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1MDUTWDS2:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1MDUTWDS2</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Job [DBA - Log_With_sp_WhoIsActive].sql</FullPath>
         </FileNode>
@@ -116,8 +116,8 @@
           <FullPath>Optimize [DBA] database.sql</FullPath>
         </FileNode>
         <FileNode Name="PerfMon - AsOf - Delta.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>PerfMon - AsOf - Delta.sql</FullPath>
         </FileNode>
@@ -127,11 +127,11 @@
           <AssociatedConnUserName />
           <FullPath>PerfMon - During.sql</FullPath>
         </FileNode>
-        <FileNode Name="PerfMon-DataCollection.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+        <FileNode Name="PerfMon-Dbatools-DataCollection.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>PerfMon-DataCollection.sql</FullPath>
+          <FullPath>PerfMon-Dbatools-DataCollection.sql</FullPath>
         </FileNode>
         <FileNode Name="SELECT permission to All Users.sql">
           <AssociatedConnectionMoniker />
@@ -242,8 +242,8 @@
           <FullPath>WhoIsActive-Find-Execution-Stats-Per-Query.sql</FullPath>
         </FileNode>
         <FileNode Name="Z__What Was Running - Blocking Wait Time.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Z__What Was Running - Blocking Wait Time.sql</FullPath>
         </FileNode>

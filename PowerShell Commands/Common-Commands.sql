@@ -202,7 +202,7 @@ $FolderWithSize = $files | Group-Object Parent | %{
 <# Script to Find databases which are not backed up in Last 7 Days
 #>
 
-$Server2Analyze = 'tul1cipxdb12';
+$Server2Analyze = 'testvm';
 $DateSince = (Get-Date).AddDays(-7) # Last 7 days
 
 # Find Latest Bacukps
@@ -283,4 +283,47 @@ $scriptBlock = {
 
 Invoke-Command -ComputerName $Server -ScriptBlock $scriptBlock -ConfigurationName SQLDBATools;
 
---	24) Get Caller details
+--	24) Get Called Function 
+$MyInvocation.PSCommandPath
+GCI $MyInvocation.PSCommandPath | Select -Expand Name
+
+--	25) Powershell CallStack
+$callstack = Get-PSCallStack;
+if($callstack[1].FunctionName -eq '<ScriptBlock>') {
+    $snowed = Read-Host "Have you got service now ticket? Y/N";
+    $backed = Read-Host "Have you backed up databases? Y/N";
+
+    if($snowed -ne 'Y' -or $backed -ne 'Y') {
+        Write-Output "Kindly make sure you have a ServiceNow ticket for uninstall.";
+        Write-Output "Kindly make sure you have taken a full backup of the databases before uninstalling."
+        return;
+    }
+}
+
+--	26) Generate Temp File
+ [System.IO.Path]::GetTempFileName();
+ [System.IO.Path]::ChangeExtension([System.IO.Path]::GetTempFileName(), 'xlsx')
+
+--	27) Override toString() method of psobject
+$BackupSizeBytes = $backup.BackupSize;
+        $BackupSize = [PSCustomObject]@{
+                            Bytes = $BackupSizeBytes;
+                            KiloBytes = [math]::round($BackupSizeBytes / 1Kb,2);
+                            MegaByte = [math]::round($BackupSizeBytes / 1Mb,2);
+                            GigaByte = [math]::round($BackupSizeBytes / 1Gb,2);
+                            TeraByte = [math]::round($BackupSizeBytes / 1Tb,2);
+                        }
+        
+        $MethodBlock = {    if($this.TeraByte -ge 1) {
+                                "$($this.TeraByte) tb"
+                            }elseif ($this.GigaByte -ge 1) {
+                                "$($this.GigaByte) gb"
+                            }elseif ($this.MegaByte -ge 1) {
+                                "$($this.MegaByte) mb"
+                            }elseif ($this.KiloBytes -ge 1) {
+                                "$($this.KiloBytes) kb"
+                            }else {
+                                "$($this.Bytes) bytes"
+                            }
+                        }
+        $BackupSize | Add-Member -MemberType ScriptMethod -Name tostring -Value $MethodBlock -Force;

@@ -40,3 +40,4 @@ EXEC sp_replmonitorsubscriptionpendingcmds
   		  @subscriber ='TUL1CIPCNPDB1', -- Put subscriber server name here
   		  @subscriber_db ='Staging', -- Put subscriber database name here
   		  @subscription_type ='1' -- 0 = push and 1 = pull
+
