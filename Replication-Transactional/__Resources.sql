@@ -13,6 +13,13 @@ https://www.mssqltips.com/sqlservertip/1808/sql-server-replication-scripts-to-ge
 8) Add article to transactional publication without generating new snapshot
 https://dba.stackexchange.com/questions/12725/add-article-to-transactional-publication-without-generating-new-snapshot
 
+9)
+https://docs.microsoft.com/en-us/sql/relational-databases/system-tables/msdistribution-history-transact-sql?view=sql-server-ver15
+https://stackoverflow.com/questions/16482454/distribution-dbo-msdistribution-history-comments-explanation
+https://flylib.com/books/en/2.908.1.93/1/
+http://maginaumova.com/the-replication-agent-has-not-logged-a-progress-message-in-10-minutes/
+https://dba.stackexchange.com/questions/86794/how-to-restart-the-distributor-agent-of-transactional-replication
+
 Rules:-
 -----
 1) Log Reader agent always resides at Distributor

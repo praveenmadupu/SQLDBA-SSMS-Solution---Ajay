@@ -27,6 +27,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="TUL1MDPDWDIS02:CORPORATE\adwivedi">
+          <Created>2020-01-29T14:13:45.713431+05:30</Created>
+          <Type>SQL</Type>
+          <Server>TUL1MDPDWDIS02</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
@@ -109,11 +121,35 @@
           <AssociatedConnUserName />
           <FullPath>Backup-Restore.sql</FullPath>
         </FileNode>
+        <FileNode Name="DBA - Replication Agent Job monitoring.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>DBA - Replication Agent Job monitoring.sql</FullPath>
+        </FileNode>
+        <FileNode Name="DBA - Replication Distribution Agent Check.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>DBA - Replication Distribution Agent Check.sql</FullPath>
+        </FileNode>
+        <FileNode Name="dbo.usp_replication_agent_checkup .sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1MDPDWDIS02:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1MDPDWDIS02</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>dbo.usp_replication_agent_checkup .sql</FullPath>
+        </FileNode>
         <FileNode Name="How-2-Enable-Agent-Logging.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>How-2-Enable-Agent-Logging.sql</FullPath>
+        </FileNode>
+        <FileNode Name="MSdistribution_history.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1MDPDWDIS02:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>TUL1MDPDWDIS02</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>MSdistribution_history.sql</FullPath>
         </FileNode>
         <FileNode Name="Repl - ReplicationSupportOnly.sql">
           <AssociatedConnectionMoniker />
