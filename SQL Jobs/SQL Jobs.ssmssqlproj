@@ -31,6 +31,12 @@
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
+        <FileNode Name="__General-Queries.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>__General-Queries.sql</FullPath>
+        </FileNode>
         <FileNode Name="DatabaseBackup - ALL_DATABASES - FULL.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
@@ -74,8 +80,8 @@
           <FullPath>usp_GetStepFailureData.sql</FullPath>
         </FileNode>
         <FileNode Name="v0.0 - dbo.fn_IsJobRunning.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>v0.0 - dbo.fn_IsJobRunning.sql</FullPath>
         </FileNode>

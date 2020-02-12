@@ -97,6 +97,12 @@
           <AssociatedConnUserName />
           <FullPath>dbo.usp_ConvertQuery2HTMLTable.sql</FullPath>
         </FileNode>
+        <FileNode Name="Error-Trying-2-Load-Assembly.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Error-Trying-2-Load-Assembly.sql</FullPath>
+        </FileNode>
         <FileNode Name="Find Long Running Query.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
@@ -168,6 +174,12 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Powershell-Add-Local-Administrator.sql</FullPath>
+        </FileNode>
+        <FileNode Name="PS-Keep-Skype-Alive.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>PS-Keep-Skype-Alive.sql</FullPath>
         </FileNode>
         <FileNode Name="Replace-Words-In-Body-Text-HTML.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>

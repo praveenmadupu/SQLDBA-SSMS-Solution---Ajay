@@ -88,3 +88,21 @@ order by collection_time asc
 
 
 */
+
+/*
+declare @p_DbName varchar(200) = 'Staging';
+
+;WITH t_results as
+(    
+    SELECT @p_DbName as dbName, *
+    FROM [DBA]..[WhoIsActive_ResultSets] r 
+    WHERE r.database_name <> @p_DbName
+    AND r.collection_time >= '2020-02-04 01:59:00.000'
+	and r.collection_time <= '2020-02-04 04:46:13.417'
+)
+--SELECT *
+SELECT r.collection_time, r.session_id, r.sql_command, r.login_name, r.wait_info, r.blocked_session_count, r.reads, r.database_name, r.program_name, r.host_name
+from t_results as r
+WHERE r.locks.exist( '/Database[@name=sql:column("dbName")]') = 1;
+
+*/

@@ -32,7 +32,7 @@ EXEC sp_addpublication @publication = N'DIMS_Dev',
     @independent_agent = N'true', 
 	-- We'll talk more about immediate sync
 	-- Big overhead considerations!
-    @immediate_sync = N'false', 
+    @immediate_sync = N'false', /* If true, the synchronization files are created or re-created each time the Snapshot Agent runs */
 	@replicate_ddl = 1,
     @allow_initialize_from_backup = N'true', 
 	@enabled_for_p2p = N'false',

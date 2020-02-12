@@ -15,6 +15,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="LOCALHOST:CORPORATE\adwivedi">
+          <Created>2020-01-30T12:13:23.0613084+05:30</Created>
+          <Type>SQL</Type>
+          <Server>LOCALHOST</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>DBA</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
@@ -182,8 +194,8 @@
           <FullPath>Job-JAMS-DataCollection.sql</FullPath>
         </FileNode>
         <FileNode Name="Mailer - Database Backup History - Date.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Mailer - Database Backup History - Date.sql</FullPath>
         </FileNode>

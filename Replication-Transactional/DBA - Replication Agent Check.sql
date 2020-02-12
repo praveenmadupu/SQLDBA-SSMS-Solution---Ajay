@@ -1,7 +1,7 @@
 use distribution;
 
 set nocount on;
-declare @verbose bit = 0;
+declare @verbose bit = 1;
 
 if @verbose = 1
 	print 'Declaring local variables..';
@@ -19,10 +19,12 @@ declare @publication varchar(500);
 declare @agent_start_time datetime;
 declare @agent_last_log_time datetime;
 declare @agent_last_log_threshold_minutes int;
+declare @agent_restart_state int;
 select @currentTime = GETDATE();
+set @agent_restart_state = 0;
 --select @currentTime = cast('2020-01-28 20:15:00.000' as datetime);
-set @recepients = 'ajay.dwivedi2007@gmail.com;';
-set @agent_last_log_threshold_minutes = 20;
+set @recepients = 'ajay.dwivedi@tivo.com;renuka.chopra@tivo.com';
+set @agent_last_log_threshold_minutes = 15;
 
 if @verbose = 1
 	print 'Declaring cursor..';
@@ -32,13 +34,16 @@ DECLARE cursor_distributor_agent CURSOR LOCAL FAST_FORWARD FOR
 	left join master.sys.servers as p on p.server_id = a.publisher_id
 	left join master.sys.servers as s on s.server_id = a.subscriber_id
 	where a.local_job = 1
-	--and a.name = 'TUL1CIPCNPDB1-Babel-BabelDE-TUL1CIPXDB13-59';
 	
 OPEN cursor_distributor_agent;  
 FETCH NEXT FROM cursor_distributor_agent INTO @agent_job_name, @agent_job_id, @publisher, @subscriber, @publisher_db, @subscriber_db, @publication;
 
 WHILE @@FETCH_STATUS = 0  
 BEGIN
+	set @agent_restart_state = 0;
+	set @mailBody = null;
+	set @mailSubject = null;
+
 	if @verbose = 1
 		print 'Evaluating variables for distribution agent job '''+@agent_job_name+'''';
 
@@ -62,6 +67,7 @@ BEGIN
 		if DATEDIFF(MINUTE,@agent_last_log_time,@currentTime) > @agent_last_log_threshold_minutes
 		begin
 			select @currentTime as [@currentTime], @agent_job_name as [@agent_job_name], @agent_start_time as [@agent_start_time], @agent_last_log_time as [@agent_last_log_time];
+
 			print 'ISSUE';
 		end
 		else
@@ -81,26 +87,76 @@ BEGIN
 	if DATEDIFF(MINUTE,@agent_last_log_time,@currentTime) > @agent_last_log_threshold_minutes
 	begin
 		print 'Distribution Agent - Start /Stop in T-SQL';
-
+		
 		-- To STOP the Distribution Agent:
-		exec distribution..sp_MSstopdistribution_agent @publisher, @publisher_db, @publication, @subscriber, @subscriber_db;
+		BEGIN TRY
+			IF DBA.dbo.fn_IsJobRunning(@agent_job_name) = 1
+			begin
+				exec distribution..sp_MSstopdistribution_agent @publisher, @publisher_db, @publication, @subscriber, @subscriber_db;
+				set @agent_restart_state += 1;
+			end
+		END TRY
+		BEGIN CATCH
+			PRINT  'ERROR => '+CHAR(10)+
+					CHAR(9)+'ErrorNumber => '+CAST(ERROR_NUMBER() AS VARCHAR(20))+CHAR(10)+
+					CHAR(9)+'ErrorSeverity => '+CAST(ERROR_SEVERITY() AS VARCHAR(20)) +CHAR(10)+
+					CHAR(9)+'ErrorState => '+CAST(ERROR_STATE() AS VARCHAR(20)) + CHAR(10)+
+					CHAR(9)+'ErrorLine => '+ISNULL(ERROR_LINE(),'') +CHAR(10)+
+					CHAR(9)+'ErrorProcedure => '+ISNULL(ERROR_PROCEDURE(),'')+CHAR(10)+
+					CHAR(9)+'ErrorMessage => '+ISNULL(ERROR_MESSAGE(),'')+CHAR(10);
+		END CATCH
 		--
-		WAITFOR DELAY '00:00:05'; -- 5 Seconds
+		WHILE(DBA.dbo.fn_IsJobRunning(@agent_job_name) = 1)
+		BEGIN
+			WAITFOR DELAY '00:00:02'; -- 5 Seconds
+		END
 		--
 		--To START the Distribution Agent:
-		exec distribution..sp_MSstartdistribution_agent @publisher, @publisher_db, @publication, @subscriber, @subscriber_db;
+		BEGIN TRY
+			IF DBA.dbo.fn_IsJobRunning(@agent_job_name) = 0
+			begin
+				exec distribution..sp_MSstartdistribution_agent @publisher, @publisher_db, @publication, @subscriber, @subscriber_db;
+				set @agent_restart_state += 2;
+			end
+		END TRY
+		BEGIN CATCH
+			PRINT  'ERROR => '+CHAR(10)+
+					CHAR(9)+'ErrorNumber => '+CAST(ERROR_NUMBER() AS VARCHAR(20))+CHAR(10)+
+					CHAR(9)+'ErrorSeverity => '+CAST(ERROR_SEVERITY() AS VARCHAR(20)) +CHAR(10)+
+					CHAR(9)+'ErrorState => '+CAST(ERROR_STATE() AS VARCHAR(20)) + CHAR(10)+
+					CHAR(9)+'ErrorLine => '+ISNULL(ERROR_LINE(),'') +CHAR(10)+
+					CHAR(9)+'ErrorProcedure => '+ISNULL(ERROR_PROCEDURE(),'')+CHAR(10)+
+					CHAR(9)+'ErrorMessage => '+ISNULL(ERROR_MESSAGE(),'')+CHAR(10);
+		END CATCH
 
-		set @mailSubject = 'Distribution Agent - '+QUOTENAME(@agent_job_name)+' restarted';
-		set @mailBody = 'Distribution Agent job '+QUOTENAME(@agent_job_name)+' restarted has been restarted as it did not log any messages in last '+cast(@agent_last_log_threshold_minutes as varchar(20))+' minutes.';
-		EXEC msdb.dbo.sp_send_dbmail  
-			--@profile_name = 'Adventure Works Administrator',  
-			@recipients = @recepients,  
-			@body = @mailBody,  
-			@subject = @mailSubject ;  
+		set @mailSubject = 'Replication Agent - '+QUOTENAME(@agent_job_name)+' restarted';
+		set @mailBody = '<h1>Replication Agent job '+QUOTENAME(@agent_job_name)+' restarted.</h1>'+
+						'<h3>Following agent job has not logged an update in the last '+cast(@agent_last_log_threshold_minutes as varchar(20))+' minutes.</h3>'+
+						'<p><table border=1><tr><th>Publisher</th><th>Subscriber</th><th>Publication</th><th>Subscriber Db</th><th>Agent Job Name</th></tr>'+
+						'<tr><td>'+@publisher+'</td><td>'+@subscriber+'</td><td>'+@publication+'</td><td>'+@subscriber_db+'</td><td>'+@agent_job_name+'</td></tr>'+
+						'</table></p>'+
+
+						'<p>In order to resolve this, the replication agent job was '+(case when @agent_restart_state = 2 then 'started' else 'restarted' end)+'. <br>If this alert is received again and again, kindly look into this issue.<br></p> '+
+						'<p><br>Thanks & Regards,<br>
+SQL Alerts<br>
+It-Ops-DBA@tivo.com<br>
+-- Alert Coming from SQL Agent Job [DBA - Replication Agent Check]<br></p>'
+
+		if @verbose = 1
+		begin
+			print	'!~~~~~~~~~~ HTML Body ~~~~~~~~~~!'+char(10)+char(10)+@mailbody;
+		end
+
+		IF @agent_restart_state > 0
+			EXEC msdb.dbo.sp_send_dbmail
+				@recipients = @recepients,  
+				@subject = @mailSubject,
+				@body = @mailBody,
+				@body_format = 'HTML';
 	end
 
 	FETCH NEXT FROM cursor_distributor_agent INTO @agent_job_name, @agent_job_id, @publisher, @subscriber, @publisher_db, @subscriber_db, @publication;
 END
 
 CLOSE cursor_distributor_agent;  
-DEALLOCATE cursor_distributor_agent;  
+DEALLOCATE cursor_distributor_agent;
