@@ -50,8 +50,8 @@
           <FullPath>Agent Operator [Ajay Dwivedi].sql</FullPath>
         </FileNode>
         <FileNode Name="Baseline with [sp_BlitzFirst].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Baseline with [sp_BlitzFirst].sql</FullPath>
         </FileNode>
@@ -98,8 +98,8 @@
           <FullPath>Generate-Workload-StackOverflow.sql</FullPath>
         </FileNode>
         <FileNode Name="Job [DBA - FirstResponderKit_Collect_PerformanceData].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Job [DBA - FirstResponderKit_Collect_PerformanceData].sql</FullPath>
         </FileNode>
