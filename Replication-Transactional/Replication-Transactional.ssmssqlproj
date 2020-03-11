@@ -56,8 +56,8 @@
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="__General Queries.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>__General Queries.sql</FullPath>
         </FileNode>
@@ -211,6 +211,12 @@
           <AssociatedConnUserName />
           <FullPath>Repl - ReplicationSupportOnly.sql</FullPath>
         </FileNode>
+        <FileNode Name="Start-Perfmon-DataCollector-With-Latency.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Start-Perfmon-DataCollector-With-Latency.sql</FullPath>
+        </FileNode>
         <FileNode Name="Undistributed Commands.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
@@ -221,6 +227,12 @@
     </LogicalFolder>
     <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
       <Items>
+        <FileNode Name="Replication-Commands.pdf">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Replication-Commands.pdf</FullPath>
+        </FileNode>
         <FileNode Name="Script to be Run on POS-STAGING-2014.txt">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />

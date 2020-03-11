@@ -15,6 +15,12 @@ order by publisher_commit asc, publication asc;
 --	Get current Latency
 select * from DBA..vw_Repl_Latency;
 
+if(select count(*) as counts from DBA.dbo.vw_Repl_Latency where Latest_Latency >= 60) >= 5
+begin
+	exec xp_cmdshell 'logman start SQLDBA -S ServerName01' -- \\ServerName01\J$\PerfMon
+	exec xp_cmdshell 'logman start SQLDBA -S ServerName02' -- \\ServerName02\Q$\PerfMon
+end
+
 select * from DBA..[Repl_TracerToken_Header] where is_processed = 0
 select top 1000 * from distribution.dbo.MSdistribution_history h
 
@@ -44,3 +50,6 @@ exec sp_replshowcmds
 --	0 = Error messages only
 --	1 = All Progress
 --	2 = Error + Progress
+
+
+--	http://sqlask.blogspot.com/2017/05/important-commands-and-script-of.html

@@ -9,6 +9,13 @@ handle 'E:\Get-MSSQLLinkPasswords.ps1.txt' -accepteula
 F:\DBAResources\Handle
 */
 
+declare @cmd varchar(2000);
+set @cmd = 'c:\get_process_handle.bat '+'G:\dump\CDR_data.DMP'
+exec xp_cmdshell @cmd
+---------------
+<<get_process_handle.bat>>
+handle %1 -accepteula > c:\temp\handle_output.txt
+
 create table tempdb..output (id int identity(1,1) not null, output varchar(500), collection_time datetime2 default getdate());
 --truncate table tempdb..output
 

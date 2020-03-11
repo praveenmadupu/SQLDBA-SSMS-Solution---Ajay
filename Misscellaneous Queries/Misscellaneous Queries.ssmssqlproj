@@ -140,8 +140,8 @@
           <FullPath>Kill All Session for DB.sql</FullPath>
         </FileNode>
         <FileNode Name="Log-Off-Users-with-PowerShell.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Log-Off-Users-with-PowerShell.sql</FullPath>
         </FileNode>

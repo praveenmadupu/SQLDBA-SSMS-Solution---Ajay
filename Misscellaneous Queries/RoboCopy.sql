@@ -23,3 +23,5 @@ robocopy \\SRCServer\F$\dump\db01\ v:\dump\DB02_dump\ *-data.DMP /XF "AMGMusicAu
 
 --	Copy all files of extension *.csql from source folder to destination
 robocopy \\SourceServer\F$\dump\ I:\Backups\CW\Logs\ *.csq /is
+
+robocopy SourcePath DestinationPath FileFullName /it /zb

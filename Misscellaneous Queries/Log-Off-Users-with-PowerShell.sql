@@ -27,5 +27,10 @@ $scriptBlock = {
 foreach($srv in $Servers)
 {
     Write-Host "checking $srv.." -ForegroundColor Yellow;
-    Invoke-Command -ComputerName $srv -ScriptBlock $scriptBlock
+    try {
+    Invoke-Command -ComputerName $srv -ScriptBlock $scriptBlock -ErrorAction Continue
+    }
+    catch {
+        Write-Host "Error $srv.." -ForegroundColor Red;
+    }
 }
