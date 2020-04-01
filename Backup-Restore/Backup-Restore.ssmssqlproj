@@ -158,8 +158,8 @@
           <FullPath>ScriptOut - RESTORE With REPLACE - Multiple Dbs.sql</FullPath>
         </FileNode>
         <FileNode Name="ScriptOut - RESTORE With REPLACE - Single Db.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>ScriptOut - RESTORE With REPLACE - Single Db.sql</FullPath>
         </FileNode>

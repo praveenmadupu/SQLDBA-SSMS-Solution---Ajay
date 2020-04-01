@@ -73,6 +73,18 @@
           <AssociatedConnUserName />
           <FullPath>BenchMarking-Storage-Network.sql</FullPath>
         </FileNode>
+        <FileNode Name="BlitzFirst-PerfMon - AsOf - Delta.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>BlitzFirst-PerfMon - AsOf - Delta.sql</FullPath>
+        </FileNode>
+        <FileNode Name="BlitzFirst-PerfMon - During.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>BlitzFirst-PerfMon - During.sql</FullPath>
+        </FileNode>
         <FileNode Name="DBA - Start DataCollector.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
@@ -110,8 +122,8 @@
           <FullPath>fn_GetLatestCollectionTime.sql</FullPath>
         </FileNode>
         <FileNode Name="General - IO - WaitStats.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>General - IO - WaitStats.sql</FullPath>
         </FileNode>
@@ -144,18 +156,6 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Optimize [DBA] database.sql</FullPath>
-        </FileNode>
-        <FileNode Name="PerfMon - AsOf - Delta.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>PerfMon - AsOf - Delta.sql</FullPath>
-        </FileNode>
-        <FileNode Name="PerfMon - During.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>PerfMon - During.sql</FullPath>
         </FileNode>
         <FileNode Name="PerfMon-Dbatools-DataCollection.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
@@ -275,6 +275,18 @@
     </LogicalFolder>
     <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
       <Items>
+        <FileNode Name="DBA_PerfMon_Collector-Template.xml">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>DBA_PerfMon_Collector-Template.xml</FullPath>
+        </FileNode>
+        <FileNode Name="IO-Related-Counters.PerfmonCfg">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>IO-Related-Counters.PerfmonCfg</FullPath>
+        </FileNode>
         <FileNode Name="materials.zip">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />

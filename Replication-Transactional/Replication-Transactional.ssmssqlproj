@@ -169,11 +169,47 @@
           <AssociatedConnUserName />
           <FullPath>DBA - Replication  - Process all Tokens.sql</FullPath>
         </FileNode>
+        <FileNode Name="DBA - Replication - Reduce REPL_SCHEMA_ACCESS Wait.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>DBA - Replication - Reduce REPL_SCHEMA_ACCESS Wait.sql</FullPath>
+        </FileNode>
+        <FileNode Name="DBA - Replication - Replication Token Rate.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>DBA - Replication - Replication Token Rate.sql</FullPath>
+        </FileNode>
+        <FileNode Name="DBA - Replication - usp_ChangeJobRunningState.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>DBA - Replication - usp_ChangeJobRunningState.sql</FullPath>
+        </FileNode>
+        <FileNode Name="DBA - Replication - usp_Get_Repl_Latency_Notification.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>DBA - Replication - usp_Get_Repl_Latency_Notification.sql</FullPath>
+        </FileNode>
         <FileNode Name="DBA - Replication - vw_Repl_Latency.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>DBA - Replication - vw_Repl_Latency.sql</FullPath>
+        </FileNode>
+        <FileNode Name="DBA - Replication - vw_Repl_Latency_Details.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>DBA - Replication - vw_Repl_Latency_Details.sql</FullPath>
+        </FileNode>
+        <FileNode Name="DBA - Replication - vw_ReplicationJobs.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>DBA - Replication - vw_ReplicationJobs.sql</FullPath>
         </FileNode>
         <FileNode Name="DBA - Replication Agent Check.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1MDPDWDIS02:True</AssociatedConnectionMoniker>
@@ -199,6 +235,12 @@
           <AssociatedConnUserName />
           <FullPath>How-2-Enable-Agent-Logging.sql</FullPath>
         </FileNode>
+        <FileNode Name="Job [DBA - Replication - Stoped Jobs].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Job [DBA - Replication - Stoped Jobs].sql</FullPath>
+        </FileNode>
         <FileNode Name="MSdistribution_history.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1MDPDWDIS02:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>TUL1MDPDWDIS02</AssociatedConnSrvName>
@@ -218,8 +260,8 @@
           <FullPath>Start-Perfmon-DataCollector-With-Latency.sql</FullPath>
         </FileNode>
         <FileNode Name="Undistributed Commands.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Undistributed Commands.sql</FullPath>
         </FileNode>

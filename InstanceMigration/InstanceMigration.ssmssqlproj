@@ -92,8 +92,8 @@
           <FullPath>Migration-Issues.sql</FullPath>
         </FileNode>
         <FileNode Name="Move-TempDb.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Move-TempDb.sql</FullPath>
         </FileNode>

@@ -3,6 +3,18 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
+        <ConnectionNode Name="(local):CORPORATE\adwivedi">
+          <Created>2020-04-01T09:50:44.6395028+05:30</Created>
+          <Type>SQL</Type>
+          <Server>(local)</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>master</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="TUL1DBAPMTDB1\SQL2017:CORPORATE\adwivedi">
           <Created>2019-10-21T23:34:12.5976745+05:30</Created>
           <Type>SQL</Type>
@@ -26,8 +38,8 @@
           <FullPath>Alert-TempDb-Files-Space-Usage.sql</FullPath>
         </FileNode>
         <FileNode Name="Find-Db-Files-Space-Usage.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Find-Db-Files-Space-Usage.sql</FullPath>
         </FileNode>
@@ -38,8 +50,8 @@
           <FullPath>Find-Longest-Running-Query-TempLog.sql</FullPath>
         </FileNode>
         <FileNode Name="Raw-Queries-TempDb-Space-Issues.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Raw-Queries-TempDb-Space-Issues.sql</FullPath>
         </FileNode>

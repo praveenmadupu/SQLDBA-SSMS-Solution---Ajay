@@ -97,6 +97,12 @@
           <AssociatedConnUserName />
           <FullPath>Find-ChangedDatabases-Since-Date.sql</FullPath>
         </FileNode>
+        <FileNode Name="Find-Data-Log-File-Size-Total-Server.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Find-Data-Log-File-Size-Total-Server.sql</FullPath>
+        </FileNode>
         <FileNode Name="Find-Orphan-Databse-File-On-Disk.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipbksdb2:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>tul1cipbksdb2</AssociatedConnSrvName>

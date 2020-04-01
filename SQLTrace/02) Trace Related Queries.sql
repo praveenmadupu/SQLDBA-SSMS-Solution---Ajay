@@ -1,7 +1,9 @@
 --	Find all running SQL Traces on Server
 	--	[traceid] = 1 is System Trace (Default)
 SELECT getdate() as currentTime, @@servername as srvName, * FROM ::fn_trace_getinfo(0);
-select * from sys.traces
+
+select @@servername as srvName, t.id, t.status, t.path, t.start_time, t.last_event_time 
+from sys.traces as t
 
 --	To Start trace
 exec sp_trace_setstatus 2, 1;

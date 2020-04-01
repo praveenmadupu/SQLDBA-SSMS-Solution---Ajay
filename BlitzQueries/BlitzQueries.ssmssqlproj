@@ -104,20 +104,20 @@
           <FullPath>Configure_PSSDiag.sql</FullPath>
         </FileNode>
         <FileNode Name="CREATE TABLE [dbo].[whatIsRunning].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>CREATE TABLE [dbo].[whatIsRunning].sql</FullPath>
         </FileNode>
         <FileNode Name="Db-Design-Analysis.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Db-Design-Analysis.sql</FullPath>
         </FileNode>
         <FileNode Name="Detect n Reduce High VLFs - All Dbs.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Detect n Reduce High VLFs - All Dbs.sql</FullPath>
         </FileNode>
@@ -146,8 +146,8 @@
           <FullPath>Other queries.sql</FullPath>
         </FileNode>
         <FileNode Name="Perf Counters.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Perf Counters.sql</FullPath>
         </FileNode>
@@ -164,14 +164,14 @@
           <FullPath>Querying Deadlocks From System_Health XEvent.sql</FullPath>
         </FileNode>
         <FileNode Name="ResourceMonitor-Memory-Signals.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipbksdb2:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>tul1cipbksdb2</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>ResourceMonitor-Memory-Signals.sql</FullPath>
         </FileNode>
         <FileNode Name="SQL Server 2008 R2 Diagnostic Information Queries.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SQL Server 2008 R2 Diagnostic Information Queries.sql</FullPath>
         </FileNode>
@@ -210,6 +210,12 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Vw_WhoIsActive_Blocking.sql</FullPath>
+        </FileNode>
+        <FileNode Name="WaitStats-Short-Period.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>WaitStats-Short-Period.sql</FullPath>
         </FileNode>
         <FileNode Name="WhatIsRunning.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>

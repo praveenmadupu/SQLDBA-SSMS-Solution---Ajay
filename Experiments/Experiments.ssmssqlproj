@@ -3,6 +3,18 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
+        <ConnectionNode Name="(local):CORPORATE\adwivedi">
+          <Created>2020-03-24T17:28:38.2827872+05:30</Created>
+          <Type>SQL</Type>
+          <Server>(local)</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>DBA</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="LOCALHOST:CORPORATE\adwivedi">
           <Created>2020-02-07T06:20:38.9372522+05:30</Created>
           <Type>SQL</Type>
@@ -20,8 +32,8 @@
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="create enlarged adventureworks tables.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>create enlarged adventureworks tables.sql</FullPath>
         </FileNode>
@@ -32,8 +44,8 @@
           <FullPath>DeadLock_01_Different_Tables.sql</FullPath>
         </FileNode>
         <FileNode Name="EnlargedTables.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>EnlargedTables.sql</FullPath>
         </FileNode>
@@ -52,7 +64,20 @@
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
-      <Items />
+      <Items>
+        <FileNode Name="AG-FCI-POC.pptx">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>AG-FCI-POC.pptx</FullPath>
+        </FileNode>
+        <FileNode Name="Simulating a Multi Subnet cluster for setting up SQL Server Always On Availability Groups - lab setup.pdf">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Simulating a Multi Subnet cluster for setting up SQL Server Always On Availability Groups - lab setup.pdf</FullPath>
+        </FileNode>
+      </Items>
     </LogicalFolder>
   </Items>
 </SqlWorkbenchSqlProject>

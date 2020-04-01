@@ -74,8 +74,8 @@
           <FullPath>Combine-Perfmon-BLG-Files.sql</FullPath>
         </FileNode>
         <FileNode Name="Command Prompt.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Command Prompt.sql</FullPath>
         </FileNode>
@@ -206,8 +206,8 @@
           <FullPath>sp_Kill.sql</FullPath>
         </FileNode>
         <FileNode Name="SQL Server Error Logs.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SQL Server Error Logs.sql</FullPath>
         </FileNode>
