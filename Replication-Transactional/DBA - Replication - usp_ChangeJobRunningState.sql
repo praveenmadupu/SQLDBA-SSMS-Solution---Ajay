@@ -5,7 +5,7 @@ if object_id('dbo.usp_ChangeJobRunningState') is null
 	exec ('create procedure dbo.usp_ChangeJobRunningState as select 1 as dummy;');
 go
 
-alter procedure dbo.usp_ChangeJobRunningState @jobs varchar(max), @state varchar(30), @verbose bit = 0
+alter procedure dbo.usp_ChangeJobRunningState @jobs varchar(max), @state varchar(30), @verbose bit = 0, @LogToTable bit = 0, @Source varchar(200)= 'Manual'
 as
 begin
 	/*	Created By:			Ajay Dwivedi
@@ -18,6 +18,9 @@ begin
 	declare @_IsJobRunning bit = 0;
 	declare @_AreValidParameters bit = 1;
 	declare @_tbl_jobs table (job_name varchar(500), is_processed bit default 0);
+
+	if OBJECT_ID('dbo.JobRunningStateChangeLog') is null
+		create table dbo.JobRunningStateChangeLog  (CollectionTime datetime2 not null default getdate(), JobName varchar(500) not null, State varchar(30) not null, Source varchar(200) default 'Manual');
 
 	if @verbose = 1
 	begin
@@ -70,9 +73,17 @@ begin
 		if @_AreValidParameters = 1
 		begin
 			if @state = 'Stop' or (@state = 'Restart' and @_IsJobRunning = 1)
+			begin
 				exec msdb..sp_stop_job @job_name = @_job_name;
+				insert dbo.JobRunningStateChangeLog (JobName, State, Source)
+				select @_job_name as JobName, 'Stop' as State, @Source as Source;
+			end
 			if @state = 'Start' or (@state = 'Restart' and @_IsJobRunning = 0)
+			begin
 				exec msdb..sp_start_job @job_name = @_job_name;
+				insert dbo.JobRunningStateChangeLog (JobName, State, Source)
+				select @_job_name as JobName, 'Start' as State, @Source as Source;
+			end
 		
 			if @verbose = 1
 				print char(13)+'Job ['+@_job_name+'] has been set to '''+@state+''' state.'
@@ -92,7 +103,7 @@ go
 exec DBA.dbo.usp_ChangeJobRunningState @jobs = 'Job1, Job2', @state = 'Stop', @verbose = 1;
 go
 
-exec DBA.dbo.usp_ChangeJobRunningState @jobs = 'Job1', @state = 'Start', @verbose = 1;
+exec DBA.dbo.usp_ChangeJobRunningState @jobs = 'Job1', @state = 'Start', @verbose = 1, @LogToTable = 1, @Source = 'usp_RemoveReplSchemaAccessContention';
 go
 
 */

@@ -169,6 +169,12 @@
           <AssociatedConnUserName />
           <FullPath>DBA - Replication  - Process all Tokens.sql</FullPath>
         </FileNode>
+        <FileNode Name="DBA - Replication - [usp_RemoveReplSchemaAccessContention].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>DBA - Replication - [usp_RemoveReplSchemaAccessContention].sql</FullPath>
+        </FileNode>
         <FileNode Name="DBA - Replication - Reduce REPL_SCHEMA_ACCESS Wait.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
@@ -206,8 +212,8 @@
           <FullPath>DBA - Replication - vw_Repl_Latency_Details.sql</FullPath>
         </FileNode>
         <FileNode Name="DBA - Replication - vw_ReplicationJobs.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>DBA - Replication - vw_ReplicationJobs.sql</FullPath>
         </FileNode>
