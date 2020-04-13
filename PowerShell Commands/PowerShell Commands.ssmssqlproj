@@ -85,6 +85,12 @@
           <AssociatedConnUserName />
           <FullPath>Different-Files-Between-Paths.sql</FullPath>
         </FileNode>
+        <FileNode Name="Enable-Powershell-for-Local-LAN-System.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Enable-Powershell-for-Local-LAN-System.sql</FullPath>
+        </FileNode>
         <FileNode Name="EnhancedHtml.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2017:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2017</AssociatedConnSrvName>

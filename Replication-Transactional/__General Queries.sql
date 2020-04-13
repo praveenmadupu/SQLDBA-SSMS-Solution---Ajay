@@ -109,3 +109,5 @@ where a.publication = 'Mosaic_2014'
 ORDER BY time DESC
 
 --select * from dbo.MSdistribution_agents as a
+
+https://www.mssqltips.com/sqlservertip/3598/troubleshooting-transactional-replication-latency-issues-in-sql-server/

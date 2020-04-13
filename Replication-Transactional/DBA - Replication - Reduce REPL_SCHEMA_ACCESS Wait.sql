@@ -22,7 +22,8 @@ exec sp_WhoIsActive @filter = '221'
 
 select getdate() as currentTime, * from DistributorServer.DBA.dbo.JobRunningStateChangeLog l 
 where l.collectionTime >= dateadd(minute,-90,getdate()) 
-and Source = 'usp_RemoveReplSchemaAccessContention' order by collectionTime desc;
+--and Source = 'usp_RemoveReplSchemaAccessContention' 
+order by collectionTime desc;
 
 --exec DistributorServer.DBA.dbo.usp_ChangeJobRunningState @jobs = 'TUL1CIPCNPDB1-StagingFiltered-1'
 --									,@state = 'Start', @verbose = 1

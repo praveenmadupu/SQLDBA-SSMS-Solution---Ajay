@@ -61,6 +61,12 @@
           <AssociatedConnUserName />
           <FullPath>Copy-SSIS-Packages.sql</FullPath>
         </FileNode>
+        <FileNode Name="Disable-Jobs.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Disable-Jobs.sql</FullPath>
+        </FileNode>
         <FileNode Name="Estimate-Backup-Size-Full.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
@@ -112,6 +118,12 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>PowerShell.ps1</FullPath>
+        </FileNode>
+        <FileNode Name="SQL SERVER MIGRATION USING POWERSHELL.docx">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SQL SERVER MIGRATION USING POWERSHELL.docx</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>
