@@ -1,4 +1,4 @@
-$instance = 'TUL1CIPCNPDB1';
+$instance = 'MyDbServerName';
 $excelPath = "C:\Temp\DataFileInfo__$instance.xlsx";
 $sqlQuery = @" 
 EXEC tempdb..[usp_AnalyzeSpaceCapacity] @getLogInfo = 1;

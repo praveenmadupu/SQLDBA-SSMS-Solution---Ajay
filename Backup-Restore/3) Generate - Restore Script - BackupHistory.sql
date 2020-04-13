@@ -16,7 +16,7 @@ DECLARE @Databases nvarchar(max) = 'Staging';
 */
 
 -- Input 07
-DECLARE @p_Destination_ServerName VARCHAR(125) = 'TUL1CIPXDB17';
+DECLARE @p_Destination_ServerName VARCHAR(125) = 'YourDbServerName';
 -- Input 08
 DECLARE @p_Destination_BackupLocation VARCHAR(255) = 'F:\backups\';
 -- Input 09
@@ -241,7 +241,7 @@ FROM msdb.dbo.backupmediafamily AS bmf
 INNER JOIN msdb.dbo.backupset AS bs ON bmf.media_set_id = bs.media_set_id
 WHERE bs.is_snapshot = 0 AND bs.database_name IN (SELECT DatabaseName FROM @tmpDatabases d WHERE d.Selected = 1)
 	-- Get all backups on/after Latest Full Backup
-AND bs.backup_start_date >= (select max(bsi.backup_start_date) FROM msdb.dbo.backupmediafamily AS bmfi INNER JOIN msdb.dbo.backupset AS bsi ON bmfi.media_set_id = bsi.media_set_id where  bsi.is_snapshot = bs.is_snapshot AND bsi.database_name = bs.database_name and bsi.type = 'D' --and bmfi.physical_device_name not like '\\Ann1vespdb01\%'
+AND bs.backup_start_date >= (select max(bsi.backup_start_date) FROM msdb.dbo.backupmediafamily AS bmfi INNER JOIN msdb.dbo.backupset AS bsi ON bmfi.media_set_id = bsi.media_set_id where  bsi.is_snapshot = bs.is_snapshot AND bsi.database_name = bs.database_name and bsi.type = 'D' --and bmfi.physical_device_name not like '\\Sqlpdb01\%'
 							  )
 )
 SELECT *

@@ -330,7 +330,6 @@ DELETE FROM DBA..LogWalkThresholdInstance WHERE JobName = '''+@p_JobName+''';
 
 						IF @p_SendMail = 1
 						BEGIN
-							-- From -> SQL Alerts - TUL1CIPRDB1 <SQLAlerts@tivo.com>
 							
 							SELECT /*
 							@_mailBody = 'Dear DSG-Team,
@@ -505,7 +504,7 @@ Kindly check Job Step Error Message'
 
 Thanks & Regards,
 SQL Alerts
-It-Ops-DBA@tivo.com
+It-Ops-DBA@contso.com
 -- Alert Coming from SQL Agent Job [DBA Log Walk Alerts]
 		';
 

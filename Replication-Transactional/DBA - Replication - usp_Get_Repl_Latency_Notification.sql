@@ -118,7 +118,7 @@ BEGIN
 
 			if (select case when datepart(hour,getdate()) between 9 and 18 then 0 when datepart(hour,getdate()) in (22,23,0,1,2,3,4,5,6) then 0 else 1 end) = 1
 			begin
-				set @recipients = @recipients + (case when right(ltrim(rtrim(@recipients)),1) = ';' then '' else ';' end) +'noc-staff@tivo.com;'
+				set @recipients = @recipients + (case when right(ltrim(rtrim(@recipients)),1) = ';' then '' else ';' end) +'noc-staff@contso.com;'
 				SET @tableHTML = @tableHTML + '<p><br>
 Hi NOC Team,<br><br>
 Kindly call onCall SQLDBA to look into this replication issue.<br>
@@ -131,7 +131,7 @@ Kindly call onCall SQLDBA to look into this replication issue.<br>
 <p><br>
 Thanks & Regards,<br>
 SQL Alerts<br>
-It-Ops-DBA@tivo.com<br>
+It-Ops-DBA@contso.com<br>
 -- Alert from job [DBA - Replication  - Latency Notification]<br>
 </p>
 '

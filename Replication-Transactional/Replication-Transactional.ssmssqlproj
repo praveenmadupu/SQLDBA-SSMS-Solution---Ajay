@@ -27,30 +27,6 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="TUL1CIPCNPDB1:CORPORATE\adwivedi">
-          <Created>2020-02-02T13:26:48.5483948+05:30</Created>
-          <Type>SQL</Type>
-          <Server>TUL1CIPCNPDB1</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="TUL1MDPDWDIS02:CORPORATE\adwivedi">
-          <Created>2020-01-29T14:13:45.713431+05:30</Created>
-          <Type>SQL</Type>
-          <Server>TUL1MDPDWDIS02</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
@@ -110,8 +86,8 @@
           <FullPath>4 - Setting - Subscription - Backup_Restore.sql</FullPath>
         </FileNode>
         <FileNode Name="4 - Setting - Subscription - ReplicationSupportOnly.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>4 - Setting - Subscription - ReplicationSupportOnly.sql</FullPath>
         </FileNode>
@@ -146,26 +122,26 @@
           <FullPath>Backup-Restore.sql</FullPath>
         </FileNode>
         <FileNode Name="DBA - Replication  - Get Tracer Token History.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>DBA - Replication  - Get Tracer Token History.sql</FullPath>
         </FileNode>
         <FileNode Name="DBA - Replication  - Insert  Tracker Token.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>DBA - Replication  - Insert  Tracker Token.sql</FullPath>
         </FileNode>
         <FileNode Name="DBA - Replication  - Latency Notification.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>DBA - Replication  - Latency Notification.sql</FullPath>
         </FileNode>
         <FileNode Name="DBA - Replication  - Process all Tokens.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>DBA - Replication  - Process all Tokens.sql</FullPath>
         </FileNode>
@@ -200,8 +176,8 @@
           <FullPath>DBA - Replication - usp_Get_Repl_Latency_Notification.sql</FullPath>
         </FileNode>
         <FileNode Name="DBA - Replication - vw_Repl_Latency.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>DBA - Replication - vw_Repl_Latency.sql</FullPath>
         </FileNode>
@@ -218,8 +194,8 @@
           <FullPath>DBA - Replication - vw_ReplicationJobs.sql</FullPath>
         </FileNode>
         <FileNode Name="DBA - Replication Agent Check.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1MDPDWDIS02:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1MDPDWDIS02</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>DBA - Replication Agent Check.sql</FullPath>
         </FileNode>
@@ -230,8 +206,8 @@
           <FullPath>DBA - Replication Agent Job monitoring.sql</FullPath>
         </FileNode>
         <FileNode Name="dbo.usp_replication_agent_checkup .sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1MDPDWDIS02:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1MDPDWDIS02</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>dbo.usp_replication_agent_checkup .sql</FullPath>
         </FileNode>
@@ -248,8 +224,8 @@
           <FullPath>Job [DBA - Replication - Stoped Jobs].sql</FullPath>
         </FileNode>
         <FileNode Name="MSdistribution_history.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1MDPDWDIS02:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1MDPDWDIS02</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>MSdistribution_history.sql</FullPath>
         </FileNode>
@@ -280,18 +256,6 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Replication-Commands.pdf</FullPath>
-        </FileNode>
-        <FileNode Name="Script to be Run on POS-STAGING-2014.txt">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>Script to be Run on POS-STAGING-2014.txt</FullPath>
-        </FileNode>
-        <FileNode Name="Script To Run on POS-COSMO-2008.txt">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>Script To Run on POS-COSMO-2008.txt</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

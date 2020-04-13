@@ -7,8 +7,8 @@ GO
 
 ALTER PROCEDURE dbo.usp_GetDisabledJobNotification @p_JobName VARCHAR(125), 
 													@p_EnableJob BIT = 1 , 
-													@p_recipients VARCHAR(1000) = 'DSG-ProductionSupport@tivo.com', 
-													@p_CopyRecepients VARCHAR(1000) = 'It-Ops-DBA@tivo.com',
+													@p_recipients VARCHAR(1000) = 'DSG-ProductionSupport@contso.com', 
+													@p_CopyRecepients VARCHAR(1000) = 'It-Ops-DBA@contso.com',
 													@p_CallerInfo VARCHAR(500) = 'DBA - Enable Disabled Jobs',
 													@p_Verbose BIT = 0
 AS
@@ -19,8 +19,8 @@ BEGIN
 		Example:			EXEC dbo.usp_GetDisabledJobNotification 
 										@p_JobName = 'TVAnytime', 
 										@p_EnableJob = 1, 
-										@p_recipients = 'DSG-ProductionSupport@tivo.com',
-										@p_CopyRecepients = 'IT-Ops-DBA@tivo.com',
+										@p_recipients = 'DSG-ProductionSupport@contso.com',
+										@p_CopyRecepients = 'IT-Ops-DBA@contso.com',
 										@p_CallerInfo = 'DBA Enable Disabled Jobs',
 										@p_Verbose = 0
 	*/
@@ -78,7 +78,7 @@ BEGIN
 		<p>
 		Thanks & Regards,<br>
 		SQL Alerts<br>
-		It-Ops-DBA@tivo.com<br>
+		It-Ops-DBA@contso.com<br>
 		-- Alert Coming from SQL Agent Job ['+@p_CallerInfo+']<br>
 		<p>';
 		END
@@ -104,7 +104,7 @@ BEGIN
 		<p>
 		Thanks & Regards,<br>
 		SQL Alerts<br>
-		It-Ops-DBA@tivo.com<br>
+		It-Ops-DBA@contso.com<br>
 		-- Alert Coming from SQL Agent Job ['+@p_CallerInfo+']<br>
 		<p>';
 				END
@@ -118,7 +118,7 @@ BEGIN
 		<p>
 		Thanks & Regards,<br>
 		SQL Alerts<br>
-		It-Ops-DBA@tivo.com<br>
+		It-Ops-DBA@contso.com<br>
 		-- Alert Coming from SQL Agent Job ['+@p_CallerInfo+']<br>
 		<p>';
 				END
@@ -132,7 +132,7 @@ BEGIN
 		<p>
 		Thanks & Regards,<br>
 		SQL Alerts<br>
-		It-Ops-DBA@tivo.com<br>
+		It-Ops-DBA@contso.com<br>
 		-- Alert Coming from SQL Agent Job ['+@p_CallerInfo+']<br>
 		<p>';
 			END
@@ -143,7 +143,7 @@ BEGIN
 			EXEC msdb.dbo.sp_send_dbmail  
 					--@profile_name = @@SERVERNAME,  
 					@body_format = 'HTML',
-					--@recipients = 'ajay.dwivedi@tivo.com',  
+					--@recipients = 'ajay.dwivedi@contso.com',  
 					@recipients = @p_recipients,
 					@copy_recipients= @p_CopyRecepients,
 					@body = @_mailBody,  

@@ -25,7 +25,7 @@ where l.collectionTime >= dateadd(minute,-90,getdate())
 --and Source = 'usp_RemoveReplSchemaAccessContention' 
 order by collectionTime desc;
 
---exec DistributorServer.DBA.dbo.usp_ChangeJobRunningState @jobs = 'TUL1CIPCNPDB1-StagingFiltered-1'
+--exec DistributorServer.DBA.dbo.usp_ChangeJobRunningState @jobs = 'Replication-LogReader-Agent-LogName'
 --									,@state = 'Start', @verbose = 1
 --									,@LogToTable = 1, @Source = 'Manual - Ajay';
 */
@@ -102,8 +102,8 @@ declare @tsql_KillSession nvarchar(max);
 -- Start loop to kill each session one by one
 while exists (select * from DistributorServer.master.sys.sysprocesses as sp 
 				where sp.spid > 50 and sp.program_name = 'Microsoft SQL Server' 
-				and sp.lastwaittype = 'LCK_M_S' and hostname = 'TUL1CIPCNPDB1' and cmd = 'SELECT'
-				and sp.loginame in ('CORPORATE\adwivedi','CORPORATE\ProdSQL','CORPORATE\rchopra')
+				and sp.lastwaittype = 'LCK_M_S' and hostname = 'YourPublisherServerName' and cmd = 'SELECT'
+				and sp.loginame in ('Contso\adwivedi','Contso\sqlagent')
 		)
 begin
 	set @tsql_KillSession = '';
@@ -112,8 +112,8 @@ begin
 								' 
 								from DistributorServer.master.sys.sysprocesses as sp 
 								where sp.spid > 50 and sp.program_name = 'Microsoft SQL Server' 
-								and sp.lastwaittype = 'LCK_M_S' and hostname = 'TUL1CIPCNPDB1' and cmd = 'SELECT'
-								and sp.loginame in ('CORPORATE\adwivedi','CORPORATE\ProdSQL','CORPORATE\rchopra')
+								and sp.lastwaittype = 'LCK_M_S' and hostname = 'YourPublisherServerName' and cmd = 'SELECT'
+								and sp.loginame in ('Contso\adwivedi','Contso\sqlagent')
 							);
 
 	begin try
@@ -140,8 +140,8 @@ if @verbose = 1
 -- Start loop to kill each session one by one
 while exists (select * from DistributorServer.master.sys.sysprocesses as sp 
 				where sp.spid > 50 and sp.program_name = 'Microsoft SQL Server' 
-				and sp.lastwaittype = 'LCK_M_S' and hostname = 'TUL1CIPCNPDB1' and cmd = 'SELECT'
-				and sp.loginame in ('CORPORATE\adwivedi','CORPORATE\ProdSQL','CORPORATE\rchopra')
+				and sp.lastwaittype = 'LCK_M_S' and hostname = 'YourPublisherServerName' and cmd = 'SELECT'
+				and sp.loginame in ('Contso\adwivedi','Contso\sqlagent')
 		)
 begin
 	if OBJECT_ID('tempdb..#blocking') is not null
@@ -156,8 +156,8 @@ begin
 			sp.open_tran, sp.status, sp.hostname, sp.program_name, sp.cmd, sp.loginame, db_name(dbid) as dbname
 		from DistributorServer.master.sys.sysprocesses as sp
 		where sp.spid > 50 and sp.program_name = 'Microsoft SQL Server' 
-		and sp.lastwaittype = 'LCK_M_S' and hostname = 'TUL1CIPCNPDB1' and cmd = 'SELECT'
-		and sp.loginame in ('CORPORATE\adwivedi','CORPORATE\ProdSQL','CORPORATE\rchopra')
+		and sp.lastwaittype = 'LCK_M_S' and hostname = 'YourPublisherServerName' and cmd = 'SELECT'
+		and sp.loginame in ('Contso\adwivedi','Contso\sqlagent')
 		--
 		union all
 		--

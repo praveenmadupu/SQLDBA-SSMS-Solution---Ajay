@@ -7,18 +7,18 @@ EXEC sp_get_distributor;
 GO
 
 -- Add the distributor
-EXEC sp_adddistributor @distributor = N'TUL1SQLPOC01',
+EXEC sp_adddistributor @distributor = N'YourDistributorServerName',
     @password = N'Pa$$w0rd'; 
 GO
 
 /*
 
-RESTORE DATABASE [TivoSQLInventory_Ajay] FROM  DISK = N'Your-Backup-File-Path-in-Here'
+RESTORE DATABASE [ContsoSQLInventory_Ajay] FROM  DISK = N'Your-Backup-File-Path-in-Here'
     WITH RECOVERY
          ,STATS = 3
          ,REPLACE
-		 ,MOVE N'TivoSQLInventory' TO N'F:\MSSQLData\SQL2016_Data\TivoSQLInventory_Ajay.mdf'
-		 ,MOVE N'TivoSQLInventory_log' TO N'F:\MSSQLData\SQL2016_Data\TivoSQLInventory_Ajay_log.ldf'
+		 ,MOVE N'ContsoSQLInventory' TO N'F:\MSSQLData\SQL2016_Data\ContsoSQLInventory_Ajay.mdf'
+		 ,MOVE N'ContsoSQLInventory_log' TO N'F:\MSSQLData\SQL2016_Data\ContsoSQLInventory_Ajay_log.ldf'
 
 GO
 */
@@ -34,12 +34,12 @@ EXEC sp_adddistributiondb @database = N'distribution',
 GO
 
 -- Configuring a publisher to use the distribution db
-USE TivoSQLInventory_Distributor;
+USE ContsoSQLInventory_Distributor;
 GO
 
-EXEC sp_adddistpublisher @publisher = N'TUL1DBAPMTDB1\SQL2016',
-    @distribution_db = N'TivoSQLInventory_Distributor', @security_mode = 1,
-    @working_directory = N'\\TUL1DBAPMTDB1\Replication\', @thirdparty_flag = 0, -- if SQL and not another product
+EXEC sp_adddistpublisher @publisher = N'YouPublisherServerName\SQL2016',
+    @distribution_db = N'ContsoSQLInventory_Distributor', @security_mode = 1,
+    @working_directory = N'\\YourNetworkPath\Replication\', @thirdparty_flag = 0, -- if SQL and not another product
     @publisher_type = N'MSSQLSERVER';
 GO
 

@@ -27,30 +27,6 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="tul1cipbksdb2:CORPORATE\adwivedi">
-          <Created>2019-09-16T18:33:05.1612042+05:30</Created>
-          <Type>SQL</Type>
-          <Server>tul1cipbksdb2</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB>master</InitialDB>
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="TUL1DBAPMTDB1\SQL2017:CORPORATE\adwivedi">
-          <Created>2019-10-22T07:19:09.3695183+05:30</Created>
-          <Type>SQL</Type>
-          <Server>TUL1DBAPMTDB1\SQL2017</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
@@ -80,8 +56,8 @@
           <FullPath>Common-Commands.sql</FullPath>
         </FileNode>
         <FileNode Name="Different-Files-Between-Paths.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2017:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2017</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Different-Files-Between-Paths.sql</FullPath>
         </FileNode>
@@ -92,8 +68,8 @@
           <FullPath>Enable-Powershell-for-Local-LAN-System.sql</FullPath>
         </FileNode>
         <FileNode Name="EnhancedHtml.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2017:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1DBAPMTDB1\SQL2017</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>EnhancedHtml.sql</FullPath>
         </FileNode>
@@ -110,8 +86,8 @@
           <FullPath>Find-Data-Log-File-Size-Total-Server.sql</FullPath>
         </FileNode>
         <FileNode Name="Find-Orphan-Databse-File-On-Disk.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:tul1cipbksdb2:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>tul1cipbksdb2</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Find-Orphan-Databse-File-On-Disk.sql</FullPath>
         </FileNode>
@@ -128,8 +104,8 @@
           <FullPath>Get-EventLog.sql</FullPath>
         </FileNode>
         <FileNode Name="Get-SqlResult2Excel.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Get-SqlResult2Excel.sql</FullPath>
         </FileNode>
@@ -162,6 +138,12 @@
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Save-Credentials.sql</FullPath>
+        </FileNode>
+        <FileNode Name="ScriptOut-Database-Objects.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>ScriptOut-Database-Objects.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

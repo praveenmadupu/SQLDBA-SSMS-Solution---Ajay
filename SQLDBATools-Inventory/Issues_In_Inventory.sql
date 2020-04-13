@@ -34,6 +34,6 @@ select * from [dbo].[ExcelSheetServers] as s where not exists (select * from Inf
 
 select * from Info.Instance
 select * from [dbo].[ExcelSheetServers] e 
-	where e.Domain <> 'Corporate.Local'
+	where e.Domain <> 'contso.com'
 --	(22 rows affected)
 

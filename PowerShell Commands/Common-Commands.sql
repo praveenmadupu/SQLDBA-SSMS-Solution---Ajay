@@ -17,7 +17,7 @@ $Matches['PathPhysicalName'] => F:\Mssqldata\Data\
 [string]::IsNullOrEmpty($StopAt_Time) -eq $false
 
 -- 6) Create a PS Drive for Demo Purposes
-New-PSDrive -Persist -Name "P" -PSProvider "FileSystem" -Root "\\Tul1cipedb3\g$"
+New-PSDrive -Persist -Name "P" -PSProvider "FileSystem" -Root "\\MyDbServerName\g$"
 
 -- 7) Add color to Foreground and Background text
 write-host "[OK]" -ForegroundColor Cyan
@@ -50,7 +50,7 @@ Add-CollectionError -ComputerName $ComputerName -Cmdlet 'Add-ServerInfo' -Comman
 return;
 
 -- 13) Querying using SQLProvider
-$computerName = 'TUL1CIPEDB2'
+$computerName = 'MyDbServerName'
 
 Get-ChildItem SQLSERVER:\SQL\$computerName\DEFAULT
 $sqlInstance = Get-Item SQLSERVER:\SQL\$computerName\DEFAULT
@@ -66,7 +66,7 @@ $sqlInstance.Properties | Select-Object Name, Value | ft -AutoSize
 $sqlInstance.Configuration
 
 -- 14) Querying SqlServer using PowerShell
-$computerName = 'TUL1CIPEDB2'
+$computerName = 'MyDbServerName'
 
 <# SMO #> 
 $server = New-Object Microsoft.SqlServer.Management.Smo.Server("$computerName")
@@ -102,7 +102,7 @@ $sqlInstance.Configuration
 
 -- 15) Set Mail profile
 # Set computerName
-$computerName = 'TUL1CIPINXDB4'
+$computerName = 'MyDbServerName'
 
 $srv = New-Object -TypeName Microsoft.SqlServer.Management.SMO.Server("$computerName");
 $sm = $srv.Mail.Profiles | Where-Object {$_.Name -eq $computerName};
@@ -231,7 +231,7 @@ $NotBackedDbs | Add-Member -NotePropertyName ServerName -NotePropertyValue $Serv
 #Remove-Variable -Name NotBackedDbs
 
 --	19) Import Remove Server Module
-$session = New-PSSession -computerName TUL1DBAPMTDB1;
+$session = New-PSSession -computerName MyDbServerName;
 Invoke-Command -scriptblock { Import-Module dbatools } -session $session;
 Import-PSSession -module dbatools -session $session;
 
@@ -278,7 +278,7 @@ Invoke-Command -ComputerName $Server -ScriptBlock { Register-PSSessionConfigurat
 $scriptBlock = {
     $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent());
     $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator);
-    Copy-Item '\\tul1it1\it\SQL_Server_Setups\2014\Developer' -Destination E:\ -Recurse;
+    Copy-Item '\\ftpServerName\it\SQL_Server_Setups\2014\Developer' -Destination E:\ -Recurse;
 }
 
 Invoke-Command -ComputerName $Server -ScriptBlock $scriptBlock -ConfigurationName SQLDBATools;

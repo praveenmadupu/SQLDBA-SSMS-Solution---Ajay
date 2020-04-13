@@ -17,7 +17,7 @@ ALTER PROCEDURE [dbo].[usp_GetLogWalkJobHistoryAlert_Suppress]
 		@p_Mail_CC VARCHAR(1000) = NULL,
 		@p_PerformAutoExecutionOfLogWalkJob BIT = 0,
 		@p_DbName VARCHAR(125) = NULL,
-		@p_SlackMailID VARCHAR(1000) = 'k2b0c1w9g1k7d5e0@tivo.slack.com;IT-Ops-DBA@tivo.com;',
+		@p_SlackMailID VARCHAR(1000) = 'k2b0c1w9g1k7d5e0@tivo.slack.com;IT-Ops-DBA@contso.com;',
 		@p_Help BIT = 0
 AS
 BEGIN 
@@ -495,8 +495,7 @@ DELETE FROM DBA..LogWalkThresholdInstance WHERE JobName = '''+@p_JobName+''';
 
 						IF @p_SendMail = 1
 						BEGIN
-							-- From -> SQL Alerts - TUL1CIPRDB1 <SQLAlerts@tivo.com>
-
+							
 							IF @p_Verbose = 1
 								PRINT 'Trying to find blockers..';
 							SET @ParmDefinition = N'@p_collection_time_start smalldatetime, @p_collection_time_end smalldatetime, @p_JobName VARCHAR(125)'; 
@@ -750,7 +749,7 @@ Kindly check Job Step Error Message'
 
 Thanks & Regards,
 SQL Alerts
-It-Ops-DBA@tivo.com
+It-Ops-DBA@contso.com
 -- Alert Coming from SQL Agent Job [DBA Log Walk Alerts]
 		';
 

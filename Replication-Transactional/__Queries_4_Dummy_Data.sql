@@ -14,7 +14,7 @@ GO
 
 
 
-$dbServer = 'TUL1SQLPOC01';
+$dbServer = 'YourDbServerName';
 $dbName = 'DbaReplication';
 $query = @"
 insert dbo.ReplTable03

@@ -23,7 +23,7 @@ declare @agent_restart_state int;
 select @currentTime = GETDATE();
 set @agent_restart_state = 0;
 --select @currentTime = cast('2020-01-28 20:15:00.000' as datetime);
-set @recepients = 'ajay.dwivedi@tivo.com;renuka.chopra@tivo.com';
+set @recepients = 'ajay.dwivedi@contso.com;renuka.chopra@contso.com';
 set @agent_last_log_threshold_minutes = 15;
 
 if @verbose = 1
@@ -139,7 +139,7 @@ BEGIN
 						'<p>In order to resolve this, the replication agent job was '+(case when @agent_restart_state = 2 then 'started' else 'restarted' end)+'. <br>If this alert is received again and again, kindly look into this issue.<br></p> '+
 						'<p><br>Thanks & Regards,<br>
 SQL Alerts<br>
-It-Ops-DBA@tivo.com<br>
+It-Ops-DBA@contso.com<br>
 -- Alert Coming from SQL Agent Job [DBA - Replication Agent Check]<br></p>'
 
 		if @verbose = 1

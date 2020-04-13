@@ -1,26 +1,26 @@
 -- At Publisher Server
 	-- Creating a PUSH subscription
-USE [TivoSQLInventory];
+USE [ContsoSQLInventory];
 EXEC sp_addsubscription 
 @publication = N'DIMS', 
-@subscriber = N'TUL1DBAPMTDB1\SQL2016', 
-@destination_db = N'TivoSQLInventory_Ajay', 
+@subscriber = N'YourPublisherServerName\SQL2016', 
+@destination_db = N'ContsoSQLInventory_Ajay', 
 @subscription_type = N'Push', 
 @article = N'all',
 --BEGIN Backup Params
 @sync_type = N'initialize with backup',
 @backupdevicetype = 'disk',
-@backupdevicename = 'G:\MSSQLData\SQL2016_Backup\TivoSQLInventory\FULL\TivoSQLInventory_FULL_20190214_025710.bak'
+@backupdevicename = 'G:\MSSQLData\SQL2016_Backup\ContsoSQLInventory\FULL\ContsoSQLInventory_FULL_20190214_025710.bak'
 --END Backup Params
 GO
 
 
 -- Create distribution agent
-USE [TivoSQLInventory];
+USE [ContsoSQLInventory];
 EXEC sp_addpushsubscription_agent 
 	@publication = N'DIMS', 
-	@subscriber = N'TUL1DBAPMTDB1\SQL2016', 
-	@subscriber_db = N'TivoSQLInventory_Ajay', 
+	@subscriber = N'YourPublisherServerName\SQL2016', 
+	@subscriber_db = N'ContsoSQLInventory_Ajay', 
 	--@job_login = N'SQLSKILLSDEMOs\Administrator', 
 	--@job_password = 'Password;1', 
 	@subscriber_security_mode = 1, 

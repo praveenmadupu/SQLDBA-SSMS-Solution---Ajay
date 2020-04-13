@@ -15,5 +15,5 @@ from sys.database_permissions join sys.objects on sys.database_permissions.major
 --	https://docs.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/xp-logininfo-transact-sql
 USE EIDR_Dedup
 GO
-EXEC XP_LOGININFO 'corporate\adwivedi'
-EXEC XP_LOGININFO 'CORPORATE\SQL Admins' ,'members'
+EXEC XP_LOGININFO 'contso\adwivedi'
+EXEC XP_LOGININFO 'contso\SQL Admins' ,'members'

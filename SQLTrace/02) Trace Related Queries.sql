@@ -16,8 +16,8 @@ exec sp_trace_setstatus 2, 0;
 exec sp_trace_setstatus 2, 2;
 
 --	Command to perform ReadTrace
-"C:\Program Files\Microsoft Corporation\RMLUtils\ReadTrace.exe" -IG:\DBA\SQLTrace\SQLTrace\TUL1CIPEDB2_18Jun2018_1124PM.trc -oG:\DBA\SQLTrace -f
-"C:\Program Files\Microsoft Corporation\RMLUtils\ReadTrace.exe" -IE:\PerformanceAnalysis\2018, June 18 - Publisher Trace\TUL1CIPCNPDB1_19Jun2018_0230AM\TUL1CIPCNPDB1_19Jun2018_0230AM.trc -oE:\PerformanceAnalysis -f
+"C:\Program Files\Microsoft Corporation\RMLUtils\ReadTrace.exe" -IG:\DBA\SQLTrace\SQLTrace\DbServerName01_18Jun2018_1124PM.trc -oG:\DBA\SQLTrace -f
+"C:\Program Files\Microsoft Corporation\RMLUtils\ReadTrace.exe" -IE:\PerformanceAnalysis\2018, June 18 - Publisher Trace\DbServerName01_19Jun2018_0230AM\DbServerName01_19Jun2018_0230AM.trc -oE:\PerformanceAnalysis -f
 
 --	Find Common Trace Events for Query Performance
 select * from sys.trace_events te where te.trace_event_id in (10,12,13,16,17,40,41,42,43,44,45,98,122);
@@ -40,5 +40,5 @@ select * from sys.trace_columns tc where tc.name like '%ApplicationName%'
 
 -- Get Collected Trace into SQL Table
 SELECT * INTO SQLTraceResults_EU_Apr29
-FROM ::fn_trace_gettable('H:\Performance-Issues\Data-Collections\TUL1MDPDWMSH3C1\TUL1MDPDWMSH3C1_29Apr2019_0220PM.trc', default)
+FROM ::fn_trace_gettable('H:\Performance-Issues\Data-Collections\DbServerName01\DbServerName01_29Apr2019_0220PM.trc', default)
 

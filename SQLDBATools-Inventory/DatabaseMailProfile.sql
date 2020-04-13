@@ -52,10 +52,10 @@ BEGIN
 		EXECUTE msdb.dbo.sysmail_add_account_sp  
 			@account_name = 'SQLAlerts',  
 			@description = 'Mail account for alerts',  
-			@email_address = 'SQLAlerts@tivo.com',--'SQLAlerts@RoviCorp.com',  
+			@email_address = 'SQLAlerts@contso.com',--'SQLAlerts@contso.com',  
 			@replyto_address = 'IT-Ops-DBA@gmail.com',  
 			@display_name = @DisplayName,  
-			@mailserver_name = 'relay.corporate.local';
+			@mailserver_name = 'relay.contso.local';
 	END
 	ELSE
 	BEGIN

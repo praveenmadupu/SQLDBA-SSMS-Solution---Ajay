@@ -23,14 +23,14 @@ if object_id('tempdb..#MStracer_tokens') is not null
 select d.tracer_id, d.publication_id, a.publication, d.publisher_commit, d.distributor_commit
 		,a.name as agent_name, s.subscriber_commit, srv.name as subscriber, a.publisher_db, a.subscriber_db
 into #MStracer_tokens
-from TUL1MDPDWDIS02.distribution.dbo.MStracer_tokens as d with (nolock)
-inner join TUL1MDPDWDIS02.distribution.dbo.MStracer_history as s with (nolock)
+from DistributionServer.distribution.dbo.MStracer_tokens as d with (nolock)
+inner join DistributionServer.distribution.dbo.MStracer_history as s with (nolock)
 on s.parent_tracer_id = d.tracer_id
-inner join TUL1MDPDWDIS02.distribution.dbo.MSdistribution_agents as a with (nolock)
+inner join DistributionServer.distribution.dbo.MSdistribution_agents as a with (nolock)
 on a.id = s.agent_id
-inner join TUL1MDPDWDIS02.distribution.dbo.MSpublications as p with (nolock)
+inner join DistributionServer.distribution.dbo.MSpublications as p with (nolock)
 on p.publication = a.publication and p.publication_id = d.publication_id
-inner join TUL1MDPDWDIS02.master.sys.servers as srv on srv.server_id = a.subscriber_id
+inner join DistributionServer.master.sys.servers as srv on srv.server_id = a.subscriber_id
 where d.publisher_commit >= @oldest_pending_publisher_commit;
 
 --	select * from #MStracer_tokens

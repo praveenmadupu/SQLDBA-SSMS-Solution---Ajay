@@ -1,11 +1,11 @@
 USE DBA
 GO
 
---	EXEC DBA..[usp_GetMail_4_SQLDBATools] @p_Option = 'VolumeInfo' ,@p_recipients = 'ajay.dwivedi@tivo.com;Nasir.Malik@tivo.com'
---	EXEC DBA..[usp_GetMail_4_SQLDBATools] @p_Option = 'VolumeInfo' ,@p_recipients = 'ajay.dwivedi@tivo.com;Nasir.Malik@tivo.com'
---	EXEC DBA..[usp_GetMail_4_SQLDBATools] @p_Option = 'VolumeInfo' ,@p_recipients = 'ajay.dwivedi@tivo.com;Nasir.Malik@tivo.com'; 
---	EXEC DBA..[usp_GetMail_4_SQLDBATools] @p_Option = 'VolumeInfo' ,@p_recipients = 'ajay.dwivedi@tivo.com;'; 
---	EXEC DBA..[usp_GetMail_4_SQLDBATools] @p_Option = 'VolumeInfo' ,@p_recipients = 'ajay.dwivedi@tivo.com;' ,@p_Verbose = 1
+--	EXEC DBA..[usp_GetMail_4_SQLDBATools] @p_Option = 'VolumeInfo' ,@p_recipients = 'ajay.dwivedi@contso.com;Nasir.Malik@contso.com'
+--	EXEC DBA..[usp_GetMail_4_SQLDBATools] @p_Option = 'VolumeInfo' ,@p_recipients = 'ajay.dwivedi@contso.com;Nasir.Malik@contso.com'
+--	EXEC DBA..[usp_GetMail_4_SQLDBATools] @p_Option = 'VolumeInfo' ,@p_recipients = 'ajay.dwivedi@contso.com;Nasir.Malik@contso.com'; 
+--	EXEC DBA..[usp_GetMail_4_SQLDBATools] @p_Option = 'VolumeInfo' ,@p_recipients = 'ajay.dwivedi@contso.com;'; 
+--	EXEC DBA..[usp_GetMail_4_SQLDBATools] @p_Option = 'VolumeInfo' ,@p_recipients = 'ajay.dwivedi@contso.com;' ,@p_Verbose = 1
 IF OBJECT_ID('dbo.usp_GetMail_4_SQLDBATools') IS NULL
 	EXEC ('CREATE PROCEDURE dbo.usp_GetMail_4_SQLDBATools AS SELECT 1 AS DummyToBeReplace;');
 GO
@@ -185,7 +185,7 @@ BEGIN
 
 	IF (@p_recipients IS NULL) 
 	BEGIN
-		SET @p_recipients = 'ajay.dwivedi@tivo.com';
+		SET @p_recipients = 'ajay.dwivedi@contso.com';
 	END
 
 	EXEC msdb.dbo.sp_send_dbmail 

@@ -6,7 +6,7 @@ EXEC SQLDBATools..uspTruncateJAMSEntry;
 
 -- Populate with Fresh Data
 EXEC @result = xp_cmdshell 'PowerShell.exe -noprofile -command "C:\Users\adwivedi\Documents\WindowsPowerShell\Modules\SQLDBATools\Cmdlets\Wrapper-JAMSEntry.ps1"' ,no_output;  
-EXEC SQLDBATools..[usp_GetMail_4_JAMS] @p_Option = 'JAMSEntry' --,@p_recipients = 'IT-Ops-SQLDBA@tivo.com'; 
+EXEC SQLDBATools..[usp_GetMail_4_JAMS] @p_Option = 'JAMSEntry' --,@p_recipients = 'IT-Ops-SQLDBA@contso.com'; 
 
 IF (@result = 0) 
 BEGIN 

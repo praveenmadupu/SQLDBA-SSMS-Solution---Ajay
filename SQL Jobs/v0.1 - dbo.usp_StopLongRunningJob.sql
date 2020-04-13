@@ -7,7 +7,7 @@ GO
 
 -- EXEC dbo.usp_StopLongRunningJob @p_JobName = 'CW Labeling Staging', @p_TimeLimit_Minutes = 180
 
-ALTER PROCEDURE [dbo].[usp_StopLongRunningJob] @p_JobName VARCHAR(125), @p_TimeLimit_Minutes INT = 180, @p_ForceJobStop BIT = 1 , @p_recipients VARCHAR(1000) = 'It-Ops-DBA@tivo.com', @p_cc VARCHAR(1000) = NULL
+ALTER PROCEDURE [dbo].[usp_StopLongRunningJob] @p_JobName VARCHAR(125), @p_TimeLimit_Minutes INT = 180, @p_ForceJobStop BIT = 1 , @p_recipients VARCHAR(1000) = 'It-Ops-DBA@contso.com', @p_cc VARCHAR(1000) = NULL
 AS
 BEGIN
 	/*	Created By:			Ajay Dwivedi
@@ -202,7 +202,7 @@ BEGIN
 		EXEC msdb.dbo.sp_send_dbmail  
 			--@profile_name = @@SERVERNAME,  
 			@body_format = 'HTML',
-			--@recipients = 'ajay.dwivedi@tivo.com',  
+			--@recipients = 'ajay.dwivedi@contso.com',  
 			@recipients = @p_recipients,
 			@copy_recipients= @p_cc,
 			@body = @_mailBody,  

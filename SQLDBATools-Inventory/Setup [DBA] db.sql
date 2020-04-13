@@ -106,7 +106,7 @@ DECLARE @startDTS DATETIME,
 		@endDTS DATETIME;
 SELECT @startDTS = CURRENT_TIMESTAMP, @endDTS = (DATEADD(hour,24,CURRENT_TIMESTAMP)) -- 24 Hours;
 
-EXEC [dbo].[usp_AddServerRoleMemberException]	@p_principal_name = 'Corporate\adwivedi',
+EXEC [dbo].[usp_AddServerRoleMemberException]	@p_principal_name = 'contso\adwivedi',
 												@p_role_permission = 'Sysadmin', 
 												@p_startDTS = @startDTS, @p_endDTS = @endDTS,
 												@p_reason = 'For Application Setup'
@@ -158,8 +158,8 @@ FROM	sys.server_principals member inner join
 			rm.role_principal_id = [role].principal_id 
 where	-- we're only checking server-level permissions
 		[role].type_desc = 'SERVER_ROLE' and 
-		-- ignore sa, Corporate\SQL Admins, and Corporate\ProdSQL, Any other DBA login require sysadmin
-		member.name not in( 'sa', 'Corporate\SQL Admins', 'Corporate\ProdSQL' ) and
+		-- ignore sa, contso\SQL Admins, and contso\ProdSQL, Any other DBA login require sysadmin
+		member.name not in( 'sa', 'contso\SQL Admins', 'contso\ProdSQL' ) and
 		-- bulkadmin is OK to grant to anyone
 		[role].name <> 'bulkadmin' and 
 		-- everything else needs an exception record
@@ -179,7 +179,7 @@ from	sys.server_permissions per inner join
 where	-- Grants
 		per.state = 'G' and
 		-- sa and DBA Logins require sysadmin - ignore them
-		pri.name not in( 'sa', 'Corporate\SQL Admins', 'Corporate\ProdSQL' ) and
+		pri.name not in( 'sa', 'contso\SQL Admins', 'contso\ProdSQL' ) and
 		-- Ignore permissions we allow without an exception requirement
 		per.permission_name not in( 'connect',
 									'connect sql',
@@ -253,10 +253,10 @@ BEGIN
 	set @curUnauth= cursor fast_forward for
 		select principal_name, type_desc, role_permission, roleOrPermission
 		from DBA.dbo.Vw_UnauthorizedServerRoleMembers
-		-- Omit sa and Corporate\ProdSQL so we never remove permissions from these two accounts
+		-- Omit sa and contso\ProdSQL so we never remove permissions from these two accounts
 		-- This is redundant because the Vw_UnauthorizedServerRoleMembers view also omits these two accounts, but
 		--  we want redundant ensurances we do not remove these permissions.
-		where principal_name not in( 'sa', 'Corporate\ProdSQL', 'Corporate\SQL Admins' );
+		where principal_name not in( 'sa', 'contso\ProdSQL', 'contso\SQL Admins' );
 
 	open @curUnauth;
 	fetch next from @curUnauth into @account, @acctType, @rolePermission, @roleOrPrmsn;
@@ -277,7 +277,7 @@ BEGIN
 		end
 		else begin
 			set @sql = 'use master; revoke ' + @rolePermission + ' to [' + @account + ']';
-			-- REVOKE CONTROL SERVER TO [Corporate\Ajay] 
+			-- REVOKE CONTROL SERVER TO [contso\Ajay] 
 		end;
 		--print @sql;
 		exec( @sql );

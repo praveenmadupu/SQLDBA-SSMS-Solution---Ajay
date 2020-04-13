@@ -1,11 +1,6 @@
 use SQLDBATools
 GO
 
-/*	JAMS Servers
-TUL1MDSEJSDBQ1
-TUL1MDSEJSDBQ2
-*/
-
 /* All errors that are still to Resolve */
 select ServerName, Error, Command from [Staging].[CollectionErrors]
 	where ServerName like '%Skype%' and Cmdlet = 'Get-SQLInstanceInfo'  
@@ -48,8 +43,8 @@ left join
 	on i.FQDN = s.FQDN
 go
 
-select * from Info.Server as s where s.FQDN = 'TUL1CIPEDB2.corporate.local'
-select * from Info.Instance as s where s.FQDN = 'TUL1CIPEDB2.corporate.local'
+select * from Info.Server as s where s.FQDN = 'ServerName.contso.com'
+select * from Info.Instance as s where s.FQDN = 'ServerName.contso.com'
 
 /*
 UPDATE Info.Server
@@ -65,7 +60,7 @@ select * from Info.AlwaysOnListener;
 
 insert Info.AlwaysOnListener
 (ListenerName, DateAdded)
-values ('TUL1SKYPEBEDB4',DEFAULT)
+values ('ServerName',DEFAULT)
 go
 
 truncate table [Staging].[AOReplicaInfo];

@@ -2,7 +2,7 @@ USE SQLDBATOOLS
 GO
 
 /*
-$Columns = Invoke-DbaQuery -SqlInstance 'tul1dbapmtdb1\sql2016' -Database 'SQLDBATools' -Query "SELECT * FROM Information_schema.columns c where c.table_name = 'ServerInfo'"
+$Columns = Invoke-DbaQuery -SqlInstance 'DbaTestServer\sql2016' -Database 'SQLDBATools' -Query "SELECT * FROM Information_schema.columns c where c.table_name = 'ServerInfo'"
 ($Columns | Select-Object -ExpandProperty COLUMN_NAME) -join ', ' | ogv;
 */
 
@@ -21,7 +21,7 @@ truncate table [Staging].[ServerInfo]
 truncate table dbo.Server
 truncate table [Staging].[CollectionErrors]
 */
---select 1 as IsPresent from [SQLDBATools].[dbo].[Server] where FQDN = 'tul1dbapmtdb1.corporate.local'
+--select 1 as IsPresent from [SQLDBATools].[dbo].[Server] where FQDN = 'DbaTestServer.contso.com'
 
 /*
 	EXEC [Staging].[usp_ETL_ServerInfo];
@@ -37,7 +37,7 @@ select * from dbo.Server s
 select * from dbo.Instance
 select * from dbo.Application
 --select * from Staging.InstanceInfo with (nolock)
---select * from Staging.InstanceInfo as i with (nolock) where i.ServerName = 'ANN1VESPAPP06'
+--select * from Staging.InstanceInfo as i with (nolock) where i.ServerName = 'DbServerName'
 --select * from Staging.ServerInfo
 --select * from  INFORMATION_SCHEMA.COLUMNS C WHERE C.TABLE_NAME = 'InstanceInfo'
 --select * from sys.all_columns c where c.object_id = OBJECT_ID('Staging.InstanceInfo')
@@ -66,7 +66,7 @@ from	SQLDBATools..Application as a;
 ;WITH T_Apps AS (
 select [Category], [BusinessUnit], [Businessowner], [TechnicalOwner], [SecondaryTechnicalOwner]
 		,ROW_NUMBER()over(ORDER by [Category], [BusinessUnit], [Businessowner], [TechnicalOwner], [SecondaryTechnicalOwner]) as RecordID
-from [TUL1DBAPMTDB1\SQL2016].[TivoSQLInventory].dbo.Server s
+from [DbaTestServer\SQL2016].[TivoSQLInventory].dbo.Server s
 where (s.Businessowner is not null or s.[TechnicalOwner] is not null or s.[SecondaryTechnicalOwner] is not null)
 group by [Category], [BusinessUnit], [Businessowner], [TechnicalOwner], [SecondaryTechnicalOwner]
 --order by [Category], [BusinessUnit], [Businessowner], [TechnicalOwner], [SecondaryTechnicalOwner]
@@ -79,7 +79,7 @@ ORDER BY a.RecordID ASC;
 
 select * 
 into #TivoSQLInventory_Server
-from [TUL1DBAPMTDB1\SQL2016].[TivoSQLInventory].dbo.Server
+from [DbaTestServer\SQL2016].[TivoSQLInventory].dbo.Server
 
 
 update s

@@ -19,13 +19,10 @@ GO
 
 ' as script
 FROM (VALUES 
-('Corporate\BWinter')
-,('Corporate\CKrieps')
-,('Corporate\Fcuvelier'	   )
-,('Corporate\R'			   )
-,('Corporate\LDeGiovanni'  )
-,('Corporate\ASprimont'	   )
-,('Corporate\RLopezSanchez')) as Users(myUser)
+('contso\Login01')
+,('contso\Login02')
+,('contso\Login03'	   )
+,('contso\Login04')) as Users(myUser)
 )
 select script as [text()]
 from tUsers for xml path('')

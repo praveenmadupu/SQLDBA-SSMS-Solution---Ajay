@@ -28,16 +28,16 @@ xdesid					xact_seqno
 */
 
 declare @_dbID smallint;
-select @_dbID = d.database_id from sys.databases as d where d.name = 'Cosmo';
+select @_dbID = d.database_id from sys.databases as d where d.name = 'Facebook';
 exec distribution..sp_browsereplcmds @publisher_database_id = @_dbID;
 
 USE DISTRIBUTION
 GO
 EXEC sp_replmonitorsubscriptionpendingcmds  
-		  @publisher = 'TUL1CIPEDB2', -- Put publisher server name here
-  		  @publisher_db = 'Cosmo', -- Put publisher database name here
-  		  @publication ='DataEntry',  -- Put publication name here
-  		  @subscriber ='TUL1CIPCNPDB1', -- Put subscriber server name here
-  		  @subscriber_db ='Staging', -- Put subscriber database name here
+		  @publisher = 'YourPublisherServer', -- Put publisher server name here
+  		  @publisher_db = 'Facebook', -- Put publisher database name here
+  		  @publication ='FacebookPublication',  -- Put publication name here
+  		  @subscriber ='YourSubscriberServer', -- Put subscriber server name here
+  		  @subscriber_db ='Facebook', -- Put subscriber database name here
   		  @subscription_type ='1' -- 0 = push and 1 = pull
 

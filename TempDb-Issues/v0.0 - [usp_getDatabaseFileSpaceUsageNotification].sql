@@ -8,7 +8,7 @@ GO
 ALTER PROCEDURE dbo.usp_getDatabaseFileSpaceUsageNotification 
 		@p_DbName varchar(125) = 'tempdb', 
 		@p_DataFileUsedSpaceThreshold_gb numeric(20,2) = 100.0, @p_LogFileUsedSpaceThreshold_gb numeric(20,2) = 100.0, @p_VersionStoreThreshold_gb numeric(20,2) = 200.0, 
-		@p_MailRecepients varchar(2000) = 'ajay.dwivedi@tivo.com', --'It-Ops-DBA@tivo.com', 
+		@p_MailRecepients varchar(2000) = 'ajay.dwivedi@contso.com', --'It-Ops-DBA@contso.com', 
 		@p_Verbose BIT = 0
 AS
 BEGIN -- Procedure Body
@@ -454,6 +454,6 @@ EXEC DBA.dbo.usp_getDatabaseFileSpaceUsageNotification
 		@p_DataFileUsedSpaceThreshold_gb = 100.0, 
 		@p_LogFileUsedSpaceThreshold_gb = 100.0, 
 		@p_VersionStoreThreshold_gb = 200.0, 
-		@p_MailRecepients = 'It-Ops-DBA@tivo.com', 
+		@p_MailRecepients = 'It-Ops-DBA@contso.com', 
 		@p_Verbose = 0;
 */

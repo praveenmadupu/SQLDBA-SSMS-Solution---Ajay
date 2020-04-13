@@ -59,7 +59,7 @@ SET @tableHTML =  N'
     N'</table>' ;  
 
 EXEC msdb.dbo.sp_send_dbmail 
-	@recipients='ajay.dwivedi@tivo.com;Nasir.Malik@tivo.com',  
+	@recipients='ajay.dwivedi@contso.com;Nasir.Malik@contso.com',  
     @subject = @subject,  
     @body = @tableHTML,  
     @body_format = 'HTML' ; 

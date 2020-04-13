@@ -5,8 +5,8 @@ IF OBJECT_ID('dbo.usp_Get_Repl_Latency_Notification') IS NULL
 	EXEC ('CREATE PROCEDURE dbo.usp_Get_Repl_Latency_Notification AS SELECT 1 as Dummy;')
 GO
 	
-ALTER PROCEDURE dbo.usp_Get_Repl_Latency_Notification 
-	@recipients VARCHAR(2000) = 'ajay.dwivedi@tivo.com', @threshold_minutes int = 40, @verbose bit = 0
+ALTER PROCEDURE [dbo].[usp_Get_Repl_Latency_Notification] 
+	@recipients VARCHAR(2000) = 'ajay.dwivedi2007@gmail.com', @threshold_minutes int = 40, @verbose bit = 0
 AS
 BEGIN
 	SET NOCOUNT ON;
@@ -27,10 +27,10 @@ BEGIN
 			drop table #MSdistribution_history_Errors;
 		select a.publication, s.name as subscriber, a.subscriber_db, MAX(h.time) as agent_log_time, MAX(h.error_id) AS error_id, h.comments
 		into #MSdistribution_history_Errors
-		from TUL1MDPDWDIS02.distribution.dbo.MSdistribution_history h
-		join TUL1MDPDWDIS02.distribution.dbo.MSdistribution_agents as a on h.agent_id = a.id
-		join TUL1MDPDWDIS02.master.sys.servers as p on p.server_id = a.publisher_id
-		join TUL1MDPDWDIS02.master.sys.servers as s on s.server_id = a.subscriber_id
+		from DistributionServer.distribution.dbo.MSdistribution_history h
+		join DistributionServer.distribution.dbo.MSdistribution_agents as a on h.agent_id = a.id
+		join DistributionServer.master.sys.servers as p on p.server_id = a.publisher_id
+		join DistributionServer.master.sys.servers as s on s.server_id = a.subscriber_id
 		where error_id <> 0 and time >= @oldest_publisher_commit
 		and (case when comments like 'Skipped % error(s) when applying transactions at the Subscriber.' then 0 else 1 end) = 1
 		group by a.publication, s.name, a.subscriber_db, h.comments;
@@ -60,17 +60,43 @@ BEGIN
 			N'<H1>Replication Latency Report</H1>' +  
 			N'<h3>One or more publication has latency of more than '+cast(@threshold_minutes as varchar(10))+' minutes.</h3>'+
 			N'<p><table border="1">' +  
-			N'<tr><th>Publication</th><th>current Time</th><th>Token Insertion Time</th><th>Latency(minutes)</th><th>Token_State</th></tr>' +  
-			CAST ( ( SELECT td = publication,       '',  
-							td = cast(currentTime as varchar(30)), '', 
-							td = cast(publisher_commit as varchar(30)), '',  
-							td = cast(Latest_Latency as varchar(10)), '',
-							td = Token_State
-					  FROM DBA..vw_Repl_Latency
-					  ORDER BY publication ASC
-					  FOR XML PATH('tr'), TYPE   
+			N'<tr><th>Publication</th> <th>Token State</th>	<th>Current Latency<br>(minutes)</th>	<th>Publisher<br>Commit</th>	<th>Distributor<br>Commit</th>
+				  <th>Last Token Latency<br>(Publisher Commit)</th>	<th>LastWaitType</th>	<th>Current Time</th></tr>' +  
+
+			CAST ( ( select td = l.publication,		'',
+							td = l.Token_State,		'',
+							td = cast(l.current_Latency as varchar(10)),	'', 
+							td = isnull(convert(varchar,l.publisher_commit,120),' '),	'',
+							td = isnull(convert(varchar,l.distributor_commit,120),' '),	'',
+							td = isnull(l.[last_token_latency (publisher_commit)],' '),	'',
+							td = isnull(rtrim(sp.lastwaittype),' '),	'',
+							td = convert(varchar,getdate(),120)
+					from DBA..vw_Repl_Latency_Details as l 
+					left join DistributionServer.distribution.dbo.MSpublications as p with (nolock)
+						on p.publication = l.publication
+					left join sys.sysprocesses as sp
+						on db_name(sp.dbid) = p.publisher_db and sp.program_name like 'Repl-LogReader%' 
+					left join DistributionServer.DBA.dbo.vw_ReplicationJobs as j
+						on j.category_name = 'REPL-LogReader' and j.publisher_db = p.publisher_db
+					order by l.publication asc
+					FOR XML PATH('tr'), TYPE
 			) AS NVARCHAR(MAX) ) +  
+
+			--CAST ( ( SELECT td = publication,       '',  
+			--				td = cast(currentTime as varchar(30)), '', 
+			--				td = cast(publisher_commit as varchar(30)), '',  
+			--				td = cast(Latest_Latency as varchar(10)), '',
+			--				td = Token_State
+			--		  FROM DBA..vw_Repl_Latency
+			--		  ORDER BY publication ASC
+			--		  FOR XML PATH('tr'), TYPE   
+			--) AS NVARCHAR(MAX) ) +  
+
+
 			N'</table></p>' ;
+
+		if @verbose = 1
+			print char(10)+@tableHTML+char(10);
 
 		if exists (select * from #MSdistribution_history_Errors)
 		begin
@@ -93,7 +119,7 @@ BEGIN
 
 			if (select case when datepart(hour,getdate()) between 9 and 18 then 0 when datepart(hour,getdate()) in (22,23,0,1,2,3,4,5,6) then 0 else 1 end) = 1
 			begin
-				set @recipients = @recipients + (case when right(ltrim(rtrim(@recipients)),1) = ';' then '' else ';' end) +'noc-staff@tivo.com;'
+				set @recipients = @recipients + (case when right(ltrim(rtrim(@recipients)),1) = ';' then '' else ';' end) +'noc-staff@gmail.com;'
 				SET @tableHTML = @tableHTML + '<p><br>
 Hi NOC Team,<br><br>
 Kindly call onCall SQLDBA to look into this replication issue.<br>
@@ -106,7 +132,7 @@ Kindly call onCall SQLDBA to look into this replication issue.<br>
 <p><br>
 Thanks & Regards,<br>
 SQL Alerts<br>
-It-Ops-DBA@tivo.com<br>
+It-Ops-DBA@gmail.com<br>
 -- Alert from job [DBA - Replication  - Latency Notification]<br>
 </p>
 '

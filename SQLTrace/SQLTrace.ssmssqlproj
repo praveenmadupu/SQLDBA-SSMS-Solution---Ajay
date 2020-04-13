@@ -80,14 +80,14 @@
           <FullPath>04) ClearTrace-Top-15-Statements-By-IO.sql</FullPath>
         </FileNode>
         <FileNode Name="04) Top Queries by ClearTrace.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>04) Top Queries by ClearTrace.sql</FullPath>
         </FileNode>
         <FileNode Name="Non-SQL Drives Space.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Non-SQL Drives Space.sql</FullPath>
         </FileNode>

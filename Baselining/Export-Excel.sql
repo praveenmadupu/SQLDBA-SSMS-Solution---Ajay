@@ -1,4 +1,4 @@
-$server = 'tul1cipedb2'
+$server = 'YourDbServerName'
 $tsqlQuery = @"
 DECLARE @p_CheckDate datetimeoffset
              ,@p_Collection_Time datetime;

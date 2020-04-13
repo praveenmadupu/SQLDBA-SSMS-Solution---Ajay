@@ -10,7 +10,7 @@ SELECT	i.Instance_ID
 FROM	dbo.Instance as i
 
 SELECT a.*  
-FROM OPENROWSET('SQLNCLI', 'Server=TUL1DBAPMTDB1;Trusted_Connection=yes;',  
+FROM OPENROWSET('SQLNCLI', 'Server=DbaTestServerName;Trusted_Connection=yes;',  
      'EXEC tempdb..[usp_AnalyzeSpaceCapacity] @help = 1') AS a;
 
 /*

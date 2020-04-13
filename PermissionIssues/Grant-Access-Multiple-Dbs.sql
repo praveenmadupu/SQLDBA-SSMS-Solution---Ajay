@@ -33,11 +33,11 @@ USE ['+@dbName+']
 GO
 CREATE USER [Domain\UserName] FOR LOGIN [Domain\UserName]
 GO
-EXEC sp_addrolemember N''db_datareader'', N''CORPORATE\yc''
+EXEC sp_addrolemember N''db_datareader'', N''contso\yc''
 GO
-EXEC sp_addrolemember N''db_datawriter'', N''CORPORATE\yc''
+EXEC sp_addrolemember N''db_datawriter'', N''contso\yc''
 GO
-EXEC sp_addrolemember N''db_viewdefs'', N''CORPORATE\yc''
+EXEC sp_addrolemember N''db_viewdefs'', N''contso\yc''
 GO
 GRANT EXECUTE TO [Domain\UserName]
 GO

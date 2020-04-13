@@ -28,13 +28,13 @@ https://sqlperformance.com/2015/12/monitoring/network-testing-iperf
 	iperf3 -s
 
 	On Client => 
-	iperf3 -c tul1sqlpoc01 -t 120 -P 50
+	iperf3 -c YourServerName -t 120 -P 50
 	-- 120 seconds, 30 threads
 
 		-- Method 01: Powershell
-	& "C:\iperf-3.1.3-win64\iperf3.exe" -c tul1cipxidb3 -t 120 -P 50
+	& "C:\iperf-3.1.3-win64\iperf3.exe" -c YourServerName -t 120 -P 50
 	& "C:\iperf-3.1.3-win64\iperf3.exe" -s
 
 		-- Method 02: Powershell
 	cmd.exe /c "C:\iperf-3.1.3-win64\iperf3.exe -s"
-	cmd.exe /c "C:\iperf-3.1.3-win64\iperf3.exe -c tul1cipxidb3 -t 120 -P 50"
+	cmd.exe /c "C:\iperf-3.1.3-win64\iperf3.exe -c YourServerName -t 120 -P 50"

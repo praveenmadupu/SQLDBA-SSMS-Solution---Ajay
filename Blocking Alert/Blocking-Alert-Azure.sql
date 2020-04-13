@@ -6,7 +6,7 @@ IF OBJECT_ID('dbo.usp_GetConsistentBlocking') IS NULL
 GO
 
 ALTER PROCEDURE [dbo].[usp_GetConsistentBlocking] 
-		@p_recipients VARCHAR(1000) = 'IT-Ops-DBA@tivo.com;DSG-ProductionSupport@tivo.com',
+		@p_recipients VARCHAR(1000) = 'IT-Ops-DBA@contso.com;DSG-ProductionSupport@contso.com',
 		@p_BlockingThresholdTime_Minutes INT = 20,
 		@p_Verbose BIT = 0,
 		@p_Help BIT = 0

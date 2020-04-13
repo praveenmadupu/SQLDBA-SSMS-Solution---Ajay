@@ -162,7 +162,7 @@ BEGIN
 <br><br>
 Thanks & Regards,<br>
 SQL Alerts<br>
-It-Ops-DBA@tivo.com<br>
+It-Ops-DBA@contso.com<br>
 -- Alert Coming from SQL Agent Job [DBA Log Walk Alerts]<br>
 </p>
 ';
@@ -173,7 +173,7 @@ It-Ops-DBA@tivo.com<br>
 
 	IF (@p_recipients IS NULL) 
 	BEGIN
-		SET @p_recipients = 'ajay.dwivedi@tivo.com';
+		SET @p_recipients = 'ajay.dwivedi@contso.com';
 	END
 
 	EXEC msdb.dbo.sp_send_dbmail 

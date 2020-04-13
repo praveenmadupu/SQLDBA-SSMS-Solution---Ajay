@@ -6,7 +6,7 @@ GO
 
 ALTER procedure dbo.usp_replication_agent_checkup  
 	@heartbeat_interval int = 10        -- minutes
-	,@recepients varchar(2000) = 'ajay.dwivedi@tivo.com'
+	,@recepients varchar(2000) = 'ajay.dwivedi@contso.com'
 	,@verbose bit = 0
 	,@perform_agent_restart bit = 0
 as  

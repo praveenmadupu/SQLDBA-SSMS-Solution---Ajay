@@ -31,8 +31,6 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "InstanceMigration", "Instan
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "OlaHallengren.com", "OlaHallengren.com\OlaHallengren.com.ssmssqlproj", "{58A07269-15CC-4732-8DD3-AFFEF21B8CEB}"
 EndProject
-Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Hekathon", "Hekathon\Hekathon.ssmssqlproj", "{1AF2A8C9-C92B-4B06-BEAD-C010628B2588}"
-EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Experiments", "Experiments\Experiments.ssmssqlproj", "{87B45E28-8552-4150-B3FC-7EF7A397DC20}"
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Replication-Transactional", "Replication-Transactional\Replication-Transactional.ssmssqlproj", "{3061CF18-9C99-463A-9171-4CC2AB624B1E}"
@@ -82,7 +80,6 @@ Global
 		{B511A519-C45A-4122-995C-D82C3CF5BE9C}.Default|Default.ActiveCfg = Default
 		{CA8E5EEB-A00E-4E2B-9702-0C1A322AABA1}.Default|Default.ActiveCfg = Default
 		{58A07269-15CC-4732-8DD3-AFFEF21B8CEB}.Default|Default.ActiveCfg = Default
-		{1AF2A8C9-C92B-4B06-BEAD-C010628B2588}.Default|Default.ActiveCfg = Default
 		{87B45E28-8552-4150-B3FC-7EF7A397DC20}.Default|Default.ActiveCfg = Default
 		{3061CF18-9C99-463A-9171-4CC2AB624B1E}.Default|Default.ActiveCfg = Default
 		{49ADEE38-CEB3-4F9D-A157-F6CFAF37A687}.Default|Default.ActiveCfg = Default
@@ -97,8 +94,8 @@ Global
 		{EBD80353-46F6-483D-B3A7-B3FC61B016FA}.Default|Default.ActiveCfg = Default
 		{FC215972-4485-4B29-82C1-4DDD218D9303}.Default|Default.ActiveCfg = Default
 		{9B9DD5DB-FCD6-4B9F-9BC0-54DCAF827C99}.Default|Default.ActiveCfg = Default
-		{D7C03E94-F865-49CC-9621-7BC0BA8D588F}.Default|Default.ActiveCfg = Default
 		{4C79BFF5-461D-4BF1-A467-30CC92F3170F}.Default|Default.ActiveCfg = Default
+		{91D26CF7-4CD2-4EFF-A4EA-8BFA0B460B57}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

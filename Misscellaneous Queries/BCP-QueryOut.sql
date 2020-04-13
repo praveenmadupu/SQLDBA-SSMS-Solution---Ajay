@@ -1,1 +1,1 @@
-bcp  "exec Velo_Code.dbo.RMImageFiles" queryout "G:\Performance-Issues\tul1cspelDb02\RMImageFiles.txt" -w -C OEM -t"," -T -STUL1CSPELDB02
+bcp  "exec DBA.dbo.WhoIsActive_ResultSets" queryout "G:\Performance-Issues\MyDbServerName\WhoIsActive_ResultSets.txt" -w -C OEM -t"," -T -SMyDbServerName

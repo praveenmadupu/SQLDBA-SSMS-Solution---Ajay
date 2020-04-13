@@ -27,30 +27,6 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="tul1cipbksdb2:CORPORATE\adwivedi">
-          <Created>2019-09-16T17:09:31.5964044+05:30</Created>
-          <Type>SQL</Type>
-          <Server>tul1cipbksdb2</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB />
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="TUL1CIPXDB17:CORPORATE\adwivedi">
-          <Created>2019-11-06T12:00:46.9564943+05:30</Created>
-          <Type>SQL</Type>
-          <Server>TUL1CIPXDB17</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB>master</InitialDB>
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
@@ -128,8 +104,8 @@
           <FullPath>Detect n Reduce High VLFs.sql</FullPath>
         </FileNode>
         <FileNode Name="Find-Indirect-Connections.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPXDB17:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPXDB17</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Find-Indirect-Connections.sql</FullPath>
         </FileNode>
@@ -222,12 +198,6 @@
           <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>WhatIsRunning.sql</FullPath>
-        </FileNode>
-        <FileNode Name="who_is_active_v11_30(Modified).sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>who_is_active_v11_30(Modified).sql</FullPath>
         </FileNode>
         <FileNode Name="who_is_active_v11_32(Modified).sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>

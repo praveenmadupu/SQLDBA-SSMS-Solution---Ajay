@@ -234,7 +234,7 @@ SQLAlerts<br>
 IF @tableHTML IS NOT NULL
 BEGIN
 	EXEC msdb.dbo.sp_send_dbmail 
-		@recipients='It-Ops-DBA@tivo.com',  
+		@recipients='It-Ops-DBA@contso.com',  
 		@subject = @subject,  
 		@body = @tableHTML,  
 		@body_format = 'HTML' ;

@@ -7,12 +7,12 @@
 */
 
 
-USE [TivoSQLInventory];
+USE [ContsoSQLInventory];
 GO
 
 exec sp_helppublication @publication = 'DIMS_Dev'  
 
-EXEC sp_replicationdboption @dbname = N'TivoSQLInventory', 
+EXEC sp_replicationdboption @dbname = N'ContsoSQLInventory', 
 	-- Can be "subscribe", "publish", "merge publish"
 	-- and "sync with backup"
     @optname = N'publish', -- any type of publication
@@ -20,7 +20,7 @@ EXEC sp_replicationdboption @dbname = N'TivoSQLInventory',
 
 -- ** Validate the new Log Reader SQL Server Agent Job created after adding publication with below query **
 EXEC sp_addpublication @publication = N'DIMS_Dev',
-	@description = N'Transactional publication for database ''TivoSQLInventory_Dev'' from Publisher ''TUL1DBAPMTDB1\SQL2016''.',
+	@description = N'Transactional publication for database ''ContsoSQLInventory_Dev'' from Publisher ''YourPublisherServerName\SQL2016''.',
     @sync_method = N'concurrent',
 	@retention = 0, 
 	@allow_push = N'true', 
@@ -39,15 +39,15 @@ EXEC sp_addpublication @publication = N'DIMS_Dev',
     @enabled_for_het_sub = N'false';
 GO
 
-use [TivoSQLInventory]
+use [ContsoSQLInventory]
 exec sp_addarticle @publication = N'DIMS', @article = N'Application', @source_owner = N'dbo', @source_object = N'Application', @type = N'logbased', @description = N'', @creation_script = N'', @pre_creation_cmd = N'drop', @schema_option = 0x000000000803509F, @identityrangemanagementoption = N'manual', @destination_table = N'Application', @destination_owner = N'dbo', @status = 24, @vertical_partition = N'false', @ins_cmd = N'CALL [sp_MSins_dboApplication]', @del_cmd = N'CALL [sp_MSdel_dboApplication]', @upd_cmd = N'SCALL [sp_MSupd_dboApplication]'
 GO
-use [TivoSQLInventory]
+use [ContsoSQLInventory]
 exec sp_addarticle @publication = N'DIMS', @article = N'auth_group', @source_owner = N'dbo', @source_object = N'auth_group', @type = N'logbased', @description = N'', @creation_script = N'', @pre_creation_cmd = N'drop', @schema_option = 0x000000000803509F, @identityrangemanagementoption = N'manual', @destination_table = N'auth_group', @destination_owner = N'dbo', @status = 24, @vertical_partition = N'false', @ins_cmd = N'CALL [sp_MSins_dboauth_group]', @del_cmd = N'CALL [sp_MSdel_dboauth_group]', @upd_cmd = N'SCALL [sp_MSupd_dboauth_group]'
 GO
 
 /*
-EXEC [TivoSQLInventory].sys.sp_addlogreader_agent @job_login = N'SQLSKILLSDEMOS\Administrator',
+EXEC [ContsoSQLInventory].sys.sp_addlogreader_agent @job_login = N'SQLSKILLSDEMOS\Administrator',
     @job_password = 'Password;1', @publisher_security_mode = 1
  -- Windows Auth
 GO

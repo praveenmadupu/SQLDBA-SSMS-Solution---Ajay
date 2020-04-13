@@ -1,5 +1,5 @@
-$SQLServers = @('tul1pub2008c1','tul1mdpdwds12','tul1mdpdwds13','tul1mdpdwmid01','tul1cosmo2008','tul1sub2008')
-$Users = @('corporate\gsambasivam','corporate\anasingh','corporate\gramaprasad','corporate\narici','corporate\skaliyaperumal')
+$SQLServers = @('MyDbServer01','MyDbServer02','MyDbServer03','MyDbServer04')
+$Users = @('Contso\SomeUser01','Contso\SomeUser02','Contso\SomeUser03')
 
 
 foreach($Srv in $SQLServers)

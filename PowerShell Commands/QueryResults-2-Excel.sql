@@ -1,5 +1,5 @@
 /*	1) Execute sp_whoIsActive and store result in Excel	*/
-$instance = 'ANN1VESPDB01';
+$instance = 'SqlpDB01';
 $excelPath = "C:\Temp\$instance.xlsx";
 $sqlQuery = @" 
 exec sp_whoIsActive @get_plans=1, @get_full_inner_text=1, 
@@ -11,7 +11,7 @@ exec sp_whoIsActive @get_plans=1, @get_full_inner_text=1,
 Invoke-Sqlcmd -ServerInstance $instance -Query $sqlQuery | Export-Excel $excelPath -Show;
 
 /*	2) Execute sp_whoIsActive and store result in Excel	using ADO.NET Method*/
-$instance = 'ANN1VESPDB01'
+$instance = 'SqlpDB01'
 $excelPath = "C:\Temp\$instance.xlsx";
 $sqlQuery = @" 
 exec sp_whoIsActive @get_plans=1, @get_full_inner_text=1, 

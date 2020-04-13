@@ -19,7 +19,7 @@ END
 IF (@ServerNames IS NOT NULL)
 BEGIN
 	SET @subject = 'Wrapper-VolumeInfo - Failure';
-	SET @p_recipients = 'It-Ops-SQLDBA@tivo.com';
+	SET @p_recipients = 'It-Ops-SQLDBA@contso.com';
 
 	SET @htmlBody = 'Hi DBA Team,
 	<br><br>

@@ -1,7 +1,7 @@
 USE SQLDBATools
 GO
 
---	EXEC SQLDBATools..[usp_GetMail_4_JAMS] @p_Option = 'JAMSEntry' ,@p_recipients = 'ajay.dwivedi@tivo.com'
+--	EXEC SQLDBATools..[usp_GetMail_4_JAMS] @p_Option = 'JAMSEntry' ,@p_recipients = 'ajay.dwivedi@contso.com'
 IF OBJECT_ID('dbo.usp_GetMail_4_JAMS') IS NULL
 	EXEC ('CREATE PROCEDURE dbo.usp_GetMail_4_JAMS AS SELECT 1 AS DummyToBeReplace;');
 GO
@@ -114,7 +114,7 @@ SQL Alerts
 
 	IF (@p_recipients IS NULL) 
 	BEGIN
-		SET @p_recipients = 'ajay.dwivedi@tivo.com';
+		SET @p_recipients = 'ajay.dwivedi@contso.com';
 	END
 
 	EXEC msdb..sp_send_dbmail 

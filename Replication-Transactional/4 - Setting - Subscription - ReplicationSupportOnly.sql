@@ -1,10 +1,10 @@
 -- At Publisher Server
 	-- Creating a PULL subscription
-USE [TivoSQLInventory];
+USE [ContsoSQLInventory];
 EXEC sp_addsubscription 
 @publication = N'DIMS_Dev', 
-@subscriber = N'TUL1DBAPMTDB1\SQL2016', 
-@destination_db = N'TivoSQLInventory_Dev', 
+@subscriber = N'YourPublisherServerName\SQL2016', 
+@destination_db = N'ContsoSQLInventory_Dev', 
 @subscription_type = N'Pull', 
 @article = N'all',
 --BEGIN Backup Params
@@ -13,20 +13,20 @@ EXEC sp_addsubscription
 GO
 
 --	At Subscriber
-use [TivoSQLInventory_Dev];
+use [ContsoSQLInventory_Dev];
 EXEC sp_addpullsubscription 
-	@publisher = 'TUL1DBAPMTDB1\SQL2016', 
+	@publisher = 'YourPublisherServerName\SQL2016', 
 	@publication= 'DIMS_Dev'
 go
 
 -- Create distribution agent on Subscriber
-USE [TivoSQLInventory_Dev];
+USE [ContsoSQLInventory_Dev];
 EXEC sp_addpullsubscription_agent
-	@publisher =  N'TUL1DBAPMTDB1\SQL2016',
-	--@publisher_db = 'TivoSQLInventory',
+	@publisher =  N'YourPublisherServerName\SQL2016',
+	--@publisher_db = 'ContsoSQLInventory',
 	@publication = N'DIMS_Dev', 
-	--@subscriber = N'TUL1DBAPMTDB1\SQL2016', 
-	--@subscriber_db = N'TivoSQLInventory_Dev', 
+	--@subscriber = N'YourPublisherServerName\SQL2016', 
+	--@subscriber_db = N'ContsoSQLInventory_Dev', 
 	--@job_login = N'SQLSKILLSDEMOs\Administrator', 
 	--@job_password = 'Password;1', 
 	@subscriber_security_mode = 1, 

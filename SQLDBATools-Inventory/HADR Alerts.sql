@@ -1,4 +1,4 @@
---	TUL1SKYPEBEDB4
+--	SqlAGNetworkName
 SELECT cluster_name	,quorum_state_desc FROM sys.dm_hadr_cluster
 GO
 --SELECT dns_name, port from sys.availability_group_listeners
@@ -53,6 +53,6 @@ select * from Info.Instance as i
 use SQLDBATools;
 insert Info.AlwaysOnListener
 (ListenerName, DateAdded)
-values ('TUL1SKYPEBEDB4',DEFAULT)
+values ('SqlAGNetworkName',DEFAULT)
 go
 */

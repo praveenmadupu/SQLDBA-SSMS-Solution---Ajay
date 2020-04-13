@@ -21,7 +21,7 @@ declare @agent_last_log_time datetime;
 declare @agent_last_log_threshold_minutes int;
 select @currentTime = GETDATE();
 --select @currentTime = cast('2020-01-28 20:15:00.000' as datetime);
-set @recepients = 'ajay.dwivedi@tivo.com; renuka.chopra@tivo.com;';
+set @recepients = 'ajay.dwivedi@gmail.com; renuka.chopra@gmail.com;';
 set @agent_last_log_threshold_minutes = 20;
 
 if @verbose = 1
@@ -32,7 +32,7 @@ DECLARE cursor_distributor_agent CURSOR LOCAL FAST_FORWARD FOR
 	left join master.sys.servers as p on p.server_id = a.publisher_id
 	left join master.sys.servers as s on s.server_id = a.subscriber_id
 	where a.local_job = 1
-	--and a.name = 'TUL1CIPCNPDB1-Babel-BabelDE-TUL1CIPXDB13-59';
+	--and a.name = 'YourPublisherServer-Facebook-FacebookPublication-SubscriberServer-59';
 	
 OPEN cursor_distributor_agent;  
 FETCH NEXT FROM cursor_distributor_agent INTO @agent_job_name, @agent_job_id, @publisher, @subscriber, @publisher_db, @subscriber_db, @publication;

@@ -1,10 +1,10 @@
 --	https://www.scalesql.com/cleartrace/
 --select @@servername, db_name()
-USE TUL1MDPDWMSH2C1_May02
+USE DbServerName01_May02
 GO
 
 DECLARE @serverName nvarchar(255)
-SET @serverName = 'TUL1MDPDWMSH2C1' --'TUL1CIPCNPDB1' --'TUL1CIPEDB2';
+SET @serverName = 'DbServerName01';
 
 --	SELECT [TraceID], [TraceName] FROM [dbo].[CTTrace];
 

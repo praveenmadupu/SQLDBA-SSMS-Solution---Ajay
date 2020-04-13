@@ -257,7 +257,7 @@ EXEC msdb.dbo.sp_add_operator @name=N'Ajay Dwivedi',
 		@sunday_pager_start_time=90000, 
 		@sunday_pager_end_time=180000, 
 		@pager_days=0, 
-		@email_address=N'ajay.dwivedi@tivo.com', 
+		@email_address=N'ajay.dwivedi@contso.com', 
 		@category_name=N'[Uncategorized]'
 GO
 
@@ -921,7 +921,7 @@ BEGIN
 <br><br>
 Thanks & Regards,<br>
 SQL Alerts<br>
-It-Ops-DBA@tivo.com<br>
+It-Ops-DBA@contso.com<br>
 -- Alert Coming from SQL Agent Job [DBA Log Walk Alerts]<br>
 </p>
 ';
@@ -932,7 +932,7 @@ It-Ops-DBA@tivo.com<br>
 
 	IF (@p_recipients IS NULL) 
 	BEGIN
-		SET @p_recipients = 'ajay.dwivedi@tivo.com';
+		SET @p_recipients = 'ajay.dwivedi@contso.com';
 	END
 
 	EXEC msdb.dbo.sp_send_dbmail 
@@ -956,7 +956,7 @@ ALTER PROCEDURE [dbo].[usp_GetLogWalkJobHistoryAlert_Suppress]
 		@p_SendMail BIT = 0,
 		@p_Mail_TO VARCHAR(1000) = NULL,
 		@p_Mail_CC VARCHAR(1000) = NULL,
-		@p_SlackMailID VARCHAR(1000) = 'k2b0c1w9g1k7d5e0@tivo.slack.com;IT-Ops-DBA@tivo.com;',
+		@p_SlackMailID VARCHAR(1000) = 'k2b0c1w9g1k7d5e0@tivo.slack.com;IT-Ops-DBA@contso.com;',
 		@p_Help BIT = 0
 AS
 BEGIN 
@@ -1298,8 +1298,7 @@ DELETE FROM DBA..LogWalkThresholdInstance WHERE JobName = '''+@p_JobName+''';
 
 						IF @p_SendMail = 1
 						BEGIN
-							-- From -> SQL Alerts - TUL1CIPRDB1 <SQLAlerts@tivo.com>
-
+							
 							IF @p_Verbose = 1
 								PRINT 'Trying to find blockers..';
 							SET @ParmDefinition = N'@p_collection_time_start smalldatetime, @p_collection_time_end smalldatetime, @p_JobName VARCHAR(125)'; 
@@ -1474,7 +1473,7 @@ Kindly check Job Step Error Message'
 
 Thanks & Regards,
 SQL Alerts
-It-Ops-DBA@tivo.com
+It-Ops-DBA@contso.com
 -- Alert Coming from SQL Agent Job [DBA Log Walk Alerts]
 		';
 
@@ -1507,9 +1506,9 @@ declare cur_jobs cursor forward_only local read_only for
 		SELECT j.name
 				,'EXEC DBA..[usp_GetLogWalkJobHistoryAlert_Suppress] @p_JobName = '''+j.name+''', @p_NoOfContinousFailuresThreshold = 2
 													,@p_SendMail = 1 
-													,@p_Mail_TO = ''IT-Ops-DBA@tivo.com; DSG-ProductionSupport@tivo.com''
-													--,@p_Mail_TO = ''ajay.dwivedi@tivo.com;renuka.chopra@tivo.com''
-													,@p_Mail_CC = ''Sameer.Jadhav@tivo.com; Niccolo.Arici@tivo.com; Thanveer.Ahamed@tivo.com; Vineet.Agarwal@tivo.com; Luigi.DeGiovanni@tivo.com''
+													,@p_Mail_TO = ''IT-Ops-DBA@contso.com; DSG-ProductionSupport@contso.com''
+													--,@p_Mail_TO = ''ajay.dwivedi@contso.com;renuka.chopra@contso.com''
+													,@p_Mail_CC = ''Sameer.Jadhav@contso.com; Niccolo.Arici@contso.com; Thanveer.Ahamed@contso.com; Vineet.Agarwal@contso.com; Luigi.DeGiovanni@contso.com''
 													--,@p_GetSessionRequestDetails = 1
 													--,@p_Verbose = 1;'
 		FROM msdb..sysjobs_view j where j.enabled = 1 and j.name like 'DBA Log Walk - %'

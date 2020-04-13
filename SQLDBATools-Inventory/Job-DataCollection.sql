@@ -3,7 +3,7 @@ DECLARE @_errorMSG VARCHAR(500);
 
 EXEC @result = xp_cmdshell 'PowerShell.exe -noprofile -command "C:\Users\adwivedi\Documents\WindowsPowerShell\Modules\SQLDBATools\Cmdlets\Wrapper-DatabaseBackupInfo.ps1"' ,no_output;  
 EXEC [SQLDBATools].Staging.usp_ETL_DatabaseBackup;
-EXEC SQLDBATools..[usp_GetMail_4_SQLDBATools] @p_Option = 'BackupInfo' ,@p_recipients = 'ajay.dwivedi@tivo.com;Nasir.Malik@tivo.com'; 
+EXEC SQLDBATools..[usp_GetMail_4_SQLDBATools] @p_Option = 'BackupInfo' ,@p_recipients = 'ajay.dwivedi@contso.com;Nasir.Malik@contso.com'; 
 
 IF (@result = 0) 
 BEGIN 

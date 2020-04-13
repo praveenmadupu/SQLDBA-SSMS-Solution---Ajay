@@ -16,7 +16,7 @@ EXEC @result = xp_cmdshell 'PowerShell.exe -noprofile -command "C:\Program` File
 IF (@result = '0') 
 BEGIN 
 	PRINT 'PowerShell script successfully executed.';
-	EXEC SQLDBATools..[usp_GetMail_4_SQLDBATools] @p_Option = 'EventLogs' ,@p_recipients = 'IT-Ops-SQLDBA@tivo.com';--IT-Ops-SQLDBA@tivo.com	
+	EXEC SQLDBATools..[usp_GetMail_4_SQLDBATools] @p_Option = 'EventLogs' ,@p_recipients = 'IT-Ops-SQLDBA@contso.com';--IT-Ops-SQLDBA@contso.com	
 END
 ELSE
 BEGIN

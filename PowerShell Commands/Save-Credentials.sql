@@ -16,7 +16,7 @@ Set-Content $AESKeyFilePath $AESKey   # Any existing AES Key file will be overwr
 (get-item $AESKeyFilePath -Force).Attributes += 'ReadOnly';
 
 # Accounts to Save
-$Accounts = @("Corporate\DevSQL","Corporate\ProdSQL","Corporate\SQLDBATools","SA");
+$Accounts = @("contso\DevSQL","contso\ProdSQL","contso\SQLDBATools","SA");
 [System.Collections.ArrayList]$Credentials = @();
 foreach($username in $Accounts) {
     $password = Read-Host "Enter password for '$username': " -AsSecureString;

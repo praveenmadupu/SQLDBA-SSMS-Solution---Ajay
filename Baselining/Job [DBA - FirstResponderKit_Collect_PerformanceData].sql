@@ -26,7 +26,7 @@ Created By:	Ajay Dwivedi
 Purpose:	This job will collect data regarding running sessions, waits stats and queries.
 		Data is being collect for 14 days in DBA database tables like dbo.Blitz*****.', 
 		@category_name=N'DBA', 
-		@owner_login_name=N'CORPORATE\adwivedi', 
+		@owner_login_name=N'Contso\adwivedi', 
 		@notify_email_operator_name=N'Ajay Dwivedi', @job_id = @jobId OUTPUT
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 /****** Object:  Step [FirstResponderKit_Collect_PerformanceData]    Script Date: 2/20/2019 1:18:38 AM ******/

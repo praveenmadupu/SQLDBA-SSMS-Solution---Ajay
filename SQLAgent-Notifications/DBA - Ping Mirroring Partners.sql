@@ -24,7 +24,7 @@ EXEC @ReturnCode =  msdb.dbo.sp_add_job @job_name=N'DBA - Ping Mirroring Partner
 		@description=N'Contains powershell script to ping Mirroring Partner Server Server01 and Server02.
 To modify server names, check File F:\PingMirroringPartners\PingServers.ps1', 
 		@category_name=N'SQLDBATools', 
-		@owner_login_name=N'CORPORATE\adwivedi', @job_id = @jobId OUTPUT
+		@owner_login_name=N'contso\adwivedi', @job_id = @jobId OUTPUT
 IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
 /****** Object:  Step [Ping Servers]    Script Date: 09/12/2018 23:32:58 ******/
 EXEC @ReturnCode = msdb.dbo.sp_add_jobstep @job_id=@jobId, @step_name=N'Ping Servers', 

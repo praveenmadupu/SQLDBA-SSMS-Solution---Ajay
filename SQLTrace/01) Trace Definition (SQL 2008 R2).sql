@@ -368,8 +368,8 @@ set @bigintfilter = 10000
 exec sp_trace_setfilter @TraceID, 16, 0, 4, @bigintfilter
 */
 
--- Set Filter on LoginName = 'CORPORATE\vesta.amg.process'
-exec sp_trace_setfilter @TraceID, 11, 0, 0, N'CORPORATE\vesta.amg.process';
+-- Set Filter on LoginName = 'Contso\WindowsLoginName'
+exec sp_trace_setfilter @TraceID, 11, 0, 0, N'Contso\WindowsLoginName';
 
 -- Set Filter on DatabaseName like 'RoviMusicShipping_%'
 exec sp_trace_setfilter @TraceID, 35, 0, 6, N'RoviMusicShipping%';

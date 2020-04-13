@@ -2,7 +2,7 @@
 1) Permission Issues
 -- For folders, use:
 takeown --% /f "C:\Program Files\Microsoft SQL Server" /r /d y /a
-icacls --% "C:\Program Files\Microsoft SQL Server" /grant "Corporate\devsql":F /t /q
+icacls --% "C:\Program Files\Microsoft SQL Server" /grant "contso\devsql":F /t /q
 
 -- For Files
 takeown /f file_name /d y

@@ -50,7 +50,7 @@ select * from sys.traces
 if exists (select * from sys.traces t where t.path like 'g:\DBA\SQLTrace\CMP_OutOfSync_DeadlockIssue_%' and status = 1)
 begin
 	declare @traceID int
-	select @traceID = id from sys.traces t where t.path like 'g:\DBA\SQLTrace\CMP_OutOfSync_DeadlockIssue_TUL1CIPCNPDB1_14Sep2018_1047AM.trc' and status = 1;
+	select @traceID = id from sys.traces t where t.path like 'g:\DBA\SQLTrace\CMP_OutOfSync_DeadlockIssue_YourDbServerName_14Sep2018_1047AM.trc' and status = 1;
 	exec sp_trace_setstatus @traceID, 0;
 end
 select * from sys.traces

@@ -1,5 +1,5 @@
 # Script to Get Fragmentation Stats for All Dbs on Multiple Servers (in Parallel Jobs)
-$dbServers = @('TUL1CIPCNPDB1','TUL1CIPEDB2','TUL1CIPXDB13');
+$dbServers = @('DbServer01','DbServer02','DbServer03');
 
 $dbQuery = @"
 select d.name 

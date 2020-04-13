@@ -164,14 +164,14 @@
           <FullPath>ExecuteScripts4AllServers.sql</FullPath>
         </FileNode>
         <FileNode Name="HADR Alerts.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>HADR Alerts.sql</FullPath>
         </FileNode>
         <FileNode Name="Issues_In_Inventory.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Issues_In_Inventory.sql</FullPath>
         </FileNode>
@@ -229,12 +229,6 @@
           <AssociatedConnUserName />
           <FullPath>Quiz_DDLs.sql</FullPath>
         </FileNode>
-        <FileNode Name="RITM0042946__AlwaysOn.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>RITM0042946__AlwaysOn.sql</FullPath>
-        </FileNode>
         <FileNode Name="Scripts.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
@@ -242,8 +236,8 @@
           <FullPath>Scripts.sql</FullPath>
         </FileNode>
         <FileNode Name="Setup [DBA] db.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Setup [DBA] db.sql</FullPath>
         </FileNode>
@@ -270,12 +264,6 @@
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>UnAttended-Sql-Installation.sql</FullPath>
-        </FileNode>
-        <FileNode Name="Update Server Details.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>Update Server Details.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>
@@ -310,6 +298,12 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>5. Post OS Installation - Add Shared Folders VirtualBox.ps1</FullPath>
+        </FileNode>
+        <FileNode Name="SQLDBATools.zip">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SQLDBATools.zip</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

@@ -301,8 +301,8 @@ DBA Alerts,
 
 	EXEC msdb..sp_send_dbmail
 			@profile_name = @@servername,
-			@recipients = 'It-Ops-DBA@tivo.com',
-			--@recipients = 'ajay.dwivedi@tivo.com',
+			@recipients = 'It-Ops-DBA@contso.com',
+			--@recipients = 'ajay.dwivedi@contso.com',
 			@subject = 'Alert - TempDb Files Size Crossed Threshold',
 			@body = @_mailBody;
 END

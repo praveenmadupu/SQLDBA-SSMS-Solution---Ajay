@@ -1,7 +1,7 @@
 --	1) Get files 
-exec xp_cmdshell 'dir \\tul1cipcnpdb1\f$\dump\*Staging_* /od /b '
+exec xp_cmdshell 'dir \\MyDbServerName\f$\dump\*Facebook_* /od /b '
 /*
 output
-TUL1CIPCNPDB1_Staging_LOG_20180323_000501.csq
-TUL1CIPCNPDB1_Staging_LOG_20180323_001500.csq
+MyDbServerName_Facebook_LOG_20180323_000501.csq
+MyDbServerName_Facebook_LOG_20180323_001500.csq
 */

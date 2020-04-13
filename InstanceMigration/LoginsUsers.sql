@@ -1,13 +1,13 @@
 --	01) Script Out User Permissions
 Import-Module dbatools;
-Export-DbaUser -SqlInstance TUL1CIPXDB18 -Database Logging -User RV_BP_APPUSR
+Export-DbaUser -SqlInstance YourDbServerName -Database Logging -User YourAppUser01
 
 --	01) Script Out User Permissions
 Import-Module dbatools;
-Export-DbaUser -SqlInstance TUL1CIPXDB18 -Database Logging -User RV_BP_APPUSR
+Export-DbaUser -SqlInstance YourDbServerName -Database Logging -User YourAppUser02
 
 --	02) Script Out User Permissions
-$scriptPath = Get-DatabasePermissions -SqlInstance tul1advDdb1old2;
+$scriptPath = Get-DatabasePermissions -SqlInstance YourDbServerName;
 $server = 'servername'
 $files = Get-ChildItem $scriptPath;
 

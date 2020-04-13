@@ -2,7 +2,7 @@ $file = "$($env:TEMP)\Get-LinkedServer.html";
 $CssStyleSheet = (Get-Module -Name SQLDBATools -ListAvailable).ModuleBase+"\HTML\"+$Global:SQLDBATools_CssStyleSheet;
 if(Test-Path $file) {Remove-Item $file -Force -WarningAction SilentlyContinue;}
 
-#$result = Get-LinkedServer -SqlInstance 'tul1dbapmtdb1\sql2017';
+#$result = Get-LinkedServer -SqlInstance 'MyDbServerName\sql2017';
 
 $frag1 = $result |
     ConvertTo-EnhancedHTMLFragment -DivCssID LinkedServerDiv `
@@ -14,7 +14,7 @@ $frag1 = $result |
                                    -EvenRowCssClass Even `
                                    -OddRowCssClass Odd `
                                    -MakeTableDynamic `
-                                   -PreContent '<h2>tul1dbapmtdb1\sql2017</h2>' `
+                                   -PreContent '<h2>MyDbServerName\sql2017</h2>' `
                                    -MakeHiddenSection `
                                    -PostContent "Retrieved $(Get-Date)" |
     Out-String

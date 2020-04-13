@@ -182,7 +182,6 @@ BEGIN
 				IF @p_Verbose = 1
 					PRINT 'Sending mail..';
 
-				-- From -> SQL Alerts - TUL1CIPRDB1 <SQLAlerts@tivo.com>
 				SET @_mailSubject = 'SQL Agent Job '+QUOTENAME(@p_JobName)+' Failed for '+cast(@NoOfContinousFailures as varchar(2))+ ' times';
 				SELECT @_mailBody = 'Dear '+(CASE WHEN @IsBlockingIssue = 1 THEN 'DSG-Team' ELSE 'DBA Team' END)+',
 
@@ -206,7 +205,7 @@ RCA:			Kindly execute below query to find out details of Blockers.
 
 Thanks & Regards,
 SQL Alerts
-It-Ops-DBA@tivo.com
+It-Ops-DBA@contso.com
 
 -- Alert Coming from SQL Agent Job [DBA Log Walk Alerts]
 	';

@@ -48,7 +48,7 @@ CREATE TABLE [Staging].[ServerInfo]
 	[EnvironmentType] [CHAR](4) NULL,
 	[FQDN] [varchar](125) NOT NULL,
 	[IPAddress] [varchar](15) NULL,
-	[Domain] [nvarchar](30) NULL DEFAULT 'CORPORATE',
+	[Domain] [nvarchar](30) NULL DEFAULT 'Contso',
 	[IsStandaloneServer] [BIT] NULL DEFAULT 1,
 	[IsSqlClusterNode] [BIT]  NULL DEFAULT 0,
 	[IsAgNode] [BIT]  NULL DEFAULT 0,
@@ -87,7 +87,7 @@ CREATE TABLE [dbo].[Server]
 	[EnvironmentType] [CHAR](4) NULL,
 	[FQDN] [varchar](125) NOT NULL,
 	[IPAddress] [varchar](15) NULL,
-	[Domain] [nvarchar](30) NULL DEFAULT 'CORPORATE',
+	[Domain] [nvarchar](30) NULL DEFAULT 'Contso',
 	[IsStandaloneServer] [BIT] NULL DEFAULT 1,
 	[IsSqlClusterNode] [BIT] NULL DEFAULT 0,
 	[IsAgNode] [BIT] NULL DEFAULT 0,
@@ -226,13 +226,13 @@ GO
 select * from dbo.Application o
 	where o
 
-SELECT distinct a.Category, a.BusinessUnit, a.BusinessOwner, a.TechnicalOwner, a.SecondaryTechnicalOwner  FROM dbo.Server_Nasir as a WHERE a.Server = 'TUL1CIPEDB2'
+SELECT distinct a.Category, a.BusinessUnit, a.BusinessOwner, a.TechnicalOwner, a.SecondaryTechnicalOwner  FROM dbo.Server_Nasir as a WHERE a.Server = 'YourDbServerName'
 
 select a.*
-from TUL1DBAPMTDB1.SQLDBATools.Info.Server s 
-join TUL1DBAPMTDB1.SQLDBATools.Info.[Xref_ApplicationServer] x on x.ServerName = s.ServerName
-join TUL1DBAPMTDB1.SQLDBATools.Info.[Application] as a on a.ApplicationID = x.ApplicationID
-where s.ServerName  = 'TUL1CIPEDB2'
+from DbaTestServer.SQLDBATools.Info.Server s 
+join DbaTestServer.SQLDBATools.Info.[Xref_ApplicationServer] x on x.ServerName = s.ServerName
+join DbaTestServer.SQLDBATools.Info.[Application] as a on a.ApplicationID = x.ApplicationID
+where s.ServerName  = 'YourDbServerName'
 
 */
 
