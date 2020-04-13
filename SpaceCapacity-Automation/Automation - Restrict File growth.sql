@@ -6,7 +6,7 @@ GO
 ALTER PROCEDURE [dbo].[usp_AnalyzeSpaceCapacity]
 	@getInfo BIT = 0, @getLogInfo BIT = 0, @volumeInfo BIT = 0, @help BIT = 0, @addDataFiles BIT = 0, @addLogFiles BIT = 0, @restrictDataFileGrowth BIT = 0, @restrictLogFileGrowth BIT = 0, @generateCapacityException BIT = 0, @unrestrictFileGrowth BIT = 0, @removeCapacityException BIT = 0, @UpdateMountPointSecurity BIT = 0, @restrictMountPointGrowth BIT = 0, @expandTempDBSize BIT = 0, @optimizeLogFiles BIT = 0, @getVolumeSpaceConsumers BIT = 0,
 	@newVolume VARCHAR(200) = NULL, @oldVolume VARCHAR(200) = NULL, @mountPointGrowthRestrictionPercent TINYINT = 79, @tempDBMountPointPercent TINYINT = NULL, @tempDbMaxSizeThresholdInGB INT = NULL, @DBs2Consider VARCHAR(1000) = NULL, @mountPointFreeSpaceThreshold_GB INT = 60
-	,@verbose BIT = 0 ,@testAllOptions BIT = 0 ,@forceExecute BIT = 0 ,@allowMultiVolumeUnrestrictedFiles BIT = 0 ,@output4IdealScenario BIT = 0, @handleXPCmdShell BIT = 0
+	,@verbose BIT = 0 ,@testAllOptions BIT = 0 ,@forceExecute BIT = 0 ,@allowMulcontsolumeUnrestrictedFiles BIT = 0 ,@output4IdealScenario BIT = 0, @handleXPCmdShell BIT = 0
 AS
 BEGIN
 	/*
@@ -1266,12 +1266,12 @@ BEGIN
 				END
 
 				/* By default, if another unrestricted file exists in any other volume, then don't create files for that db */
-				IF @allowMultiVolumeUnrestrictedFiles = 1
+				IF @allowMulcontsolumeUnrestrictedFiles = 1
 				BEGIN
 					IF	@_LogOrData = 'Log'
 					BEGIN
 						IF @verbose = 1
-							PRINT	'	Updating #T_Files_Derived table for @allowMultiVolumeUnrestrictedFiles option.';
+							PRINT	'	Updating #T_Files_Derived table for @allowMulcontsolumeUnrestrictedFiles option.';
 						UPDATE	fo
 						SET		isExisting_UnrestrictedGrowth_on_OtherVolume = 0
 						FROM	#T_Files_Derived AS fo
@@ -2569,7 +2569,7 @@ BEGIN
 				--
 				UNION ALL
 					--
-				SELECT	'@allowMultiVolumeUnrestrictedFiles','BIT','0','All creation of multiple data/log files with unrestricted growth on multiple volumes.'
+				SELECT	'@allowMulcontsolumeUnrestrictedFiles','BIT','0','All creation of multiple data/log files with unrestricted growth on multiple volumes.'
 				--
 				UNION ALL
 					--
@@ -2594,7 +2594,7 @@ BEGIN
 												|
 												@addDataFiles = { 1 | 0 } ,@newVolume = <drive_name>, @oldVolume = <drive_name> [,@DBs2Consider = <comma separated database names>] [,@forceExecute = 1] 
 												|
-												@addLogFiles = { 1 | 0 } ,@newVolume = <drive_name>, @oldVolume = <drive_name> [,@allowMultiVolumeUnrestrictedFiles = 1] [,@DBs2Consider = <comma separated database names>] [,@forceExecute = 1] 
+												@addLogFiles = { 1 | 0 } ,@newVolume = <drive_name>, @oldVolume = <drive_name> [,@allowMulcontsolumeUnrestrictedFiles = 1] [,@DBs2Consider = <comma separated database names>] [,@forceExecute = 1] 
 												|
 												@restrictDataFileGrowth = { 1 | 0 } ,@oldVolume = <drive_name> [,@DBs2Consider = <comma separated database names>] [,@forceExecute = 1]
 												|
@@ -2654,8 +2654,8 @@ BEGIN
 		EXEC [dbo].[usp_AnalyzeSpaceCapacity] @addLogFiles = 1 ,@newVolume = ''E:\Logs1\'' ,@oldVolume = ''E:\Logs\''
 		EXEC [dbo].[usp_AnalyzeSpaceCapacity] @addLogFiles = 1 ,@newVolume = ''E:\Logs1\'' ,@oldVolume = ''E:\Logs\'' ,@DBs2Consider = ''unet, Test1Db, MirrorTestDB'';
 		EXEC [dbo].[usp_AnalyzeSpaceCapacity] @addLogFiles = 1 ,@newVolume = ''E:\Logs1\'' ,@oldVolume = ''E:\Logs\'' ,@forceExecute = 1
-		EXEC [dbo].[usp_AnalyzeSpaceCapacity] @addLogFiles = 1 ,@newVolume = ''E:\Logs1\'' ,@oldVolume = ''E:\Logs\'' ,@allowMultiVolumeUnrestrictedFiles = 1
-		EXEC [dbo].[usp_AnalyzeSpaceCapacity] @addLogFiles = 1 ,@newVolume = ''E:\Logs1\'' ,@oldVolume = ''E:\Logs\'' ,@allowMultiVolumeUnrestrictedFiles = 1 ,@forceExecute = 1
+		EXEC [dbo].[usp_AnalyzeSpaceCapacity] @addLogFiles = 1 ,@newVolume = ''E:\Logs1\'' ,@oldVolume = ''E:\Logs\'' ,@allowMulcontsolumeUnrestrictedFiles = 1
+		EXEC [dbo].[usp_AnalyzeSpaceCapacity] @addLogFiles = 1 ,@newVolume = ''E:\Logs1\'' ,@oldVolume = ''E:\Logs\'' ,@allowMulcontsolumeUnrestrictedFiles = 1 ,@forceExecute = 1
 
 		This generates TSQL Code for add log files on @newVolume for each database on @oldVolume.
 

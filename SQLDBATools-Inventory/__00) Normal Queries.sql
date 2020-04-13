@@ -66,7 +66,7 @@ from	SQLDBATools..Application as a;
 ;WITH T_Apps AS (
 select [Category], [BusinessUnit], [Businessowner], [TechnicalOwner], [SecondaryTechnicalOwner]
 		,ROW_NUMBER()over(ORDER by [Category], [BusinessUnit], [Businessowner], [TechnicalOwner], [SecondaryTechnicalOwner]) as RecordID
-from [DbaTestServer\SQL2016].[TivoSQLInventory].dbo.Server s
+from [DbaTestServer\SQL2016].[contsoSQLInventory].dbo.Server s
 where (s.Businessowner is not null or s.[TechnicalOwner] is not null or s.[SecondaryTechnicalOwner] is not null)
 group by [Category], [BusinessUnit], [Businessowner], [TechnicalOwner], [SecondaryTechnicalOwner]
 --order by [Category], [BusinessUnit], [Businessowner], [TechnicalOwner], [SecondaryTechnicalOwner]
@@ -78,14 +78,14 @@ where	a.RecordID not in (1,3,4,7,27,29,32,36)
 ORDER BY a.RecordID ASC;
 
 select * 
-into #TivoSQLInventory_Server
-from [DbaTestServer\SQL2016].[TivoSQLInventory].dbo.Server
+into #contsoSQLInventory_Server
+from [DbaTestServer\SQL2016].[contsoSQLInventory].dbo.Server
 
 
 update s
 set s.ApplicationID = a.ApplicationID
 --select	b.ServerID, b.Server, b.ShortDescription, b.AdditionalNotes, s.FQDN, a.ApplicationID
-from #TivoSQLInventory_Server as b
+from #contsoSQLInventory_Server as b
 inner join dbo.Application as a
 	on a.BusinessUnit = ltrim(rtrim(b.BusinessUnit))
 	and a.Category = ltrim(rtrim(b.Category))

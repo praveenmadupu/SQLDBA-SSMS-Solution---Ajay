@@ -176,7 +176,7 @@ foreach($server in $Servers)
     $SqlInstance += $r;
 }
 
-$SqlInstance | Export-Excel 'C:\temp\TivoSQLServerInventory.xlsx'
+$SqlInstance | Export-Excel 'C:\temp\contsoSQLServerInventory.xlsx'
 
 
 -- 17) Group-Object & Measure-Object

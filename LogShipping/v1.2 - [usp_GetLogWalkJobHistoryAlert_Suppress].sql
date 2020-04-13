@@ -17,7 +17,7 @@ ALTER PROCEDURE [dbo].[usp_GetLogWalkJobHistoryAlert_Suppress]
 		@p_SendMail BIT = 0,
 		@p_Mail_TO VARCHAR(1000) = NULL,
 		@p_Mail_CC VARCHAR(1000) = NULL,
-		@p_SlackMailID VARCHAR(1000) = 'k2b0c1w9g1k7d5e0@tivo.slack.com;IT-Ops-DBA@contso.com;',
+		@p_SlackMailID VARCHAR(1000) = 'k2b0c1w9g1k7d5e0@contso.slack.com;IT-Ops-DBA@contso.com;',
 		@p_Help BIT = 0
 AS
 BEGIN 

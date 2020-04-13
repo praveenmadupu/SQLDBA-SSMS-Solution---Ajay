@@ -7,5 +7,5 @@ $a | Select-Object * | ogv
 
 $a | Sort-Object -Property TimeGenerated | Export-Clixml -Path c:\EventLogs_ACE_Cluster.xml
 
-$logs = Import-Clixml 'C:\Users\adwivedi\OneDrive - TiVo Inc\Attachments\Daily Tasks\2019 Sep\EventLogs_ACE_Cluster.xml'
+$logs = Import-Clixml 'C:\Users\adwivedi\OneDrive - contso Inc\Attachments\Daily Tasks\2019 Sep\EventLogs_ACE_Cluster.xml'
 $logs | Where-Object {$_.Source -ne 'DCOM'} | select TimeGenerated, MachineName, EventID, EntryType, Source, Message | ogv

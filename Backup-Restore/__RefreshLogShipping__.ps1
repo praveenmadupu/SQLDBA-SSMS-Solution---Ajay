@@ -1,4 +1,4 @@
-﻿# Get-TivoLogWalkBackupRestore
+# Get-contsoLogWalkBackupRestore
 $SourceServer = 'source01';
 $SourceDbName = 'db01';
 $DestinationServer = 'destination01';

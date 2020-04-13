@@ -10,7 +10,7 @@ SELECT @p_CheckDate as [@p_CheckDate], * FROM DBA.dbo.BlitzFirst
 "@;
 
 $rs = Invoke-DbaQuery -SqlInstance $server -Query $tsqlQuery;
-$rs | Export-Excel -Path 'C:\MS-OneDrive\OneDrive - TiVo Inc\Attachments\Daily Tasks\2019 March\Cosmo-Slowness-Mar07-1630-IST.xlsx' -WorkSheetname 'BlitzFirst';
+$rs | Export-Excel -Path 'C:\MS-OneDrive\OneDrive - contso Inc\Attachments\Daily Tasks\2019 March\Cosmo-Slowness-Mar07-1630-IST.xlsx' -WorkSheetname 'BlitzFirst';
 
 $tsqlQuery = @"
 DECLARE @p_CheckDate datetimeoffset
@@ -23,4 +23,4 @@ SELECT collection_Time as [@p_CheckDate], * FROM [DBA].[dbo].[WhoIsActive_Result
 "@;
 
 $rs = Invoke-DbaQuery -SqlInstance $server -Query $tsqlQuery;
-$rs | Export-Excel -Path 'C:\MS-OneDrive\OneDrive - TiVo Inc\Attachments\Daily Tasks\2019 March\Cosmo-Slowness-Mar07-1630-IST.xlsx' -WorkSheetname 'WhoIsActive_ResultSets';
+$rs | Export-Excel -Path 'C:\MS-OneDrive\OneDrive - contso Inc\Attachments\Daily Tasks\2019 March\Cosmo-Slowness-Mar07-1630-IST.xlsx' -WorkSheetname 'WhoIsActive_ResultSets';
