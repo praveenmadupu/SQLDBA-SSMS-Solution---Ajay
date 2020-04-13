@@ -73,6 +73,12 @@
           <AssociatedConnUserName />
           <FullPath>EnhancedHtml.sql</FullPath>
         </FileNode>
+        <FileNode Name="Find-and-Replace-Text-All-Files.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Find-and-Replace-Text-All-Files.sql</FullPath>
+        </FileNode>
         <FileNode Name="Find-ChangedDatabases-Since-Date.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
