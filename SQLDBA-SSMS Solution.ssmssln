@@ -61,6 +61,8 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Self-Service-Module-Signed-
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Linux", "Linux\Linux.ssmssqlproj", "{4C79BFF5-461D-4BF1-A467-30CC92F3170F}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "SQL-Lab", "SQL-Lab\SQL-Lab.ssmssqlproj", "{F88BA745-0139-4320-94DA-2EE60B0A1D68}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -95,7 +97,8 @@ Global
 		{FC215972-4485-4B29-82C1-4DDD218D9303}.Default|Default.ActiveCfg = Default
 		{9B9DD5DB-FCD6-4B9F-9BC0-54DCAF827C99}.Default|Default.ActiveCfg = Default
 		{4C79BFF5-461D-4BF1-A467-30CC92F3170F}.Default|Default.ActiveCfg = Default
-		{91D26CF7-4CD2-4EFF-A4EA-8BFA0B460B57}.Default|Default.ActiveCfg = Default
+		{A2A2EEFA-E39E-403A-B77A-7449BF14CE65}.Default|Default.ActiveCfg = Default
+		{F88BA745-0139-4320-94DA-2EE60B0A1D68}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

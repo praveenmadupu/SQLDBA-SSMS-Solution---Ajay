@@ -56,8 +56,8 @@
           <FullPath>Common-Commands.sql</FullPath>
         </FileNode>
         <FileNode Name="Different-Files-Between-Paths.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Different-Files-Between-Paths.sql</FullPath>
         </FileNode>

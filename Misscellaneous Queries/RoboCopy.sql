@@ -25,3 +25,6 @@ robocopy \\SRCServer\F$\dump\db01\ v:\dump\DB02_dump\ *-data.DMP /XF "AMGMusicAu
 robocopy \\SourceServer\F$\dump\ I:\Backups\CW\Logs\ *.csq /is
 
 robocopy SourcePath DestinationPath FileFullName /it /zb
+
+-- Copy all files/folders including Empty directories
+Robocopy /S /E  \\SourceDbServer\F:\AllProd F:\AllProd /MT
