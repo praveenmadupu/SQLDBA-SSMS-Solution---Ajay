@@ -27,6 +27,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="sqla:sa">
+          <Created>2020-04-20T18:41:08.1726728+05:30</Created>
+          <Type>SQL</Type>
+          <Server>sqla</Server>
+          <UserName>sa</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
@@ -200,9 +212,9 @@
           <FullPath>SQL Server Error Logs.sql</FullPath>
         </FileNode>
         <FileNode Name="SqlCluster-Troubleshooting.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:sqla:False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>sqla</AssociatedConnSrvName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>SqlCluster-Troubleshooting.sql</FullPath>
         </FileNode>
         <FileNode Name="Sql-Installation-Hosts.sql">

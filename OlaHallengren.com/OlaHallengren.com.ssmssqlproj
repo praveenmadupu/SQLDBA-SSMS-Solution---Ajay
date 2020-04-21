@@ -27,6 +27,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="sqla:sa">
+          <Created>2020-04-19T13:34:14.5452416+05:30</Created>
+          <Type>SQL</Type>
+          <Server>sqla</Server>
+          <UserName>sa</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB>master</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="TUL1CIPCNPDB1:CORPORATE\adwivedi">
           <Created>2019-10-31T21:51:37.4157116+05:30</Created>
           <Type>SQL</Type>
@@ -86,9 +98,9 @@
           <FullPath>[IndexOptimize_Modified].sql</FullPath>
         </FileNode>
         <FileNode Name="DatabaseBackup.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:sqla:False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>sqla</AssociatedConnSrvName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>DatabaseBackup.sql</FullPath>
         </FileNode>
         <FileNode Name="Get-Log-File-Size-Used.sql">

@@ -43,6 +43,12 @@
           <AssociatedConnUserName />
           <FullPath>Get-DbSize.sql</FullPath>
         </FileNode>
+        <FileNode Name="Get-LogFile-Space-Usage.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Get-LogFile-Space-Usage.sql</FullPath>
+        </FileNode>
         <FileNode Name="Get-VolumeInfo.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
@@ -68,8 +74,8 @@
           <FullPath>Purge-Records-In-Chunks.sql</FullPath>
         </FileNode>
         <FileNode Name="Shrink Log Files.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Shrink Log Files.sql</FullPath>
         </FileNode>
