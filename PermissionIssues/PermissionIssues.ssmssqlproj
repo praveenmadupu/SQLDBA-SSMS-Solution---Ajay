@@ -49,6 +49,18 @@
           <AssociatedConnUserName />
           <FullPath>Database-Permissions-(Direct+Indirect).sql</FullPath>
         </FileNode>
+        <FileNode Name="Get-Login-Sid.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Get-Login-Sid.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Get-Login-Sid-Powershell.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Get-Login-Sid-Powershell.sql</FullPath>
+        </FileNode>
         <FileNode Name="GetPermissions.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
@@ -67,11 +79,11 @@
           <AssociatedConnUserName />
           <FullPath>Install Powershell ISE.sql</FullPath>
         </FileNode>
-        <FileNode Name="SQLQuery1.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
+        <FileNode Name="Take-Ownership-of-Files-Folders.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>SQLQuery1.sql</FullPath>
+          <FullPath>Take-Ownership-of-Files-Folders.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>
