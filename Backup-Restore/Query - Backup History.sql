@@ -17,7 +17,7 @@ SELECT TOP 100 CONVERT(CHAR(100), SERVERPROPERTY('Servername')) AS SERVER
 	,bs.backup_size
 	,bmf.logical_device_name
 	,bmf.physical_device_name
-	,bs.NAME AS backupset_name
+	,bs.name AS backupset_name
 	,bs.description
 	,first_lsn
 	,last_lsn

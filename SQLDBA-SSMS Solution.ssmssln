@@ -65,6 +65,8 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "SQL-Lab", "SQL-Lab\SQL-Lab.
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Mail-Replies", "Mail-Replies\Mail-Replies.ssmssqlproj", "{F9719B0E-647E-4BF6-B539-C4749EB02DEC}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Planning-And-Installation", "Planning-And-Installation\Planning-And-Installation.ssmssqlproj", "{0FCD38BE-0145-489F-9164-3B6B584F25AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -99,9 +101,10 @@ Global
 		{FC215972-4485-4B29-82C1-4DDD218D9303}.Default|Default.ActiveCfg = Default
 		{9B9DD5DB-FCD6-4B9F-9BC0-54DCAF827C99}.Default|Default.ActiveCfg = Default
 		{4C79BFF5-461D-4BF1-A467-30CC92F3170F}.Default|Default.ActiveCfg = Default
-		{A2A2EEFA-E39E-403A-B77A-7449BF14CE65}.Default|Default.ActiveCfg = Default
 		{F88BA745-0139-4320-94DA-2EE60B0A1D68}.Default|Default.ActiveCfg = Default
 		{F9719B0E-647E-4BF6-B539-C4749EB02DEC}.Default|Default.ActiveCfg = Default
+		{DB3CB99F-516C-4479-AD53-6267B5C4238F}.Default|Default.ActiveCfg = Default
+		{0FCD38BE-0145-489F-9164-3B6B584F25AA}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
