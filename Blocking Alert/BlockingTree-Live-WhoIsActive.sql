@@ -2,7 +2,8 @@ USE tempdb;
 
 DECLARE @s VARCHAR(MAX), @t VARCHAR(MAX);
 DECLARE @tableName varchar(255);
-DECLARE @DeleteFlag bit = 0; /* 0 = drop, 1 = truncate, 2 = No Action */
+DECLARE @DeleteFlag tinyint; /* 0 = drop, 1 = truncate, 2 = No Action */
+SET @DeleteFlag = 2;
 SET @tableName = 'tempdb.dbo.WhoIsActive_ResultSet';
 
 EXEC sp_WhoIsActive @sort_order = '[start_time] ASC', @get_outer_command=1, @find_block_leaders=1 --,@get_full_inner_text=1
@@ -13,14 +14,15 @@ EXEC sp_WhoIsActive @sort_order = '[start_time] ASC', @get_outer_command=1, @fin
 
 SET @s = REPLACE(@s, '<table_name>', @tableName)
 
-IF(@DeleteFlag = 0) 
+IF @DeleteFlag = 0
 	SET @t = 'IF OBJECT_ID('''+@tableName+''') IS NOT NULL DROP TABLE '+@tableName;
-IF(@DeleteFlag = 1) 
+IF @DeleteFlag = 1
 	SET @t = 'IF EXISTS(SELECT * FROM '+@tableName+') TRUNCATE TABLE '+@tableName;
-IF(@DeleteFlag = 2) 
+IF @DeleteFlag = 2
 	SET @t = '-- ignore';
 
 EXEC(@t);
+PRINT @t;
 SET @s = 'IF OBJECT_ID('''+@tableName+''') IS NULL '+@s;
 EXEC(@s);
 
@@ -31,8 +33,7 @@ EXEC sp_WhoIsActive @sort_order = '[start_time] ASC', @get_outer_command=1, @fin
 					--,@get_plans=1 /* 1 = current query, 2 = entire batch */
 					,@destination_table = @tableName;
 
---select r.*
---from dbo.WhoIsActive_ResultSet as r; -- @tableName
+select distinct [collection_time] from dbo.WhoIsActive_ResultSet as r; -- @tableName
 --go
 
 
@@ -66,15 +67,29 @@ EXEC sp_WhoIsActive @sort_order = '[start_time] ASC', @get_outer_command=1, @fin
 )
 --select * from T_BLOCKERS
 	
-SELECT	[BLOCKING_TREE] = N'    ' + REPLICATE (N'|         ', LEN (LEVEL)/4 - 1) 
+SELECT	r.[collection_time],
+		[BLOCKING_TREE] = N'    ' + REPLICATE (N'|         ', LEN (LEVEL)/4 - 1) 
 						+	CASE	WHEN (LEN(LEVEL)/4 - 1) = 0
 									THEN 'HEAD -  '
 									ELSE '|------  ' 
 							END
 						+	CAST (r.session_id AS NVARCHAR (10)) + N' ' + (CASE WHEN LEFT(r.[batch_text],1) = '(' THEN SUBSTRING(r.[batch_text],CHARINDEX('exec',r.[batch_text]),LEN(r.[batch_text]))  ELSE r.[batch_text] END),
-		r.[dd hh:mm:ss.mss], r.[session_id], r.[sql_text], r.[sql_command], r.[login_name], r.[wait_info], r.[tempdb_allocations], r.[tempdb_current], 
-		r.[blocking_session_id], r.[blocked_session_count], r.[reads], r.[writes], r.[physical_reads], r.[CPU], r.[used_memory], r.[status], r.[open_tran_count], 
-		r.[percent_complete], r.[host_name], r.[database_name], r.[program_name], r.[start_time], r.[login_time], r.[request_id], r.[collection_time]
+		r.[dd hh:mm:ss.mss], r.[wait_info], r.[blocked_session_count], r.[blocking_session_id], --r.[sql_text], r.[sql_command],
+		r.[login_name], r.[host_name], r.[database_name], r.[program_name], r.[tempdb_allocations], r.[tempdb_current], 
+		r.[reads], r.[writes], r.[physical_reads], r.[CPU], r.[used_memory], r.[status], r.[open_tran_count], 
+		r.[percent_complete], r.[start_time], r.[login_time], r.[request_id]
 FROM	T_BLOCKERS AS r
 ORDER BY collection_time, LEVEL ASC;
+
+select @@servername as srvName, r.login_name, r.program_name, r.database_name, count(r.session_id) as session_counts
+from tempdb.dbo.WhoIsActive_ResultSet AS r
+group by r.login_name, r.program_name, r.database_name
+having count(r.session_id) > (select count(distinct [collection_time]) from dbo.WhoIsActive_ResultSet as r)
+order by session_counts desc
+go
+
+/*
+delete from tempdb.dbo.WhoIsActive_ResultSet
+where collection_time not in ('2020-07-10 15:52:58.490')
+*/
 
