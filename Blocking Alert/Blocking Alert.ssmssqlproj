@@ -91,11 +91,17 @@
           <AssociatedConnUserName />
           <FullPath>Blocking-Alert-Azure.sql</FullPath>
         </FileNode>
-        <FileNode Name="Blocking-Tree.sql">
+        <FileNode Name="BlockingTree-Live.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
-          <FullPath>Blocking-Tree.sql</FullPath>
+          <FullPath>BlockingTree-Live.sql</FullPath>
+        </FileNode>
+        <FileNode Name="BlockingTree-Live-WhoIsActive.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>BlockingTree-Live-WhoIsActive.sql</FullPath>
         </FileNode>
         <FileNode Name="Find-Blocking-Tree-LockTime.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>

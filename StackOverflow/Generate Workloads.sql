@@ -4,5 +4,5 @@ Using Stack Overflow Queries to Generate Workloads
 Scripted Simulation of SQL Server Loads
 https://github.com/gavdraper/ChaosLoad
 
-
-
+What is the best way to auto-generate INSERT statements for a SQL Server table?
+	https://stackoverflow.com/questions/982568/what-is-the-best-way-to-auto-generate-insert-statements-for-a-sql-server-table

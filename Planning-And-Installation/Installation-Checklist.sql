@@ -6,23 +6,11 @@ SqlInstance:-
 Service Accounts:-
 Environment (Dev/QA/UAT/Prod):-
 
-Instance Root directory:-   E:\MSSQL\
-Data Directory:-            E:\Data\
-Log Directory:-             E:\Log\
-TempDb Directory:-          E:\TempDb\
-Backup Directory:-          E:\Backup\
-
-E:\
-E:\MSSQL\
-E:\Data\
-E:\Log\
-E:\TempDb\
-E:\Backup\
-
-E:\Facebook\ - data\log
-E:\Twitter\ - data\log\
-E:\Amazon\ - data\log\
-
+Instance Root directory:-   E:\MSSQL<version>.<InstanceName>\MSSQL\   (E:\MSSQL14.MSSQLSERVER\MSSQL\)
+Data Directory:-            E:\MSSQL<version>.<InstanceName>\Data\
+Log Directory:-             E:\MSSQL<version>.<InstanceName>\Log\
+TempDb Directory:-          E:\MSSQL<version>.<InstanceName>\TempDb\
+Backup Directory:-          E:\MSSQL<version>.<InstanceName>\Backup\
 
 Max Memory Configuration:-
 Degree of Parallelism:-
@@ -30,6 +18,9 @@ Cost Threshold of Parallelism:-
 Fast File Initialization:-
 Lock Pages in Memory:-
 Collation:-
+
+Power Mode :-
+SQL Server File & Agent History:-
 
 
 

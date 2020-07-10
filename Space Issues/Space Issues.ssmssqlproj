@@ -3,7 +3,7 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="(local):CORPORATE\adwivedi">
+        <ConnectionNode Name="(local):MSI\ajayd">
           <Created>2019-09-20T17:21:31.5828346+05:30</Created>
           <Type>SQL</Type>
           <Server>(local)</Server>
@@ -15,7 +15,7 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="LOCALHOST:CORPORATE\adwivedi">
+        <ConnectionNode Name="LOCALHOST:MSI\ajayd">
           <Created>2020-01-27T12:35:23.8326405+05:30</Created>
           <Type>SQL</Type>
           <Server>LOCALHOST</Server>
@@ -78,6 +78,12 @@
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Shrink Log Files.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SQLQuery2.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>SQLQuery2.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

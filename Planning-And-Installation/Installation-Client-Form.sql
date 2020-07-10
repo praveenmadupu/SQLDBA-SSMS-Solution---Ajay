@@ -13,7 +13,7 @@ SQL Server Service Packs:-
 
 Components to Install:-
 ---------------------
-Collation:-										__________________________
+Collation:-										____________DEFAULT______________
 
 Instance Features:-
 	Database Engine Service:-					___________X_______________
@@ -32,13 +32,19 @@ Shared Features:-
 
 
 User/Groups that should be added as SysAdmins:-
-	______________________Lab\facebook________________________________________________________
+	______________________Lab\facebook______________________________________________________
 	______________________________________________________________________________
+
+
+What is expected growth of databases in One Year:-	___________________1 tb__________________
+TempDb Initial Size = 20% of 1tb = 200 gb
+TempDb Autogrowth = 1/20th of Intial Size = 10 gb
 
 
 --	-----------------------------------------------------------------------
 --	-----------------------------------------------------------------------
 Application Details:-
+
 -------------------
 Environment:-
 	Dev/QA/UAT/Prod:			_________________________Prod_______________________________
