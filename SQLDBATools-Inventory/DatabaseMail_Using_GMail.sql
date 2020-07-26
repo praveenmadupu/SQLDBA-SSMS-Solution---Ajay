@@ -16,45 +16,45 @@ go
 --#################################################################################################
 -- BEGIN Mail Settings admin
 --#################################################################################################
-IF NOT EXISTS(SELECT * FROM msdb.dbo.sysmail_profile WHERE  name = 'admin') 
-  BEGIN
-    --CREATE Profile [admin]
-    EXECUTE msdb.dbo.sysmail_add_profile_sp
-      @profile_name = 'admin',
-      @description  = 'Profile for sending Automated DBA Notifications';
-  END --IF EXISTS profile
+IF NOT EXISTS(SELECT * FROM msdb.dbo.sysmail_profile WHERE  name = 'gmail') 
+BEGIN
+--CREATE Profile [admin]
+EXECUTE msdb.dbo.sysmail_add_profile_sp
+    @profile_name = 'gmail',
+    @description  = 'Profile for sending Automated DBA Notifications using GMail';
+END --IF EXISTS profile
   
-  IF NOT EXISTS(SELECT * FROM msdb.dbo.sysmail_account WHERE  name = 'SQLAgent')
-  BEGIN
-    --CREATE Account [SQLAgent]
-    EXECUTE msdb.dbo.sysmail_add_account_sp
-    @account_name            = 'SQLAgent',
-    @email_address           = 'ajay.dwivedi2007@gmail.com',
-    @display_name            = 'SQLAlerts',
-    @replyto_address         = 'ajay.dwivedi2007@gmail.com',
-    @description             = '',
-    @mailserver_name         = 'smtp.gmail.com',
-    @mailserver_type         = 'SMTP',
-    @port                    = 587,
-    @username                = 'sqlagentservice@gmail.com',
-    @password                = 'gkghzexzfdcqqysz', -- Generate Latest Password
-    @use_default_credentials =  0 ,
-    @enable_ssl              =  1 ;
-  END --IF EXISTS  account
-  
+IF NOT EXISTS(SELECT * FROM msdb.dbo.sysmail_account WHERE  name = 'SQLGMailAgent')
+BEGIN
+--CREATE Account [SQLAgent]
+EXECUTE msdb.dbo.sysmail_add_account_sp
+@account_name            = 'SQLGMailAgent',
+@email_address           = 'sqlagentservice@gmail.com',
+@display_name            = 'SQLAlerts',
+@replyto_address         = 'sqlagentservice@gmail.com',
+@description             = '',
+@mailserver_name         = 'smtp.gmail.com',
+@mailserver_type         = 'SMTP',
+@port                    = 587,
+@username                = 'sqlagentservice@gmail.com',
+@password                = 'dpvgmsiqdpvgmsus', -- Generate Latest Password
+@use_default_credentials =  0 ,
+@enable_ssl              =  1 ;
+END --IF EXISTS  account
+
 IF NOT EXISTS(SELECT *
-              FROM msdb.dbo.sysmail_profileaccount pa
-                INNER JOIN msdb.dbo.sysmail_profile p ON pa.profile_id = p.profile_id
-                INNER JOIN msdb.dbo.sysmail_account a ON pa.account_id = a.account_id  
-              WHERE p.name = 'admin'
-                AND a.name = 'SQLAgent') 
-  BEGIN
-    -- Associate Account [SQLAgent] to Profile [admin]
-    EXECUTE msdb.dbo.sysmail_add_profileaccount_sp
-      @profile_name = 'admin',
-      @account_name = 'SQLAgent',
-      @sequence_number = 1 ;
-  END --IF EXISTS associate accounts to profiles
+            FROM msdb.dbo.sysmail_profileaccount pa
+            INNER JOIN msdb.dbo.sysmail_profile p ON pa.profile_id = p.profile_id
+            INNER JOIN msdb.dbo.sysmail_account a ON pa.account_id = a.account_id  
+            WHERE p.name = 'admin'
+            AND a.name = 'SQLAgent') 
+BEGIN
+-- Associate Account [SQLAgent] to Profile [admin]
+EXECUTE msdb.dbo.sysmail_add_profileaccount_sp
+    @profile_name = 'gmail',
+    @account_name = 'SQLGMailAgent',
+    @sequence_number = 1 ;
+END --IF EXISTS associate accounts to profiles
 --#################################################################################################
 -- Drop Settings For admin
 
@@ -69,7 +69,7 @@ SQL Server Agent
 ';
 
 EXEC msdb.dbo.sp_send_dbmail  
-    @profile_name = 'admin',  
+    @profile_name = 'gmail',  
     @recipients = 'ajay.dwivedi2007@gmail.com',  
     @body = @_Body,  
     @subject = @_Subject ;  

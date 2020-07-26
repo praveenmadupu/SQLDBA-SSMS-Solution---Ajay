@@ -23,7 +23,7 @@ IF @DeleteFlag = 2
 
 EXEC(@t);
 PRINT @t;
-SET @s = 'IF OBJECT_ID('''+@tableName+''') IS NULL '+@s;
+SET @s = 'IF OBJECT_ID('''+@tableName+''') IS NULL BEGIN '+@s+'; CREATE CLUSTERED INDEX [CI_WhoIsActive_ResultSet] ON '+@tableName+' ( [collection_time] ASC, session_id ); END'
 EXEC(@s);
 
 
@@ -33,8 +33,14 @@ EXEC sp_WhoIsActive @sort_order = '[start_time] ASC', @get_outer_command=1, @fin
 					--,@get_plans=1 /* 1 = current query, 2 = entire batch */
 					,@destination_table = @tableName;
 
-select distinct [collection_time] from dbo.WhoIsActive_ResultSet as r; -- @tableName
---go
+-- Delete records when No Blocking was Found
+delete from tempdb.dbo.WhoIsActive_ResultSet
+where collection_time in (select r.collection_time from tempdb.dbo.WhoIsActive_ResultSet as r 
+						group by r.collection_time having count(r.blocking_session_id) = 0);
+
+--select * from tempdb.dbo.WhoIsActive_ResultSet
+--where [blocking_session_id] is not null
+--or [blocked_session_count] > 0
 
 
 ;WITH T_BLOCKERS AS
@@ -84,12 +90,8 @@ ORDER BY collection_time, LEVEL ASC;
 select @@servername as srvName, r.login_name, r.program_name, r.database_name, count(r.session_id) as session_counts
 from tempdb.dbo.WhoIsActive_ResultSet AS r
 group by r.login_name, r.program_name, r.database_name
-having count(r.session_id) > (select count(distinct [collection_time]) from dbo.WhoIsActive_ResultSet as r)
+having count(r.session_id) > (select count(distinct [collection_time]) from tempdb.dbo.WhoIsActive_ResultSet as r)
 order by session_counts desc
 go
 
-/*
-delete from tempdb.dbo.WhoIsActive_ResultSet
-where collection_time not in ('2020-07-10 15:52:58.490')
-*/
 
