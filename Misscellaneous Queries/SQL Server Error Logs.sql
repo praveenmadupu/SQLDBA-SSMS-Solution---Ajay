@@ -16,3 +16,19 @@ EXEC master..xp_readerrorlog 0,1, N'Server is listening on'
 EXEC master..xp_readerrorlog 0,1, N'Dedicated admin connection support'
 
 EXEC master.dbo.xp_readerrorlog 0, 1, EUExtracts, NULL, "2018-04-02", NULL, "desc"
+
+EXEC master.dbo.xp_readerrorlog 0, 1, NULL, NULL, "2020-07-28 04:51:00.000", "2020-07-28 04:55:00.000", "asc"
+
+--	******************************************************************************************************************************************
+--	******************************************************************************************************************************************
+if OBJECT_ID('tempdb..#errorlog') is not null
+	drop table #errorlog;
+create table #errorlog (LogDate datetime2 not null, ProcessInfo varchar(200) not null, Text varchar(2000) not null);
+
+insert #errorlog
+EXEC master.dbo.xp_readerrorlog 0, 1, NULL, NULL, "2020-07-28 04:40:00.000", "2020-07-28 04:55:00.000", "asc";
+
+select *
+from #errorlog as e
+where e.ProcessInfo not in ('Backup')
+and e.Text not like 'DbMgrPartnerCommitPolicy::SetSyncState:%'

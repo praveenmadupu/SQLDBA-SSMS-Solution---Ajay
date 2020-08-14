@@ -15,25 +15,37 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="MSI:MSI\ajayd">
+          <Created>2020-08-09T14:22:08.3367797+05:30</Created>
+          <Type>SQL</Type>
+          <Server>MSI</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>DBA</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
+        <FileNode Name="_Find Myself, Brent, Sam, and Others.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>_Find Myself, Brent, Sam, and Others.sql</FullPath>
+        </FileNode>
         <FileNode Name="Create [dbo].[PostTags] table.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Create [dbo].[PostTags] table.sql</FullPath>
         </FileNode>
-        <FileNode Name="Find Myself, Brent, Sam, and Others.sql">
+        <FileNode Name="Generate Workloads.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>Find Myself, Brent, Sam, and Others.sql</FullPath>
-        </FileNode>
-        <FileNode Name="Generate Workloads.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Generate Workloads.sql</FullPath>
         </FileNode>
@@ -43,17 +55,83 @@
           <AssociatedConnUserName />
           <FullPath>Help.sql</FullPath>
         </FileNode>
-        <FileNode Name="How many upvotes do I have for each tag.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+        <FileNode Name="QA - Find interesting unanswered questions.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>How many upvotes do I have for each tag.sql</FullPath>
+          <FullPath>QA - Find interesting unanswered questions.sql</FullPath>
         </FileNode>
-        <FileNode Name="How Unsung am I.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+        <FileNode Name="QA - High Standards - Top 100 Users that rarely upvote.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>How Unsung am I.sql</FullPath>
+          <FullPath>QA - High Standards - Top 100 Users that rarely upvote.sql</FullPath>
+        </FileNode>
+        <FileNode Name="QA - How many upvotes do I have for each tag.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QA - How many upvotes do I have for each tag.sql</FullPath>
+        </FileNode>
+        <FileNode Name="QA - How many upvotes do I have towards tag-specialist badges.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QA - How many upvotes do I have towards tag-specialist badges.sql</FullPath>
+        </FileNode>
+        <FileNode Name="QA - How Unsung am I.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QA - How Unsung am I.sql</FullPath>
+        </FileNode>
+        <FileNode Name="QA - Low views, high votes yet unanswered.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QA - Low views, high votes yet unanswered.sql</FullPath>
+        </FileNode>
+        <FileNode Name="QA - Most controversial posts on the site.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QA - Most controversial posts on the site.sql</FullPath>
+        </FileNode>
+        <FileNode Name="QA - My Comment Score distribution.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QA - My Comment Score distribution.sql</FullPath>
+        </FileNode>
+        <FileNode Name="QA - StackOverflow Rank and Percentile.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QA - StackOverflow Rank and Percentile.sql</FullPath>
+        </FileNode>
+        <FileNode Name="QA - Top 50 Most Prolific Editors.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QA - Top 50 Most Prolific Editors.sql</FullPath>
+        </FileNode>
+        <FileNode Name="QA - Top 500 answerers on the site.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QA - Top 500 answerers on the site.sql</FullPath>
+        </FileNode>
+        <FileNode Name="QA - Users with highest accept rate of their answers.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QA - Users with highest accept rate of their answers.sql</FullPath>
+        </FileNode>
+        <FileNode Name="QA - What is my accepted answer percentage rate.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QA - What is my accepted answer percentage rate.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

@@ -67,6 +67,14 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Mail-Replies", "Mail-Replie
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Planning-And-Installation", "Planning-And-Installation\Planning-And-Installation.ssmssqlproj", "{0FCD38BE-0145-489F-9164-3B6B584F25AA}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Audit", "Audit\Audit.ssmssqlproj", "{EFA6E1C8-2464-4408-B0DC-F64FDCD19284}"
+EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Resource Governor", "Resource Governor\Resource Governor.ssmssqlproj", "{0E5583CE-59E0-46C2-BBA9-1E5EEDC6521C}"
+EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "SQLWATCH", "SQLWATCH\SQLWATCH.ssmssqlproj", "{EC08BB0F-8B97-409A-8504-2B6D2E45744B}"
+EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Demo", "Demo\Demo.ssmssqlproj", "{73A2B586-BBB3-4B06-8338-3057280C2839}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -103,8 +111,12 @@ Global
 		{4C79BFF5-461D-4BF1-A467-30CC92F3170F}.Default|Default.ActiveCfg = Default
 		{F88BA745-0139-4320-94DA-2EE60B0A1D68}.Default|Default.ActiveCfg = Default
 		{F9719B0E-647E-4BF6-B539-C4749EB02DEC}.Default|Default.ActiveCfg = Default
-		{DB3CB99F-516C-4479-AD53-6267B5C4238F}.Default|Default.ActiveCfg = Default
 		{0FCD38BE-0145-489F-9164-3B6B584F25AA}.Default|Default.ActiveCfg = Default
+		{EFA6E1C8-2464-4408-B0DC-F64FDCD19284}.Default|Default.ActiveCfg = Default
+		{0E5583CE-59E0-46C2-BBA9-1E5EEDC6521C}.Default|Default.ActiveCfg = Default
+		{EC08BB0F-8B97-409A-8504-2B6D2E45744B}.Default|Default.ActiveCfg = Default
+		{95F87598-E703-46ED-AF6A-6AF6307A8CC9}.Default|Default.ActiveCfg = Default
+		{73A2B586-BBB3-4B06-8338-3057280C2839}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -37,7 +37,7 @@ EXECUTE msdb.dbo.sysmail_add_account_sp
 @mailserver_type         = 'SMTP',
 @port                    = 587,
 @username                = 'sqlagentservice@gmail.com',
-@password                = 'dpvgmsiqdpvgmsus', -- Generate Latest Password
+@password                = 'asdfasdfasrewdfvzxgaw', -- Generate Latest Password
 @use_default_credentials =  0 ,
 @enable_ssl              =  1 ;
 END --IF EXISTS  account

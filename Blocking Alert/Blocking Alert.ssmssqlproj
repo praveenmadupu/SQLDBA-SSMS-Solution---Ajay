@@ -15,6 +15,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="MSI:MSI\ajayd">
+          <Created>2020-08-03T23:23:57.2241558+05:30</Created>
+          <Type>SQL</Type>
+          <Server>MSI</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="TUL1CIPCNPDB1:MSI\ajayd">
           <Created>2019-11-08T20:15:38.1374995+05:30</Created>
           <Type>SQL</Type>
@@ -92,14 +104,14 @@
           <FullPath>Blocking-Alert-Azure.sql</FullPath>
         </FileNode>
         <FileNode Name="BlockingTree-Live.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MSI:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MSI</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>BlockingTree-Live.sql</FullPath>
         </FileNode>
         <FileNode Name="BlockingTree-Live-WhoIsActive.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MSI:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MSI</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>BlockingTree-Live-WhoIsActive.sql</FullPath>
         </FileNode>

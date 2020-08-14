@@ -3,7 +3,7 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="(local):CORPORATE\adwivedi">
+        <ConnectionNode Name="(local):MSI\ajayd">
           <Created>2019-10-17T00:03:20.0126408+05:30</Created>
           <Type>SQL</Type>
           <Server>(local)</Server>
@@ -15,13 +15,37 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="LOCALHOST:CORPORATE\adwivedi">
+        <ConnectionNode Name="LOCALHOST:MSI\ajayd">
           <Created>2020-01-30T12:13:23.0613084+05:30</Created>
           <Type>SQL</Type>
           <Server>LOCALHOST</Server>
           <UserName />
           <Authentication>Windows Authentication</Authentication>
           <InitialDB>DBA</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="MSI:MSI\ajayd">
+          <Created>2020-08-08T01:08:16.6761132+05:30</Created>
+          <Type>SQL</Type>
+          <Server>MSI</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="SQL-A:sa">
+          <Created>2020-07-26T10:16:08.1371138+05:30</Created>
+          <Type>SQL</Type>
+          <Server>SQL-A</Server>
+          <UserName>sa</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB />
           <LoginTimeout>30</LoginTimeout>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
@@ -134,8 +158,8 @@
           <FullPath>Common Errors.sql</FullPath>
         </FileNode>
         <FileNode Name="DatabaseMail_Using_GMail.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MSI:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MSI</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>DatabaseMail_Using_GMail.sql</FullPath>
         </FileNode>
@@ -222,6 +246,12 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Powershell Script - xp_cmdshell.sql</FullPath>
+        </FileNode>
+        <FileNode Name="PS-meta-data-running-script.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MSI:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MSI</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>PS-meta-data-running-script.sql</FullPath>
         </FileNode>
         <FileNode Name="Quiz_DDLs.sql">
           <AssociatedConnectionMoniker />

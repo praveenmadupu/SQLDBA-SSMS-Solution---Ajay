@@ -6,8 +6,11 @@ SET STATISTICS IO ON;
 
 USE StackOverflow;
 
-DECLARE @UserId int = 61305
+-- How many upvotes do I have for each tag?
+-- how long before I get tag badges?
 
+DECLARE @UserId int = @id;
+-- How many upvotes do I have for each tag?
 SELECT --TOP 20 
     TagName,
     COUNT(*) AS UpVotes 
@@ -18,7 +21,8 @@ FROM Tags
 WHERE 
     Posts.OwnerUserId = @UserId
 GROUP BY TagName 
-ORDER BY UpVotes DESC
+ORDER BY UpVotes DESC;
+
 
 
 /*

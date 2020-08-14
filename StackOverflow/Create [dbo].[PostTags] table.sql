@@ -1,91 +1,42 @@
---dbcc freeproccache;
---dbcc dropcleanbuffers;
 USE StackOverflow
 go
 
-if OBJECT_ID('dbo.PostTags') IS NOT NULL
-	drop table dbo.PostTags
+create table dbo.PostTags 
+(	PostId int not null, 
+	TagId int not null,
+	constraint pk_PostTags primary key (PostId, Tagid),
+	constraint fk_PostTags__PostId foreign key (PostId) references dbo.Posts (Id),
+	constraint fk_PostTags__TagId foreign key (TagId) references dbo.Tags (Id)
+);
+go
+
+alter table dbo.PostTags nocheck constraint fk_PostTags__PostId;
+alter table dbo.PostTags nocheck constraint fk_PostTags__TagId;
 GO
 
---create nonclustered index nci_posts_Tags on dbo.Posts(Id,Tags) where  Tags IS NOT NULL 
---go
-
-;with t_posts as
-(	
-select Id, Tags, TotalTags = len(Tags)-len(replace(Tags,'>',''))
-from dbo.Posts as p
-	where Tags IS NOT NULL
-	--and Id = 6
-	--and len(tags) = 3
-	--order by Id
-)
-,t_posttags as
-(
-	select	Id, Tags, TotalTags
-			,TagName = case when TotalTags = 1
-							then cast(REPLACE(REPLACE(Tags,'<',''),'>','') as nvarchar(150))
-							else cast(SUBSTRING(Tags,2,CHARINDEX('>',Tags)-2) as nvarchar(150))
-						end
-			,TagsRemaining = case when TotalTags = 1
-								then Null
-								else SUBSTRING(Tags,CHARINDEX('>',Tags)+1,LEN(Tags))
-								end
-			--TotalTags = len(Tags)-len(replace(Tags,'>','')), 
-			,TagCounter = 1
-			,RemainingTagsCounts = case when TotalTags = 1
-								then 0
-								else len(Tags)-len(replace(Tags,'>',''))-1
-								end
-	from t_posts
-	--
-	
-	union all
-	--
-	select	c.Id, c.Tags, c.TotalTags,
-			TagName = case when c.TotalTags = TagCounter + 1
-							then cast(REPLACE(REPLACE(TagsRemaining,'<',''),'>','') as nvarchar(150))
-							else SUBSTRING(TagsRemaining,2,CHARINDEX('>',TagsRemaining)-2)
-						end,
-			TagsRemaining = case when c.TotalTags = TagCounter + 1
-								then null
-								else SUBSTRING(TagsRemaining,CHARINDEX('>',TagsRemaining)+1,LEN(TagsRemaining))
-							end,
-			--TotalTags = len(Tags)-len(replace(Tags,'>','')), 
-			TagCounter = p.TagCounter+1, 
-			RemainingTagsCounts = case when c.TotalTags = TagCounter + 1
-								then 0
-								else len(TagsRemaining)-len(replace(TagsRemaining,'>',''))-1
-								end
-	from t_posts as c
-	join t_posttags as p
-	on c.Id = p.Id
-	and c.TotalTags <> 1
-	and  c.TotalTags > TagCounter
-	 
-)
-select --*, 
-		cast(p.Id as int) as PostId, TagId = cast(t.Id as int)
-into dbo.PostTags
-from t_posttags as p
+declare @counter int = 1;
+declare @batch_size int = 10000;
+while ( ((@counter-1)*@batch_size) <= (select MAX(id) from dbo.Posts) )
+begin
+	insert dbo.PostTags (PostId, TagId)
+	select p.Id as PostId, t.Id as TagId
+	from dbo.Posts as p
+	outer apply
+		( select ltrim(rtrim(pt.value)) as PostTag
+		  from STRING_SPLIT(REPLACE(p.Tags,'<',''), '>') as pt
+		  where ltrim(rtrim(pt.value)) <> ''
+		  and p.Id > ((@counter-1)*@batch_size)
+		and p.Id <= (@counter*@batch_size)
+		) as pt
 	join dbo.Tags as t
-	on t.TagName = p.TagName
-order by PostId, TagId
+		on ltrim(rtrim(t.TagName)) = pt.PostTag
+	where p.Id > ((@counter-1)*@batch_size)
+		and p.Id <= (@counter*@batch_size)
 
--- drop table dbo.PostTags
---select * from dbo.PostTags
-
-/*
-drop index nci_posts_Tags on dbo.Posts
+	set @counter += 1;
+end
 go
 
-
-ALTER TABLE dbo.PostTags ALTER COLUMN [PostId] INTEGER NOT NULL
-go
-ALTER TABLE dbo.PostTags ALTER COLUMN [TagId] INTEGER NOT NULL
-go
-
-ALTER TABLE dbo.PostTags
-	ADD CONSTRAINT PK_PostTags__PostId_TagId PRIMARY KEY CLUSTERED ([PostId],[TagId])
-go
-
-*/
+alter table dbo.PostTags with check check constraint fk_PostTags__PostId;
+alter table dbo.PostTags with check check constraint fk_PostTags__TagId;
+GO
