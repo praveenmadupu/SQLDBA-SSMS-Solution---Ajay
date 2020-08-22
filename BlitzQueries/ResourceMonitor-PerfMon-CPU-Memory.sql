@@ -64,3 +64,7 @@ FROM  (	SELECT	record.value('(Record/@id)[1]', 'int') AS record_id,
 	  ) AS t
 ORDER BY EventTime desc;
 
+
+select *
+from sys.dm_os_waiting_tasks as wt
+where blocking_session_id is not null

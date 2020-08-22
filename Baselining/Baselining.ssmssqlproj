@@ -3,7 +3,7 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="(local):CORPORATE\adwivedi">
+        <ConnectionNode Name="(local):MSI\ajayd">
           <Created>2019-09-13T15:00:19.1557527+05:30</Created>
           <Type>SQL</Type>
           <Server>(local)</Server>
@@ -15,7 +15,7 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="LOCALHOST:CORPORATE\adwivedi">
+        <ConnectionNode Name="LOCALHOST:MSI\ajayd">
           <Created>2020-03-09T23:04:01.1172366+05:30</Created>
           <Type>SQL</Type>
           <Server>LOCALHOST</Server>
@@ -66,6 +66,12 @@
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>DBA - Start DataCollector.sql</FullPath>
+        </FileNode>
+        <FileNode Name="dbo.sqlg_parseRelogOutput.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>dbo.sqlg_parseRelogOutput.sql</FullPath>
         </FileNode>
         <FileNode Name="Export-Excel.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
@@ -138,6 +144,12 @@
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>PerfMon-Dbatools-DataCollection.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-ExtendedEvents-Queries.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-ExtendedEvents-Queries.sql</FullPath>
         </FileNode>
         <FileNode Name="SELECT permission to All Users.sql">
           <AssociatedConnectionMoniker />

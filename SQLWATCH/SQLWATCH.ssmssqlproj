@@ -25,17 +25,23 @@
           <AssociatedConnUserName />
           <FullPath>[dbg].[usp_sqlwatch_internal_process_checks].sql</FullPath>
         </FileNode>
+        <FileNode Name="Capture-CPU-Memory.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Capture-CPU-Memory.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Capture-QRY-CPU-Memory.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Capture-QRY-CPU-Memory.sql</FullPath>
+        </FileNode>
         <FileNode Name="checks.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>checks.sql</FullPath>
-        </FileNode>
-        <FileNode Name="config_action.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>config_action.sql</FullPath>
         </FileNode>
         <FileNode Name="DEBUG-usp_sqlwatch_internal_process_checks.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
@@ -43,11 +49,17 @@
           <AssociatedConnUserName />
           <FullPath>DEBUG-usp_sqlwatch_internal_process_checks.sql</FullPath>
         </FileNode>
-        <FileNode Name="SQLQuery1.sql">
+        <FileNode Name="Grafana-Queries.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>SQLQuery1.sql</FullPath>
+          <FullPath>Grafana-Queries.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SQLWATCH-Make-Changes-in-Configuration.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SQLWATCH-Make-Changes-in-Configuration.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

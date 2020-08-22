@@ -75,6 +75,8 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "SQLWATCH", "SQLWATCH\SQLWAT
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Demo", "Demo\Demo.ssmssqlproj", "{73A2B586-BBB3-4B06-8338-3057280C2839}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "VLDB-Shrink", "VLDB-Shrink\VLDB-Shrink.ssmssqlproj", "{9DBE8D07-B02C-4B14-9274-FF2D318432FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -115,8 +117,9 @@ Global
 		{EFA6E1C8-2464-4408-B0DC-F64FDCD19284}.Default|Default.ActiveCfg = Default
 		{0E5583CE-59E0-46C2-BBA9-1E5EEDC6521C}.Default|Default.ActiveCfg = Default
 		{EC08BB0F-8B97-409A-8504-2B6D2E45744B}.Default|Default.ActiveCfg = Default
-		{95F87598-E703-46ED-AF6A-6AF6307A8CC9}.Default|Default.ActiveCfg = Default
 		{73A2B586-BBB3-4B06-8338-3057280C2839}.Default|Default.ActiveCfg = Default
+		{32D20682-0BA9-4D0A-A48C-68CDAB1A730A}.Default|Default.ActiveCfg = Default
+		{9DBE8D07-B02C-4B14-9274-FF2D318432FA}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

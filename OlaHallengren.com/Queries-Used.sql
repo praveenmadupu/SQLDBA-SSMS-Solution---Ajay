@@ -1,5 +1,16 @@
 --	https://ola.hallengren.com/sql-server-backup.html
 
+EXECUTE audit_archive..IndexOptimize
+/* Update Stats */
+@Databases = 'geneva_warehouse',
+@FragmentationLow = NULL,
+@FragmentationMedium = NULL,
+@FragmentationHigh = NULL,
+@UpdateStatistics = 'ALL',
+@OnlyModifiedStatistics = 'Y';
+
+
+
 
 DECLARE @_dbNames VARCHAR(MAX);
 

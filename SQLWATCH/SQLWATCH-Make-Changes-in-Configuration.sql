@@ -44,3 +44,9 @@ where b.action_id = o.action_id
 	and b.action_enabled <> o.action_enabled
 and o.action_id in (-16,-6,-5,-4,-3)
 */
+
+
+-- Add Page Life Expectancy
+INSERT [SQLWATCH].[dbo].[sqlwatch_config_performance_counters]
+(object_name, counter_name, instance_name, base_counter_name, collect)
+SELECT 'SQLServer:Buffer Manager' as object_name, 'Page life expectancy' as counter_name, '' as instance_name, null as base_counter_name, 1 as collect

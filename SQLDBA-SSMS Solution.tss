@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<ArrayOfArrayOfArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <ArrayOfArrayOfString>
+    <ArrayOfString>
+      <string>D:\GitHub\SQLDBA-SSMS-Solution\BlitzQueries\WhatIsRunning.sql</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>D:\GitHub\SQLDBA-SSMS-Solution\Baselining\Job [DBA - Log_With_sp_WhoIsActive].sql</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>D:\GitHub\SQLDBA-SSMS-Solution\SQLWATCH\Grafana-Queries.sql</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>D:\GitHub\SQLDBA-SSMS-Solution\SQLDBATools-Inventory\Grafana-Queries.sql</string>
+    </ArrayOfString>
+  </ArrayOfArrayOfString>
+</ArrayOfArrayOfArrayOfString>

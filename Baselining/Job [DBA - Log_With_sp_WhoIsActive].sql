@@ -14,8 +14,9 @@ BEGIN
 
 	DECLARE @schema VARCHAR(4000) ;
 	--	Specify all your proc parameters here
-	EXEC master..sp_WhoIsActive @get_plans=2, @get_full_inner_text=0, @get_transaction_info=1, @get_task_info=2, @get_locks=1, 
-						@get_avg_time=1, @get_additional_info=1,@find_block_leaders=1, @get_outer_command =1
+	EXEC master..sp_WhoIsActive @get_outer_command=1, @get_task_info=2
+						,@get_locks=1 ,@get_plans=1 ,@find_block_leaders=1 --,@get_additional_info=1
+						--,@get_transaction_info=1
 						,@return_schema = 1
 						,@schema = @schema OUTPUT ;
 
