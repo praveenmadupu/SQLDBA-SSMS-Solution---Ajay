@@ -161,3 +161,4 @@ DBCC SQLPERF
      "sys.dm_os_wait_stats" , CLEAR 
 )   
 WITH NO_INFOMSGS ;
+

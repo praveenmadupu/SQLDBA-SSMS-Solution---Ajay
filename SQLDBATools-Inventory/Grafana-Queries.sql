@@ -138,10 +138,121 @@ END;
 
 
 
-USE DBA
-select collection_time as time, cntr_value as [Batch Requests/sec]
-from DBA.dbo.dm_os_performance_counters
+select master.dbo.local2utc(collection_time) as time, counter_name, cntr_value
+from DBA.dbo.dm_os_performance_counters as pc
 where 1 = 1
---and collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo()) 
-and object_name = 'SQLServer:SQL Statistics' and counter_name in ('Batch Requests/sec')
+and pc.object_name = 'SQLServer:Memory Manager' and counter_name not in ('Memory Grants Pending')
+--and collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())
+
+
+select master.dbo.local2utc(collection_time) as time, counter_name, cntr_value
+from DBA.dbo.dm_os_performance_counters as pc
+where 1 = 1
+and pc.object_name = 'SQLServer:SQL Statistics' --and counter_name not in ('Memory Grants Pending')
+--and collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())
+
+
+select master.dbo.local2utc(collection_time) as time, counter_name, cntr_value
+from DBA.dbo.dm_os_performance_counters as pc
+where 1 = 1
+and pc.object_name = 'SQLServer:Buffer Manager' --and counter_name not in ('Memory Grants Pending')
+--and collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())
+
+
+select distinct object_name, counter_name, instance_name, cntr_type from DBA..dm_os_performance_counters as pc where object_name = 'SQLServer:Buffer Manager'
+
+select * from sys.dm_os_performance_counters as pc 
+where --object_name like 'SQLServer:Buffer Manager%'
+pc.counter_name like '%available%'
+--or pc.counter_name like 'SQL Compilations/sec%'
+--or pc.counter_name like 'SQL Re-Compilations/sec%'
+/*
+SQL Attention rate
+SQL Compilations/sec
+SQL Re-Compilations/sec
+*/
+
+select master.dbo.local2utc(collection_time) as time, cast(free_memory_kb/1024 as decimal(20,2)) as [Available Mbytes], used_page_file_mb = cast(used_page_file_kb*1024 as decimal(30,2))
+from DBA.[dbo].[dm_os_sys_memory]
+where 1 = 1
+--and collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())
+--and server_name = $server_name
 order by time asc
+
+
+select rtrim(object_name) as object_name, rtrim(counter_name) as counter_name, rtrim(instance_name) as instance_name, rtrim(cntr_type) as cntr_type
+from sys.dm_os_performance_counters as pc
+where rtrim(object_name) like 'SQLServer:Transactions%'
+--
+EXCEPT
+--
+select distinct rtrim(object_name) as object_name, rtrim(counter_name) as counter_name, rtrim(instance_name) as instance_name, rtrim(cntr_type) as cntr_type
+from DBA..dm_os_performance_counters as pc
+where rtrim(object_name) like 'SQLServer:Transactions'
+
+;with t_counters as (
+	select distinct top 100 rtrim(object_name) as object_name, rtrim(counter_name) as counter_name, rtrim(cntr_type) as cntr_type
+	from sys.dm_os_performance_counters
+	where	(	object_name like 'SQLServer:Transactions%'
+			and
+				( counter_name like 'Free Space in tempdb (KB)%'
+				  or
+				  counter_name like 'Longest Transaction Running Time%'
+				  or
+				  counter_name like 'Transactions%'
+				  or
+				  counter_name like 'Version Store Size (KB)%'
+				)
+			)
+	order by cntr_type, object_name, counter_name
+)
+select		--*,
+		'			or
+			( [object_name] like '''+object_name+'%'' and [counter_name] like '''+counter_name+'%'' )'
+from t_counters
+--where cntr_type = '272696576'
+order by cntr_type, object_name, counter_name
+
+
+select distinct object_name, counter_name, instance_name
+from dbo.dm_os_performance_counters
+order by object_name, counter_name, instance_name
+
+
+SELECT --TOP(5)
+		--@current_time as collection_time,
+		[type] AS memory_clerk,
+		SUM(pages_kb) / 1024 AS size_mb
+--INTO DBA..dm_os_memory_clerks
+FROM sys.dm_os_memory_clerks WITH (NOLOCK)
+GROUP BY [type]
+HAVING (SUM(pages_kb) / 1024) > 0
+ORDER BY SUM(pages_kb) DESC
+
+SELECT  *
+FROM sys.dm_os_memory_cache_counters
+order by pages_kb DESC
+
+SELECT objtype, cacheobjtype, 
+  AVG(usecounts) AS Avg_UseCount, 
+  SUM(refcounts) AS AllRefObjects, 
+  SUM(CAST(size_in_bytes AS bigint))/1024/1024 AS Size_MB
+FROM sys.dm_exec_cached_plans
+--WHERE objtype = 'Adhoc' AND usecounts = 1
+GROUP BY objtype, cacheobjtype;
+
+
+select top 1 collection_time as time
+        ,available_physical_memory_gb*1024 as decimal(20,0)) as available_physical_memory 
+from DBA.[dbo].[dm_os_sys_memory]
+order by collection_time desc
+
+select top 1 collection_time as time, (free_memory_kb*1.0)/1024 as [Available Memory]
+from DBA.[dbo].[dm_os_sys_memory]
+order by collection_time desc
+
+select *
+from DBA..WhoIsActive_ResultSets as r
+where r.collection_time >= '2020-08-23 16:30:00'
+
+select getdate()
