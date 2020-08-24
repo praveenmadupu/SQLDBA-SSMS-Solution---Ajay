@@ -1,10 +1,10 @@
-ï»¿Import-Module dbatools;
+Import-Module dbatools;
 $collector_root_directory = 'D:\MSSQL15.MSSQLSERVER\MSSQL\Perfmon';
 $data_collector_set_name = 'DBA';
 $dsn = 'LocalSqlServer';
 $DBAInventory = 'MSI';
 
-$data_collector_template_path = â€œ$collector_root_directory\DBA_PerfMon_NonSQL_Collector_Template.xmlâ€;
+$data_collector_template_path = “$collector_root_directory\DBA_PerfMon_NonSQL_Collector_Template.xml”;
 $log_file_path = "$collector_root_directory\$($env:COMPUTERNAME)__"
 
 $tsql_last_log_file_imported = @"
@@ -32,8 +32,8 @@ $perfmonfiles = Get-ChildItem -Path $collector_root_directory  -Filter *.blg |
                     Where-Object {$_.FullName -gt $last_log_file_imported -or $last_log_file_imported -eq $null -or [String]::IsNullOrEmpty($last_log_file_imported)}
 
 if($current_log_file_status -eq 'Running') {
-    logman stop -name â€œ$data_collector_set_nameâ€
-    logman start -name â€œ$data_collector_set_nameâ€
+    logman stop -name “$data_collector_set_name”
+    logman start -name “$data_collector_set_name”
 }
 
 
@@ -44,7 +44,6 @@ foreach($perfmonfile in $perfmonfiles)
 
     $AllArgs = @($sourceBlg, '-f', 'SQL', '-o', $sqlDSNconection)
     $relog_result = relog $AllArgs
-    Write-Output "Importing -> $sourceBlg"
 }
 
 #Add-OdbcDsn -Name "LocalSqlServer" -DriverName "SQL Server" -DsnType "System" -SetPropertyValue @("Server=MSI", "Trusted_Connection=Yes", "Database=DBA")

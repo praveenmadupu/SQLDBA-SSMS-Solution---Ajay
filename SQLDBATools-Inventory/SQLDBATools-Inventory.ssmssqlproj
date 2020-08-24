@@ -242,8 +242,8 @@
           <FullPath>PowerShell Collection Failure Mail.sql</FullPath>
         </FileNode>
         <FileNode Name="Powershell Script - CmdExec.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Powershell Script - CmdExec.sql</FullPath>
         </FileNode>
@@ -258,6 +258,24 @@
           <AssociatedConnSrvName>MSI</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>PS-meta-data-running-script.sql</FullPath>
+        </FileNode>
+        <FileNode Name="PS-perfmon-collector-logman.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>PS-perfmon-collector-logman.sql</FullPath>
+        </FileNode>
+        <FileNode Name="PS-perfmon-collector-push-to-sqlserver.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>PS-perfmon-collector-push-to-sqlserver.sql</FullPath>
+        </FileNode>
+        <FileNode Name="PS-perfmon-remove-imported-files.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>PS-perfmon-remove-imported-files.sql</FullPath>
         </FileNode>
         <FileNode Name="Quiz_DDLs.sql">
           <AssociatedConnectionMoniker />
@@ -318,12 +336,6 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>SQLDBATools_DDLs.sql</FullPath>
-        </FileNode>
-        <FileNode Name="SQLQuery2.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>SQLQuery2.sql</FullPath>
         </FileNode>
         <FileNode Name="UnAttended-Sql-Installation.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>

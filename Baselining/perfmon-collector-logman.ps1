@@ -1,9 +1,9 @@
 ﻿cls
 
-$collector_root_directory = 'D:\MSSQL15.MSSQLSERVER\SQLWATCH';
-$data_collector_template_path = “$collector_root_directory\DBA_PerfMon_Collector-Template.xml”;
+$collector_root_directory = 'D:\MSSQL15.MSSQLSERVER\MSSQL\Perfmon';
+$data_collector_set_name = 'DBA';
+$data_collector_template_path = “$collector_root_directory\DBA_PerfMon_NonSQL_Collector_Template.xml”;
 $log_file_path = "$collector_root_directory\$($env:COMPUTERNAME)__"
-$data_collector_set_name = 'DBA_PerfMon_Collector';
 $file_rotation_time = '04:00:00'
 $sample_interval = '00:00:05'
 $version_format = 'yyyyMMdd\-HHmmss'

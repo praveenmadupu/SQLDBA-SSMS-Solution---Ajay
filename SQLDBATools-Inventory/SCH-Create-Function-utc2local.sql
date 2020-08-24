@@ -20,6 +20,29 @@ begin
 end
 go
 
+create function perfmon2utc (@CounterDateTime varchar(24))
+returns datetime2
+as
+begin
+	declare @utc_time datetime2;
+	select @utc_time = DATEADD(second, DATEDIFF(second, GETDATE(), GETUTCDATE()), CONVERT(DATETIME, SUBSTRING(@CounterDateTime, 1, 23), 102));
+
+	return (@utc_time);
+end
+go
+
+create function perfmon2local (@CounterDateTime varchar(24))
+returns datetime2
+as
+begin
+	declare @local_time datetime2;
+	select @local_time = Cast(Cast(@CounterDateTime as CHAR(23)) as datetime2);
+
+	return (@local_time);
+end
+go
+
+
 alter function time2duration (@time bigint, @unit varchar(20) = 'second')
 returns varchar(30)
 as

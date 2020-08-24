@@ -462,5 +462,52 @@ GO
 -- Delete the primary key constraint.  
 ALTER TABLE dbo.[dm_os_performance_counters]
 	DROP CONSTRAINT pk_dm_os_performance_counters;   
-GO  
+GO
+
+USE [DBA]
+GO
+
+--DROP  TABLE [dbo].[dm_os_performance_counters_nonsql]
+CREATE TABLE [dbo].[dm_os_performance_counters_nonsql](
+	[collection_time] [datetime] NOT NULL,
+	[server_name] [varchar](256) NOT NULL,
+	[object_name] [varchar](1024) NOT NULL,
+	[counter_name] [varchar](1024) NOT NULL,
+	[instance_name] [varchar](1024) NULL,
+	[cntr_value] [float] NOT NULL,
+	[cntr_type] [int] NOT NULL,
+	[id] [bigint] IDENTITY(1,1) NOT NULL
+) ON [PRIMARY]
+GO
+
+ALTER TABLE dbo.dm_os_performance_counters_nonsql
+   ADD CONSTRAINT pk_dm_os_performance_counters_nonsql PRIMARY KEY CLUSTERED (collection_time, server_name, object_name, counter_name, id);
+GO
+
+--DROP TABLE [dbo].[dm_os_sys_info]
+CREATE TABLE [dbo].[dm_os_sys_info]
+(
+	[collection_time] [datetime] NOT NULL,
+	[server_name] [varchar](256) NOT NULL,
+	[sqlserver_start_time] [datetime] NOT NULL,
+	[wait_stats_cleared_time] [smalldatetime] NOT NULL,
+	[cpu_count] [smallint] NOT NULL,
+	[physical_memory_kb] [bigint] NOT NULL,
+	[max_workers_count] [smallint] NOT NULL,
+	[virtual_machine_type] [int] NOT NULL,
+	[softnuma_configuration_desc] [varchar](256) NOT NULL,
+	[socket_count] [tinyint] NOT NULL,
+	[cores_per_socket] [smallint] NOT NULL,
+	[numa_node_count] [tinyint] NOT NULL
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[dm_os_sys_info]
+   ADD CONSTRAINT pk_dm_os_sys_info PRIMARY KEY CLUSTERED (collection_time);
+GO
+
+CREATE NONCLUSTERED INDEX nci_dm_os_sys_info__sqlserver_start_time__wait_stats_cleared_time
+	ON [dbo].[dm_os_sys_info] (sqlserver_start_time, wait_stats_cleared_time)
+GO
 */
+
