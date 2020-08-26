@@ -5,13 +5,24 @@
       <string>D:\GitHub\SQLDBA-SSMS-Solution\BlitzQueries\WhatIsRunning.sql</string>
     </ArrayOfString>
     <ArrayOfString>
-      <string>D:\GitHub\SQLDBA-SSMS-Solution\Baselining\Job [DBA - Log_With_sp_WhoIsActive].sql</string>
+      <string>D:\GitHub\SQLDBA-SSMS-Solution\StackOverflow\Generate Workloads.sql</string>
     </ArrayOfString>
     <ArrayOfString>
-      <string>D:\GitHub\SQLDBA-SSMS-Solution\SQLWATCH\Grafana-Queries.sql</string>
+      <string>D:\GitHub\SQLDBA-SSMS-Solution\SQLDBATools-Inventory\SCH-usp_collect_performance_metrics.sql</string>
     </ArrayOfString>
     <ArrayOfString>
       <string>D:\GitHub\SQLDBA-SSMS-Solution\SQLDBATools-Inventory\Grafana-Queries.sql</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>D:\GitHub\SQLDBA-SSMS-Solution\Audit\Connection Limit.sql</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>D:\GitHub\SQLDBA-SSMS-Solution\ErrorLogs\QRY-SqlCluster-Failover-Time.sql</string>
+    </ArrayOfString>
+  </ArrayOfArrayOfString>
+  <ArrayOfArrayOfString>
+    <ArrayOfString>
+      <string>D:\GitHub\SQLDBA-SSMS-Solution\TempScripts\WaitStats-Grafana.sql</string>
     </ArrayOfString>
   </ArrayOfArrayOfString>
 </ArrayOfArrayOfArrayOfString>

@@ -211,7 +211,7 @@ GO
 USE [master]
 GO
 
-ALTER TRIGGER [audit_login_events] ON ALL SERVER 
+CREATE TRIGGER [audit_login_events] ON ALL SERVER 
 FOR 
 LOGON 
 AS 

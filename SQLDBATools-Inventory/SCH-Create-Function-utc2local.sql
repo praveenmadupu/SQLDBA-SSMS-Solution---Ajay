@@ -42,8 +42,10 @@ begin
 end
 go
 
+use master
+go
 
-alter function time2duration (@time bigint, @unit varchar(20) = 'second')
+alter function time2duration (@time varchar(27), @unit varchar(20) = 'second')
 returns varchar(30)
 as
 begin
@@ -83,4 +85,5 @@ begin
 end
 go
 
---select master.dbo.time2duration(121,'s')
+
+--select /* Convert 5428424 seconds into [DD hh:mm:ss] */	master.dbo.time2duration(5428424,'s');

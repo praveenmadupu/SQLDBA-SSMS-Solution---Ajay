@@ -79,6 +79,8 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "VLDB-Shrink", "VLDB-Shrink\
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "TempScripts", "TempScripts\TempScripts.ssmssqlproj", "{2AA8E206-6A25-4890-8FDA-08B61B56AD00}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "ErrorLogs", "ErrorLogs\ErrorLogs.ssmssqlproj", "{5BC08764-DBEC-4148-AD69-4DF9BE6CAFDC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -123,6 +125,7 @@ Global
 		{9DBE8D07-B02C-4B14-9274-FF2D318432FA}.Default|Default.ActiveCfg = Default
 		{FB2AAE53-3565-4BA7-BC05-AFDA583E2DB6}.Default|Default.ActiveCfg = Default
 		{2AA8E206-6A25-4890-8FDA-08B61B56AD00}.Default|Default.ActiveCfg = Default
+		{5BC08764-DBEC-4148-AD69-4DF9BE6CAFDC}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
