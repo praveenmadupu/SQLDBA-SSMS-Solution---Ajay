@@ -65,7 +65,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1598786994395,
+  "iteration": 1599299254652,
   "links": [],
   "panels": [
     {
@@ -151,7 +151,7 @@
         {
           "alias": "",
           "format": "table",
-          "rawSql": "SELECT /* Grafana => PLE */ top 1 collection_time as time, cntr_value as page_life_expectancy\n        --master.dbo.time2duration(cntr_value,'s') as page_life_expectancy\nFROM DBA.dbo.dm_os_performance_counters\nWHERE object_name = 'SQLServer:Buffer Manager' and counter_name = 'Page life expectancy'\nORDER BY collection_time desc;",
+          "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nSELECT /* Grafana => PLE */ top 1 collection_time as time, cntr_value as page_life_expectancy\nFROM dbo.dm_os_performance_counters\nWHERE object_name = 'SQLServer:Buffer Manager' and counter_name = 'Page life expectancy'\nORDER BY collection_time desc;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
           "refId": "A"
         }
       ],
@@ -221,7 +221,7 @@
         {
           "alias": "",
           "format": "table",
-          "rawSql": "select top 1 master.dbo.local2utc(collection_time) as time,\tsystem_cpu_utilization as CPU from DBA..dm_os_ring_buffers order by time DESC",
+          "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect top 1 dbo.local2utc(collection_time) as time,\tsystem_cpu_utilization as CPU from dbo.dm_os_ring_buffers order by time DESC;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
           "refId": "A"
         }
       ],
@@ -285,7 +285,7 @@
         {
           "alias": "",
           "format": "table",
-          "rawSql": "--\tQuery to find what's is running on server\r\nSELECT\tgetdate() as time, COUNT(*) as active_request_count\r\nFROM\tsys.dm_exec_sessions AS s\r\nLEFT JOIN sys.dm_exec_requests AS r ON r.session_id = s.session_id\r\nOUTER APPLY sys.dm_exec_sql_text(r.sql_handle) AS st\r\nOUTER APPLY sys.dm_exec_query_plan(r.plan_handle) AS bqp\r\nOUTER APPLY sys.dm_exec_text_query_plan(r.plan_handle,r.statement_start_offset, r.statement_end_offset) as sqp\r\nWHERE\ts.session_id != @@SPID\r\n\tAND (\t(CASE\tWHEN\ts.session_id IN (select ri.blocking_session_id from sys.dm_exec_requests as ri )\r\n\t\t\t\t\t--\tGet sessions involved in blocking (including system sessions)\r\n\t\t\t\t\tTHEN\t1\r\n\t\t\t\t\tWHEN\tr.blocking_session_id IS NOT NULL AND r.blocking_session_id <> 0\r\n\t\t\t\t\tTHEN\t1\r\n\t\t\t\t\tELSE\t0\r\n\t\t\tEND) = 1\r\n\t\t\tOR\r\n\t\t\t(CASE\tWHEN\ts.session_id > 50\r\n\t\t\t\t\t\t\tAND r.session_id IS NOT NULL -- either some part of session has active request\r\n\t\t\t\t\t\t\t--AND ISNULL(open_resultset_count,0) > 0 -- some result is open\r\n\t\t\t\t\t\t\tAND s.status <> 'sleeping'\r\n\t\t\t\t\tTHEN\t1\r\n\t\t\t\t\tELSE\t0\r\n\t\t\tEND) = 1\r\n\t\t\tOR\r\n\t\t\t(CASE\tWHEN\ts.session_id > 50\r\n\t\t\t\t\t\t\tAND ISNULL(r.open_transaction_count,0) > 0\r\n\t\t\t\t\tTHEN\t1\r\n\t\t\t\t\tELSE\t0\r\n\t\t\tEND) = 1\r\n\t\t)\t\t\r\nORDER BY time;\r\n",
+          "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\n--\tQuery to find what's is running on server\r\nSELECT\tgetdate() as time, COUNT(*) as active_request_count\r\nFROM\tsys.dm_exec_sessions AS s\r\nLEFT JOIN sys.dm_exec_requests AS r ON r.session_id = s.session_id\r\nOUTER APPLY sys.dm_exec_sql_text(r.sql_handle) AS st\r\nOUTER APPLY sys.dm_exec_query_plan(r.plan_handle) AS bqp\r\nOUTER APPLY sys.dm_exec_text_query_plan(r.plan_handle,r.statement_start_offset, r.statement_end_offset) as sqp\r\nWHERE\ts.session_id != @@SPID\r\n\tAND (\t(CASE\tWHEN\ts.session_id IN (select ri.blocking_session_id from sys.dm_exec_requests as ri )\r\n\t\t\t\t\t--\tGet sessions involved in blocking (including system sessions)\r\n\t\t\t\t\tTHEN\t1\r\n\t\t\t\t\tWHEN\tr.blocking_session_id IS NOT NULL AND r.blocking_session_id <> 0\r\n\t\t\t\t\tTHEN\t1\r\n\t\t\t\t\tELSE\t0\r\n\t\t\tEND) = 1\r\n\t\t\tOR\r\n\t\t\t(CASE\tWHEN\ts.session_id > 50\r\n\t\t\t\t\t\t\tAND r.session_id IS NOT NULL -- either some part of session has active request\r\n\t\t\t\t\t\t\t--AND ISNULL(open_resultset_count,0) > 0 -- some result is open\r\n\t\t\t\t\t\t\tAND s.status <> 'sleeping'\r\n\t\t\t\t\tTHEN\t1\r\n\t\t\t\t\tELSE\t0\r\n\t\t\tEND) = 1\r\n\t\t\tOR\r\n\t\t\t(CASE\tWHEN\ts.session_id > 50\r\n\t\t\t\t\t\t\tAND ISNULL(r.open_transaction_count,0) > 0\r\n\t\t\t\t\tTHEN\t1\r\n\t\t\t\t\tELSE\t0\r\n\t\t\tEND) = 1\r\n\t\t)\t\t\r\nORDER BY time;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
           "refId": "A"
         }
       ],
@@ -354,7 +354,7 @@
         {
           "alias": "",
           "format": "table",
-          "rawSql": "SELECT /* Grafana => PLE */ top 1 collection_time as time, cntr_value as \"Memory Grants Pending\"\nFROM DBA.dbo.dm_os_performance_counters\nWHERE object_name = 'SQLServer:Memory Manager' and counter_name = 'Memory Grants Pending'\nORDER BY collection_time desc;",
+          "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nSELECT /* Grafana => PLE */ top 1 collection_time as time, cntr_value as [Memory Grants Pending]\nFROM dbo.dm_os_performance_counters\nWHERE object_name = 'SQLServer:Memory Manager' and counter_name = 'Memory Grants Pending'\nORDER BY collection_time desc;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
           "refId": "A"
         }
       ],
@@ -417,7 +417,7 @@
         {
           "alias": "",
           "format": "time_series",
-          "rawSql": "select top 1 collection_time as time, (available_physical_memory_kb*1.0)/1024 as [Available Memory]\nfrom DBA.[dbo].[dm_os_sys_memory]\norder by collection_time desc",
+          "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect top 1 collection_time as time, (available_physical_memory_kb*1.0)/1024 as [Available Memory]\nfrom [dbo].[dm_os_sys_memory]\norder by collection_time desc;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
           "refId": "A"
         }
       ],
@@ -488,7 +488,7 @@
         {
           "alias": "",
           "format": "time_series",
-          "rawSql": "SELECT /* Grafana => PLE */ top 1 ttl.collection_time as time, (ttl.cntr_value*100)/tgt.cntr_value as [SQLServer Max M/r Usage]\n        --ttl.cntr_value as Total_Server_Memory , tgt.cntr_value as Target_Server_Memory\nFROM DBA.dbo.dm_os_performance_counters as ttl\nJOIN DBA.dbo.dm_os_performance_counters as tgt\nON ttl.object_name = tgt.object_name \nAND ttl.object_name = 'SQLServer:Memory Manager'\nAND ttl.counter_name = 'Total Server Memory (KB)'\nAND tgt.counter_name = 'Target Server Memory (KB)'\nORDER BY time desc;",
+          "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nSELECT /* Grafana => PLE */ top 1 ttl.collection_time as time, (ttl.cntr_value*100)/tgt.cntr_value as [SQLServer Max M/r Usage]\nFROM dbo.dm_os_performance_counters as ttl\nJOIN dbo.dm_os_performance_counters as tgt\nON ttl.object_name = tgt.object_name \nAND ttl.object_name = 'SQLServer:Memory Manager'\nAND ttl.counter_name = 'Total Server Memory (KB)'\nAND tgt.counter_name = 'Target Server Memory (KB)'\nORDER BY time desc;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
           "refId": "A"
         }
       ],
@@ -546,7 +546,7 @@
         {
           "alias": "",
           "format": "table",
-          "rawSql": "select top 1 collection_time as time, cast(([SQL Server Memory Usage (MB)]*1.0)/1024 as decimal(20,2)) as SqlServer_Physical_Memory_GB from DBA.[dbo].[dm_os_process_memory] order by collection_time desc",
+          "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect top 1 collection_time as time, cast(([SQL Server Memory Usage (MB)]*1.0)/1024 as decimal(20,2)) as SqlServer_Physical_Memory_GB from [dbo].[dm_os_process_memory] order by collection_time desc;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
           "refId": "A"
         }
       ],
@@ -611,7 +611,7 @@
         {
           "alias": "",
           "format": "table",
-          "rawSql": "select count(*) as counts from sys.sysprocesses as p where p.blocked <> 0",
+          "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect count(*) as counts from sys.sysprocesses as p where p.blocked <> 0;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
           "refId": "A"
         }
       ],
@@ -651,7 +651,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 2
+            "y": 6
           },
           "hiddenSeries": false,
           "id": 16,
@@ -681,7 +681,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "DECLARE @server_name varchar(256);\nset @server_name = '$server';\n\nselect /* Grafana => CPU */\n\t\tmaster.dbo.local2utc(collection_time) as time,\n\t\tsystem_cpu_utilization as OS,\n\t\tsql_cpu_utilization as [SqlServer]\nfrom DBA..dm_os_ring_buffers\nwhere 1 =1 \n--and server_name = @server_name\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\norder by time asc",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect /* Grafana => CPU */\n\t\tdbo.local2utc(collection_time) as time,\n\t\tsystem_cpu_utilization as OS,\n\t\tsql_cpu_utilization as [SqlServer]\nfrom dbo.dm_os_ring_buffers\nwhere 1 = 1\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\norder by time asc\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
               "refId": "A"
             }
           ],
@@ -812,7 +812,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "SELECT\n  master.dbo.local2utc(collection_time) as time,\n  page_life_expectancy = cntr_value\nFROM\n  DBA.dbo.dm_os_performance_counters\nWHERE object_name = 'SQLServer:Buffer Manager' AND counter_name = 'Page life expectancy' AND\n  collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\nORDER BY\n  time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nSELECT\n  dbo.local2utc(collection_time) as time,\n  page_life_expectancy = cntr_value\nFROM\n  dbo.dm_os_performance_counters\nWHERE object_name = 'SQLServer:Buffer Manager' AND counter_name = 'Page life expectancy' AND\n  collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\nORDER BY collection_time asc;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
               "refId": "A"
             }
           ],
@@ -903,7 +903,7 @@
             "h": 6,
             "w": 24,
             "x": 0,
-            "y": 22
+            "y": 8
           },
           "hiddenSeries": false,
           "id": 18,
@@ -935,7 +935,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "USE DBA\r\nselect master.dbo.local2utc(collection_time) as time, cntr_value as [Batch Requests/sec]\r\nfrom DBA.dbo.dm_os_performance_counters\r\nwhere 1 = 1\r\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo()) \r\nand object_name = 'SQLServer:SQL Statistics' and counter_name in ('Batch Requests/sec')\r\norder by time asc",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect dbo.local2utc(collection_time) as time, cntr_value as [Batch Requests/sec]\r\nfrom dbo.dm_os_performance_counters\r\nwhere 1 = 1\r\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo()) \r\nand object_name = 'SQLServer:SQL Statistics' and counter_name in ('Batch Requests/sec')\r\norder by collection_time asc;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -1018,7 +1018,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 29
+            "y": 9
           },
           "hiddenSeries": false,
           "id": 22,
@@ -1047,7 +1047,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "\n;with t_page_faults as\n(\n\tselect collection_time, page_fault_count, LAG(page_fault_count) OVER ( ORDER BY collection_time ) as page_fault_count__prev\n\t\t\t,LAG(collection_time) OVER ( ORDER BY collection_time ) as collection_time_prev\t\t\t\n\tfrom DBA.[dbo].[dm_os_process_memory] \n\twhere collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\n)\nselect\tmaster.dbo.local2utc(collection_time) as time, --page_fault_count, DATEDIFF(second,collection_time_prev,collection_time) as interval_seconds,\n\t\tpage_faults_MB =\n\t\t((case when page_fault_count__prev is null then 0\n\t\t\t when page_fault_count < page_fault_count__prev then page_fault_count\n\t\t\t when page_fault_count >= page_fault_count__prev then page_fault_count-page_fault_count__prev\n\t\t\t else null\n\t\t\t end) * 8.0)/1024 -- Page Fault in MB\nfrom t_page_faults\norder by time asc",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\n;with t_page_faults as\n(\n\tselect collection_time, page_fault_count, LAG(page_fault_count) OVER ( ORDER BY collection_time ) as page_fault_count__prev\n\t\t\t,LAG(collection_time) OVER ( ORDER BY collection_time ) as collection_time_prev\t\t\t\n\tfrom [dbo].[dm_os_process_memory] \n\twhere collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\n)\nselect\tdbo.local2utc(collection_time) as time, --page_fault_count, DATEDIFF(second,collection_time_prev,collection_time) as interval_seconds,\n\t\tpage_faults_MB =\n\t\t((case when page_fault_count__prev is null then 0\n\t\t\t when page_fault_count < page_fault_count__prev then page_fault_count\n\t\t\t when page_fault_count >= page_fault_count__prev then page_fault_count-page_fault_count__prev\n\t\t\t else null\n\t\t\t end) * 8.0)/1024 -- Page Fault in MB\nfrom t_page_faults\norder by collection_time asc;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
               "refId": "A"
             }
           ],
@@ -1267,7 +1267,7 @@
             "h": 11,
             "w": 24,
             "x": 0,
-            "y": 38
+            "y": 10
           },
           "id": 49,
           "options": {
@@ -1286,7 +1286,7 @@
             {
               "alias": "",
               "format": "table",
-              "rawSql": "set nocount on;\r\n/*\tGet @start_time & @end_time from user/Grafana\r\n\tGet times when WaitStats was flushed\r\n\tDivide wait stats for the intervals\r\n*/\r\nDECLARE @server_name varchar(256);\r\nDECLARE @start_time datetime2;\r\nDECLARE @end_time datetime2;\r\n--set @server_name = '$server';\r\n--set @start_time = DATEADD(MINUTE,-180,GETDATE());\r\n--set @end_time = GETDATE();\r\nset @start_time = master.dbo.utc2local($__timeFrom());\r\nset @end_time = master.dbo.utc2local($__timeTo());\r\n\r\nDECLARE @verbose bit = 0;\r\n\r\nif OBJECT_ID('tempdb..#wait_stats_lower_bounds') is not null\r\n\tdrop table tempdb..#wait_stats_lower_bounds;\r\nwith T_waits_ranges_lower_bounds as (\r\n\tselect *\r\n\tfrom (\r\n\t\tSELECT si.wait_stats_cleared_time as point_in_time\r\n\t\tFROM [DBA].dbo.dm_os_sys_info AS si\r\n\t\tWHERE 1 = 1\r\n\t\t--and pc.server_name = @server_name\r\n\t\tand collection_time BETWEEN @start_time AND @end_time\r\n\t\t--\r\n\t\tunion\r\n\t\t--\r\n\t\tselect point_in_time\r\n\t\tfrom (values (@start_time),(@end_time)) Times (point_in_time)\r\n\t) as ranges\r\n)\r\nselect /* Get times where WaitStats was Cleared */\r\n\t   IDENTITY(int,1,1) as id, \r\n\t   point_in_time\r\ninto #wait_stats_lower_bounds\r\nfrom T_waits_ranges_lower_bounds\r\norder by point_in_time asc;\r\n\r\nif OBJECT_ID('tempdb..#wait_stats_time_range') is not null\r\n\tdrop table tempdb..#wait_stats_time_range;\r\nselect l.id as range_id, l.point_in_time as range_lower_time, u.point_in_time as range_upper_time\r\ninto #wait_stats_time_range\r\nfrom #wait_stats_lower_bounds as l\r\njoin #wait_stats_lower_bounds as u on u.id = l.id + 1\r\norder by range_id;\r\n\r\n\r\nif @verbose = 1\r\nbegin\r\n\tselect [RunningQuery] = '#wait_stats_lower_bounds', * from #wait_stats_lower_bounds;\r\n\tselect [RunningQuery] = '#wait_stats_time_range', * from #wait_stats_time_range;\r\n\tselect count(distinct Collection_Time) as WaitStats_Sample_Counts from [DBA].[dbo].[WaitStats];\r\nend\r\n\r\nIF OBJECT_ID('tempdb..#Wait_Stats_Delta') IS NOT NULL\r\n\tDROP TABLE #Wait_Stats_Delta;\r\nCREATE TABLE #Wait_Stats_Delta\r\n(\r\n\t--[id_T1] [int] NULL,\r\n\t--[id_T2] [int] NULL,\r\n\t--[point_in_time_T1] [datetime2](7) NULL,\r\n\t--[point_in_time_T2] [datetime2](7) NULL,\r\n\t--[Collection_Time_T1] [datetime2](7) NULL,\r\n\t--[Collection_Time_T2] [datetime2](7) NULL,\r\n\t[RowNum] [int] NOT NULL,\r\n\t[Collection_Time] [datetime2](7) NOT NULL,\r\n\t[Collection_Time_Duration_Seconds] [bigint] NOT NULL,\r\n\t[WaitType] [nvarchar](120) NOT NULL,\r\n\t[Wait_S] [decimal](15, 2) NULL,\r\n\t[Resource_S] [decimal](15, 2) NULL,\r\n\t[Signal_S] [decimal](15, 2) NULL,\r\n\t[WaitCount] [bigint] NULL,\r\n\t[Percentage] [decimal](5,2) NULL,\r\n\t[AvgWait_S] [decimal](35, 22) NULL,\r\n\t[AvgRes_S] [decimal](35, 22) NULL,\r\n\t[AvgSig_S] [decimal](35, 22) NULL\r\n)\r\n\r\ndeclare @l_id int\r\n\t\t,@l_point_in_time datetime2\r\n\t\t,@l_counter int = 1\r\n\t\t,@l_counter_max int;\r\n\r\nselect @l_counter_max = max(range_id) from #wait_stats_time_range;\r\n/* Loop for N-1 times, where N =  point in times for range calculation */\r\nwhile @l_counter <= @l_counter_max -- execute for N-1 times\r\nbegin\r\n\r\n\tif OBJECT_ID('tempdb..#wait_stats_range_lower') is not null\r\n\t\tdrop table #wait_stats_range_lower;\r\n\tselect  /*\tGet wait stats for start time of the time range.\r\n\t\t\t*/\r\n\t\t\tid = r.range_id, r.range_lower_time, r.range_upper_time,\r\n\t\t\tws.Collection_Time, \r\n\t\t\tws.WaitType, \r\n\t\t\tws.Wait_S, ws.Resource_S, ws.Signal_S, ws.WaitCount, ws.Percentage\r\n\t\t\t--,ws.AvgWait_S, ws.AvgRes_S, ws.AvgSig_S\r\n\t\t\t,[condition] = (case when (@l_counter <> 1) and (@l_counter <>  @l_counter_max) -- Intermediate range\r\n\t\t\t\t\t\t\t\t\t\tthen 'Intermediate range'\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = 1) and (@l_counter = @l_counter_max) -- 1st/last, and only range\r\n\t\t\t\t\t\t\t\t\t\tthen '1st/last, and only range'\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = 1) and (@l_counter <> @l_counter_max) -- 1st and intermediate range\r\n\t\t\t\t\t\t\t\t\t\tthen '1st and intermediate range'\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = @l_counter_max) and (@l_counter - 1 <> 0) -- last and intermediate\r\n\t\t\t\t\t\t\t\t\t\tthen 'last and intermediate'\r\n\t\t\t\t\t\t\t\t\telse null\r\n\t\t\t\t\t\t\t\t\tend)\r\n\tinto #wait_stats_range_lower\r\n\tfrom #wait_stats_time_range as r, [DBA].[dbo].[WaitStats] AS ws with (nolock)\r\n\twhere r.range_id = @l_counter /* loop filter */\r\n\t\tand ws.Collection_Time = (\tcase when (@l_counter <> 1) and (@l_counter <>  @l_counter_max) -- Intermediate range\r\n\t\t\t\t\t\t\t\t\t\tthen (select MIN(wsi.Collection_Time) as Collection_Time from [DBA].[dbo].[WaitStats] as wsi with (nolock) where wsi.Collection_Time > r.range_lower_time)\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = 1) and (@l_counter = @l_counter_max) -- 1st/last, and only range\r\n\t\t\t\t\t\t\t\t\t\tthen (select MIN(wsi.Collection_Time) as Collection_Time from [DBA].[dbo].[WaitStats] as wsi with (nolock) where wsi.Collection_Time >= r.range_lower_time)\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = 1) and (@l_counter <> @l_counter_max) -- 1st and intermediate range\r\n\t\t\t\t\t\t\t\t\t\tthen (select MIN(wsi.Collection_Time) as Collection_Time from [DBA].[dbo].[WaitStats] as wsi with (nolock) where wsi.Collection_Time >= r.range_lower_time)\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = @l_counter_max) and (@l_counter - 1 <> 0) -- last and intermediate\r\n\t\t\t\t\t\t\t\t\t\tthen (select MIN(wsi.Collection_Time) as Collection_Time from [DBA].[dbo].[WaitStats] as wsi with (nolock) where wsi.Collection_Time > r.range_lower_time)\r\n\t\t\t\t\t\t\t\t\telse null\r\n\t\t\t\t\t\t\t\t\tend\r\n\t\t\t\t\t\t\t\t);\r\n\t\r\n\tif OBJECT_ID('tempdb..#wait_stats_range_upper') is not null\r\n\t\tdrop table #wait_stats_range_upper;\r\n\tselect  /*\tGet wait stats for start time of the time range.\r\n\t\t\t*/\r\n\t\t\tid = r.range_id, r.range_lower_time, r.range_upper_time,\r\n\t\t\tws.Collection_Time, \r\n\t\t\tws.WaitType, \r\n\t\t\tws.Wait_S, ws.Resource_S, ws.Signal_S, ws.WaitCount, ws.Percentage\r\n\t\t\t--,ws.AvgWait_S, ws.AvgRes_S, ws.AvgSig_S\r\n\t\t\t,[condition] = (case when (@l_counter <> 1) and (@l_counter <>  @l_counter_max) -- Intermediate range\r\n\t\t\t\t\t\t\t\t\t\tthen 'Intermediate range'\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = 1) and (@l_counter = @l_counter_max) -- 1st/last, and only range\r\n\t\t\t\t\t\t\t\t\t\tthen '1st/last, and only range'\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = 1) and (@l_counter <> @l_counter_max) -- 1st and intermediate range\r\n\t\t\t\t\t\t\t\t\t\tthen '1st and intermediate range'\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = @l_counter_max) and (@l_counter - 1 <> 0) -- last and intermediate\r\n\t\t\t\t\t\t\t\t\t\tthen 'last and intermediate'\r\n\t\t\t\t\t\t\t\t\telse null\r\n\t\t\t\t\t\t\t\t\tend)\r\n\tinto #wait_stats_range_upper\r\n\tfrom #wait_stats_time_range as r, [DBA].[dbo].[WaitStats] AS ws with (nolock)\r\n\twhere r.range_id = @l_counter /* loop filter */\r\n\t\tand ws.Collection_Time = (\tcase when (@l_counter <> 1) and (@l_counter <>  @l_counter_max) -- Intermediate range\r\n\t\t\t\t\t\t\t\t\t\tthen (select MAX(wsi.Collection_Time) as Collection_Time from [DBA].[dbo].[WaitStats] as wsi with (nolock) where wsi.Collection_Time < r.range_upper_time)\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = 1) and (@l_counter = @l_counter_max) -- 1st/last, and only range\r\n\t\t\t\t\t\t\t\t\t\tthen (select MAX(wsi.Collection_Time) as Collection_Time from [DBA].[dbo].[WaitStats] as wsi with (nolock) where wsi.Collection_Time <= r.range_upper_time)\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = 1) and (@l_counter <> @l_counter_max) -- 1st and intermediate range\r\n\t\t\t\t\t\t\t\t\t\tthen (select MAX(wsi.Collection_Time) as Collection_Time from [DBA].[dbo].[WaitStats] as wsi with (nolock) where wsi.Collection_Time < r.range_upper_time)\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = @l_counter_max) and (@l_counter - 1 <> 0) -- last and intermediate\r\n\t\t\t\t\t\t\t\t\t\tthen (select MAX(wsi.Collection_Time) as Collection_Time from [DBA].[dbo].[WaitStats] as wsi with (nolock) where wsi.Collection_Time <= r.range_upper_time)\r\n\t\t\t\t\t\t\t\t\telse null\r\n\t\t\t\t\t\t\t\t\tend\r\n\t\t\t\t\t\t\t\t);\r\n\r\n\tif @verbose = 1\r\n\tbegin\r\n\t\tselect [@l_counter] = @l_counter, [@l_counter_max] = @l_counter_max;\r\n\t\tselect [RunningQuery] = '#wait_stats_range_lower', * from #wait_stats_range_lower;\r\n\t\tselect [RunningQuery] = '#wait_stats_range_upper', * from #wait_stats_range_upper;\r\n\tend\r\n\t\r\n\t\r\n\t;with T_Waits_Delta AS (\r\n\t\tSELECT Collection_Time, Collection_Time_Duration_Seconds, WaitType, Wait_S, Resource_S, Signal_S, WaitCount,\r\n\t\t\t\t[Percentage],\r\n\t\t\t\tAvgWait_S = Wait_S/WaitCount, \r\n\t\t\t\tAvgRes_S = Resource_S/WaitCount, \r\n\t\t\t\tAvgSig_S = Signal_S/WaitCount\r\n\t\t--INTO tempdb..Wait_Stats_Delta\r\n\t\tFROM (\r\n\t\t\t\tSELECT --id_T1 = T1.id, id_T2 = T2.id,\r\n\t\t\t\t\t\t--point_in_time_T1 = T1.point_in_time, point_in_time_T2 = T2.point_in_time,\r\n\t\t\t\t\t\t--Collection_Time_T1 = T1.Collection_Time, Collection_Time_T2 = T2.Collection_Time,\r\n\t\t\t\t\t\t[RunningQuery] = 'Wait_Stats_Delta',\r\n\t\t\t\t\t\tCollection_Time = COALESCE(T2.Collection_Time,T1.Collection_Time),\r\n\t\t\t\t\t\tCollection_Time_Duration_Seconds = DATEDIFF(second,T1.Collection_Time,T2.Collection_Time),\r\n\t\t\t\t\t\tWaitType = COALESCE(T1.WaitType,T2.WaitType),\r\n\t\t\t\t\t\tWait_S = ISNULL(T2.Wait_S,0.0) - ISNULL(T1.Wait_S,0.0),\r\n\t\t\t\t\t\tResource_S = ISNULL(T2.Resource_S,0.0) - ISNULL(T1.Resource_S,0.0),\r\n\t\t\t\t\t\tSignal_S = ISNULL(T2.Signal_S,0.0) - ISNULL(T1.Signal_S,0.0),\r\n\t\t\t\t\t\tWaitCount = ISNULL(T2.WaitCount,0.0) - ISNULL(T1.WaitCount,0.0),\r\n\t\t\t\t\t\t[Percentage] = NULL\r\n\t\t\t\tFROM #wait_stats_range_lower as T1 full outer join #wait_stats_range_upper as T2 on T2.WaitType = T1.WaitType\r\n\t\t\t) as waits\r\n\t\tWHERE 1 = 1\r\n\t\t\tAND WaitCount > 0\r\n\t)\r\n\t\r\n\tINSERT #Wait_Stats_Delta\r\n\tSELECT ROW_NUMBER() OVER(ORDER BY Wait_S DESC, Resource_S DESC) AS [RowNum],\r\n\t\t\tCollection_Time = COALESCE(dur.Collection_Time,d.Collection_Time), \r\n\t\t\tCollection_Time_Duration_Seconds = COALESCE(dur.Collection_Time_Duration_Seconds,d.Collection_Time_Duration_Seconds, r.Range_Duration_Seconds), \r\n\t\t\tWaitType, Wait_S, Resource_S, Signal_S, WaitCount,\r\n\t\t\t\t[Percentage] = (Wait_S*100.0)/SUM(Wait_S)OVER(),\r\n\t\t\t\tAvgWait_S, AvgRes_S, AvgSig_S\r\n\tFROM T_Waits_Delta as d\r\n\tJOIN (select max(Collection_Time_Duration_Seconds) as Collection_Time_Duration_Seconds, max(Collection_Time) as Collection_Time from T_Waits_Delta) as dur ON 1 = 1\r\n\tJOIN (select DATEDIFF(second,r.range_lower_time,r.range_upper_time) AS Range_Duration_Seconds from #wait_stats_time_range as r where r.range_id = @l_counter) as r ON 1 = 1\r\n\tWHERE 1 = 1\r\n\t\tAND Wait_S >= 0.0\r\n\tORDER BY Wait_S DESC;\t\r\n\t\r\n\r\n\tset @l_counter += 1;\r\nend\r\n\r\nSELECT\tmaster.dbo.local2utc(CAST(W1.Collection_Time AS smalldatetime)) as [time],\r\n\t\tMAX ([W1].WaitType) AS [WaitType],\r\n\t\tCAST (MAX ([W1].[Percentage]) AS DECIMAL (5,2)) AS [Percentage],\r\n\t\tmaster.dbo.time2duration( cast(MAX([W1].Wait_S) as int), 's' ) AS [Wait_S],\r\n\t\t--CAST (MAX ([W1].Resource_S) AS DECIMAL (16,2)) AS [Resource_S],\r\n\t\tmaster.dbo.time2duration( cast(MAX([W1].Resource_S) as int), 's' ) AS [Resource_S],\r\n\t\t--CAST (MAX ([W1].Signal_S) AS DECIMAL (16,2)) AS [Signal_S],\r\n\t\tmaster.dbo.time2duration( cast(MAX([W1].Signal_S) as int), 's' ) AS [Signal_S],\r\n\t\tMAX ([W1].[WaitCount]) AS [WaitCount],\r\n\t\tCAST ((MAX ([W1].Wait_S) / MAX ([W1].[WaitCount])) AS DECIMAL (16,4)) AS [AvgWait_S],\r\n\t\tCAST ((MAX ([W1].Resource_S) / MAX ([W1].[WaitCount])) AS DECIMAL (16,4)) AS [AvgRes_S],\r\n\t\tCAST ((MAX ([W1].Signal_S) / MAX ([W1].[WaitCount])) AS DECIMAL (16,4)) AS [AvgSig_S]\r\n\t\t--,CAST ('https://www.sqlskills.com/help/waits/' + MAX ([W1].[wait_type]) as XML) AS [Help/Info URL]\r\nFROM #Wait_Stats_Delta AS [W1]\r\nINNER JOIN #Wait_Stats_Delta AS [W2] ON W1.Collection_Time = W2.Collection_Time AND W2.[RowNum] <= [W1].[RowNum] \r\nGROUP BY [W1].[Collection_Time], [W1].[RowNum]\r\nHAVING SUM ([W2].[Percentage]) - MAX( [W1].[Percentage] ) < 95 -- percentage threshold\r\nORDER BY [time] desc, [Percentage] desc",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nset nocount on;\r\n/*\tGet @start_time & @end_time from user/Grafana\r\n\tGet times when WaitStats was flushed\r\n\tDivide wait stats for the intervals\r\n*/\r\nDECLARE @server_name varchar(256);\r\nDECLARE @start_time datetime2;\r\nDECLARE @end_time datetime2;\r\n--set @server_name = '$server';\r\n--set @start_time = DATEADD(MINUTE,-180,GETDATE());\r\n--set @end_time = GETDATE();\r\nset @start_time = dbo.utc2local($__timeFrom());\r\nset @end_time = dbo.utc2local($__timeTo());\r\n\r\nDECLARE @verbose bit = 0;\r\n\r\nif OBJECT_ID('tempdb..#wait_stats_lower_bounds') is not null\r\n\tdrop table tempdb..#wait_stats_lower_bounds;\r\nwith T_waits_ranges_lower_bounds as (\r\n\tselect *\r\n\tfrom (\r\n\t\tSELECT si.wait_stats_cleared_time as point_in_time\r\n\t\tFROM dbo.dm_os_sys_info AS si\r\n\t\tWHERE 1 = 1\r\n\t\t--and pc.server_name = @server_name\r\n\t\tand collection_time BETWEEN @start_time AND @end_time\r\n\t\t--\r\n\t\tunion\r\n\t\t--\r\n\t\tselect point_in_time\r\n\t\tfrom (values (@start_time),(@end_time)) Times (point_in_time)\r\n\t) as ranges\r\n)\r\nselect /* Get times where WaitStats was Cleared */\r\n\t   IDENTITY(int,1,1) as id, \r\n\t   point_in_time\r\ninto #wait_stats_lower_bounds\r\nfrom T_waits_ranges_lower_bounds\r\norder by point_in_time asc;\r\n\r\nif OBJECT_ID('tempdb..#wait_stats_time_range') is not null\r\n\tdrop table tempdb..#wait_stats_time_range;\r\nselect l.id as range_id, l.point_in_time as range_lower_time, u.point_in_time as range_upper_time\r\ninto #wait_stats_time_range\r\nfrom #wait_stats_lower_bounds as l\r\njoin #wait_stats_lower_bounds as u on u.id = l.id + 1\r\norder by range_id;\r\n\r\n\r\nif @verbose = 1\r\nbegin\r\n\tselect [RunningQuery] = '#wait_stats_lower_bounds', * from #wait_stats_lower_bounds;\r\n\tselect [RunningQuery] = '#wait_stats_time_range', * from #wait_stats_time_range;\r\n\tselect count(distinct Collection_Time) as WaitStats_Sample_Counts from [dbo].[WaitStats];\r\nend\r\n\r\nIF OBJECT_ID('tempdb..#Wait_Stats_Delta') IS NOT NULL\r\n\tDROP TABLE #Wait_Stats_Delta;\r\nCREATE TABLE #Wait_Stats_Delta\r\n(\r\n\t--[id_T1] [int] NULL,\r\n\t--[id_T2] [int] NULL,\r\n\t--[point_in_time_T1] [datetime2](7) NULL,\r\n\t--[point_in_time_T2] [datetime2](7) NULL,\r\n\t--[Collection_Time_T1] [datetime2](7) NULL,\r\n\t--[Collection_Time_T2] [datetime2](7) NULL,\r\n\t[RowNum] [int] NOT NULL,\r\n\t[Collection_Time] [datetime2](7) NOT NULL,\r\n\t[Collection_Time_Duration_Seconds] [bigint] NOT NULL,\r\n\t[WaitType] [nvarchar](120) NOT NULL,\r\n\t[Wait_S] [decimal](15, 2) NULL,\r\n\t[Resource_S] [decimal](15, 2) NULL,\r\n\t[Signal_S] [decimal](15, 2) NULL,\r\n\t[WaitCount] [bigint] NULL,\r\n\t[Percentage] [decimal](5,2) NULL,\r\n\t[AvgWait_S] [decimal](35, 22) NULL,\r\n\t[AvgRes_S] [decimal](35, 22) NULL,\r\n\t[AvgSig_S] [decimal](35, 22) NULL\r\n)\r\n\r\ndeclare @l_id int\r\n\t\t,@l_point_in_time datetime2\r\n\t\t,@l_counter int = 1\r\n\t\t,@l_counter_max int;\r\n\r\nselect @l_counter_max = max(range_id) from #wait_stats_time_range;\r\n/* Loop for N-1 times, where N =  point in times for range calculation */\r\nwhile @l_counter <= @l_counter_max -- execute for N-1 times\r\nbegin\r\n\r\n\tif OBJECT_ID('tempdb..#wait_stats_range_lower') is not null\r\n\t\tdrop table #wait_stats_range_lower;\r\n\tselect  /*\tGet wait stats for start time of the time range.\r\n\t\t\t*/\r\n\t\t\tid = r.range_id, r.range_lower_time, r.range_upper_time,\r\n\t\t\tws.Collection_Time, \r\n\t\t\tws.WaitType, \r\n\t\t\tws.Wait_S, ws.Resource_S, ws.Signal_S, ws.WaitCount, ws.Percentage\r\n\t\t\t--,ws.AvgWait_S, ws.AvgRes_S, ws.AvgSig_S\r\n\t\t\t,[condition] = (case when (@l_counter <> 1) and (@l_counter <>  @l_counter_max) -- Intermediate range\r\n\t\t\t\t\t\t\t\t\t\tthen 'Intermediate range'\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = 1) and (@l_counter = @l_counter_max) -- 1st/last, and only range\r\n\t\t\t\t\t\t\t\t\t\tthen '1st/last, and only range'\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = 1) and (@l_counter <> @l_counter_max) -- 1st and intermediate range\r\n\t\t\t\t\t\t\t\t\t\tthen '1st and intermediate range'\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = @l_counter_max) and (@l_counter - 1 <> 0) -- last and intermediate\r\n\t\t\t\t\t\t\t\t\t\tthen 'last and intermediate'\r\n\t\t\t\t\t\t\t\t\telse null\r\n\t\t\t\t\t\t\t\t\tend)\r\n\tinto #wait_stats_range_lower\r\n\tfrom #wait_stats_time_range as r, [dbo].[WaitStats] AS ws with (nolock)\r\n\twhere r.range_id = @l_counter /* loop filter */\r\n\t\tand ws.Collection_Time = (\tcase when (@l_counter <> 1) and (@l_counter <>  @l_counter_max) -- Intermediate range\r\n\t\t\t\t\t\t\t\t\t\tthen (select MIN(wsi.Collection_Time) as Collection_Time from [dbo].[WaitStats] as wsi with (nolock) where wsi.Collection_Time > r.range_lower_time)\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = 1) and (@l_counter = @l_counter_max) -- 1st/last, and only range\r\n\t\t\t\t\t\t\t\t\t\tthen (select MIN(wsi.Collection_Time) as Collection_Time from [dbo].[WaitStats] as wsi with (nolock) where wsi.Collection_Time >= r.range_lower_time)\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = 1) and (@l_counter <> @l_counter_max) -- 1st and intermediate range\r\n\t\t\t\t\t\t\t\t\t\tthen (select MIN(wsi.Collection_Time) as Collection_Time from [dbo].[WaitStats] as wsi with (nolock) where wsi.Collection_Time >= r.range_lower_time)\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = @l_counter_max) and (@l_counter - 1 <> 0) -- last and intermediate\r\n\t\t\t\t\t\t\t\t\t\tthen (select MIN(wsi.Collection_Time) as Collection_Time from [dbo].[WaitStats] as wsi with (nolock) where wsi.Collection_Time > r.range_lower_time)\r\n\t\t\t\t\t\t\t\t\telse null\r\n\t\t\t\t\t\t\t\t\tend\r\n\t\t\t\t\t\t\t\t);\r\n\t\r\n\tif OBJECT_ID('tempdb..#wait_stats_range_upper') is not null\r\n\t\tdrop table #wait_stats_range_upper;\r\n\tselect  /*\tGet wait stats for start time of the time range.\r\n\t\t\t*/\r\n\t\t\tid = r.range_id, r.range_lower_time, r.range_upper_time,\r\n\t\t\tws.Collection_Time, \r\n\t\t\tws.WaitType, \r\n\t\t\tws.Wait_S, ws.Resource_S, ws.Signal_S, ws.WaitCount, ws.Percentage\r\n\t\t\t--,ws.AvgWait_S, ws.AvgRes_S, ws.AvgSig_S\r\n\t\t\t,[condition] = (case when (@l_counter <> 1) and (@l_counter <>  @l_counter_max) -- Intermediate range\r\n\t\t\t\t\t\t\t\t\t\tthen 'Intermediate range'\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = 1) and (@l_counter = @l_counter_max) -- 1st/last, and only range\r\n\t\t\t\t\t\t\t\t\t\tthen '1st/last, and only range'\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = 1) and (@l_counter <> @l_counter_max) -- 1st and intermediate range\r\n\t\t\t\t\t\t\t\t\t\tthen '1st and intermediate range'\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = @l_counter_max) and (@l_counter - 1 <> 0) -- last and intermediate\r\n\t\t\t\t\t\t\t\t\t\tthen 'last and intermediate'\r\n\t\t\t\t\t\t\t\t\telse null\r\n\t\t\t\t\t\t\t\t\tend)\r\n\tinto #wait_stats_range_upper\r\n\tfrom #wait_stats_time_range as r, [dbo].[WaitStats] AS ws with (nolock)\r\n\twhere r.range_id = @l_counter /* loop filter */\r\n\t\tand ws.Collection_Time = (\tcase when (@l_counter <> 1) and (@l_counter <>  @l_counter_max) -- Intermediate range\r\n\t\t\t\t\t\t\t\t\t\tthen (select MAX(wsi.Collection_Time) as Collection_Time from [dbo].[WaitStats] as wsi with (nolock) where wsi.Collection_Time < r.range_upper_time)\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = 1) and (@l_counter = @l_counter_max) -- 1st/last, and only range\r\n\t\t\t\t\t\t\t\t\t\tthen (select MAX(wsi.Collection_Time) as Collection_Time from [dbo].[WaitStats] as wsi with (nolock) where wsi.Collection_Time <= r.range_upper_time)\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = 1) and (@l_counter <> @l_counter_max) -- 1st and intermediate range\r\n\t\t\t\t\t\t\t\t\t\tthen (select MAX(wsi.Collection_Time) as Collection_Time from [dbo].[WaitStats] as wsi with (nolock) where wsi.Collection_Time < r.range_upper_time)\r\n\t\t\t\t\t\t\t\t\t\twhen (@l_counter = @l_counter_max) and (@l_counter - 1 <> 0) -- last and intermediate\r\n\t\t\t\t\t\t\t\t\t\tthen (select MAX(wsi.Collection_Time) as Collection_Time from [dbo].[WaitStats] as wsi with (nolock) where wsi.Collection_Time <= r.range_upper_time)\r\n\t\t\t\t\t\t\t\t\telse null\r\n\t\t\t\t\t\t\t\t\tend\r\n\t\t\t\t\t\t\t\t);\r\n\r\n\tif @verbose = 1\r\n\tbegin\r\n\t\tselect [@l_counter] = @l_counter, [@l_counter_max] = @l_counter_max;\r\n\t\tselect [RunningQuery] = '#wait_stats_range_lower', * from #wait_stats_range_lower;\r\n\t\tselect [RunningQuery] = '#wait_stats_range_upper', * from #wait_stats_range_upper;\r\n\tend\r\n\t\r\n\t\r\n\t;with T_Waits_Delta AS (\r\n\t\tSELECT Collection_Time, Collection_Time_Duration_Seconds, WaitType, Wait_S, Resource_S, Signal_S, WaitCount,\r\n\t\t\t\t[Percentage],\r\n\t\t\t\tAvgWait_S = Wait_S/WaitCount, \r\n\t\t\t\tAvgRes_S = Resource_S/WaitCount, \r\n\t\t\t\tAvgSig_S = Signal_S/WaitCount\r\n\t\t--INTO tempdb..Wait_Stats_Delta\r\n\t\tFROM (\r\n\t\t\t\tSELECT --id_T1 = T1.id, id_T2 = T2.id,\r\n\t\t\t\t\t\t--point_in_time_T1 = T1.point_in_time, point_in_time_T2 = T2.point_in_time,\r\n\t\t\t\t\t\t--Collection_Time_T1 = T1.Collection_Time, Collection_Time_T2 = T2.Collection_Time,\r\n\t\t\t\t\t\t[RunningQuery] = 'Wait_Stats_Delta',\r\n\t\t\t\t\t\tCollection_Time = COALESCE(T2.Collection_Time,T1.Collection_Time),\r\n\t\t\t\t\t\tCollection_Time_Duration_Seconds = DATEDIFF(second,T1.Collection_Time,T2.Collection_Time),\r\n\t\t\t\t\t\tWaitType = COALESCE(T1.WaitType,T2.WaitType),\r\n\t\t\t\t\t\tWait_S = ISNULL(T2.Wait_S,0.0) - ISNULL(T1.Wait_S,0.0),\r\n\t\t\t\t\t\tResource_S = ISNULL(T2.Resource_S,0.0) - ISNULL(T1.Resource_S,0.0),\r\n\t\t\t\t\t\tSignal_S = ISNULL(T2.Signal_S,0.0) - ISNULL(T1.Signal_S,0.0),\r\n\t\t\t\t\t\tWaitCount = ISNULL(T2.WaitCount,0.0) - ISNULL(T1.WaitCount,0.0),\r\n\t\t\t\t\t\t[Percentage] = NULL\r\n\t\t\t\tFROM #wait_stats_range_lower as T1 full outer join #wait_stats_range_upper as T2 on T2.WaitType = T1.WaitType\r\n\t\t\t) as waits\r\n\t\tWHERE 1 = 1\r\n\t\t\tAND WaitCount > 0\r\n\t)\r\n\t\r\n\tINSERT #Wait_Stats_Delta\r\n\tSELECT ROW_NUMBER() OVER(ORDER BY Wait_S DESC, Resource_S DESC) AS [RowNum],\r\n\t\t\tCollection_Time = COALESCE(dur.Collection_Time,d.Collection_Time), \r\n\t\t\tCollection_Time_Duration_Seconds = COALESCE(dur.Collection_Time_Duration_Seconds,d.Collection_Time_Duration_Seconds, r.Range_Duration_Seconds), \r\n\t\t\tWaitType, Wait_S, Resource_S, Signal_S, WaitCount,\r\n\t\t\t\t[Percentage] = (Wait_S*100.0)/SUM(Wait_S)OVER(),\r\n\t\t\t\tAvgWait_S, AvgRes_S, AvgSig_S\r\n\tFROM T_Waits_Delta as d\r\n\tJOIN (select max(Collection_Time_Duration_Seconds) as Collection_Time_Duration_Seconds, max(Collection_Time) as Collection_Time from T_Waits_Delta) as dur ON 1 = 1\r\n\tJOIN (select DATEDIFF(second,r.range_lower_time,r.range_upper_time) AS Range_Duration_Seconds from #wait_stats_time_range as r where r.range_id = @l_counter) as r ON 1 = 1\r\n\tWHERE 1 = 1\r\n\t\tAND Wait_S >= 0.0\r\n\tORDER BY Wait_S DESC;\t\r\n\t\r\n\r\n\tset @l_counter += 1;\r\nend\r\n\r\nSELECT\tdbo.local2utc(CAST(W1.Collection_Time AS smalldatetime)) as [time],\r\n\t\tMAX ([W1].WaitType) AS [WaitType],\r\n\t\tCAST (MAX ([W1].[Percentage]) AS DECIMAL (5,2)) AS [Percentage],\r\n\t\tdbo.time2duration( cast(MAX([W1].Wait_S) as int), 's' ) AS [Wait_S],\r\n\t\t--CAST (MAX ([W1].Resource_S) AS DECIMAL (16,2)) AS [Resource_S],\r\n\t\tdbo.time2duration( cast(MAX([W1].Resource_S) as int), 's' ) AS [Resource_S],\r\n\t\t--CAST (MAX ([W1].Signal_S) AS DECIMAL (16,2)) AS [Signal_S],\r\n\t\tdbo.time2duration( cast(MAX([W1].Signal_S) as int), 's' ) AS [Signal_S],\r\n\t\tMAX ([W1].[WaitCount]) AS [WaitCount],\r\n\t\tCAST ((MAX ([W1].Wait_S) / MAX ([W1].[WaitCount])) AS DECIMAL (16,4)) AS [AvgWait_S],\r\n\t\tCAST ((MAX ([W1].Resource_S) / MAX ([W1].[WaitCount])) AS DECIMAL (16,4)) AS [AvgRes_S],\r\n\t\tCAST ((MAX ([W1].Signal_S) / MAX ([W1].[WaitCount])) AS DECIMAL (16,4)) AS [AvgSig_S]\r\n\t\t--,CAST ('https://www.sqlskills.com/help/waits/' + MAX ([W1].[wait_type]) as XML) AS [Help/Info URL]\r\nFROM #Wait_Stats_Delta AS [W1]\r\nINNER JOIN #Wait_Stats_Delta AS [W2] ON W1.Collection_Time = W2.Collection_Time AND W2.[RowNum] <= [W1].[RowNum] \r\nGROUP BY [W1].[Collection_Time], [W1].[RowNum]\r\nHAVING SUM ([W2].[Percentage]) - MAX( [W1].[Percentage] ) < 95 -- percentage threshold\r\nORDER BY [time] desc, [Percentage] desc;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -1343,104 +1343,6 @@
           "fieldConfig": {
             "defaults": {
               "custom": {},
-              "unit": "s"
-            },
-            "overrides": []
-          },
-          "fill": 1,
-          "fillGradient": 0,
-          "gridPos": {
-            "h": 8,
-            "w": 24,
-            "x": 0,
-            "y": 39
-          },
-          "hiddenSeries": false,
-          "id": 51,
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": false,
-            "max": false,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 1,
-          "nullPointMode": "null",
-          "percentage": false,
-          "pluginVersion": "7.1.4",
-          "pointradius": 2,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "spaceLength": 10,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [
-            {
-              "alias": "",
-              "format": "time_series",
-              "rawSql": "DECLARE @server_name varchar(256);\nset @server_name = '$server';\n\nselect master.dbo.local2utc(pc.collection_time) as time, pc.instance_name + '\\ --- ' + pc.counter_name as instance_name, CAST(pc.cntr_value AS FLOAT) as cntr_value\nfrom DBA.dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\n--and collection_time >= DATEADD(hour,-2,getdate())\nand pc.server_name = @server_name\nand pc.[object_name] = 'LogicalDisk'\nand counter_name in ('Avg. Disk sec/Read','Avg. Disk sec/Write')\nand ( instance_name <> '_Total' and instance_name not like 'HarddiskVolume%' )",
-              "refId": "A"
-            }
-          ],
-          "thresholds": [],
-          "timeFrom": null,
-          "timeRegions": [],
-          "timeShift": null,
-          "title": "Disk Latency",
-          "tooltip": {
-            "shared": true,
-            "sort": 0,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "buckets": null,
-            "mode": "time",
-            "name": null,
-            "show": true,
-            "values": []
-          },
-          "yaxes": [
-            {
-              "$$hashKey": "object:94",
-              "format": "s",
-              "label": null,
-              "logBase": 2,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "$$hashKey": "object:95",
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ],
-          "yaxis": {
-            "align": false,
-            "alignLevel": null
-          }
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "dashLength": 10,
-          "dashes": false,
-          "datasource": "${DS_MSI}",
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "custom": {},
               "unit": "Bps"
             },
             "overrides": []
@@ -1451,7 +1353,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 47
+            "y": 11
           },
           "hiddenSeries": false,
           "id": 53,
@@ -1463,6 +1365,7 @@
             "min": false,
             "rightSide": true,
             "show": true,
+            "sideWidth": 350,
             "total": false,
             "values": true
           },
@@ -1482,7 +1385,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "DECLARE @server_name varchar(256);\nset @server_name = '$server';\n\nselect master.dbo.local2utc(pc.collection_time) as time, pc.instance_name + '\\ --- ' + pc.counter_name as instance_name, CAST(pc.cntr_value AS FLOAT) as cntr_value\n\t\t--*\nfrom DBA.dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\n--and collection_time >= DATEADD(hour,-2,getdate())\nand pc.server_name = @server_name\nand pc.[object_name] = 'LogicalDisk'\nand counter_name in ('Disk Bytes/sec')\nand ( instance_name <> '_Total' and instance_name not like 'HarddiskVolume%' )",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect dbo.local2utc(pc.collection_time) as time, pc.instance_name + '\\ --- ' + pc.counter_name as instance_name, CAST(pc.cntr_value AS FLOAT) as cntr_value\nfrom dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\n--and collection_time >= DATEADD(hour,-2,getdate())\nand pc.[object_name] = 'LogicalDisk'\nand counter_name in ('Disk Bytes/sec')\nand ( instance_name <> '_Total' and instance_name not like 'HarddiskVolume%' )\norder by collection_time asc;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
               "refId": "A"
             }
           ],
@@ -1528,6 +1431,105 @@
             "align": false,
             "alignLevel": null
           }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "${DS_MSI}",
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {},
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 19
+          },
+          "hiddenSeries": false,
+          "id": 51,
+          "legend": {
+            "alignAsTable": true,
+            "avg": true,
+            "current": false,
+            "max": false,
+            "min": false,
+            "rightSide": true,
+            "show": true,
+            "sideWidth": 350,
+            "total": false,
+            "values": true
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "percentage": false,
+          "pluginVersion": "7.1.4",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "alias": "",
+              "format": "time_series",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect dbo.local2utc(pc.collection_time) as time, pc.instance_name + '\\ --- ' + pc.counter_name as instance_name, CAST(pc.cntr_value AS FLOAT) as cntr_value\nfrom dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\n--and collection_time >= DATEADD(hour,-2,getdate())\nand pc.[object_name] = 'LogicalDisk'\nand counter_name in ('Avg. Disk sec/Read','Avg. Disk sec/Write')\nand ( instance_name <> '_Total' and instance_name not like 'HarddiskVolume%' )\norder by collection_time asc;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Disk Latency",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:94",
+              "format": "s",
+              "label": null,
+              "logBase": 2,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "$$hashKey": "object:95",
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         }
       ],
       "title": "Trend - Disk Latency",
@@ -1560,18 +1562,18 @@
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
-            "h": 7,
+            "h": 9,
             "w": 24,
             "x": 0,
-            "y": 32
+            "y": 12
           },
           "hiddenSeries": false,
           "id": 55,
           "legend": {
-            "alignAsTable": false,
+            "alignAsTable": true,
             "avg": true,
             "current": true,
-            "max": false,
+            "max": true,
             "min": false,
             "rightSide": false,
             "show": true,
@@ -1594,7 +1596,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "DECLARE @server_name varchar(256);\nset @server_name = '$server';\n\nselect master.dbo.local2utc(pc.collection_time) as time, pc.instance_name --+ '\\ --- ' + pc.counter_name as instance_name\n\t\t,CAST(pc.cntr_value AS FLOAT) as cntr_value\n\t\t--*\nfrom DBA.dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\n--and collection_time >= DATEADD(hour,-2,getdate())\nand pc.server_name = @server_name\nand pc.[object_name] = 'Network Interface'\nand counter_name in ('Bytes Total/sec')\n--and ( instance_name <> '_Total' and instance_name not like 'HarddiskVolume%' )",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect dbo.local2utc(pc.collection_time) as time, pc.instance_name --+ '\\ --- ' + pc.counter_name as instance_name\n\t\t,CAST(pc.cntr_value AS FLOAT) as cntr_value\n\t\t--*\nfrom dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\n--and collection_time >= DATEADD(hour,-2,getdate())\nand pc.[object_name] = 'Network Interface'\nand counter_name in ('Bytes Total/sec')\n--and ( instance_name <> '_Total' and instance_name not like 'HarddiskVolume%' )\norder by collection_time asc;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
               "refId": "A"
             }
           ],
@@ -1646,7 +1648,7 @@
       "type": "row"
     }
   ],
-  "refresh": "5s",
+  "refresh": "1m",
   "schemaVersion": 26,
   "style": "dark",
   "tags": [],
@@ -1656,14 +1658,14 @@
         "allValue": null,
         "current": {},
         "datasource": "${DS_MSI}",
-        "definition": "select 'MSI' as server_name",
+        "definition": "select server_name\nfrom (values ('MSI')\n\t\t\t,('SQL-A')\n\t ) as servers (server_name);",
         "hide": 0,
         "includeAll": false,
         "label": "Server",
         "multi": false,
         "name": "server",
         "options": [],
-        "query": "select 'MSI' as server_name",
+        "query": "select server_name\nfrom (values ('MSI')\n\t\t\t,('SQL-A')\n\t ) as servers (server_name);",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -1697,5 +1699,5 @@
   "timezone": "browser",
   "title": "Monitoring - Live",
   "uid": "Fg8Q_wSMz",
-  "version": 164
+  "version": 176
 }

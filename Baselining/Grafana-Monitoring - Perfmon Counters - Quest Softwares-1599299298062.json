@@ -49,7 +49,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1598787015878,
+  "iteration": 1599299288425,
   "links": [],
   "panels": [
     {
@@ -112,7 +112,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "DECLARE @server_name varchar(256);\nset @server_name = '$server';\n\nselect master.dbo.local2utc(collection_time) as time, (available_physical_memory_kb*1.0)/1024 as [Available Memory]\nfrom DBA.[dbo].[dm_os_sys_memory]\nwhere 1 = 1\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\n--and pc.server_name = @server_name\norder by collection_time desc",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect dbo.local2utc(collection_time) as time, (available_physical_memory_kb*1.0)/1024 as [Available Memory]\nfrom [dbo].[dm_os_sys_memory]\nwhere 1 = 1\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\n--and pc.server_name = @server_name\norder by collection_time asc;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
               "refId": "A"
             }
           ],
@@ -136,6 +136,7 @@
           },
           "yaxes": [
             {
+              "$$hashKey": "object:574",
               "format": "decmbytes",
               "label": null,
               "logBase": 1,
@@ -144,6 +145,7 @@
               "show": true
             },
             {
+              "$$hashKey": "object:575",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -205,7 +207,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "DECLARE @server_name varchar(256);\nset @server_name = '$server';\n\nselect master.dbo.local2utc(pc.collection_time) as time, pc.counter_name, CEILING(pc.cntr_value) as cntr_value\nfrom DBA.dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\nand pc.server_name = @server_name\nand pc.[object_name] = 'Memory'\nand pc.counter_name in ('Pages Input/Sec','Pages/Sec')\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect dbo.local2utc(pc.collection_time) as time, pc.counter_name, CEILING(pc.cntr_value) as cntr_value\nfrom dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\nand pc.[object_name] = 'Memory'\nand pc.counter_name in ('Pages Input/Sec','Pages/Sec')\norder by pc.collection_time;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
               "refId": "A"
             }
           ],
@@ -300,7 +302,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "DECLARE @server_name varchar(256);\nset @server_name = '$server';\n\nselect master.dbo.local2utc(pc.collection_time) as time, pc.counter_name, CEILING(pc.cntr_value) as cntr_value\nfrom DBA.dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\nand pc.server_name = @server_name\nand pc.[object_name] = 'Paging File'\nand pc.counter_name in ('% Usage','% Usage Peak')",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect dbo.local2utc(pc.collection_time) as time, pc.counter_name, CEILING(pc.cntr_value) as cntr_value\nfrom dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\nand pc.[object_name] = 'Paging File'\nand pc.counter_name in ('% Usage','% Usage Peak')\norder by collection_time asc;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
               "refId": "A"
             }
           ],
@@ -382,7 +384,7 @@
             "h": 7,
             "w": 24,
             "x": 0,
-            "y": 2
+            "y": 20
           },
           "hiddenSeries": false,
           "id": 62,
@@ -413,7 +415,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "DECLARE @server_name varchar(256);\n--set @server_name = $server;\n\nselect /* Grafana => CPU */\n\t\tmaster.dbo.local2utc(collection_time) as time,\n\t\tmetric COLLATE SQL_Latin1_General_CP1_CI_AS,\n\t\t[value]\nfrom (\tselect\tcollection_time,\n\t\t\t\tsystem_cpu_utilization as [% Processor Time (os)],\n\t\t\t\tsql_cpu_utilization as [% Processor Time (sqlservr)]\n\t\tfrom DBA..dm_os_ring_buffers\n\t\twhere 1 =1 \n\t\t--and server_name = @server_name\n\t\t--and collection_time >= DATEADD(MINUTE,-120,getdate())\n\t\tand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\n\t ) as up\nUNPIVOT ([value] FOR metric IN ([% Processor Time (os)],[% Processor Time (sqlservr)])) AS UnPvt\n--\nUNION ALL\n--\nselect  master.dbo.local2utc(pc.collection_time) as time\n\t\t,metric = case when pc.[object_name] = 'Process' then counter_name + ' ('+pc.instance_name+')'\n\t\t\t\t\t\twhen  pc.[object_name] = 'Processor' then counter_name + ' ('+pc.[object_name]+')'\n\t\t\t\t\telse null\n\t\t\t\t\tend  COLLATE SQL_Latin1_General_CP1_CI_AS\n\t\t,[value] = pc.cntr_value\nfrom DBA.dbo.dm_os_performance_counters_nonsql as pc with (nolock)\nwhere 1 = 1\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\n--and collection_time >= DATEADD(MINUTE,-120,getdate())\n--and pc.server_name = @server_name\nand\t(\t--(pc.[object_name] = 'Process' and counter_name like '!% % Time' ESCAPE '!' and pc.instance_name = 'sqlservr')\n\t\t--or\n\t\t(pc.[object_name] = 'Processor' and counter_name = '% Privileged Time')\n\t)\n--and counter_name like '!% Processor Time' ESCAPE '!'\norder by time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect /* Grafana => CPU */\n\t\tdbo.local2utc(collection_time) as time,\n\t\tmetric COLLATE SQL_Latin1_General_CP1_CI_AS,\n\t\t[value]\nfrom (\tselect\tcollection_time,\n\t\t\t\tsystem_cpu_utilization as [% Processor Time (os)],\n\t\t\t\tsql_cpu_utilization as [% Processor Time (sqlservr)]\n\t\tfrom dbo.dm_os_ring_buffers\n\t\twhere 1 = 1\n\t\t--and collection_time >= DATEADD(MINUTE,-120,getdate())\n\t\tand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\n\t ) as up\nUNPIVOT ([value] FOR metric IN ([% Processor Time (os)],[% Processor Time (sqlservr)])) AS UnPvt\n--\nUNION ALL\n--\nselect  dbo.local2utc(pc.collection_time) as time\n\t\t,metric = case when pc.[object_name] = 'Process' then counter_name + ' ('+pc.instance_name+')'\n\t\t\t\t\t\twhen  pc.[object_name] = 'Processor' then counter_name + ' ('+pc.[object_name]+')'\n\t\t\t\t\telse null\n\t\t\t\t\tend  COLLATE SQL_Latin1_General_CP1_CI_AS\n\t\t,[value] = pc.cntr_value\nfrom dbo.dm_os_performance_counters_nonsql as pc with (nolock)\nwhere 1 = 1\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\n--and collection_time >= DATEADD(MINUTE,-120,getdate())\n--and pc.server_name = @server_name\nand\t(\t--(pc.[object_name] = 'Process' and counter_name like '!% % Time' ESCAPE '!' and pc.instance_name = 'sqlservr')\n\t\t--or\n\t\t(pc.[object_name] = 'Processor' and counter_name = '% Privileged Time')\n\t)\n--and counter_name like '!% Processor Time' ESCAPE '!'\norder by time;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
               "refId": "A"
             }
           ],
@@ -456,6 +458,7 @@
           },
           "yaxes": [
             {
+              "$$hashKey": "object:618",
               "format": "percent",
               "label": null,
               "logBase": 1,
@@ -464,6 +467,7 @@
               "show": true
             },
             {
+              "$$hashKey": "object:619",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -496,7 +500,7 @@
             "h": 8,
             "w": 24,
             "x": 0,
-            "y": 9
+            "y": 27
           },
           "hiddenSeries": false,
           "id": 64,
@@ -525,7 +529,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "\nDECLARE @server_name varchar(256);\nset @server_name = 'MSI';\n\nselect \n\t\tmaster.dbo.local2utc(pc.collection_time) as time\n\t\t,metric = 'CPU - '+pc.counter_name+' ('+pc.[object_name]+')'\n\t\t,[value] = pc.cntr_value/si.cpu_count\nfrom DBA.dbo.dm_os_performance_counters_nonsql as pc with (nolock)\nouter apply ( select top 1 cpu_count from DBA.dbo.dm_os_sys_info as si where si.collection_time <= pc.collection_time) as si\nwhere 1 = 1\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\n--and collection_time >= DATEADD(MINUTE,-20,getdate())\nand pc.server_name = @server_name\nand\t(\t(pc.[object_name] = 'System' and counter_name = 'Processor Queue Length')\n\t\tor\n\t\t(pc.[object_name] = 'System' and counter_name = 'Context Switches/sec')\n\t)\n--and counter_name like '!% Processor Time' ESCAPE '!'\norder by time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect \n\t\tdbo.local2utc(pc.collection_time) as time\n\t\t,metric = 'CPU - '+pc.counter_name+' ('+pc.[object_name]+')'\n\t\t,[value] = pc.cntr_value/si.cpu_count\nfrom dbo.dm_os_performance_counters_nonsql as pc with (nolock)\nouter apply ( select top 1 cpu_count from dbo.dm_os_sys_info as si where si.collection_time <= pc.collection_time) as si\nwhere 1 = 1\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\n--and collection_time >= DATEADD(MINUTE,-20,getdate())\nand\t(\t(pc.[object_name] = 'System' and counter_name = 'Processor Queue Length')\n\t\tor\n\t\t(pc.[object_name] = 'System' and counter_name = 'Context Switches/sec')\n\t)\n--and counter_name like '!% Processor Time' ESCAPE '!'\norder by time;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
               "refId": "A"
             }
           ],
@@ -638,7 +642,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "select master.dbo.local2utc(collection_time) as time, counter_name, cntr_value\r\nfrom DBA.dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand pc.object_name = 'SQLServer:Access Methods'\r\nand pc.counter_name not in ('Index Searches/sec')\r\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo()) ",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect dbo.local2utc(collection_time) as time, counter_name, cntr_value\r\nfrom dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand pc.object_name = 'SQLServer:Access Methods'\r\nand pc.counter_name not in ('Index Searches/sec')\r\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo()) \r\norder by collection_time;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -736,7 +740,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "select master.dbo.local2utc(collection_time) as time, counter_name, cntr_value\r\nfrom DBA.dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand pc.object_name = 'SQLServer:Access Methods'\r\nand pc.counter_name = 'Index Searches/sec'\r\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo()) ",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect dbo.local2utc(collection_time) as time, counter_name, cntr_value\r\nfrom dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand pc.object_name = 'SQLServer:Access Methods'\r\nand pc.counter_name = 'Index Searches/sec'\r\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo()) \r\norder by collection_time;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -846,7 +850,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "declare @server varchar(256)\nset @server = '$server';\n\nselect\ttime = master.dbo.local2utc(pc.collection_time),\n\t\tmetric = pc.counter_name,\n\t\t[value] = pc.cntr_value\nfrom DBA.dbo.dm_os_performance_counters as pc\nwhere 1 = 1\n--and server_name = @server\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\nand (\t(pc.[object_name] = 'SQLServer:Memory Manager' and pc.counter_name in ('Granted Workspace Memory (KB)','Maximum Workspace Memory (KB)','Target Server Memory (KB)'))\n\t)\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect\ttime = dbo.local2utc(pc.collection_time),\n\t\tmetric = pc.counter_name,\n\t\t[value] = pc.cntr_value\nfrom dbo.dm_os_performance_counters as pc\nwhere 1 = 1\n--and server_name = @server\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\nand (\t(pc.[object_name] = 'SQLServer:Memory Manager' and pc.counter_name in ('Granted Workspace Memory (KB)','Maximum Workspace Memory (KB)','Target Server Memory (KB)'))\n\t)\norder by pc.collection_time;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
               "refId": "A"
             }
           ],
@@ -870,6 +874,7 @@
           },
           "yaxes": [
             {
+              "$$hashKey": "object:780",
               "format": "deckbytes",
               "label": null,
               "logBase": 1,
@@ -878,6 +883,7 @@
               "show": true
             },
             {
+              "$$hashKey": "object:781",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -938,7 +944,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "declare @server varchar(256)\nset @server = '$server';\n\nselect\ttime = master.dbo.local2utc(pc.collection_time),\n\t\tmetric = pc.counter_name,\n\t\t[value] = pc.cntr_value\nfrom DBA.dbo.dm_os_performance_counters as pc\nwhere 1 = 1\n--and server_name = @server\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\nand (\t(pc.[object_name] = 'SQLServer:Memory Manager' and pc.counter_name in ('Memory Grants Outstanding','Memory Grants Pending'))\n\t)\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect\ttime = dbo.local2utc(pc.collection_time),\n\t\tmetric = pc.counter_name,\n\t\t[value] = pc.cntr_value\nfrom dbo.dm_os_performance_counters as pc\nwhere 1 = 1\n--and server_name = @server\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\nand (\t(pc.[object_name] = 'SQLServer:Memory Manager' and pc.counter_name in ('Memory Grants Outstanding','Memory Grants Pending'))\n\t)\norder by pc.collection_time\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
               "refId": "A"
             }
           ],
@@ -962,6 +968,7 @@
           },
           "yaxes": [
             {
+              "$$hashKey": "object:816",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -970,6 +977,7 @@
               "show": true
             },
             {
+              "$$hashKey": "object:817",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -1050,7 +1058,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "declare @server varchar(256)\nset @server = '$server';\n\nselect  /* Load on Disk */\n\t\t[time] = master.dbo.local2utc(pc.collection_time),\n\t\tmetric = counter_name+' ('+pc.instance_name+')',\n\t\t[value] = pc.cntr_value\nfrom DBA.dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\n--and server_name = @server\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\nand pc.[object_name] in ( 'LogicalDisk' )\nand pc.counter_name in ('Current Disk Queue Length')\nand NOT (pc.instance_name = '_Total' or pc.instance_name like 'Harddisk%')\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect  /* Load on Disk */\n\t\t[time] = dbo.local2utc(pc.collection_time),\n\t\tmetric = counter_name+' ('+pc.instance_name+')',\n\t\t[value] = pc.cntr_value\nfrom dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\n--and server_name = @server\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\nand pc.[object_name] in ( 'LogicalDisk' )\nand pc.counter_name in ('Current Disk Queue Length')\nand NOT (pc.instance_name = '_Total' or pc.instance_name like 'Harddisk%')\norder by pc.collection_time;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
               "refId": "A"
             }
           ],
@@ -1149,7 +1157,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "declare @server varchar(256)\nset @server = '$server';\n\nselect [time] = master.dbo.local2utc(pc.collection_time),\n\t\tmetric = counter_name+' ('+pc.instance_name+')',\n\t\t[value] = pc.cntr_value\n--distinct object_name, counter_name, instance_name\nfrom DBA.dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\n--and server_name = @server\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\nand pc.[object_name] in ( 'LogicalDisk' )\n--and pc.[object_name] in ( 'PhysicalDisk' )\nand pc.counter_name in ('Avg. Disk sec/Read','Avg. Disk sec/Write')\nand NOT (pc.instance_name = '_Total' or pc.instance_name like 'Harddisk%')\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect [time] = dbo.local2utc(pc.collection_time),\n\t\tmetric = counter_name+' ('+pc.instance_name+')',\n\t\t[value] = pc.cntr_value\n--distinct object_name, counter_name, instance_name\nfrom dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\nand pc.[object_name] in ( 'LogicalDisk' )\n--and pc.[object_name] in ( 'PhysicalDisk' )\nand pc.counter_name in ('Avg. Disk sec/Read','Avg. Disk sec/Write')\nand NOT (pc.instance_name = '_Total' or pc.instance_name like 'Harddisk%')\norder by pc.collection_time;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
               "refId": "A"
             }
           ],
@@ -1247,7 +1255,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "declare @server varchar(256)\nset @server = '$server';\n\nselect  /* Load on Disk */\n\t\t[time] = master.dbo.local2utc(pc.collection_time),\n\t\tmetric = counter_name+' ('+pc.instance_name+')',\n\t\t[value] = pc.cntr_value\n\t\t--distinct object_name, counter_name --,instance_name\nfrom DBA.dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\n--and server_name = @server\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\nand pc.[object_name] in ( 'LogicalDisk' )\n--and pc.[object_name] in ( 'PhysicalDisk' )\n--and pc.counter_name in ('Current Disk Queue Length')\n--and pc.counter_name in ('% Disk Time','% Idle Time','% Disk Read Time','% Disk Write Time')\nand pc.counter_name in ('Disk Bytes/sec','Disk Write Bytes/sec','Disk Read Bytes/sec')\n--and pc.counter_name in ('Avg. Disk sec/Read','Avg. Disk sec/Write')\nand NOT (pc.instance_name = '_Total' or pc.instance_name like 'Harddisk%')\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect  /* Load on Disk */\n\t\t[time] = dbo.local2utc(pc.collection_time),\n\t\tmetric = counter_name+' ('+pc.instance_name+')',\n\t\t[value] = pc.cntr_value\n\t\t--distinct object_name, counter_name --,instance_name\nfrom dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\nand pc.[object_name] in ( 'LogicalDisk' )\n--and pc.[object_name] in ( 'PhysicalDisk' )\n--and pc.counter_name in ('Current Disk Queue Length')\n--and pc.counter_name in ('% Disk Time','% Idle Time','% Disk Read Time','% Disk Write Time')\nand pc.counter_name in ('Disk Bytes/sec','Disk Write Bytes/sec','Disk Read Bytes/sec')\n--and pc.counter_name in ('Avg. Disk sec/Read','Avg. Disk sec/Write')\nand NOT (pc.instance_name = '_Total' or pc.instance_name like 'Harddisk%')\norder by pc.collection_time;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
               "refId": "A"
             }
           ],
@@ -1344,7 +1352,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "declare @server varchar(256)\nset @server = '$server';\n\nselect [time] = master.dbo.local2utc(pc.collection_time),\n\t\tmetric = counter_name+' ('+pc.instance_name+')',\n\t\t[value] = pc.cntr_value\n--distinct object_name, counter_name, instance_name\nfrom DBA.dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\n--and server_name = @server\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\n--and pc.[object_name] in ( 'LogicalDisk' )\nand pc.[object_name] in ( 'PhysicalDisk' )\nand pc.counter_name in ('Avg. Disk sec/Read','Avg. Disk sec/Write')\nand NOT (pc.instance_name = '_Total' or pc.instance_name like 'Harddisk%')\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect [time] = dbo.local2utc(pc.collection_time),\n\t\tmetric = counter_name+' ('+pc.instance_name+')',\n\t\t[value] = pc.cntr_value\n--distinct object_name, counter_name, instance_name\nfrom dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\n--and pc.[object_name] in ( 'LogicalDisk' )\nand pc.[object_name] in ( 'PhysicalDisk' )\nand pc.counter_name in ('Avg. Disk sec/Read','Avg. Disk sec/Write')\nand NOT (pc.instance_name = '_Total' or pc.instance_name like 'Harddisk%')\norder by pc.collection_time;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
               "refId": "A"
             }
           ],
@@ -1458,7 +1466,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "declare @server varchar(256)\nset @server = '$server';\n\nselect  /* Load on Disk */\n\t\t[time] = master.dbo.local2utc(pc.collection_time),\n\t\tmetric = pc.instance_name,\n\t\t[value] = pc.cntr_value\nfrom DBA.dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\n--and server_name = @server\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\nand pc.[object_name] in ( 'Network Interface' )\nand pc.counter_name in ('Bytes Total/sec')\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect  /* Load on Disk */\n\t\t[time] = dbo.local2utc(pc.collection_time),\n\t\tmetric = pc.instance_name,\n\t\t[value] = pc.cntr_value\nfrom dbo.dm_os_performance_counters_nonsql as pc\nwhere 1 = 1\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\nand pc.[object_name] in ( 'Network Interface' )\nand pc.counter_name in ('Bytes Total/sec')\norder by pc.collection_time;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
               "refId": "A"
             }
           ],
@@ -1573,7 +1581,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": ";WITH T_Dbs AS (\n\tselect *\n\tfrom DBA.dbo.dm_os_performance_counters as pc\n\twhere 1 = 1\n\tand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\n\tand pc.[object_name] = 'SQLServer:Databases'\n\tand pc.counter_name in ('Log File(s) Used Size (KB)','Log File(s) Size (KB)')\n\t--and pc.counter_name = 'Percent Log Used'\n\tand instance_name not in ('_Total','master','model','mssqlsystemresource')\n\t--and pc.cntr_value/(1024.0*1024) > 1.0\n)\nselect [time] = master.dbo.local2utc(pc.collection_time),\n\t\t--pc.collection_time,\n\t\tmetric = case when counter_name = 'Log File(s) Size (KB)' then 'Total Size (KB) - '+QUOTENAME(pc.instance_name)\n\t\t\t\t\t\twhen counter_name = 'Log File(s) Used Size (KB)' then 'Used Size (KB) - '+QUOTENAME(pc.instance_name)\n\t\t\t\t\t\telse counter_name+' ('+pc.instance_name+')'\n\t\t\t\t\t\tend ,\n\t\t[value] = pc.cntr_value\nfrom T_Dbs as pc\nwhere pc.instance_name in (\tselect i.instance_name \n\t\t\t\t\t\t\tfrom T_Dbs as i \n\t\t\t\t\t\t\twhere i.counter_name = 'Log File(s) Size (KB)'\n\t\t\t\t\t\t\t\tand i.cntr_value/(1024.0*1024) > 1.0\n\t\t\t\t\t\t)\norder by collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\n;WITH T_Dbs AS (\n\tselect *\n\tfrom dbo.dm_os_performance_counters as pc\n\twhere 1 = 1\n\tand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\n\tand pc.[object_name] = 'SQLServer:Databases'\n\tand pc.counter_name in ('Log File(s) Used Size (KB)','Log File(s) Size (KB)')\n\t--and pc.counter_name = 'Percent Log Used'\n\tand instance_name not in ('_Total','master','model','mssqlsystemresource')\n\t--and pc.cntr_value/(1024.0*1024) > 1.0\n)\nselect [time] = dbo.local2utc(pc.collection_time),\n\t\t--pc.collection_time,\n\t\tmetric = case when counter_name = 'Log File(s) Size (KB)' then 'Total Size (KB) - '+QUOTENAME(pc.instance_name)\n\t\t\t\t\t\twhen counter_name = 'Log File(s) Used Size (KB)' then 'Used Size (KB) - '+QUOTENAME(pc.instance_name)\n\t\t\t\t\t\telse counter_name+' ('+pc.instance_name+')'\n\t\t\t\t\t\tend ,\n\t\t[value] = pc.cntr_value\nfrom T_Dbs as pc\nwhere pc.instance_name in (\tselect i.instance_name \n\t\t\t\t\t\t\tfrom T_Dbs as i \n\t\t\t\t\t\t\twhere i.counter_name = 'Log File(s) Size (KB)'\n\t\t\t\t\t\t\t\tand i.cntr_value/(1024.0*1024) > 1.0\n\t\t\t\t\t\t)\norder by collection_time;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
               "refId": "A"
             }
           ],
@@ -1691,7 +1699,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "select master.dbo.local2utc(collection_time) as time, counter_name, cntr_value\r\nfrom DBA.dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand pc.object_name = 'SQLServer:SQL Statistics' --and counter_name not in ('Memory Grants Pending')\r\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect dbo.local2utc(collection_time) as time, counter_name, cntr_value\r\nfrom dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand pc.object_name = 'SQLServer:SQL Statistics' --and counter_name not in ('Memory Grants Pending')\r\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\r\norder by collection_time asc;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -1803,7 +1811,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "select master.dbo.local2utc(collection_time) as time, counter_name, cntr_value\r\nfrom DBA.dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand pc.object_name = 'SQLServer:Buffer Manager' and counter_name in ('Page lookups/sec','Page reads/sec','Page writes/sec','Readahead pages/sec')\r\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect dbo.local2utc(collection_time) as time, counter_name, cntr_value\r\nfrom dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand pc.object_name = 'SQLServer:Buffer Manager' and counter_name in ('Page lookups/sec','Page reads/sec','Page writes/sec','Readahead pages/sec')\r\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\r\norder by collection_time asc;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -1900,7 +1908,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "select master.dbo.local2utc(collection_time) as time, counter_name, cntr_value\r\nfrom DBA.dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand pc.object_name = 'SQLServer:Buffer Manager' and counter_name not in ('Page life expectancy','Database pages','Target pages')\r\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect dbo.local2utc(collection_time) as time, counter_name, cntr_value\r\nfrom dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand pc.object_name = 'SQLServer:Buffer Manager' and counter_name not in ('Page life expectancy','Database pages','Target pages')\r\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\r\norder by collection_time asc;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -2013,7 +2021,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "select master.dbo.local2utc(collection_time) as time, counter_name as metric, cntr_value as [value]\r\n\t\t--distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom DBA.dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name = 'SQLServer:Memory Manager' \r\nand counter_name in ('Total Server Memory (KB)','Target Server Memory (KB)')\r\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect dbo.local2utc(collection_time) as time, counter_name as metric, cntr_value as [value]\r\n\t\t--distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name = 'SQLServer:Memory Manager' \r\nand counter_name in ('Total Server Memory (KB)','Target Server Memory (KB)')\r\norder by pc.collection_time;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -2111,7 +2119,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "select master.dbo.local2utc(collection_time) as time, counter_name as metric, cntr_value as [value]\r\n\t\t--distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom DBA.dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name = 'SQLServer:Memory Manager' \r\nand counter_name in ('Stolen Server Memory (KB)','SQL Cache Memory (KB)','Free Memory (KB)')\r\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect dbo.local2utc(collection_time) as time, counter_name as metric, cntr_value as [value]\r\n\t\t--distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name = 'SQLServer:Memory Manager' \r\nand counter_name in ('Stolen Server Memory (KB)','SQL Cache Memory (KB)','Free Memory (KB)')\r\norder by pc.collection_time asc;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -2224,7 +2232,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "\nselect master.dbo.local2utc(collection_time) as time, counter_name as metric, cntr_value as [value]\n\t\t--distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\nfrom DBA.dbo.dm_os_performance_counters as pc\nwhere 1 = 1\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\n--and pc.collection_time >= GETDATE()-1\nand pc.object_name = 'SQLServer:SQL Statistics' \nand counter_name in ('Batch Requests/sec','SQL Compilations/sec','SQL Re-Compilations/sec','SQL Attention rate')\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\nSET QUOTED_IDENTIFIER OFF\nDECLARE @sql varchar(max) = \"\nselect dbo.local2utc(collection_time) as time, counter_name as metric, cntr_value as [value]\n\t\t--distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\nfrom dbo.dm_os_performance_counters as pc\nwhere 1 = 1\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\n--and pc.collection_time >= GETDATE()-1\nand pc.object_name = 'SQLServer:SQL Statistics' \nand counter_name in ('Batch Requests/sec','SQL Compilations/sec','SQL Re-Compilations/sec','SQL Attention rate')\norder by pc.collection_time;\n\"\nSET QUOTED_IDENTIFIER ON\nIF ('$server' = SERVERPROPERTY('ServerName'))\nBEGIN\n  EXEC (@sql);\nEND;\nELSE\nBEGIN\n  EXEC (@sql) AT [$server];\nEND;",
               "refId": "A"
             }
           ],
@@ -2322,7 +2330,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "select master.dbo.local2utc(collection_time) as time, instance_name as metric, cntr_value as [value]\r\n\t\t  --distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom DBA.dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name like 'SQLServer:Locks'\r\nand pc.counter_name = 'Number of Deadlocks/sec'\r\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect dbo.local2utc(collection_time) as time, instance_name as metric, cntr_value as [value]\r\n\t\t  --distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name like 'SQLServer:Locks'\r\nand pc.counter_name = 'Number of Deadlocks/sec'\r\norder by pc.collection_time;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -2420,7 +2428,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "select master.dbo.local2utc(collection_time) as time, instance_name as metric, cntr_value as [value]\r\n\t\t--distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom DBA.dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name = 'SQLServer:SQL Errors' \r\nand pc.instance_name <> '_Total'\r\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect dbo.local2utc(collection_time) as time, instance_name as metric, cntr_value as [value]\r\n\t\t--distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name = 'SQLServer:SQL Errors' \r\nand pc.instance_name <> '_Total'\r\norder by pc.collection_time;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -2530,7 +2538,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "select master.dbo.local2utc(collection_time) as time, counter_name as metric, cntr_value as [value]\r\n\t\t  --distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom DBA.dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name like 'SQLServer:Transactions'\r\nand pc.counter_name in ('Longest Transaction Running Time')\r\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect dbo.local2utc(collection_time) as time, counter_name as metric, cntr_value as [value]\r\n\t\t  --distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name like 'SQLServer:Transactions'\r\nand pc.counter_name in ('Longest Transaction Running Time')\r\norder by pc.collection_time;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -2625,7 +2633,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "select master.dbo.local2utc(collection_time) as time, counter_name as metric, cntr_value as [value]\r\n\t\t  --distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom DBA.dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name like 'SQLServer:Transactions'\r\nand pc.counter_name in ('Free Space in tempdb (KB)')\r\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect dbo.local2utc(collection_time) as time, counter_name as metric, cntr_value as [value]\r\n\t\t  --distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name like 'SQLServer:Transactions'\r\nand pc.counter_name in ('Free Space in tempdb (KB)')\r\norder by pc.collection_time;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -2688,7 +2696,7 @@
           "fill": 1,
           "fillGradient": 0,
           "gridPos": {
-            "h": 6,
+            "h": 7,
             "w": 11,
             "x": 0,
             "y": 19
@@ -2720,7 +2728,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "select master.dbo.local2utc(collection_time) as time, counter_name as metric, cntr_value as [value]\r\n\t\t  --distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom DBA.dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name like 'SQLServer:Transactions'\r\nand pc.counter_name in ('Transactions')\r\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect dbo.local2utc(collection_time) as time, counter_name as metric, cntr_value as [value]\r\n\t\t  --distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name like 'SQLServer:Transactions'\r\nand pc.counter_name in ('Transactions')\r\norder by pc.collection_time;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -2815,7 +2823,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "select master.dbo.local2utc(collection_time) as time, counter_name as metric, cntr_value as [value]\r\n\t\t  --distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom DBA.dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name like 'SQLServer:Transactions'\r\nand pc.counter_name in ('Version Store Size (KB)')\r\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect dbo.local2utc(collection_time) as time, counter_name as metric, cntr_value as [value]\r\n\t\t  --distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name like 'SQLServer:Transactions'\r\nand pc.counter_name in ('Version Store Size (KB)')\r\norder by pc.collection_time;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -2926,7 +2934,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "select master.dbo.local2utc(collection_time) as time, counter_name as metric, cntr_value as [value]\r\n\t\t  --distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom DBA.dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand (\tpc.object_name = 'SQLServer:General Statistics'\r\n\t\tand\t\r\n\t\t(\tpc.counter_name in ('User Connections','Logins/sec','Logouts/sec') )\r\n\t)\r\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect dbo.local2utc(collection_time) as time, counter_name as metric, cntr_value as [value]\r\n\t\t  --distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand (\tpc.object_name = 'SQLServer:General Statistics'\r\n\t\tand\t\r\n\t\t(\tpc.counter_name in ('User Connections','Logins/sec','Logouts/sec') )\r\n\t)\r\norder by pc.collection_time;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -3018,6 +3026,7 @@
             "min": false,
             "rightSide": true,
             "show": true,
+            "sideWidth": 400,
             "total": false,
             "values": true
           },
@@ -3037,7 +3046,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "\r\nselect master.dbo.local2utc(collection_time) as time, counter_name as metric, cntr_value as [value]\r\n\t\t--distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom DBA.dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name like 'SQLServer:Latches'\r\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect dbo.local2utc(collection_time) as time, counter_name as metric, cntr_value as [value]\r\n\t\t--distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name like 'SQLServer:Latches'\r\norder by pc.collection_time;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -3114,6 +3123,7 @@
             "min": false,
             "rightSide": true,
             "show": true,
+            "sideWidth": 400,
             "total": false,
             "values": true
           },
@@ -3133,7 +3143,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "\r\nselect master.dbo.local2utc(collection_time) as time, instance_name as metric, cntr_value as [value]\r\n\t\t--distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom DBA.dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\n--and collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\r\nand pc.collection_time >= GETDATE()-1\r\nand pc.object_name like 'SQLServer:Locks'\r\nand pc.counter_name = 'Lock Waits/sec'\r\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect dbo.local2utc(collection_time) as time, instance_name as metric, cntr_value as [value]\r\n\t\t--distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name like 'SQLServer:Locks'\r\nand pc.counter_name = 'Lock Waits/sec'\r\norder by pc.collection_time;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -3210,6 +3220,7 @@
             "min": false,
             "rightSide": true,
             "show": true,
+            "sideWidth": 400,
             "total": false,
             "values": true
           },
@@ -3229,7 +3240,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "select master.dbo.local2utc(collection_time) as time, instance_name as metric, cntr_value as [value]\r\n\t\t    --distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom DBA.dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name like 'SQLServer:Locks'\r\nand pc.counter_name = 'Average Wait Time (ms)'\r\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect dbo.local2utc(collection_time) as time, instance_name as metric, cntr_value as [value]\r\n\t\t    --distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name like 'SQLServer:Locks'\r\nand pc.counter_name = 'Average Wait Time (ms)'\r\norder by pc.collection_time;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -3325,7 +3336,7 @@
             {
               "alias": "",
               "format": "time_series",
-              "rawSql": "select master.dbo.local2utc(collection_time) as time, instance_name as metric, cntr_value as [value]\r\n\t\t    --distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom DBA.dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name like 'SQLServer:Locks'\r\nand pc.counter_name = 'Lock Wait Time (ms)'\r\norder by pc.collection_time",
+              "rawSql": "SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;\r\nSET QUOTED_IDENTIFIER OFF\r\nDECLARE @sql varchar(max) = \"\r\nselect dbo.local2utc(collection_time) as time, instance_name as metric, cntr_value as [value]\r\n\t\t    --distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type\r\nfrom dbo.dm_os_performance_counters as pc\r\nwhere 1 = 1\r\nand collection_time BETWEEN dbo.utc2local($__timeFrom()) AND dbo.utc2local($__timeTo())\r\n--and pc.collection_time >= GETDATE()-1\r\nand pc.object_name like 'SQLServer:Locks'\r\nand pc.counter_name = 'Lock Wait Time (ms)'\r\norder by pc.collection_time;\r\n\"\r\nSET QUOTED_IDENTIFIER ON\r\nIF ('$server' = SERVERPROPERTY('ServerName'))\r\nBEGIN\r\n  EXEC (@sql);\r\nEND;\r\nELSE\r\nBEGIN\r\n  EXEC (@sql) AT [$server];\r\nEND;",
               "refId": "A"
             }
           ],
@@ -3391,14 +3402,14 @@
         "allValue": null,
         "current": {},
         "datasource": "${DS_MSI}",
-        "definition": "select 'MSI' as server_name",
+        "definition": "select server_name\nfrom (values ('MSI')\n\t\t\t,('SQL-A')\n\t ) as servers (server_name);",
         "hide": 0,
         "includeAll": false,
         "label": "Server",
         "multi": false,
         "name": "server",
         "options": [],
-        "query": "select 'MSI' as server_name",
+        "query": "select server_name\nfrom (values ('MSI')\n\t\t\t,('SQL-A')\n\t ) as servers (server_name);",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -3432,5 +3443,5 @@
   "timezone": "",
   "title": "Monitoring - Perfmon Counters - Quest Softwares",
   "uid": "_dioLINMk",
-  "version": 82
+  "version": 91
 }
