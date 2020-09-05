@@ -133,6 +133,12 @@
           <AssociatedConnUserName />
           <FullPath>QA - What is my accepted answer percentage rate.sql</FullPath>
         </FileNode>
+        <FileNode Name="QRY - Clensing StackOverflow Tables.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QRY - Clensing StackOverflow Tables.sql</FullPath>
+        </FileNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">

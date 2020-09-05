@@ -2,27 +2,40 @@
 <ArrayOfArrayOfArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <ArrayOfArrayOfString>
     <ArrayOfString>
-      <string>D:\GitHub\SQLDBA-SSMS-Solution\BlitzQueries\WhatIsRunning.sql</string>
-    </ArrayOfString>
-    <ArrayOfString>
       <string>D:\GitHub\SQLDBA-SSMS-Solution\StackOverflow\Generate Workloads.sql</string>
-    </ArrayOfString>
-    <ArrayOfString>
-      <string>D:\GitHub\SQLDBA-SSMS-Solution\SQLDBATools-Inventory\SCH-usp_collect_performance_metrics.sql</string>
     </ArrayOfString>
     <ArrayOfString>
       <string>D:\GitHub\SQLDBA-SSMS-Solution\SQLDBATools-Inventory\Grafana-Queries.sql</string>
     </ArrayOfString>
     <ArrayOfString>
-      <string>D:\GitHub\SQLDBA-SSMS-Solution\Audit\Connection Limit.sql</string>
+      <string>D:\GitHub\SQLDBA-SSMS-Solution\SQLDBATools-Inventory\(dba) Collect XEvents.sql</string>
     </ArrayOfString>
     <ArrayOfString>
-      <string>D:\GitHub\SQLDBA-SSMS-Solution\ErrorLogs\QRY-SqlCluster-Failover-Time.sql</string>
+      <string>D:\GitHub\SQLDBA-SSMS-Solution\Misscellaneous Queries\BCP-QueryOut.sql</string>
     </ArrayOfString>
-  </ArrayOfArrayOfString>
-  <ArrayOfArrayOfString>
     <ArrayOfString>
-      <string>D:\GitHub\SQLDBA-SSMS-Solution\TempScripts\WaitStats-Grafana.sql</string>
+      <string>D:\GitHub\SQLDBA-SSMS-Solution\SQLDBATools-Inventory\SCH-event_GetEventData.sql</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>D:\GitHub\SQLDBA-SSMS-Solution\SQLDBATools-Inventory\SCH-Create-Function-utc2local.sql</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>D:\GitHub\SQLDBA-SSMS-Solution\OlaHallengren.com\Queries-Used.sql</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>(local) - FailedQueries: Live Data</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>D:\GitHub\SQLDBA-SSMS-Solution\Baselining\Job [DBA - Log_With_sp_WhoIsActive].sql</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>D:\GitHub\SQLDBA-SSMS-Solution\Baselining\QRY-ExtendedEvents-Queries.sql</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>C:\Users\ajayd\AppData\Local\Temp\~vs83E4.sql</string>
+    </ArrayOfString>
+    <ArrayOfString>
+      <string>D:\GitHub\SQLDBA-SSMS-Solution\SQLDBATools-Inventory\SCH-usp_collect_performance_metrics.sql</string>
     </ArrayOfString>
   </ArrayOfArrayOfString>
 </ArrayOfArrayOfArrayOfString>

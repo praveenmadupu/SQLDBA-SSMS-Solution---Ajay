@@ -19,11 +19,35 @@
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
-        <FileNode Name="WaitStats-Grafana.sql">
+        <FileNode Name="Error-8623.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>WaitStats-Grafana.sql</FullPath>
+          <FullPath>Error-8623.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Staging-Recommendation-TestCase01.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Staging-Recommendation-TestCase01.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Staging-Recommendation-TestCase02.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Staging-Recommendation-TestCase02.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Staging-Recommendation-TestCase03.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Staging-Recommendation-TestCase03.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Staging-Recommendation-TestCase04.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Staging-Recommendation-TestCase04.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>

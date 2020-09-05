@@ -1,5 +1,8 @@
-create function utc2local (@utc_datetime datetime2)
-returns datetime2
+use DBA
+go
+
+alter function dbo.utc2local (@utc_datetime datetime2)
+returns datetime2 with schemabinding
 as
 begin
 	declare @local_time datetime2;
@@ -9,8 +12,8 @@ begin
 end
 go
 
-create function local2utc (@local_datetime datetime2)
-returns datetime2
+alter function dbo.local2utc (@local_datetime datetime2)
+returns datetime2 with schemabinding
 as
 begin
 	declare @utc_time datetime2;
@@ -20,8 +23,8 @@ begin
 end
 go
 
-create function perfmon2utc (@CounterDateTime varchar(24))
-returns datetime2
+alter function dbo.perfmon2utc (@CounterDateTime varchar(24))
+returns datetime2 with schemabinding
 as
 begin
 	declare @utc_time datetime2;
@@ -31,8 +34,8 @@ begin
 end
 go
 
-create function perfmon2local (@CounterDateTime varchar(24))
-returns datetime2
+alter function dbo.perfmon2local (@CounterDateTime varchar(24))
+returns datetime2 with schemabinding
 as
 begin
 	declare @local_time datetime2;
@@ -42,11 +45,8 @@ begin
 end
 go
 
-use master
-go
-
-alter function time2duration (@time varchar(27), @unit varchar(20) = 'second')
-returns varchar(30)
+alter function dbo.time2duration (@time varchar(27), @unit varchar(20) = 'second')
+returns varchar(30) with schemabinding
 as
 begin
 	declare @duration varchar(30);

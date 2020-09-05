@@ -1,7 +1,7 @@
 USE DBA
 GO
 
-ALTER procedure [dbo].[usp_collect_performance_metrics] @verbose bit = 0, @metrics varchar(100) = 'all'
+alter procedure [dbo].[usp_collect_performance_metrics] @verbose bit = 0, @metrics varchar(100) = 'all'
 as
 begin
 	set nocount on;
@@ -11,7 +11,7 @@ begin
 
 	if @metrics = 'all' or @metrics = 'dm_os_memory_clerks'
 	begin
-		INSERT INTO DBA..dm_os_memory_clerks
+		INSERT INTO dbo.dm_os_memory_clerks
 		SELECT --TOP(5)
 				@current_time as collection_time,
 				[type] AS memory_clerk,
@@ -85,6 +85,10 @@ begin
 			( [object_name] LIKE 'SQLServer:Memory Manager%' AND counter_name = 'Total Server Memory (KB)' )
 			or
 			( [object_name] LIKE 'SQLServer:Memory Manager%' AND counter_name = 'Target Server Memory (KB)' )
+			or
+			( [object_name] LIKE 'SQLServer:Memory Manager%' AND counter_name = 'SQL Cache Memory (KB)' )
+			or
+			( [object_name] LIKE 'SQLServer:Memory Manager%' AND counter_name = 'Free Memory (KB)' )
 			or
 			( [object_name] like 'SQLServer:Databases%' and [counter_name] like 'Data File(s) Size (KB)%' )
 			or
@@ -389,35 +393,39 @@ begin
 	if @metrics = 'all' or @metrics = 'dm_os_ring_buffers'
 	begin
 		insert dbo.dm_os_ring_buffers
-		SELECT	top 1 EventTime as collection_time,  
-				CASE WHEN system_cpu_utilization_post_sp2 IS NOT NULL THEN system_cpu_utilization_post_sp2 ELSE system_cpu_utilization_pre_sp2 END AS system_cpu_utilization,  
-				CASE WHEN sql_cpu_utilization_post_sp2 IS NOT NULL THEN sql_cpu_utilization_post_sp2 ELSE sql_cpu_utilization_pre_sp2 END AS sql_cpu_utilization 
-		--into dbo.dm_os_ring_buffers
-		FROM  (	SELECT	record.value('(Record/@id)[1]', 'int') AS record_id,
-						DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS EventTime,
-						100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu_utilization_post_sp2, 
-						record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu_utilization_post_sp2,
-						100-record.value('(Record/SchedluerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu_utilization_pre_sp2,
-						record.value('(Record/SchedluerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu_utilization_pre_sp2
-				FROM (	SELECT	timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now
-						FROM sys.dm_os_ring_buffers cross apply sys.dm_os_sys_info
-						WHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'
-						AND record LIKE '%<SystemHealth>%'
-					 ) AS t 
-			  ) AS t
-		ORDER BY EventTime desc;
+		SELECT collection_time, system_cpu_utilization, sql_cpu_utilization
+		FROM (
+				SELECT	top 1 EventTime as collection_time,  
+						CASE WHEN system_cpu_utilization_post_sp2 IS NOT NULL THEN system_cpu_utilization_post_sp2 ELSE system_cpu_utilization_pre_sp2 END AS system_cpu_utilization,  
+						CASE WHEN sql_cpu_utilization_post_sp2 IS NOT NULL THEN sql_cpu_utilization_post_sp2 ELSE sql_cpu_utilization_pre_sp2 END AS sql_cpu_utilization 
+				--into dbo.dm_os_ring_buffers
+				FROM  (	SELECT	record.value('(Record/@id)[1]', 'int') AS record_id,
+								DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS EventTime,
+								100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu_utilization_post_sp2, 
+								record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu_utilization_post_sp2,
+								100-record.value('(Record/SchedluerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu_utilization_pre_sp2,
+								record.value('(Record/SchedluerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu_utilization_pre_sp2
+						FROM (	SELECT	timestamp, CONVERT (xml, record) AS record, cpu_ticks / (cpu_ticks/ms_ticks) as ts_now
+								FROM sys.dm_os_ring_buffers cross apply sys.dm_os_sys_info
+								WHERE ring_buffer_type = 'RING_BUFFER_SCHEDULER_MONITOR'
+								AND record LIKE '%<SystemHealth>%'
+							 ) AS t 
+					  ) AS t
+				ORDER BY EventTime desc
+			 ) AS t
+		WHERE NOT EXISTS (SELECT * FROM dbo.dm_os_ring_buffers as rfi where cast(rfi.collection_time as smalldatetime) = cast(t.collection_time as smalldatetime))
 	end
 end
 GO
 
 set nocount on;
-exec DBA..usp_collect_performance_metrics @metrics = 'dm_os_sys_memory';
-exec DBA..usp_collect_performance_metrics @metrics = 'dm_os_process_memory';
-exec DBA..usp_collect_performance_metrics @metrics = 'dm_os_performance_counters';
-exec DBA..usp_collect_performance_metrics @metrics = 'dm_os_performance_counters_sampling';
-exec DBA..usp_collect_performance_metrics @metrics = 'dm_os_ring_buffers';
-exec DBA..usp_collect_performance_metrics @metrics = 'dm_os_memory_clerks';
-exec DBA..usp_collect_performance_metrics @metrics = 'dm_os_performance_counters_deprecated_features';
+exec dbo.usp_collect_performance_metrics @metrics = 'dm_os_sys_memory';
+exec dbo.usp_collect_performance_metrics @metrics = 'dm_os_process_memory';
+exec dbo.usp_collect_performance_metrics @metrics = 'dm_os_performance_counters';
+exec dbo.usp_collect_performance_metrics @metrics = 'dm_os_performance_counters_sampling';
+exec dbo.usp_collect_performance_metrics @metrics = 'dm_os_ring_buffers';
+exec dbo.usp_collect_performance_metrics @metrics = 'dm_os_memory_clerks';
+exec dbo.usp_collect_performance_metrics @metrics = 'dm_os_performance_counters_deprecated_features';
 --exec msdb..sp_start_job @job_name = '(dba) Collect Performance Metrics - 2';
 go
 
@@ -442,7 +450,8 @@ ALTER TABLE dbo.dm_os_performance_counters
    ADD CONSTRAINT pk_dm_os_performance_counters PRIMARY KEY CLUSTERED (collection_time, server_name, object_name, counter_name, id);
 GO
 
-CREATE TABLE [dbo].[dm_os_sys_memory](
+CREATE TABLE [dbo].[dm_os_sys_memory]
+(
 	[collection_time] [datetime2] NOT NULL DEFAULT GETDATE(),
 	[server_name] [nvarchar](128) NOT NULL DEFAULT @@SERVERNAME,
 	[total_physical_memory_kb] [numeric](30, 2) NOT NULL,
@@ -462,9 +471,6 @@ GO
 -- Delete the primary key constraint.  
 ALTER TABLE dbo.[dm_os_performance_counters]
 	DROP CONSTRAINT pk_dm_os_performance_counters;   
-GO
-
-USE [DBA]
 GO
 
 --DROP  TABLE [dbo].[dm_os_performance_counters_nonsql]
@@ -509,5 +515,84 @@ GO
 CREATE NONCLUSTERED INDEX nci_dm_os_sys_info__sqlserver_start_time__wait_stats_cleared_time
 	ON [dbo].[dm_os_sys_info] (sqlserver_start_time, wait_stats_cleared_time)
 GO
+
+--	drop table [dbo].[WaitStats]
+CREATE TABLE [dbo].[WaitStats]
+(
+	[Collection_Time] [datetime2](7) NOT NULL,
+	[RowNum] [smallint] NOT NULL,
+	[WaitType] [nvarchar](120) NOT NULL,
+	[Wait_S] [decimal](20, 2) NOT NULL,
+	[Resource_S] [decimal](20, 2) NOT NULL,
+	[Signal_S] [decimal](20, 2) NOT NULL,
+	[WaitCount] [bigint] NOT NULL,
+	[Percentage] [decimal](5, 2) NULL,
+	--[Percentage] AS ([Wait_S]*100)/SUM([Wait_S])OVER(PARTITION BY [CollectionTime]),
+	[AvgWait_S] AS ([Wait_S]/[WaitCount]),
+	[AvgRes_S] AS ([Resource_S]/[WaitCount]),
+	[AvgSig_S] AS ([Signal_S]/[WaitCount]),
+	[Help_URL] AS (CONVERT([xml],'https://www.sqlskills.com/help/waits/'+[WaitType]))
+)
+GO
+
+ALTER TABLE dbo.WaitStats
+   ADD CONSTRAINT pk_WaitStats PRIMARY KEY CLUSTERED (Collection_Time, RowNum, WaitType);
+GO
+
+
+CREATE TABLE [dbo].[dm_os_process_memory]
+(
+	[collection_time] [datetime2] NOT NULL DEFAULT GETDATE(),
+	[SQL Server Memory Usage (MB)] [bigint] NULL,
+	[page_fault_count] [bigint] NOT NULL,
+	[memory_utilization_percentage] [int] NOT NULL,
+	[available_commit_limit_kb] [bigint] NOT NULL,
+	[process_physical_memory_low] [bit] NOT NULL,
+	[process_virtual_memory_low] [bit] NOT NULL,
+	[SQL Server Locked Pages Allocation (MB)] [bigint] NULL,
+	[SQL Server Large Pages Allocation (MB)] [bigint] NULL
+)
+GO
+
+create clustered index ci_dm_os_process_memory on [dbo].[dm_os_process_memory] (collection_time)
+go
+
+CREATE TABLE [dbo].[dm_os_ring_buffers]
+(
+	[collection_time] [datetime2] NOT NULL DEFAULT GETDATE(),
+	[system_cpu_utilization] [int] NOT NULL,
+	[sql_cpu_utilization] [int] NOT NULL
+)
+GO
+create clustered index ci_dm_os_ring_buffers on [dbo].[dm_os_ring_buffers] (collection_time)
+go
+
+CREATE TABLE [dbo].[dm_os_memory_clerks]
+(
+	[collection_time] [datetime2] NOT NULL DEFAULT GETDATE(),
+	[memory_clerk] [nvarchar](60) NOT NULL,
+	[size_mb] [bigint] NULL
+)
+GO
+create clustered index ci_dm_os_memory_clerks on [dbo].[dm_os_memory_clerks] (collection_time)
+go
+
+USE [master]
+GO
+EXEC master.dbo.sp_addlinkedserver @server = N'SQL-A', @srvproduct=N'SQL Server'
+EXEC master.dbo.sp_addlinkedsrvlogin @rmtsrvname=N'SQL-A',@useself=N'False',@locallogin=NULL,@rmtuser=N'grafana',@rmtpassword='Pa$$w0rd'
+GO
+EXEC master.dbo.sp_serveroption @server=N'SQL-A', @optname=N'data access', @optvalue=N'true'
+GO
+EXEC master.dbo.sp_serveroption @server=N'SQL-A', @optname=N'rpc', @optvalue=N'true'
+GO
+EXEC master.dbo.sp_serveroption @server=N'SQL-A', @optname=N'rpc out', @optvalue=N'true'
+GO
+EXEC master.dbo.sp_serveroption @server=N'SQL-A', @optname=N'connect timeout', @optvalue=N'120'
+GO
+EXEC master.dbo.sp_serveroption @server=N'SQL-A', @optname=N'query timeout', @optvalue=N'240'
+GO
+
+
 */
 

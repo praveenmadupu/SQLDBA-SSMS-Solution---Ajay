@@ -106,37 +106,27 @@ select	collection_time, page_fault_count, DATEDIFF(second,collection_time_prev,c
 from t_page_faults
 order by collection_time asc
 
-
+-- ================================================================================================
 
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
-SET QUOTED_IDENTIFIER OFF 
+SET QUOTED_IDENTIFIER OFF
 DECLARE @sql varchar(max) = "
-SELECT TOP 1 DATEADD(hour, DATEDIFF(hour, GETDATE(), GETUTCDATE()), date_time) AS time,
-       'CPU' AS metric,
-       100 - record.value('(./Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS value
-       --,record.value('(./Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') as [System Idle],
-       --,record.value('(./Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') as [SQL Server],
-       --,100 - record.value('(./Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') - record.value('(./Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS [Other]
-FROM   (
-        SELECT   DATEADD(ms, -1 * ((SELECT cpu_ticks/(cpu_ticks/ms_ticks) FROM sys.dm_os_sys_info) - [timestamp]), GetDate()) as date_time,
-                 CONVERT(xml, record) AS record
-        FROM     sys.dm_os_ring_buffers
-        WHERE    ring_buffer_type = N'RING_BUFFER_SCHEDULER_MONITOR'
-        AND      record LIKE '%<SystemHealth>%'
-       ) AS xml_data
-ORDER BY date_time DESC;
+SELECT /* Grafana => PLE */ top 1 collection_time as time, cntr_value as page_life_expectancy
+FROM dbo.dm_os_performance_counters
+WHERE object_name = 'SQLServer:Buffer Manager' and counter_name = 'Page life expectancy'
+ORDER BY collection_time desc;
 "
 SET QUOTED_IDENTIFIER ON
-IF ('$Server' = SERVERPROPERTY('ServerName'))
+IF ('$server' = SERVERPROPERTY('ServerName'))
 BEGIN
   EXEC (@sql);
 END;
 ELSE
 BEGIN
-  EXEC (@sql) AT $Server;
+  EXEC (@sql) AT [$server];
 END;
 
-
+-- ================================================================================================
 
 select master.dbo.local2utc(collection_time) as time, counter_name, cntr_value
 from DBA.dbo.dm_os_performance_counters as pc
@@ -363,166 +353,151 @@ and pc.server_name = @server_name
 and pc.[object_name] = 'Network Interface'
 and counter_name in ('Bytes Total/sec')
 --and ( instance_name <> '_Total' and instance_name not like 'HarddiskVolume%' )
+GO
+-- ====================================================================================================
+
+DECLARE @server_name varchar(256);
+set @server_name = 'MSI';
+
+select /* Process(sqlservr): %Processor Time */
+		master.dbo.local2utc(pc.collection_time) as time
+		,metric = case when pc.[object_name] = 'Process' then counter_name + ' ('+pc.instance_name+')'
+						when  pc.[object_name] = 'Processor' then counter_name + ' ('+pc.[object_name]+')'
+					else null
+					end
+		,[value] = pc.cntr_value
+		--,cpu_count
+		--*
+from DBA.dbo.dm_os_performance_counters_nonsql as pc with (nolock)
+where 1 = 1
+--and collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())
+and collection_time >= DATEADD(MINUTE,-20,getdate())
+and pc.server_name = @server_name
+and	(	(pc.[object_name] = 'Process' and counter_name like '!% % Time' ESCAPE '!' and pc.instance_name = 'sqlservr')
+		or
+		(pc.[object_name] = 'Processor' and counter_name like '!% % Time' ESCAPE '!')
+	)
+--and counter_name like '!% Processor Time' ESCAPE '!'
+order by time
+GO
 
 -- ====================================================================================================
-GO
 
-
---set nocount on;
 DECLARE @server_name varchar(256);
-DECLARE @start_time datetime2;
-DECLARE @end_time datetime2;
 set @server_name = 'MSI';
---set @start_time = master.dbo.utc2local($__timeFrom());
---set @end_time = master.dbo.utc2local($__timeTo());
-set @start_time = DATEADD(MINUTE,-60,GETDATE());
-set @end_time = GETDATE();
 
-DECLARE @verbose bit = 1;
-
-if OBJECT_ID('tempdb..#wait_stats_range') is not null
-	drop table tempdb..#wait_stats_range;
-
-select IDENTITY(int,1,1) as id, point_in_time
-into #wait_stats_range
-from (
-	SELECT si.wait_stats_cleared_time as point_in_time
-	FROM [DBA].dbo.dm_os_sys_info AS si
-	WHERE 1 = 1
-	--and pc.server_name = @server_name
-	and collection_time BETWEEN @start_time AND @end_time
-	--
-	union
-	--
-	select point_in_time
-	from (values (@start_time),(@end_time)) Times (point_in_time)
-) as ranges
-order by point_in_time asc;
-
-if @verbose = 1
-begin
-	select * from #wait_stats_range;
-	select count(distinct CollectionTime) as WaitStats_Sample_Counts from [DBA].[dbo].[WaitStats];
-end
-
-IF OBJECT_ID('tempdb..#Wait_Stats_Delta') IS NOT NULL
-	DROP TABLE #Wait_Stats_Delta;
-CREATE TABLE #Wait_Stats_Delta
-(
-	--[id_T1] [int] NULL,
-	--[id_T2] [int] NULL,
-	--[point_in_time_T1] [datetime2](7) NULL,
-	--[point_in_time_T2] [datetime2](7) NULL,
-	--[CollectionTime_T1] [datetime2](7) NULL,
-	--[CollectionTime_T2] [datetime2](7) NULL,
-	[CollectionTime] [datetime2](7) NOT NULL,
-	[CollectionTime_Duration_Seconds] [int] NOT NULL,
-	[WaitType] [nvarchar](120) NOT NULL,
-	[Wait_S] [decimal](15, 2) NULL,
-	[Resource_S] [decimal](15, 2) NULL,
-	[Signal_S] [decimal](15, 2) NULL,
-	[WaitCount] [bigint] NULL,
-	[Percentage] [decimal](10,2) NULL,
-	[AvgWait_S] [decimal](35, 22) NULL,
-	[AvgRes_S] [decimal](35, 22) NULL,
-	[AvgSig_S] [decimal](35, 22) NULL
-)
-
-declare @l_id int
-		,@l_point_in_time datetime2
-		,@l_counter int = 1
-		,@l_counter_max int;
-
-select @l_counter_max = max(id) from #wait_stats_range;
-
---if @verbose = 1
---	select [@l_counter] = @l_counter, [@l_counter_max] = @l_counter_max;
-
-while @l_counter < @l_counter_max -- execute for N-1 times
-begin
-	select @l_point_in_time = point_in_time from #wait_stats_range as tr where tr.id = @l_counter;
-
-	if @verbose = 1
-		select [@l_counter] = @l_counter, [@l_counter_max] = @l_counter_max,  [@l_point_in_time] = @l_point_in_time;
-
-	;WITH T1 AS (
-		select id = tr.id, point_in_time = tr.point_in_time, 
-				ws.CollectionTime, 
-				ws.WaitType, 
-				ws.Wait_S, ws.Resource_S, ws.Signal_S, ws.WaitCount, ws.Percentage, ws.AvgWait_S, ws.AvgRes_S, ws.AvgSig_S
-		from [DBA].[dbo].[WaitStats] AS ws with (nolock) full join #wait_stats_range as tr on tr.id = @l_counter
-		where ws.CollectionTime = (	case when @l_counter = 1
-										 then (select MIN(wsi.CollectionTime) as CollectionTime from [DBA].[dbo].[WaitStats] as wsi with (nolock) where wsi.CollectionTime >= tr.point_in_time)
-										 when @l_counter = @l_counter_max - 1
-										 then ISNULL( (select MIN(wsi.CollectionTime) as CollectionTime from [DBA].[dbo].[WaitStats] as wsi with (nolock) where wsi.CollectionTime >= tr.point_in_time),
-												(select MAX(wsi.CollectionTime) as CollectionTime from [DBA].[dbo].[WaitStats] as wsi with (nolock) where wsi.CollectionTime <= tr.point_in_time)
-											  )
-										else (select MIN(wsi.CollectionTime) as CollectionTime from [DBA].[dbo].[WaitStats] as wsi with (nolock) where wsi.CollectionTime > tr.point_in_time)
-										end
-								  )
+select /* Process(sqlservr): %Processor Time */
+		master.dbo.local2utc(pc.collection_time) as time
+		,metric = case when pc.counter_name = 'Context Switches/sec' then 'Context Switches per CPU/sec'+' ('+pc.[object_name]+')'
+						else pc.counter_name+' ('+pc.[object_name]+')'
+						end
+		,[value] = case when pc.counter_name = 'Context Switches/sec' then pc.cntr_value/si.cpu_count
+						else pc.cntr_value
+						end
+		--,cpu_count
+		--*
+from DBA.dbo.dm_os_performance_counters_nonsql as pc with (nolock)
+outer apply ( select top 1 cpu_count from DBA.dbo.dm_os_sys_info as si where si.collection_time <= pc.collection_time) as si
+where 1 = 1
+--and collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())
+and collection_time >= DATEADD(MINUTE,-20,getdate())
+and pc.server_name = @server_name
+and	(	(pc.[object_name] = 'System' and counter_name = 'Processor Queue Length')
+		or
+		(pc.[object_name] = 'System' and counter_name = 'Context Switches/sec')
 	)
-	,T2 AS (
-		select id = tr.id, point_in_time = tr.point_in_time, 
-				ws.CollectionTime, 
-				ws.WaitType, 
-				ws.Wait_S, ws.Resource_S, ws.Signal_S, ws.WaitCount, ws.Percentage, ws.AvgWait_S, ws.AvgRes_S, ws.AvgSig_S
-		from [DBA].[dbo].[WaitStats] AS ws with (nolock) full join #wait_stats_range as tr on tr.id = @l_counter+1
-		where ws.CollectionTime = (	case when @l_counter = 1 AND (@l_counter <> (@l_counter_max - 1))
-										 then (select MAX(wsi.CollectionTime) as CollectionTime from [DBA].[dbo].[WaitStats] as wsi with (nolock) where wsi.CollectionTime < tr.point_in_time)
-										 when @l_counter = 1 AND (@l_counter = (@l_counter_max - 1))
-										 then (select MAX(wsi.CollectionTime) as CollectionTime from [DBA].[dbo].[WaitStats] as wsi with (nolock) where wsi.CollectionTime <= tr.point_in_time)
-										 when @l_counter = @l_counter_max - 1
-										 then (select MAX(wsi.CollectionTime) as CollectionTime from [DBA].[dbo].[WaitStats] as wsi with (nolock) where wsi.CollectionTime <= tr.point_in_time)
-										else (select MAX(wsi.CollectionTime) as CollectionTime from [DBA].[dbo].[WaitStats] as wsi with (nolock) where wsi.CollectionTime < tr.point_in_time)
-										end
-								  )
-	)
-	,T_Waits_Delta AS (
-		SELECT CollectionTime, CollectionTime_Duration_Seconds, WaitType, Wait_S, Resource_S, Signal_S, WaitCount,
-				[Percentage],
-				AvgWait_S, AvgRes_S, AvgSig_S
-		--INTO tempdb..Wait_Stats_Delta
-		FROM (
-				SELECT --id_T1 = T1.id, id_T2 = T2.id,
-						--point_in_time_T1 = T1.point_in_time, point_in_time_T2 = T2.point_in_time,
-						--CollectionTime_T1 = T1.CollectionTime, CollectionTime_T2 = T2.CollectionTime,
-						CollectionTime = T2.CollectionTime,
-						CollectionTime_Duration_Seconds = DATEDIFF(second,T1.CollectionTime,T2.CollectionTime),
-						WaitType = COALESCE(T1.WaitType,T2.WaitType),
-						Wait_S = ISNULL(T2.Wait_S,0.0) - ISNULL(T1.Wait_S,0.0),
-						Resource_S = ISNULL(T2.Resource_S,0.0) - ISNULL(T1.Resource_S,0.0),
-						Signal_S = ISNULL(T2.Signal_S,0.0) - ISNULL(T1.Signal_S,0.0),
-						WaitCount = ISNULL(T2.WaitCount,0.0) - ISNULL(T1.WaitCount,0.0),
-						[Percentage] = NULL, --ISNULL(T2.Wait_S,0.0) - ISNULL(T1.Wait_S,0.0),
-						AvgWait_S = CASE WHEN (ISNULL(T2.WaitCount,0.0) - ISNULL(T1.WaitCount,0.0)) = 0 THEN (ISNULL(T2.Wait_S,0.0) - ISNULL(T1.Wait_S,0.0))
-										 ELSE (ISNULL(T2.Wait_S,0.0) - ISNULL(T1.Wait_S,0.0)) / (ISNULL(T2.WaitCount,0.0) - ISNULL(T1.WaitCount,0.0))
-										 END,
-						AvgRes_S = CASE WHEN (ISNULL(T2.WaitCount,0.0) - ISNULL(T1.WaitCount,0.0)) = 0 THEN (ISNULL(T2.Resource_S,0.0) - ISNULL(T1.Resource_S,0.0))
-										ELSE (ISNULL(T2.Resource_S,0.0) - ISNULL(T1.Resource_S,0.0)) / (ISNULL(T2.WaitCount,0.0) - ISNULL(T1.WaitCount,0.0))
-										END,
-						AvgSig_S = CASE WHEN (ISNULL(T2.WaitCount,0.0) - ISNULL(T1.WaitCount,0.0)) = 0 THEN (ISNULL(T2.Signal_S,0.0) - ISNULL(T1.Signal_S,0.0))
-										ELSE (ISNULL(T2.Signal_S,0.0) - ISNULL(T1.Signal_S,0.0)) / (ISNULL(T2.WaitCount,0.0) - ISNULL(T1.WaitCount,0.0))
-										END
-				FROM T1 full outer join T2 on T2.WaitType = T1.WaitType
-			) as waits
-		WHERE 1 = 1
-			AND CollectionTime_Duration_Seconds > 0.0
-			--AND Wait_S >= 0.0
-	)
-	INSERT #Wait_Stats_Delta
-	SELECT CollectionTime, CollectionTime_Duration_Seconds, WaitType, Wait_S, Resource_S, Signal_S, WaitCount,
-				[Percentage] = (Wait_S*100.0)/Total_Wait_S,
-				AvgWait_S, AvgRes_S, AvgSig_S
-	FROM T_Waits_Delta as d
-	JOIN (select sum(i.Wait_S) as Total_Wait_S from T_Waits_Delta as i) as t ON 1 = 1
-	ORDER BY Wait_S DESC;	
-
-	set @l_counter += 1;
-end
-
-select CollectionTime as time, CollectionTime_Duration_Seconds as Duration_S, WaitType, Wait_S, Resource_S, Signal_S, WaitCount, [Percentage], AvgWait_S, AvgRes_S, AvgSig_S
-from #Wait_Stats_Delta;
-
-
+--and counter_name like '!% Processor Time' ESCAPE '!'
+order by time
 GO
 
+-- ====================================================================================================
+declare @server varchar(256)
+set @server = '$server';
+
+select	time = master.dbo.local2utc(pc.collection_time),
+		metric = pc.counter_name,
+		[value] = pc.cntr_value
+from DBA.dbo.dm_os_performance_counters as pc
+where 1 = 1
+--and server_name = @server
+--and collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())
+and (	pc.[object_name] = 'SQLServer:Memory Manager' and pc.counter_name in ('Memory Grants Outstanding','Memory Grants Pending')	)
+order by pc.collection_time
+
+-- ====================================================================================================
+declare @server varchar(256)
+set @server = '$server';
+
+select  /* Load on Disk */
+		[time] = master.dbo.local2utc(pc.collection_time),
+		metric = counter_name+' ('+pc.instance_name+')',
+		[value] = pc.cntr_value
+		--distinct object_name, counter_name --,instance_name
+from DBA.dbo.dm_os_performance_counters_nonsql as pc
+where 1 = 1
+--and server_name = @server
+--and collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())
+and pc.[object_name] in ( 'Network Interface' )
+and pc.counter_name in ('Bytes Total/sec')
+--and pc.counter_name in ('% Disk Time','% Idle Time','% Disk Read Time','% Disk Write Time')
+and pc.counter_name in ('Disk Bytes/sec','Disk Write Bytes/sec','Disk Read Bytes/sec')
+--and pc.counter_name in ('Avg. Disk sec/Read','Avg. Disk sec/Write')
+and NOT (pc.instance_name = '_Total' or pc.instance_name like 'Harddisk%')
+order by pc.collection_time
+
+-- ====================================================================================================
+;WITH T_Dbs AS (
+	select *
+	from DBA.dbo.dm_os_performance_counters as pc
+	where 1 = 1
+	--and collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())
+	and pc.[object_name] = 'SQLServer:Databases'
+	and pc.counter_name in ('Log File(s) Used Size (KB)','Log File(s) Size (KB)')
+	--and pc.counter_name = 'Percent Log Used'
+	and instance_name not in ('_Total','master','model','mssqlsystemresource')
+	--and pc.cntr_value/(1024.0*1024) > 1.0
+)
+select [time] = master.dbo.local2utc(pc.collection_time),
+		--pc.collection_time,
+		metric = case when counter_name = 'Log File(s) Size (KB)' then 'Total Size (KB) - '+QUOTENAME(pc.instance_name)
+						when counter_name = 'Log File(s) Used Size (KB)' then 'Used Size (KB) - '+QUOTENAME(pc.instance_name)
+						else counter_name+' ('+pc.instance_name+')'
+						end ,
+		[value] = pc.cntr_value
+from T_Dbs as pc
+where pc.instance_name in (	select i.instance_name 
+							from T_Dbs as i 
+							where i.counter_name = 'Log File(s) Size (KB)'
+								and i.cntr_value/(1024.0*1024) > 1.0
+						)
+order by collection_time
+
+-- ====================================================================================================
+
+select --master.dbo.local2utc(collection_time) as time, instance_name as metric, cntr_value as [value]
+		distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type
+from DBA.dbo.dm_os_performance_counters as pc
+where 1 = 1
+--and collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())
+and pc.collection_time >= GETDATE()-1
+and (	pc.object_name = 'SQLServer:General Statistics'
+		and	
+		(	pc.counter_name in ('User Connections','Logins/sec','Logouts/sec') )
+	)
+order by pc.collection_time
+
+
+select --master.dbo.local2utc(collection_time) as time, instance_name as metric, cntr_value as [value]
+		distinct pc.object_name, pc.counter_name, pc.instance_name, pc.cntr_type
+from DBA.dbo.dm_os_performance_counters as pc
+where 1 = 1
+--and collection_time BETWEEN master.dbo.utc2local($__timeFrom()) AND master.dbo.utc2local($__timeTo())
+and pc.collection_time >= GETDATE()-1
+and pc.object_name like 'SQLServer:Transactions'
+order by pc.collection_time
+
+
+
+select *
+from sys.dm_os_performance_counters as pc
+where pc.counter_name like '%table%'

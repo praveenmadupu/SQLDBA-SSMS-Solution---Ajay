@@ -1,8 +1,8 @@
 ﻿Import-Module dbatools;
-$collector_root_directory = 'D:\MSSQL15.MSSQLSERVER\MSSQL\Perfmon';
+$collector_root_directory = 'E:\DBA\Perfmon';
 $data_collector_set_name = 'DBA';
 $dsn = 'LocalSqlServer';
-$DBAInventory = 'MSI';
+$DBAInventory = $env:COMPUTERNAME;
 
 $data_collector_template_path = “$collector_root_directory\DBA_PerfMon_NonSQL_Collector_Template.xml”;
 $log_file_path = "$collector_root_directory\$($env:COMPUTERNAME)__"
@@ -14,8 +14,8 @@ else
 	select a.DisplayString
 	from (
 			select top 1 DisplayString
-			from DBA.dbo.DisplayToID --full outer join (select CAST(NULL AS varchar(1024)) AS D) as D on 1 = 1 
-			where DisplayString like 'D:\MSSQL15.MSSQLSERVER\MSSQL\Perfmon%'
+			from dbo.DisplayToID
+			where DisplayString like '$collector_root_directory%'
 			order by LogStopTime desc
 		 ) as a
 	full outer join (select CAST(NULL AS varchar(1024)) AS DisplayString) as d on 1 = 1;
@@ -34,6 +34,8 @@ $perfmonfiles = Get-ChildItem -Path $collector_root_directory  -Filter *.blg |
 if($current_log_file_status -eq 'Running') {
     logman stop -name “$data_collector_set_name”
     logman start -name “$data_collector_set_name”
+} else {
+    logman start -name “$data_collector_set_name”
 }
 
 
@@ -47,4 +49,4 @@ foreach($perfmonfile in $perfmonfiles)
     Write-Output "Importing -> $sourceBlg"
 }
 
-#Add-OdbcDsn -Name "LocalSqlServer" -DriverName "SQL Server" -DsnType "System" -SetPropertyValue @("Server=MSI", "Trusted_Connection=Yes", "Database=DBA")
+#Add-OdbcDsn -Name "LocalSqlServer" -DriverName "SQL Server" -DsnType "System" -SetPropertyValue @("Server=localhost", "Trusted_Connection=Yes", "Database=DBA")
