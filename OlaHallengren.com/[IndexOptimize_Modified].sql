@@ -1,7 +1,7 @@
 USE [DBA]
 GO
 
-ALTER PROCEDURE [dbo].[IndexOptimize_Modified]	@Databases nvarchar(max) = NULL,
+CREATE PROCEDURE [dbo].[IndexOptimize_Modified]	@Databases nvarchar(max) = NULL,
 												@FragmentationLow nvarchar(max) = NULL,
 												@FragmentationMedium nvarchar(max) = 'INDEX_REORGANIZE,INDEX_REBUILD_ONLINE,INDEX_REBUILD_OFFLINE',
 												@FragmentationHigh nvarchar(max) = 'INDEX_REBUILD_ONLINE,INDEX_REBUILD_OFFLINE',

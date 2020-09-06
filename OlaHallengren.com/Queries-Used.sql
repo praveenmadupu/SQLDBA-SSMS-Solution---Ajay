@@ -1,8 +1,8 @@
 --	https://ola.hallengren.com/sql-server-backup.html
 
-EXECUTE audit_archive..IndexOptimize
+EXECUTE dbo.IndexOptimize
 /* Update Stats */
-@Databases = 'geneva_warehouse',
+@Databases = 'ALL_DATABASES',
 @FragmentationLow = NULL,
 @FragmentationMedium = NULL,
 @FragmentationHigh = NULL,
@@ -58,3 +58,28 @@ EXEC DBA.dbo.[DatabaseBackup]
 		@BackupType = 'DIFF', 
 		@FileExtensionDiff = 'diff',
 		@Compress = 'Y'
+
+
+use DBA
+go
+
+/* IndexOptimize [DBA] with @TimeLimit = 3.5 Hour */
+EXECUTE dbo.IndexOptimize_Modified
+@Databases = 'DBA', -- Multiple databases can also be passed here
+@TimeLimit = 5400, -- 3.5 hours
+@FragmentationLow = NULL,
+@FragmentationMedium = 'INDEX_REBUILD_ONLINE,INDEX_REBUILD_OFFLINE',
+@FragmentationHigh = 'INDEX_REBUILD_ONLINE,INDEX_REBUILD_OFFLINE',
+@FragmentationLevel1 = 20,
+@FragmentationLevel2 = 30,
+@MinNumberOfPages = 1000,
+@SortInTempdb = 'Y', /* Enable it when [Cosmo] production Server since [tempdb] & [Cosmo] database are on separate disks */
+@MaxDOP = 4, /* Default = 3 on Cosmo server */
+--@FillFactor = 70, /* Recommendations says to start with 100, and keep decreasing based on Page Splits/Sec value of server. On Cosmo server, Page Splits/sec are very high. Avg 171 page splits/sec for Avg 354 Batch Requests/sec */
+@LOBCompaction = 'Y', 
+@UpdateStatistics = 'ALL',
+@OnlyModifiedStatistics = 'Y',
+@Indexes = 'ALL_INDEXES', /* Default is not specified. Db1.Schema1.Tbl1.Idx1, Db2.Schema2.Tbl2.Idx2 */
+--@Delay = 120, /* Introduce 300 seconds of Delay b/w Indexes of Replicated Databases */
+@LogToTable = 'Y'
+,@forceReInitiate = 0

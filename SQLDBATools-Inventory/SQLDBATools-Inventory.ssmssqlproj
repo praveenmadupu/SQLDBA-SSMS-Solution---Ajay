@@ -295,6 +295,12 @@
           <AssociatedConnUserName />
           <FullPath>PS-perfmon-remove-imported-files.sql</FullPath>
         </FileNode>
+        <FileNode Name="QRY - (dba) Collect Metrics - Purge Tables and Files.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QRY - (dba) Collect Metrics - Purge Tables and Files.sql</FullPath>
+        </FileNode>
         <FileNode Name="Quiz_DDLs.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />

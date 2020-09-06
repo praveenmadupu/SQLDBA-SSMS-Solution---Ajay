@@ -1,9 +1,9 @@
-USE Staging
+USE DBA
 go
 
 SET NOCOUNT ON;
 
-declare @FragmentationLevel1 int = 50
+declare @FragmentationLevel1 int = 20
 
 --	Code for IndexOptimize_Modified
 select	db_name(ips.database_id) as DbName,

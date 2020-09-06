@@ -1,4 +1,4 @@
-use audit_archive;
+use DBA;
 
 create table #TableSize (
     [name] varchar(255),
@@ -31,9 +31,11 @@ SUBSTRING(index_size, 0, LEN(index_size)-2),
 SUBSTRING(unused, 0, LEN(unused)-2)
 from #TableSize
 
-select [name], [rows], reservedMB, dataMB, reservedIndexSize, reservedUnused
+select [name], [rows], reservedMB/1024 as reservedGB, dataMB/1024 AS dataGB, reservedIndexSize, reservedUnused
 from #ConvertedSizes where reservedMB > 5.0
 order by reservedKb desc
 
 drop table #TableSize
 drop table #ConvertedSizes
+
+

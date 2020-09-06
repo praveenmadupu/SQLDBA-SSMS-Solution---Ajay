@@ -3,7 +3,7 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="(local):CORPORATE\adwivedi">
+        <ConnectionNode Name="(local):MSI\ajayd">
           <Created>2019-09-21T21:08:14.4331443+05:30</Created>
           <Type>SQL</Type>
           <Server>(local)</Server>
@@ -15,7 +15,7 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="LOCALHOST:CORPORATE\adwivedi">
+        <ConnectionNode Name="LOCALHOST:MSI\ajayd">
           <Created>2019-10-08T00:14:40.2341836+05:30</Created>
           <Type>SQL</Type>
           <Server>LOCALHOST</Server>
@@ -39,7 +39,7 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="TUL1CIPCNPDB1:CORPORATE\adwivedi">
+        <ConnectionNode Name="TUL1CIPCNPDB1:MSI\ajayd">
           <Created>2019-10-31T21:51:37.4157116+05:30</Created>
           <Type>SQL</Type>
           <Server>TUL1CIPCNPDB1</Server>
@@ -51,7 +51,7 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="TUL1CIPEDB2:CORPORATE\adwivedi">
+        <ConnectionNode Name="TUL1CIPEDB2:MSI\ajayd">
           <Created>2019-11-08T12:05:52.8740508+05:30</Created>
           <Type>SQL</Type>
           <Server>TUL1CIPEDB2</Server>
@@ -63,7 +63,7 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="TUL1CIPXDB13:CORPORATE\adwivedi">
+        <ConnectionNode Name="TUL1CIPXDB13:MSI\ajayd">
           <Created>2019-11-08T12:14:19.8748039+05:30</Created>
           <Type>SQL</Type>
           <Server>TUL1CIPXDB13</Server>
@@ -75,7 +75,7 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="TUL1CIPXDB20:CORPORATE\adwivedi">
+        <ConnectionNode Name="TUL1CIPXDB20:MSI\ajayd">
           <Created>2019-11-10T19:55:56.9233912+05:30</Created>
           <Type>SQL</Type>
           <Server>TUL1CIPXDB20</Server>
@@ -92,16 +92,10 @@
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="[IndexOptimize_Modified].sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPXDB20:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPXDB20</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>[IndexOptimize_Modified].sql</FullPath>
-        </FileNode>
-        <FileNode Name="DatabaseBackup.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:sqla:False:sa</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>sqla</AssociatedConnSrvName>
-          <AssociatedConnUserName>sa</AssociatedConnUserName>
-          <FullPath>DatabaseBackup.sql</FullPath>
         </FileNode>
         <FileNode Name="Get-Log-File-Size-Used.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
@@ -110,8 +104,8 @@
           <FullPath>Get-Log-File-Size-Used.sql</FullPath>
         </FileNode>
         <FileNode Name="Index-Defrag-UpdateStats-Analysis.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1CIPCNPDB1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>TUL1CIPCNPDB1</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Index-Defrag-UpdateStats-Analysis.sql</FullPath>
         </FileNode>
@@ -121,11 +115,11 @@
           <AssociatedConnUserName />
           <FullPath>Maintainence - Delete files older than 72 hours.sql</FullPath>
         </FileNode>
-        <FileNode Name="MaintenanceSolution.sql">
+        <FileNode Name="MaintenanceSolution-Without-Jobs.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>MaintenanceSolution.sql</FullPath>
+          <FullPath>MaintenanceSolution-Without-Jobs.sql</FullPath>
         </FileNode>
         <FileNode Name="Ola Update Stats Formula.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>

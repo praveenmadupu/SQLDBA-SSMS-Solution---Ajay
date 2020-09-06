@@ -6,7 +6,7 @@ as
 begin
 	set nocount on;
 
-	declare @current_time datetime2 = getdate();
+	declare @current_time datetime2 = getdate(); /* removing usage of this due to high Page Splits */
 	--select * from sys.dm_os_sys_info
 
 	if @metrics = 'all' or @metrics = 'dm_os_memory_clerks'
@@ -60,8 +60,9 @@ begin
 		-- https://www.sqlshack.com/troubleshooting-sql-server-issues-sys-dm_os_performance_counters/
 		INSERT dbo.dm_os_performance_counters
 		SELECT /* -- all performance counters that do not require additional calculation */
-				[collection_time] = @current_time, server_name = @@SERVERNAME,
+				[collection_time] = GETDATE(), server_name = @@SERVERNAME,
 				rtrim(object_name) as object_name, rtrim(counter_name) as counter_name, rtrim(instance_name) as instance_name, cntr_value ,cntr_type
+				,id = ROW_NUMBER()OVER(ORDER BY getdate())
 		--into dbo.dm_os_performance_counters
 		FROM sys.dm_os_performance_counters as pc
 		WHERE cntr_type in ( 65792 /* PERF_COUNTER_LARGE_RAWCOUNT */	)
@@ -122,8 +123,9 @@ begin
 		UNION ALL
 		--
 		SELECT /* counter that require Fraction & Base */
-				@current_time as collection_time, 
+				GETDATE() as collection_time, 
 				server_name = @@SERVERNAME, rtrim(fr.object_name) as object_name, rtrim(fr.counter_name) as counter_name, rtrim(fr.instance_name) as instance_name, cntr_value = case when bs.cntr_value <> 0 then (100*(fr.cntr_value/bs.cntr_value)) else fr.cntr_value end, fr.cntr_type
+				,id = ROW_NUMBER()OVER(ORDER BY getdate())
 		FROM sys.dm_os_performance_counters as fr
 		OUTER APPLY
 		  (	SELECT * FROM sys.dm_os_performance_counters as bs 
@@ -147,8 +149,9 @@ begin
 	begin
 		INSERT dbo.dm_os_performance_counters
 		SELECT /* -- all performance counters that do not require additional calculation */
-				[collection_time] = @current_time, server_name = @@SERVERNAME,
+				[collection_time] = GETDATE(), server_name = @@SERVERNAME,
 				rtrim(object_name) as object_name, rtrim(counter_name) as counter_name, rtrim(instance_name) as instance_name, cntr_value ,cntr_type
+				,id = ROW_NUMBER()OVER(ORDER BY getdate())
 		--into dbo.dm_os_performance_counters
 		FROM sys.dm_os_performance_counters as pc
 		WHERE [object_name] like 'SQLServer:Deprecated Features%'
@@ -285,6 +288,7 @@ begin
 				instance_name = rtrim(fr.instance_name), 
 				cntr_value = case when (bs.cntr_value_t2-bs.cntr_value_t1) <> 0 then (fr.cntr_value_t2-fr.cntr_value_t1)/(bs.cntr_value_t2-bs.cntr_value_t1) else (fr.cntr_value_t2-fr.cntr_value_t1) end
 				,cntr_type = fr.cntr_type_t2
+				,id = ROW_NUMBER()OVER(ORDER BY getdate())
 		FROM Time_Samples as fr join Time_Samples as bs 
 		on fr.object_name = bs.object_name
 			and replace(rtrim(fr.counter_name),' (ms)','') = replace(rtrim(bs.counter_name),' Base','')
@@ -386,6 +390,7 @@ begin
 				instance_name = rtrim(instance_name), 
 				cntr_value = (cntr_value_t2-cntr_value_t1)/(DATEDIFF(SECOND,time1,time2))
 				,cntr_type = cntr_type_t2
+				,id = ROW_NUMBER()OVER(ORDER BY getdate())
 		FROM Time_Samples;
 	end
 
@@ -433,7 +438,7 @@ go
 /*
 USE [DBA]
 GO
-
+--	drop table dbo.[dm_os_performance_counters]
 CREATE TABLE dbo.[dm_os_performance_counters]
 (
 	[collection_time] [datetime] NOT NULL DEFAULT GETDATE(),
@@ -443,7 +448,7 @@ CREATE TABLE dbo.[dm_os_performance_counters]
 	[instance_name] [nvarchar](128) NULL,
 	[cntr_value] [bigint] NOT NULL,
 	[cntr_type] [int] NOT NULL,
-	[id] bigint identity(1,1) NOT NULL
+	[id] smallint NOT NULL
 ) ON [PRIMARY]
 GO
 ALTER TABLE dbo.dm_os_performance_counters
@@ -474,7 +479,8 @@ ALTER TABLE dbo.[dm_os_performance_counters]
 GO
 
 --DROP  TABLE [dbo].[dm_os_performance_counters_nonsql]
-CREATE TABLE [dbo].[dm_os_performance_counters_nonsql](
+CREATE TABLE [dbo].[dm_os_performance_counters_nonsql]
+(
 	[collection_time] [datetime] NOT NULL,
 	[server_name] [varchar](256) NOT NULL,
 	[object_name] [varchar](1024) NOT NULL,
@@ -482,7 +488,7 @@ CREATE TABLE [dbo].[dm_os_performance_counters_nonsql](
 	[instance_name] [varchar](1024) NULL,
 	[cntr_value] [float] NOT NULL,
 	[cntr_type] [int] NOT NULL,
-	[id] [bigint] IDENTITY(1,1) NOT NULL
+	[id] [smallint] NOT NULL
 ) ON [PRIMARY]
 GO
 
