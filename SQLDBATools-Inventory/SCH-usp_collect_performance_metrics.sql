@@ -6,7 +6,7 @@ as
 begin
 	set nocount on;
 
-	declare @current_time datetime2 = getdate(); /* removing usage of this due to high Page Splits */
+	declare @current_time datetime2 = SYSDATETIME(); /* removing usage of this due to high Page Splits */
 	--select * from sys.dm_os_sys_info
 
 	if @metrics = 'all' or @metrics = 'dm_os_memory_clerks'
@@ -27,7 +27,7 @@ begin
 	begin
 		insert dbo.dm_os_sys_memory
 		 ([collection_time], [server_name], [total_physical_memory_kb], [available_physical_memory_kb], [used_page_file_kb], [system_cache_kb], [free_memory_kb], [system_memory_state_desc])
-		select collection_time = GETDATE()
+		select collection_time = SYSDATETIME()
 				,[server_name] = @@SERVERNAME
 				,[total_physical_memory_kb]
 				,[available_physical_memory_kb]
@@ -60,9 +60,9 @@ begin
 		-- https://www.sqlshack.com/troubleshooting-sql-server-issues-sys-dm_os_performance_counters/
 		INSERT dbo.dm_os_performance_counters
 		SELECT /* -- all performance counters that do not require additional calculation */
-				[collection_time] = GETDATE(), server_name = @@SERVERNAME,
+				[collection_time] = SYSDATETIME(), server_name = @@SERVERNAME,
 				rtrim(object_name) as object_name, rtrim(counter_name) as counter_name, rtrim(instance_name) as instance_name, cntr_value ,cntr_type
-				,id = ROW_NUMBER()OVER(ORDER BY getdate())
+				,id = ROW_NUMBER()OVER(ORDER BY SYSDATETIME())
 		--into dbo.dm_os_performance_counters
 		FROM sys.dm_os_performance_counters as pc
 		WHERE cntr_type in ( 65792 /* PERF_COUNTER_LARGE_RAWCOUNT */	)
@@ -119,13 +119,14 @@ begin
 			or
 			( [object_name] like 'SQLServer:Transactions%' and [counter_name] like 'Version Store Size (KB)%' )
 		)
-		--
-		UNION ALL
-		--
+		ORDER BY collection_time, server_name, [object_name], counter_name, id;
+		
+		-- https://www.sqlshack.com/troubleshooting-sql-server-issues-sys-dm_os_performance_counters/
+		INSERT dbo.dm_os_performance_counters
 		SELECT /* counter that require Fraction & Base */
-				GETDATE() as collection_time, 
+				SYSDATETIME() as collection_time, 
 				server_name = @@SERVERNAME, rtrim(fr.object_name) as object_name, rtrim(fr.counter_name) as counter_name, rtrim(fr.instance_name) as instance_name, cntr_value = case when bs.cntr_value <> 0 then (100*(fr.cntr_value/bs.cntr_value)) else fr.cntr_value end, fr.cntr_type
-				,id = ROW_NUMBER()OVER(ORDER BY getdate())
+				,id = ROW_NUMBER()OVER(ORDER BY SYSDATETIME())
 		FROM sys.dm_os_performance_counters as fr
 		OUTER APPLY
 		  (	SELECT * FROM sys.dm_os_performance_counters as bs 
@@ -142,26 +143,28 @@ begin
 		  ( ( fr.[object_name] like 'SQLServer:Buffer Manager%' and fr.counter_name like 'Buffer cache hit ratio%' )
 			or
 			( fr.[object_name] like 'SQLServer:Access Methods%' and fr.counter_name like 'Worktables From Cache Ratio%' )
-		  );
+		  )
+		ORDER BY collection_time, server_name, [object_name], counter_name, id;;
 	end
 
 	if @metrics = 'all' or @metrics = 'dm_os_performance_counters_deprecated_features'
 	begin
 		INSERT dbo.dm_os_performance_counters
 		SELECT /* -- all performance counters that do not require additional calculation */
-				[collection_time] = GETDATE(), server_name = @@SERVERNAME,
+				[collection_time] = SYSDATETIME(), server_name = @@SERVERNAME,
 				rtrim(object_name) as object_name, rtrim(counter_name) as counter_name, rtrim(instance_name) as instance_name, cntr_value ,cntr_type
-				,id = ROW_NUMBER()OVER(ORDER BY getdate())
+				,id = ROW_NUMBER()OVER(ORDER BY SYSDATETIME())
 		--into dbo.dm_os_performance_counters
 		FROM sys.dm_os_performance_counters as pc
 		WHERE [object_name] like 'SQLServer:Deprecated Features%'
+		ORDER BY collection_time, server_name, [object_name], counter_name, id;
 	end
 
 	if @metrics = 'all' or @metrics = 'dm_os_performance_counters_sampling'
 	begin
 		IF OBJECT_ID('tempdb..#dm_os_performance_counters_PERF_AVERAGE_BULK_t1') IS NOT NULL
 			DROP TABLE #dm_os_performance_counters_PERF_AVERAGE_BULK_t1;
-		SELECT GETDATE() as collection_time, * 
+		SELECT SYSDATETIME() as collection_time, * 
 		INTO #dm_os_performance_counters_PERF_AVERAGE_BULK_t1
 		FROM sys.dm_os_performance_counters as pc
 		WHERE cntr_type in (1073874176 /* PERF_AVERAGE_BULK */
@@ -177,7 +180,7 @@ begin
 		-- https://www.sqlshack.com/troubleshooting-sql-server-issues-sys-dm_os_performance_counters/
 		IF OBJECT_ID('tempdb..#dm_os_performance_counters_PERF_COUNTER_BULK_COUNT_t1') IS NOT NULL
 			DROP TABLE #dm_os_performance_counters_PERF_COUNTER_BULK_COUNT_t1;
-		SELECT GETDATE() as collection_time, * 
+		SELECT SYSDATETIME() as collection_time, * 
 		INTO #dm_os_performance_counters_PERF_COUNTER_BULK_COUNT_t1
 		FROM sys.dm_os_performance_counters as pc
 		WHERE cntr_type = 272696576 /* PERF_COUNTER_BULK_COUNT */
@@ -259,7 +262,7 @@ begin
 
 		IF OBJECT_ID('tempdb..#dm_os_performance_counters_PERF_AVERAGE_BULK_t2') IS NOT NULL
 			DROP TABLE #dm_os_performance_counters_PERF_AVERAGE_BULK_t2;
-		SELECT GETDATE() as collection_time, * 
+		SELECT SYSDATETIME() as collection_time, * 
 		INTO #dm_os_performance_counters_PERF_AVERAGE_BULK_t2
 		FROM sys.dm_os_performance_counters as pc
 		WHERE cntr_type in (1073874176 /* PERF_AVERAGE_BULK */
@@ -281,23 +284,24 @@ begin
 				 t2.object_name = t1.object_name and t2.counter_name = t1.counter_name and ISNULL(t2.instance_name,'') = ISNULL(t1.instance_name,'')
 		)
 		INSERT dbo.dm_os_performance_counters
-		SELECT [collection_time] = fr.time2,
+		SELECT [collection_time] = SYSDATETIME(),
 				server_name = @@SERVERNAME,
 				object_name = rtrim(fr.object_name), 
 				counter_name = rtrim(fr.counter_name), 
 				instance_name = rtrim(fr.instance_name), 
 				cntr_value = case when (bs.cntr_value_t2-bs.cntr_value_t1) <> 0 then (fr.cntr_value_t2-fr.cntr_value_t1)/(bs.cntr_value_t2-bs.cntr_value_t1) else (fr.cntr_value_t2-fr.cntr_value_t1) end
 				,cntr_type = fr.cntr_type_t2
-				,id = ROW_NUMBER()OVER(ORDER BY getdate())
+				,id = ROW_NUMBER()OVER(ORDER BY SYSDATETIME())
 		FROM Time_Samples as fr join Time_Samples as bs 
 		on fr.object_name = bs.object_name
 			and replace(rtrim(fr.counter_name),' (ms)','') = replace(rtrim(bs.counter_name),' Base','')
-			and fr.cntr_type_t2 = '1073874176' and bs.cntr_type_t2 = '1073939712';
+			and fr.cntr_type_t2 = '1073874176' and bs.cntr_type_t2 = '1073939712'
+		ORDER BY collection_time, server_name, [object_name], counter_name, id;
 
 		-- Another Query
 		IF OBJECT_ID('tempdb..#dm_os_performance_counters_PERF_COUNTER_BULK_COUNT_t2') IS NOT NULL
 			DROP TABLE #dm_os_performance_counters_PERF_COUNTER_BULK_COUNT_t2;
-		SELECT GETDATE() as collection_time, * 
+		SELECT SYSDATETIME() as collection_time, * 
 		INTO #dm_os_performance_counters_PERF_COUNTER_BULK_COUNT_t2
 		FROM sys.dm_os_performance_counters as pc
 		WHERE cntr_type = 272696576 /* PERF_COUNTER_BULK_COUNT */
@@ -383,15 +387,16 @@ begin
 				 t2.object_name = t1.object_name and t2.counter_name = t1.counter_name and ISNULL(t2.instance_name,'') = ISNULL(t1.instance_name,'')
 		)
 		INSERT dbo.dm_os_performance_counters
-		SELECT [collection_time] = time2,
+		SELECT [collection_time] = SYSDATETIME(),
 				server_name = @@SERVERNAME,
 				object_name = rtrim(object_name),
 				counter_name = rtrim(counter_name), 
 				instance_name = rtrim(instance_name), 
 				cntr_value = (cntr_value_t2-cntr_value_t1)/(DATEDIFF(SECOND,time1,time2))
 				,cntr_type = cntr_type_t2
-				,id = ROW_NUMBER()OVER(ORDER BY getdate())
-		FROM Time_Samples;
+				,id = ROW_NUMBER()OVER(ORDER BY SYSDATETIME())
+		FROM Time_Samples
+		ORDER BY collection_time, server_name, [object_name], counter_name, id;
 	end
 
 
@@ -405,7 +410,7 @@ begin
 						CASE WHEN sql_cpu_utilization_post_sp2 IS NOT NULL THEN sql_cpu_utilization_post_sp2 ELSE sql_cpu_utilization_pre_sp2 END AS sql_cpu_utilization 
 				--into dbo.dm_os_ring_buffers
 				FROM  (	SELECT	record.value('(Record/@id)[1]', 'int') AS record_id,
-								DATEADD (ms, -1 * (ts_now - [timestamp]), GETDATE()) AS EventTime,
+								DATEADD (ms, -1 * (ts_now - [timestamp]), SYSDATETIME()) AS EventTime,
 								100-record.value('(Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu_utilization_post_sp2, 
 								record.value('(Record/SchedulerMonitorEvent/SystemHealth/ProcessUtilization)[1]', 'int') AS sql_cpu_utilization_post_sp2,
 								100-record.value('(Record/SchedluerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') AS system_cpu_utilization_pre_sp2,
@@ -441,7 +446,25 @@ GO
 --	drop table dbo.[dm_os_performance_counters]
 CREATE TABLE dbo.[dm_os_performance_counters]
 (
-	[collection_time] [datetime] NOT NULL DEFAULT GETDATE(),
+	[collection_time] [datetime2] NOT NULL DEFAULT SYSDATETIME(),
+	[server_name] varchar(256) NOT NULL DEFAULT @@SERVERNAME,
+	[object_name] [nvarchar](128) NOT NULL,
+	[counter_name] [nvarchar](128) NOT NULL,
+	[instance_name] [nvarchar](128) NULL,
+	[cntr_value] [bigint] NOT NULL,
+	[cntr_type] [int] NOT NULL,
+	[id] smallint NOT NULL
+)
+GO
+ALTER TABLE dbo.dm_os_performance_counters
+   ADD CONSTRAINT pk_dm_os_performance_counters PRIMARY KEY CLUSTERED (collection_time, object_name, counter_name, id)
+   WITH ( FILLFACTOR = 90, SORT_IN_TEMPDB = ON )
+GO
+
+-- drop table dbo.[dm_os_performance_counters_aggregated]
+CREATE TABLE dbo.[dm_os_performance_counters_aggregated]
+(
+	[collection_time] [datetime2] NOT NULL,
 	[server_name] varchar(256) NOT NULL DEFAULT @@SERVERNAME,
 	[object_name] [nvarchar](128) NOT NULL,
 	[counter_name] [nvarchar](128) NOT NULL,
@@ -451,13 +474,26 @@ CREATE TABLE dbo.[dm_os_performance_counters]
 	[id] smallint NOT NULL
 ) ON [PRIMARY]
 GO
-ALTER TABLE dbo.dm_os_performance_counters
-   ADD CONSTRAINT pk_dm_os_performance_counters PRIMARY KEY CLUSTERED (collection_time, server_name, object_name, counter_name, id);
+ALTER TABLE dbo.dm_os_performance_counters_aggregated
+   ADD CONSTRAINT pk_dm_os_performance_counters_aggregated PRIMARY KEY CLUSTERED (collection_time, object_name, counter_name, id)
+   WITH ( FILLFACTOR = 90, SORT_IN_TEMPDB = ON )
 GO
+
+create OR ALTER view dm_os_performance_counters_view
+with schemabinding
+as 
+select [collection_time], [server_name], [object_name], [counter_name], [instance_name], [cntr_value] --, [cntr_type], [id]
+from dbo.[dm_os_performance_counters]
+--
+union all
+--
+select [collection_time], [server_name], [object_name], [counter_name], [instance_name], [cntr_value] --, [cntr_type], [id]
+from dbo.[dm_os_performance_counters_aggregated]
+go
 
 CREATE TABLE [dbo].[dm_os_sys_memory]
 (
-	[collection_time] [datetime2] NOT NULL DEFAULT GETDATE(),
+	[collection_time] [datetime2] NOT NULL DEFAULT SYSDATETIME(),
 	[server_name] [nvarchar](128) NOT NULL DEFAULT @@SERVERNAME,
 	[total_physical_memory_kb] [numeric](30, 2) NOT NULL,
 	[available_physical_memory_kb] [numeric](30, 2) NOT NULL,
@@ -468,20 +504,32 @@ CREATE TABLE [dbo].[dm_os_sys_memory]
 	[memory_usage_percentage] AS (cast(((total_physical_memory_kb-available_physical_memory_kb) * 100.0) / total_physical_memory_kb as numeric(20,2)))
 ) 
 GO
-
 ALTER TABLE [dbo].[dm_os_sys_memory]
-   ADD CONSTRAINT pk_dm_os_sys_memory PRIMARY KEY CLUSTERED (collection_time, server_name);
+   ADD CONSTRAINT pk_dm_os_sys_memory PRIMARY KEY CLUSTERED (collection_time);
 GO
 
--- Delete the primary key constraint.  
-ALTER TABLE dbo.[dm_os_performance_counters]
-	DROP CONSTRAINT pk_dm_os_performance_counters;   
+-- drop table [dbo].[dm_os_sys_memory_aggregated]
+CREATE TABLE [dbo].[dm_os_sys_memory_aggregated]
+(
+	[collection_time] [datetime2] NOT NULL,
+	--[server_name] [nvarchar](128) NOT NULL,
+	[total_physical_memory_kb] [numeric](30, 2) NOT NULL,
+	[available_physical_memory_kb] [numeric](30, 2) NOT NULL,
+	[used_page_file_kb] [numeric](30, 2) NOT NULL,
+	[system_cache_kb] [numeric](30, 2) NOT NULL,
+	[free_memory_kb] [numeric](30, 2) NOT NULL,
+	--[system_memory_state_desc] [nvarchar](256) NOT NULL,
+	[memory_usage_percentage] AS (cast(((total_physical_memory_kb-available_physical_memory_kb) * 100.0) / total_physical_memory_kb as numeric(20,2)))
+) 
 GO
+ALTER TABLE [dbo].[dm_os_sys_memory_aggregated] ADD CONSTRAINT pk_dm_os_sys_memory_aggregated PRIMARY KEY CLUSTERED (collection_time);
+GO
+
 
 --DROP  TABLE [dbo].[dm_os_performance_counters_nonsql]
 CREATE TABLE [dbo].[dm_os_performance_counters_nonsql]
 (
-	[collection_time] [datetime] NOT NULL,
+	[collection_time] [datetime2] NOT NULL,
 	[server_name] [varchar](256) NOT NULL,
 	[object_name] [varchar](1024) NOT NULL,
 	[counter_name] [varchar](1024) NOT NULL,
@@ -491,15 +539,34 @@ CREATE TABLE [dbo].[dm_os_performance_counters_nonsql]
 	[id] [smallint] NOT NULL
 ) ON [PRIMARY]
 GO
-
 ALTER TABLE dbo.dm_os_performance_counters_nonsql
-   ADD CONSTRAINT pk_dm_os_performance_counters_nonsql PRIMARY KEY CLUSTERED (collection_time, server_name, object_name, counter_name, id);
+   ADD CONSTRAINT pk_dm_os_performance_counters_nonsql PRIMARY KEY CLUSTERED (collection_time, object_name, counter_name, id);
 GO
+
+--alter table dm_os_performance_counters_nonsql alter column id int not null
+
+
+CREATE TABLE [dbo].[dm_os_performance_counters_nonsql_aggregated]
+(
+	[collection_time] [datetime2] NOT NULL,
+	[server_name] [varchar](256) NOT NULL,
+	[object_name] [varchar](1024) NOT NULL,
+	[counter_name] [varchar](1024) NOT NULL,
+	[instance_name] [varchar](1024) NULL,
+	[cntr_value] [float] NOT NULL,
+	[cntr_type] [int] NOT NULL,
+	[id] [smallint] NOT NULL
+)
+GO
+ALTER TABLE dbo.dm_os_performance_counters_nonsql_aggregated
+   ADD CONSTRAINT pk_dm_os_performance_counters_nonsql_aggregated PRIMARY KEY CLUSTERED (collection_time, object_name, counter_name, id);
+GO
+
 
 --DROP TABLE [dbo].[dm_os_sys_info]
 CREATE TABLE [dbo].[dm_os_sys_info]
 (
-	[collection_time] [datetime] NOT NULL,
+	[collection_time] [datetime2] NOT NULL,
 	[server_name] [varchar](256) NOT NULL,
 	[sqlserver_start_time] [datetime] NOT NULL,
 	[wait_stats_cleared_time] [smalldatetime] NOT NULL,
@@ -511,16 +578,15 @@ CREATE TABLE [dbo].[dm_os_sys_info]
 	[socket_count] [tinyint] NOT NULL,
 	[cores_per_socket] [smallint] NOT NULL,
 	[numa_node_count] [tinyint] NOT NULL
-) ON [PRIMARY]
+)
 GO
-
 ALTER TABLE [dbo].[dm_os_sys_info]
    ADD CONSTRAINT pk_dm_os_sys_info PRIMARY KEY CLUSTERED (collection_time);
 GO
-
 CREATE NONCLUSTERED INDEX nci_dm_os_sys_info__sqlserver_start_time__wait_stats_cleared_time
 	ON [dbo].[dm_os_sys_info] (sqlserver_start_time, wait_stats_cleared_time)
 GO
+
 
 --	drop table [dbo].[WaitStats]
 CREATE TABLE [dbo].[WaitStats]
@@ -540,15 +606,37 @@ CREATE TABLE [dbo].[WaitStats]
 	[Help_URL] AS (CONVERT([xml],'https://www.sqlskills.com/help/waits/'+[WaitType]))
 )
 GO
-
 ALTER TABLE dbo.WaitStats
    ADD CONSTRAINT pk_WaitStats PRIMARY KEY CLUSTERED (Collection_Time, RowNum, WaitType);
 GO
 
 
+--	drop table [dbo].[WaitStats_aggregated]
+CREATE TABLE [dbo].[WaitStats_aggregated]
+(
+	[Collection_Time] [datetime2] NOT NULL,
+	[RowNum] [smallint] NOT NULL,
+	[WaitType] [nvarchar](120) NOT NULL,
+	[Wait_S] [decimal](20, 2) NOT NULL,
+	[Resource_S] [decimal](20, 2) NOT NULL,
+	[Signal_S] [decimal](20, 2) NOT NULL,
+	[WaitCount] [bigint] NOT NULL,
+	[Percentage] [decimal](5, 2) NULL,
+	--[Percentage] AS ([Wait_S]*100)/SUM([Wait_S])OVER(PARTITION BY [CollectionTime]),
+	[AvgWait_S] AS ([Wait_S]/[WaitCount]),
+	[AvgRes_S] AS ([Resource_S]/[WaitCount]),
+	[AvgSig_S] AS ([Signal_S]/[WaitCount]),
+	[Help_URL] AS (CONVERT([xml],'https://www.sqlskills.com/help/waits/'+[WaitType]))
+)
+GO
+ALTER TABLE dbo.WaitStats_aggregated
+   ADD CONSTRAINT pk_WaitStats_aggregated PRIMARY KEY CLUSTERED (Collection_Time, RowNum, WaitType);
+GO
+
+
 CREATE TABLE [dbo].[dm_os_process_memory]
 (
-	[collection_time] [datetime2] NOT NULL DEFAULT GETDATE(),
+	[collection_time] [datetime2] NOT NULL DEFAULT SYSDATETIME(),
 	[SQL Server Memory Usage (MB)] [bigint] NULL,
 	[page_fault_count] [bigint] NOT NULL,
 	[memory_utilization_percentage] [int] NOT NULL,
@@ -559,28 +647,74 @@ CREATE TABLE [dbo].[dm_os_process_memory]
 	[SQL Server Large Pages Allocation (MB)] [bigint] NULL
 )
 GO
-
-create clustered index ci_dm_os_process_memory on [dbo].[dm_os_process_memory] (collection_time)
+alter table [dbo].[dm_os_process_memory]
+	add constraint pk_dm_os_process_memory primary key clustered (collection_time)
 go
+
+
+CREATE TABLE [dbo].[dm_os_process_memory_aggregated]
+(
+	[collection_time] [datetime2] NOT NULL,
+	[SQL Server Memory Usage (MB)] [bigint] NULL,
+	[page_fault_count] [bigint] NOT NULL,
+	[memory_utilization_percentage] [int] NOT NULL,
+	[available_commit_limit_kb] [bigint] NOT NULL,
+	[process_physical_memory_low] [bit] NOT NULL,
+	[process_virtual_memory_low] [bit] NOT NULL,
+	[SQL Server Locked Pages Allocation (MB)] [bigint] NULL,
+	[SQL Server Large Pages Allocation (MB)] [bigint] NULL
+)
+GO
+alter table [dbo].[dm_os_process_memory_aggregated]
+	add constraint pk_dm_os_process_memory_aggregated primary key clustered (collection_time)
+go
+
 
 CREATE TABLE [dbo].[dm_os_ring_buffers]
 (
-	[collection_time] [datetime2] NOT NULL DEFAULT GETDATE(),
+	[collection_time] [datetime2] NOT NULL DEFAULT SYSDATETIME(),
 	[system_cpu_utilization] [int] NOT NULL,
 	[sql_cpu_utilization] [int] NOT NULL
 )
 GO
-create clustered index ci_dm_os_ring_buffers on [dbo].[dm_os_ring_buffers] (collection_time)
+alter table [dbo].[dm_os_ring_buffers]
+	add constraint pk_dm_os_ring_buffers primary key clustered (collection_time)
 go
+
+
+CREATE TABLE [dbo].[dm_os_ring_buffers_aggregated]
+(
+	[collection_time] [datetime2] NOT NULL,
+	[system_cpu_utilization] [int] NOT NULL,
+	[sql_cpu_utilization] [int] NOT NULL
+)
+GO
+alter table [dbo].[dm_os_ring_buffers_aggregated]
+	add constraint pk_dm_os_ring_buffers_aggregated primary key clustered (collection_time)
+go
+
 
 CREATE TABLE [dbo].[dm_os_memory_clerks]
 (
-	[collection_time] [datetime2] NOT NULL DEFAULT GETDATE(),
+	[collection_time] [datetime2] NOT NULL DEFAULT SYSDATETIME(),
 	[memory_clerk] [nvarchar](60) NOT NULL,
 	[size_mb] [bigint] NULL
 )
 GO
-create clustered index ci_dm_os_memory_clerks on [dbo].[dm_os_memory_clerks] (collection_time)
+alter table [dbo].[dm_os_memory_clerks]
+	add constraint pk_dm_os_memory_clerks primary key clustered (collection_time,memory_clerk)
+go
+
+-- drop table [dbo].[dm_os_memory_clerks_aggregated]
+CREATE TABLE [dbo].[dm_os_memory_clerks_aggregated]
+(
+	[collection_time] [datetime2] NOT NULL,
+	[memory_clerk] [nvarchar](60) NOT NULL,
+	[size_mb] [bigint] NULL
+)
+GO
+alter table [dbo].[dm_os_memory_clerks_aggregated]
+	add constraint pk_dm_os_memory_clerks_aggregated primary key clustered (collection_time,memory_clerk)
 go
 
 USE [master]

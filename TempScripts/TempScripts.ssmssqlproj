@@ -25,6 +25,24 @@
           <AssociatedConnUserName />
           <FullPath>Error-8623.sql</FullPath>
         </FileNode>
+        <FileNode Name="function-interesting-scan-seek-predicates-issue.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>function-interesting-scan-seek-predicates-issue.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Grafana-Query-Inline.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Grafana-Query-Inline.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Jobs-Try-Catch.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Jobs-Try-Catch.sql</FullPath>
+        </FileNode>
         <FileNode Name="Staging-Recommendation-TestCase01.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
