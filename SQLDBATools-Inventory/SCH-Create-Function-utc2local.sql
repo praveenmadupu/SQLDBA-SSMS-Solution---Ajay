@@ -47,7 +47,7 @@ go
 -- drop function dbo.perfmon2utc
 -- Deterministic. CI Index Seek doing Seek Predicate for all Keys. Parallelism
 declare @tsql nvarchar(max);
-declare @local_2_utc_diff_s bigint = Datediff(second, SYSDATETIME(), SYSUTCDATETIME());
+declare @local_2_utc_diff_s bigint = Datediff(MILLISECOND, SYSDATETIME(), SYSUTCDATETIME());
 
 set @tsql = '
 create or alter function dbo.perfmon2utc (@CounterDateTime varchar(24))
@@ -56,7 +56,7 @@ as
 return
 (
 	--select [utc_time] = DATEADD(second, '+cast(@local_2_utc_diff_s as varchar)+', @local_datetime)
-	select [utc_time] = DATEADD(second, '+cast(@local_2_utc_diff_s as varchar)+', CONVERT(DATETIME, SUBSTRING(@CounterDateTime, 1, 23), 102))
+	select [utc_time] = DATEADD(MILLISECOND, '+cast(@local_2_utc_diff_s as varchar)+', CONVERT(DATETIME2, SUBSTRING(@CounterDateTime, 1, 23), 102))
 )
 '
 --print @tsql
@@ -74,7 +74,7 @@ return
 (
 	--select [local_time] = Cast(Cast(@CounterDateTime as CHAR(23)) as datetime2)
 	--select [local_time] = convert(datetime2, convert(CHAR(23), @CounterDateTime))
-	select [local_time] = CONVERT(DATETIME, SUBSTRING(@CounterDateTime, 1, 23), 102)
+	select [local_time] = CONVERT(datetime2, SUBSTRING(@CounterDateTime, 1, 23), 102)
 )
 go
 

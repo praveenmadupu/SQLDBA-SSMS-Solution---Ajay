@@ -44,8 +44,8 @@
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="__1. Create Blocking Scenario.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>__1. Create Blocking Scenario.sql</FullPath>
         </FileNode>
@@ -56,8 +56,8 @@
           <FullPath>__2. Cleanup Script.sql</FullPath>
         </FileNode>
         <FileNode Name="0. Overview.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>0. Overview.sql</FullPath>
         </FileNode>
@@ -68,8 +68,8 @@
           <FullPath>1. Add DBAGroup Operator.sql</FullPath>
         </FileNode>
         <FileNode Name="2. Set 'Blocked Process Threshold' to 20 Seconds.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>2. Set 'Blocked Process Threshold' to 20 Seconds.sql</FullPath>
         </FileNode>
@@ -86,8 +86,8 @@
           <FullPath>4. Create Job [DBA - Log_With_sp_WhoIsActive].sql</FullPath>
         </FileNode>
         <FileNode Name="5. Create Alert [Blocked Process Threshold greator than 5 Minutes].sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>5. Create Alert [Blocked Process Threshold greator than 5 Minutes].sql</FullPath>
         </FileNode>

@@ -9,7 +9,7 @@ exec sp_configure 'show advanced options', 1 ;
 GO  
 RECONFIGURE ;  
 GO  
-exec sp_configure 'blocked process threshold', 300 ; -- 1 minutes  
+exec sp_configure 'blocked process threshold', 1 ; -- 1 minutes  
 GO  
 RECONFIGURE ;  
 GO

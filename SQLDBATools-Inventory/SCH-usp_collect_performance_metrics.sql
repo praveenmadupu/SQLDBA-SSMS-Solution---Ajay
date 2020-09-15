@@ -1,12 +1,15 @@
 USE DBA
 GO
 
-alter procedure [dbo].[usp_collect_performance_metrics] @verbose bit = 0, @metrics varchar(100) = 'all'
+create or alter procedure [dbo].[usp_collect_performance_metrics] @verbose bit = 0, @metrics varchar(100) = 'all'
 as
 begin
 	set nocount on;
 
 	declare @current_time datetime2 = SYSDATETIME(); /* removing usage of this due to high Page Splits */
+	declare @object_name varchar(255);
+	set @object_name = (case when @@SERVICENAME = 'MSSQLSERVER' then 'SQLServer' else 'MSSQL$'+@@SERVICENAME end);
+
 	--select * from sys.dm_os_sys_info
 
 	if @metrics = 'all' or @metrics = 'dm_os_memory_clerks'
@@ -67,57 +70,57 @@ begin
 		FROM sys.dm_os_performance_counters as pc
 		WHERE cntr_type in ( 65792 /* PERF_COUNTER_LARGE_RAWCOUNT */	)
 		  and
-		  (	( [object_name] LIKE 'SQLServer:Buffer Manager%' AND counter_name like 'Page life expectancy%' )
+		  (	( [object_name] LIKE (@object_name+':Buffer Manager%') AND counter_name like 'Page life expectancy%' )
 		    or
-			( [object_name] like 'SQLServer:Buffer Manager%' and [counter_name] like 'Database pages%' )
+			( [object_name] like (@object_name+':Buffer Manager%') and [counter_name] like 'Database pages%' )
 			or
-			( [object_name] like 'SQLServer:Buffer Manager%' and [counter_name] like 'Target pages%' )
+			( [object_name] like (@object_name+':Buffer Manager%') and [counter_name] like 'Target pages%' )
 			or
-			( [object_name] LIKE 'SQLServer:Memory Manager%' AND counter_name like 'Memory Grants Pending%' )
+			( [object_name] LIKE (@object_name+':Memory Manager%') AND counter_name like 'Memory Grants Pending%' )
 			or
-			( [object_name] LIKE 'SQLServer:Memory Manager%' AND counter_name like 'Granted Workspace Memory (KB)%' )
+			( [object_name] LIKE (@object_name+':Memory Manager%') AND counter_name like 'Granted Workspace Memory (KB)%' )
 			or
-			( [object_name] LIKE 'SQLServer:Memory Manager%' AND counter_name like 'Maximum Workspace Memory (KB)%' )
+			( [object_name] LIKE (@object_name+':Memory Manager%') AND counter_name like 'Maximum Workspace Memory (KB)%' )
 			or
-			( [object_name] LIKE 'SQLServer:Memory Manager%' AND counter_name like 'Memory Grants Outstanding%' )
+			( [object_name] LIKE (@object_name+':Memory Manager%') AND counter_name like 'Memory Grants Outstanding%' )
 			or
-			( [object_name] LIKE 'SQLServer:Memory Manager%' AND counter_name like 'Stolen Server Memory (KB)%' )
+			( [object_name] LIKE (@object_name+':Memory Manager%') AND counter_name like 'Stolen Server Memory (KB)%' )
 			or
-			( [object_name] LIKE 'SQLServer:Memory Manager%' AND counter_name = 'Total Server Memory (KB)' )
+			( [object_name] LIKE (@object_name+':Memory Manager%') AND counter_name = 'Total Server Memory (KB)' )
 			or
-			( [object_name] LIKE 'SQLServer:Memory Manager%' AND counter_name = 'Target Server Memory (KB)' )
+			( [object_name] LIKE (@object_name+':Memory Manager%') AND counter_name = 'Target Server Memory (KB)' )
 			or
-			( [object_name] LIKE 'SQLServer:Memory Manager%' AND counter_name = 'SQL Cache Memory (KB)' )
+			( [object_name] LIKE (@object_name+':Memory Manager%') AND counter_name = 'SQL Cache Memory (KB)' )
 			or
-			( [object_name] LIKE 'SQLServer:Memory Manager%' AND counter_name = 'Free Memory (KB)' )
+			( [object_name] LIKE (@object_name+':Memory Manager%') AND counter_name = 'Free Memory (KB)' )
 			or
-			( [object_name] like 'SQLServer:Databases%' and [counter_name] like 'Data File(s) Size (KB)%' )
+			( [object_name] like (@object_name+':Databases%') and [counter_name] like 'Data File(s) Size (KB)%' )
 			or
-			( [object_name] like 'SQLServer:Databases%' and [counter_name] like 'Log File(s) Size (KB)%' )
+			( [object_name] like (@object_name+':Databases%') and [counter_name] like 'Log File(s) Size (KB)%' )
 			or
-			( [object_name] like 'SQLServer:Databases%' and [counter_name] like 'Log File(s) Used Size (KB)%' )
+			( [object_name] like (@object_name+':Databases%') and [counter_name] like 'Log File(s) Used Size (KB)%' )
 			or
-			( [object_name] like 'SQLServer:Databases%' and [counter_name] like 'Log Growths%' )
+			( [object_name] like (@object_name+':Databases%') and [counter_name] like 'Log Growths%' )
 			or
-			( [object_name] like 'SQLServer:Databases%' and [counter_name] like 'Log Shrinks%' )
+			( [object_name] like (@object_name+':Databases%') and [counter_name] like 'Log Shrinks%' )
 			or
-			( [object_name] like 'SQLServer:Databases%' and [counter_name] like 'Log Truncations%' )
+			( [object_name] like (@object_name+':Databases%') and [counter_name] like 'Log Truncations%' )
 			or
-			( [object_name] like 'SQLServer:Databases%' and [counter_name] like 'Percent Log Used%' )
+			( [object_name] like (@object_name+':Databases%') and [counter_name] like 'Percent Log Used%' )
 			or
-			( [object_name] like 'SQLServer:Cursor Manager by Type%' and [counter_name] like 'Active cursors%' )
+			( [object_name] like (@object_name+':Cursor Manager by Type%') and [counter_name] like 'Active cursors%' )
 			or
-			( [object_name] like 'SQLServer:General Statistics%' and [counter_name] like 'User Connections%' )
+			( [object_name] like (@object_name+':General Statistics%') and [counter_name] like 'User Connections%' )
 			or
-			( [object_name] like 'SQLServer:Wait Statistics%' )
+			( [object_name] like (@object_name+':Wait Statistics%') )
 			or
-			( [object_name] like 'SQLServer:Transactions%' and [counter_name] like 'Free Space in tempdb (KB)%' )
+			( [object_name] like (@object_name+':Transactions%') and [counter_name] like 'Free Space in tempdb (KB)%' )
 			or
-			( [object_name] like 'SQLServer:Transactions%' and [counter_name] like 'Longest Transaction Running Time%' )
+			( [object_name] like (@object_name+':Transactions%') and [counter_name] like 'Longest Transaction Running Time%' )
 			or
-			( [object_name] like 'SQLServer:Transactions%' and [counter_name] like 'Transactions%' )
+			( [object_name] like (@object_name+':Transactions%') and [counter_name] like 'Transactions%' )
 			or
-			( [object_name] like 'SQLServer:Transactions%' and [counter_name] like 'Version Store Size (KB)%' )
+			( [object_name] like (@object_name+':Transactions%') and [counter_name] like 'Version Store Size (KB)%' )
 		)
 		ORDER BY collection_time, server_name, [object_name], counter_name, id;
 		
@@ -140,9 +143,9 @@ begin
 		  ) as bs
 		WHERE fr.cntr_type = 537003264 /* PERF_LARGE_RAW_FRACTION */
 		  and
-		  ( ( fr.[object_name] like 'SQLServer:Buffer Manager%' and fr.counter_name like 'Buffer cache hit ratio%' )
+		  ( ( fr.[object_name] like (@object_name+':Buffer Manager%') and fr.counter_name like 'Buffer cache hit ratio%' )
 			or
-			( fr.[object_name] like 'SQLServer:Access Methods%' and fr.counter_name like 'Worktables From Cache Ratio%' )
+			( fr.[object_name] like (@object_name+':Access Methods%') and fr.counter_name like 'Worktables From Cache Ratio%' )
 		  )
 		ORDER BY collection_time, server_name, [object_name], counter_name, id;;
 	end
@@ -156,7 +159,7 @@ begin
 				,id = ROW_NUMBER()OVER(ORDER BY SYSDATETIME())
 		--into dbo.dm_os_performance_counters
 		FROM sys.dm_os_performance_counters as pc
-		WHERE [object_name] like 'SQLServer:Deprecated Features%'
+		WHERE [object_name] like (@object_name+':Deprecated Features%')
 		ORDER BY collection_time, server_name, [object_name], counter_name, id;
 	end
 
@@ -171,9 +174,9 @@ begin
 							,1073939712 /* PERF_LARGE_RAW_BASE */
 							) --  
 		  and
-		  ( ( [object_name] like 'SQLServer:Locks%' and counter_name like 'Average Wait Time%' )
+		  ( ( [object_name] like (@object_name+':Locks%') and counter_name like 'Average Wait Time%' )
 			or
-			( [object_name] like 'SQLServer:Latches%' and counter_name like 'Average Latch Wait Time%' )
+			( [object_name] like (@object_name+':Latches%') and counter_name like 'Average Latch Wait Time%' )
 		  );
 
 		-- Another Query
@@ -185,75 +188,75 @@ begin
 		FROM sys.dm_os_performance_counters as pc
 		WHERE cntr_type = 272696576 /* PERF_COUNTER_BULK_COUNT */
 		  and
-		  ( ( [object_name] like 'SQLServer:SQL Statistics%' and counter_name like 'Batch Requests/sec%' )
+		  ( ( [object_name] like (@object_name+':SQL Statistics%') and counter_name like 'Batch Requests/sec%' )
 			or
-			( [object_name] like 'SQLServer:SQL Statistics%' and counter_name like 'SQL Attention rate%' )
+			( [object_name] like (@object_name+':SQL Statistics%') and counter_name like 'SQL Attention rate%' )
 			or
-			( [object_name] like 'SQLServer:SQL Statistics%' and counter_name like 'SQL Compilations/sec%' )
+			( [object_name] like (@object_name+':SQL Statistics%') and counter_name like 'SQL Compilations/sec%' )
 			or
-			( [object_name] like 'SQLServer:SQL Statistics%' and counter_name like 'SQL Re-Compilations/sec%' )
+			( [object_name] like (@object_name+':SQL Statistics%') and counter_name like 'SQL Re-Compilations/sec%' )
 			or
-			( [object_name] like 'SQLServer:SQL Statistics%' and [counter_name] like 'Auto-Param Attempts/sec%' )
+			( [object_name] like (@object_name+':SQL Statistics%') and [counter_name] like 'Auto-Param Attempts/sec%' )
 			or
-			( [object_name] like 'SQLServer:SQL Statistics%' and [counter_name] like 'Failed Auto-Params/sec%' )
+			( [object_name] like (@object_name+':SQL Statistics%') and [counter_name] like 'Failed Auto-Params/sec%' )
 			or
-			( [object_name] like 'SQLServer:SQL Statistics%' and [counter_name] like 'Safe Auto-Params/sec%' )
+			( [object_name] like (@object_name+':SQL Statistics%') and [counter_name] like 'Safe Auto-Params/sec%' )
 			or
-			( [object_name] like 'SQLServer:SQL Statistics%' and [counter_name] like 'Unsafe Auto-Params/sec%' )
+			( [object_name] like (@object_name+':SQL Statistics%') and [counter_name] like 'Unsafe Auto-Params/sec%' )
 			or
-			( [object_name] like 'SQLServer:Buffer Manager%' and counter_name like 'Page lookups/sec%')
+			( [object_name] like (@object_name+':Buffer Manager%') and counter_name like 'Page lookups/sec%')
 			or
-			( [object_name] like 'SQLServer:Buffer Manager%' and counter_name like 'Lazy writes/sec%')
+			( [object_name] like (@object_name+':Buffer Manager%') and counter_name like 'Lazy writes/sec%')
 			or
-			( [object_name] like 'SQLServer:Buffer Manager%' and counter_name like 'Page reads/sec%')
+			( [object_name] like (@object_name+':Buffer Manager%') and counter_name like 'Page reads/sec%')
 			or
-			( [object_name] like 'SQLServer:Buffer Manager%' and counter_name like 'Page writes/sec%')
+			( [object_name] like (@object_name+':Buffer Manager%') and counter_name like 'Page writes/sec%')
 			or
-			( [object_name] like 'SQLServer:Buffer Manager%' and counter_name like 'Logins/sec%')
+			( [object_name] like (@object_name+':Buffer Manager%') and counter_name like 'Logins/sec%')
 			or
-			( [object_name] like 'SQLServer:Buffer Manager%' and counter_name like 'Free list stalls/sec%')
+			( [object_name] like (@object_name+':Buffer Manager%') and counter_name like 'Free list stalls/sec%')
 			or
-			( [object_name] like 'SQLServer:Buffer Manager%' and counter_name like 'Checkpoint pages/sec%')
+			( [object_name] like (@object_name+':Buffer Manager%') and counter_name like 'Checkpoint pages/sec%')
 			or
-			( [object_name] like 'SQLServer:Buffer Manager%' and counter_name like 'Readahead pages/sec%')
+			( [object_name] like (@object_name+':Buffer Manager%') and counter_name like 'Readahead pages/sec%')
 			or
-			( [object_name] like 'SQLServer:Locks%' and counter_name like 'Number of Deadlocks/sec%' )
+			( [object_name] like (@object_name+':Locks%') and counter_name like 'Number of Deadlocks/sec%' )
 			or
-			( [object_name] like 'SQLServer:Locks%' and counter_name like 'Lock Wait Time (ms)%')
+			( [object_name] like (@object_name+':Locks%') and counter_name like 'Lock Wait Time (ms)%')
 			or
-			( [object_name] like 'SQLServer:Locks%' and counter_name like 'Lock Waits/sec%')
+			( [object_name] like (@object_name+':Locks%') and counter_name like 'Lock Waits/sec%')
 			or
-			( [object_name] like 'SQLServer:Latches%' and [counter_name] like 'Latch Waits/sec%' )
+			( [object_name] like (@object_name+':Latches%') and [counter_name] like 'Latch Waits/sec%' )
 			or
-			( [object_name] like 'SQLServer:Latches%' and [counter_name] like 'Total Latch Wait Time (ms)%' )
+			( [object_name] like (@object_name+':Latches%') and [counter_name] like 'Total Latch Wait Time (ms)%' )
 			or
-			( [object_name] like 'SQLServer:Access Methods%' and counter_name like 'Full Scans/sec%')
+			( [object_name] like (@object_name+':Access Methods%') and counter_name like 'Full Scans/sec%')
 			or
-			( [object_name] like 'SQLServer:Access Methods%' and counter_name like 'Forwarded Records/sec%')
+			( [object_name] like (@object_name+':Access Methods%') and counter_name like 'Forwarded Records/sec%')
 			or
-			( [object_name] like 'SQLServer:Access Methods%' and counter_name like 'Index Searches/sec%')
+			( [object_name] like (@object_name+':Access Methods%') and counter_name like 'Index Searches/sec%')
 			or
-			( [object_name] like 'SQLServer:Access Methods%' and counter_name like 'Page Splits/sec%')
+			( [object_name] like (@object_name+':Access Methods%') and counter_name like 'Page Splits/sec%')
 			or
-			( [object_name] like 'SQLServer:Access Methods%' and counter_name like 'Workfiles Created/sec%')
+			( [object_name] like (@object_name+':Access Methods%') and counter_name like 'Workfiles Created/sec%')
 			or
-			( [object_name] like 'SQLServer:Access Methods%' and counter_name like 'Worktables Created/sec%')
+			( [object_name] like (@object_name+':Access Methods%') and counter_name like 'Worktables Created/sec%')
 			or
-			( [object_name] like 'SQLServer:Access Methods%' and counter_name like 'Table Lock Escalations/sec%')
+			( [object_name] like (@object_name+':Access Methods%') and counter_name like 'Table Lock Escalations/sec%')
 			or
-			( [object_name] like 'SQLServer:Databases%' and counter_name like 'Log Bytes Flushed/sec%')
+			( [object_name] like (@object_name+':Databases%') and counter_name like 'Log Bytes Flushed/sec%')
 			or
-			( [object_name] like 'SQLServer:Databases%' and counter_name like 'Log Flush Wait Time%')
+			( [object_name] like (@object_name+':Databases%') and counter_name like 'Log Flush Wait Time%')
 			or
-			( [object_name] like 'SQLServer:Databases%' and counter_name like 'Log Flush Waits/sec%')
+			( [object_name] like (@object_name+':Databases%') and counter_name like 'Log Flush Waits/sec%')
 			or
-			( [object_name] like 'SQLServer:Databases%' and counter_name like 'Log Flushes/sec%')
+			( [object_name] like (@object_name+':Databases%') and counter_name like 'Log Flushes/sec%')
 			or
-			( [object_name] like 'SQLServer:SQL Errors%' and counter_name like 'Errors/sec%')
+			( [object_name] like (@object_name+':SQL Errors%') and counter_name like 'Errors/sec%')
 			or
-			( [object_name] like 'SQLServer:General Statistics%' and [counter_name] like 'Logins/sec%' )
+			( [object_name] like (@object_name+':General Statistics%') and [counter_name] like 'Logins/sec%' )
 			or
-			( [object_name] like 'SQLServer:General Statistics%' and [counter_name] like 'Logouts/sec%' )
+			( [object_name] like (@object_name+':General Statistics%') and [counter_name] like 'Logouts/sec%' )
 		  );
 
 		--
@@ -269,9 +272,9 @@ begin
 							,1073939712 /* PERF_LARGE_RAW_BASE */
 							) --  
 		  and
-		  ( ( [object_name] like 'SQLServer:Locks%' and counter_name like 'Average Wait Time%' )
+		  ( ( [object_name] like (@object_name+':Locks%') and counter_name like 'Average Wait Time%' )
 			or
-			( [object_name] like 'SQLServer:Latches%' and counter_name like 'Average Latch Wait Time%' )
+			( [object_name] like (@object_name+':Latches%') and counter_name like 'Average Latch Wait Time%' )
 		  );
 		WITH Time_Samples AS (
 			SELECT t1.collection_time as time1, t2.collection_time as time2,
@@ -306,75 +309,75 @@ begin
 		FROM sys.dm_os_performance_counters as pc
 		WHERE cntr_type = 272696576 /* PERF_COUNTER_BULK_COUNT */
 		  and
-		  ( ( [object_name] like 'SQLServer:SQL Statistics%' and counter_name like '%Batch Requests/sec%' )
+		  ( ( [object_name] like (@object_name+':SQL Statistics%') and counter_name like '%Batch Requests/sec%' )
 			or
-			( [object_name] like 'SQLServer:SQL Statistics%' and counter_name like 'SQL Attention rate%' )
+			( [object_name] like (@object_name+':SQL Statistics%') and counter_name like 'SQL Attention rate%' )
 			or
-			( [object_name] like 'SQLServer:SQL Statistics%' and counter_name like 'SQL Compilations/sec%' )
+			( [object_name] like (@object_name+':SQL Statistics%') and counter_name like 'SQL Compilations/sec%' )
 			or
-			( [object_name] like 'SQLServer:SQL Statistics%' and counter_name like 'SQL Re-Compilations/sec%' )
+			( [object_name] like (@object_name+':SQL Statistics%') and counter_name like 'SQL Re-Compilations/sec%' )
 			or
-			( [object_name] like 'SQLServer:SQL Statistics%' and [counter_name] like 'Auto-Param Attempts/sec%' )
+			( [object_name] like (@object_name+':SQL Statistics%') and [counter_name] like 'Auto-Param Attempts/sec%' )
 			or
-			( [object_name] like 'SQLServer:SQL Statistics%' and [counter_name] like 'Failed Auto-Params/sec%' )
+			( [object_name] like (@object_name+':SQL Statistics%') and [counter_name] like 'Failed Auto-Params/sec%' )
 			or
-			( [object_name] like 'SQLServer:SQL Statistics%' and [counter_name] like 'Safe Auto-Params/sec%' )
+			( [object_name] like (@object_name+':SQL Statistics%') and [counter_name] like 'Safe Auto-Params/sec%' )
 			or
-			( [object_name] like 'SQLServer:SQL Statistics%' and [counter_name] like 'Unsafe Auto-Params/sec%' )
+			( [object_name] like (@object_name+':SQL Statistics%') and [counter_name] like 'Unsafe Auto-Params/sec%' )
 			or
-			( [object_name] like 'SQLServer:Buffer Manager%' and counter_name like 'Page lookups/sec%')
+			( [object_name] like (@object_name+':Buffer Manager%') and counter_name like 'Page lookups/sec%')
 			or
-			( [object_name] like 'SQLServer:Buffer Manager%' and counter_name like 'Lazy writes/sec%')
+			( [object_name] like (@object_name+':Buffer Manager%') and counter_name like 'Lazy writes/sec%')
 			or
-			( [object_name] like 'SQLServer:Buffer Manager%' and counter_name like 'Page reads/sec%')
+			( [object_name] like (@object_name+':Buffer Manager%') and counter_name like 'Page reads/sec%')
 			or
-			( [object_name] like 'SQLServer:Buffer Manager%' and counter_name like 'Page writes/sec%')
+			( [object_name] like (@object_name+':Buffer Manager%') and counter_name like 'Page writes/sec%')
 			or
-			( [object_name] like 'SQLServer:Buffer Manager%' and counter_name like 'Logins/sec%')
+			( [object_name] like (@object_name+':Buffer Manager%') and counter_name like 'Logins/sec%')
 			or
-			( [object_name] like 'SQLServer:Buffer Manager%' and counter_name like 'Free list stalls/sec%')
+			( [object_name] like (@object_name+':Buffer Manager%') and counter_name like 'Free list stalls/sec%')
 			or
-			( [object_name] like 'SQLServer:Buffer Manager%' and counter_name like 'Checkpoint pages/sec%')
+			( [object_name] like (@object_name+':Buffer Manager%') and counter_name like 'Checkpoint pages/sec%')
 			or
-			( [object_name] like 'SQLServer:Buffer Manager%' and counter_name like 'Readahead pages/sec%')
+			( [object_name] like (@object_name+':Buffer Manager%') and counter_name like 'Readahead pages/sec%')
 			or
-			( [object_name] like 'SQLServer:Locks%' and counter_name like 'Number of Deadlocks/sec%' )
+			( [object_name] like (@object_name+':Locks%') and counter_name like 'Number of Deadlocks/sec%' )
 			or
-			( [object_name] like 'SQLServer:Locks%' and counter_name like 'Lock Wait Time (ms)%')
+			( [object_name] like (@object_name+':Locks%') and counter_name like 'Lock Wait Time (ms)%')
 			or
-			( [object_name] like 'SQLServer:Locks%' and counter_name like 'Lock Waits/sec%')
+			( [object_name] like (@object_name+':Locks%') and counter_name like 'Lock Waits/sec%')
 			or
-			( [object_name] like 'SQLServer:Latches%' and [counter_name] like 'Latch Waits/sec%' )
+			( [object_name] like (@object_name+':Latches%') and [counter_name] like 'Latch Waits/sec%' )
 			or
-			( [object_name] like 'SQLServer:Latches%' and [counter_name] like 'Total Latch Wait Time (ms)%' )
+			( [object_name] like (@object_name+':Latches%') and [counter_name] like 'Total Latch Wait Time (ms)%' )
 			or
-			( [object_name] like 'SQLServer:Access Methods%' and counter_name like 'Full Scans/sec%')
+			( [object_name] like (@object_name+':Access Methods%') and counter_name like 'Full Scans/sec%')
 			or
-			( [object_name] like 'SQLServer:Access Methods%' and counter_name like 'Forwarded Records/sec%')
+			( [object_name] like (@object_name+':Access Methods%') and counter_name like 'Forwarded Records/sec%')
 			or
-			( [object_name] like 'SQLServer:Access Methods%' and counter_name like 'Index Searches/sec%')
+			( [object_name] like (@object_name+':Access Methods%') and counter_name like 'Index Searches/sec%')
 			or
-			( [object_name] like 'SQLServer:Access Methods%' and counter_name like 'Page Splits/sec%')
+			( [object_name] like (@object_name+':Access Methods%') and counter_name like 'Page Splits/sec%')
 			or
-			( [object_name] like 'SQLServer:Access Methods%' and counter_name like 'Workfiles Created/sec%')
+			( [object_name] like (@object_name+':Access Methods%') and counter_name like 'Workfiles Created/sec%')
 			or
-			( [object_name] like 'SQLServer:Access Methods%' and counter_name like 'Worktables Created/sec%')
+			( [object_name] like (@object_name+':Access Methods%') and counter_name like 'Worktables Created/sec%')
 			or
-			( [object_name] like 'SQLServer:Access Methods%' and counter_name like 'Table Lock Escalations/sec%')
+			( [object_name] like (@object_name+':Access Methods%') and counter_name like 'Table Lock Escalations/sec%')
 			or
-			( [object_name] like 'SQLServer:Databases%' and counter_name like 'Log Bytes Flushed/sec%')
+			( [object_name] like (@object_name+':Databases%') and counter_name like 'Log Bytes Flushed/sec%')
 			or
-			( [object_name] like 'SQLServer:Databases%' and counter_name like 'Log Flush Wait Time%')
+			( [object_name] like (@object_name+':Databases%') and counter_name like 'Log Flush Wait Time%')
 			or
-			( [object_name] like 'SQLServer:Databases%' and counter_name like 'Log Flush Waits/sec%')
+			( [object_name] like (@object_name+':Databases%') and counter_name like 'Log Flush Waits/sec%')
 			or
-			( [object_name] like 'SQLServer:Databases%' and counter_name like 'Log Flushes/sec%')
+			( [object_name] like (@object_name+':Databases%') and counter_name like 'Log Flushes/sec%')
 			or
-			( [object_name] like 'SQLServer:SQL Errors%' and counter_name like 'Errors/sec%')
+			( [object_name] like (@object_name+':SQL Errors%') and counter_name like 'Errors/sec%')
 			or
-			( [object_name] like 'SQLServer:General Statistics%' and [counter_name] like 'Logins/sec%' )
+			( [object_name] like (@object_name+':General Statistics%') and [counter_name] like 'Logins/sec%' )
 			or
-			( [object_name] like 'SQLServer:General Statistics%' and [counter_name] like 'Logouts/sec%' )
+			( [object_name] like (@object_name+':General Statistics%') and [counter_name] like 'Logouts/sec%' )
 		  );
 		WITH Time_Samples AS (
 			SELECT t1.collection_time as time1, t2.collection_time as time2,
@@ -454,15 +457,15 @@ CREATE TABLE dbo.[dm_os_performance_counters]
 	[cntr_value] [bigint] NOT NULL,
 	[cntr_type] [int] NOT NULL,
 	[id] smallint NOT NULL
-)
+) ON [fg_ci]
 GO
 ALTER TABLE dbo.dm_os_performance_counters
    ADD CONSTRAINT pk_dm_os_performance_counters PRIMARY KEY CLUSTERED (collection_time, object_name, counter_name, id)
-   WITH ( FILLFACTOR = 90, SORT_IN_TEMPDB = ON )
+   WITH ( FILLFACTOR = 90, SORT_IN_TEMPDB = ON ) ON [fg_ci]
 GO
 
--- drop table dbo.[dm_os_performance_counters_aggregated]
-CREATE TABLE dbo.[dm_os_performance_counters_aggregated]
+-- drop table dbo.[dm_os_performance_counters_aggregated_90days]
+CREATE TABLE dbo.[dm_os_performance_counters_aggregated_90days]
 (
 	[collection_time] [datetime2] NOT NULL,
 	[server_name] varchar(256) NOT NULL DEFAULT @@SERVERNAME,
@@ -472,24 +475,42 @@ CREATE TABLE dbo.[dm_os_performance_counters_aggregated]
 	[cntr_value] [bigint] NOT NULL,
 	[cntr_type] [int] NOT NULL,
 	[id] smallint NOT NULL
-) ON [PRIMARY]
+) ON [fg_archive]
 GO
-ALTER TABLE dbo.dm_os_performance_counters_aggregated
-   ADD CONSTRAINT pk_dm_os_performance_counters_aggregated PRIMARY KEY CLUSTERED (collection_time, object_name, counter_name, id)
-   WITH ( FILLFACTOR = 90, SORT_IN_TEMPDB = ON )
+ALTER TABLE dbo.dm_os_performance_counters_aggregated_90days
+   ADD CONSTRAINT pk_dm_os_performance_counters_aggregated_90days PRIMARY KEY CLUSTERED (collection_time, object_name, counter_name, id)
+   WITH ( FILLFACTOR = 90, SORT_IN_TEMPDB = ON ) ON [fg_archive]
 GO
 
-create OR ALTER view dm_os_performance_counters_view
+
+-- drop table dbo.[dm_os_performance_counters_aggregated_1year]
+CREATE TABLE dbo.[dm_os_performance_counters_aggregated_1year]
+(
+	[collection_time] [datetime2] NOT NULL,
+	[server_name] varchar(256) NOT NULL DEFAULT @@SERVERNAME,
+	[object_name] [nvarchar](128) NOT NULL,
+	[counter_name] [nvarchar](128) NOT NULL,
+	[instance_name] [nvarchar](128) NULL,
+	[cntr_value] [bigint] NOT NULL,
+	[cntr_type] [int] NOT NULL,
+	[id] smallint NOT NULL
+) ON [fg_archive]
+GO
+ALTER TABLE dbo.dm_os_performance_counters_aggregated_1year
+   ADD CONSTRAINT pk_dm_os_performance_counters_aggregated_1year PRIMARY KEY CLUSTERED (collection_time, object_name, counter_name, id)
+   WITH ( FILLFACTOR = 90, SORT_IN_TEMPDB = ON ) ON [fg_archive]
+GO
+
+create view dbo.dm_os_performance_counters_aggregated
 with schemabinding
-as 
-select [collection_time], [server_name], [object_name], [counter_name], [instance_name], [cntr_value] --, [cntr_type], [id]
-from dbo.[dm_os_performance_counters]
---
+as
+select [collection_time], [server_name], [object_name], [counter_name], [instance_name], [cntr_value], [cntr_type], [id]
+from [dbo].[dm_os_performance_counters_aggregated_90days]
 union all
---
-select [collection_time], [server_name], [object_name], [counter_name], [instance_name], [cntr_value] --, [cntr_type], [id]
-from dbo.[dm_os_performance_counters_aggregated]
+select [collection_time], [server_name], [object_name], [counter_name], [instance_name], [cntr_value], [cntr_type], [id]
+from [dbo].[dm_os_performance_counters_aggregated_1year]
 go
+
 
 CREATE TABLE [dbo].[dm_os_sys_memory]
 (
@@ -502,11 +523,12 @@ CREATE TABLE [dbo].[dm_os_sys_memory]
 	[free_memory_kb] [numeric](30, 2) NOT NULL,
 	[system_memory_state_desc] [nvarchar](256) NOT NULL,
 	[memory_usage_percentage] AS (cast(((total_physical_memory_kb-available_physical_memory_kb) * 100.0) / total_physical_memory_kb as numeric(20,2)))
-) 
+) ON [fg_ci]
 GO
 ALTER TABLE [dbo].[dm_os_sys_memory]
-   ADD CONSTRAINT pk_dm_os_sys_memory PRIMARY KEY CLUSTERED (collection_time);
+   ADD CONSTRAINT pk_dm_os_sys_memory PRIMARY KEY CLUSTERED (collection_time) ON [fg_ci];
 GO
+
 
 -- drop table [dbo].[dm_os_sys_memory_aggregated]
 CREATE TABLE [dbo].[dm_os_sys_memory_aggregated]
@@ -520,9 +542,9 @@ CREATE TABLE [dbo].[dm_os_sys_memory_aggregated]
 	[free_memory_kb] [numeric](30, 2) NOT NULL,
 	--[system_memory_state_desc] [nvarchar](256) NOT NULL,
 	[memory_usage_percentage] AS (cast(((total_physical_memory_kb-available_physical_memory_kb) * 100.0) / total_physical_memory_kb as numeric(20,2)))
-) 
+)  ON [fg_archive]
 GO
-ALTER TABLE [dbo].[dm_os_sys_memory_aggregated] ADD CONSTRAINT pk_dm_os_sys_memory_aggregated PRIMARY KEY CLUSTERED (collection_time);
+ALTER TABLE [dbo].[dm_os_sys_memory_aggregated] ADD CONSTRAINT pk_dm_os_sys_memory_aggregated PRIMARY KEY CLUSTERED (collection_time) ON [fg_archive];
 GO
 
 
@@ -537,16 +559,14 @@ CREATE TABLE [dbo].[dm_os_performance_counters_nonsql]
 	[cntr_value] [float] NOT NULL,
 	[cntr_type] [int] NOT NULL,
 	[id] [smallint] NOT NULL
-) ON [PRIMARY]
+) ON [fg_ci]
 GO
 ALTER TABLE dbo.dm_os_performance_counters_nonsql
-   ADD CONSTRAINT pk_dm_os_performance_counters_nonsql PRIMARY KEY CLUSTERED (collection_time, object_name, counter_name, id);
+   ADD CONSTRAINT pk_dm_os_performance_counters_nonsql PRIMARY KEY CLUSTERED (collection_time, object_name, counter_name, id) ON [fg_ci];
 GO
 
---alter table dm_os_performance_counters_nonsql alter column id int not null
 
-
-CREATE TABLE [dbo].[dm_os_performance_counters_nonsql_aggregated]
+CREATE TABLE [dbo].[dm_os_performance_counters_nonsql_aggregated_90days]
 (
 	[collection_time] [datetime2] NOT NULL,
 	[server_name] [varchar](256) NOT NULL,
@@ -556,11 +576,39 @@ CREATE TABLE [dbo].[dm_os_performance_counters_nonsql_aggregated]
 	[cntr_value] [float] NOT NULL,
 	[cntr_type] [int] NOT NULL,
 	[id] [smallint] NOT NULL
-)
+) ON [fg_archive]
 GO
-ALTER TABLE dbo.dm_os_performance_counters_nonsql_aggregated
-   ADD CONSTRAINT pk_dm_os_performance_counters_nonsql_aggregated PRIMARY KEY CLUSTERED (collection_time, object_name, counter_name, id);
+ALTER TABLE dbo.dm_os_performance_counters_nonsql_aggregated_90days
+   ADD CONSTRAINT pk_dm_os_performance_counters_nonsql_aggregated_90days PRIMARY KEY CLUSTERED (collection_time, object_name, counter_name, id)
+   ON [fg_archive];
 GO
+
+CREATE TABLE [dbo].[dm_os_performance_counters_nonsql_aggregated_1year]
+(
+	[collection_time] [datetime2] NOT NULL,
+	[server_name] [varchar](256) NOT NULL,
+	[object_name] [varchar](1024) NOT NULL,
+	[counter_name] [varchar](1024) NOT NULL,
+	[instance_name] [varchar](1024) NULL,
+	[cntr_value] [float] NOT NULL,
+	[cntr_type] [int] NOT NULL,
+	[id] [smallint] NOT NULL
+) ON [fg_archive]
+GO
+ALTER TABLE dbo.dm_os_performance_counters_nonsql_aggregated_1year
+   ADD CONSTRAINT pk_dm_os_performance_counters_nonsql_aggregated_1year PRIMARY KEY CLUSTERED (collection_time, object_name, counter_name, id)
+   ON [fg_archive];
+GO
+
+create view dbo.dm_os_performance_counters_nonsql_aggregated
+with schemabinding
+as
+select [collection_time], [server_name], [object_name], [counter_name], [instance_name], [cntr_value], [cntr_type], [id]
+from [dbo].[dm_os_performance_counters_nonsql_aggregated_90days]
+union all
+select [collection_time], [server_name], [object_name], [counter_name], [instance_name], [cntr_value], [cntr_type], [id]
+from [dbo].[dm_os_performance_counters_nonsql_aggregated_1year]
+go
 
 
 --DROP TABLE [dbo].[dm_os_sys_info]
@@ -578,13 +626,13 @@ CREATE TABLE [dbo].[dm_os_sys_info]
 	[socket_count] [tinyint] NOT NULL,
 	[cores_per_socket] [smallint] NOT NULL,
 	[numa_node_count] [tinyint] NOT NULL
-)
+) ON [fg_ci]
 GO
 ALTER TABLE [dbo].[dm_os_sys_info]
-   ADD CONSTRAINT pk_dm_os_sys_info PRIMARY KEY CLUSTERED (collection_time);
+   ADD CONSTRAINT pk_dm_os_sys_info PRIMARY KEY CLUSTERED (collection_time) ON [fg_ci];
 GO
 CREATE NONCLUSTERED INDEX nci_dm_os_sys_info__sqlserver_start_time__wait_stats_cleared_time
-	ON [dbo].[dm_os_sys_info] (sqlserver_start_time, wait_stats_cleared_time)
+	ON [dbo].[dm_os_sys_info] (sqlserver_start_time, wait_stats_cleared_time) ON [fg_nci]
 GO
 
 
@@ -604,10 +652,10 @@ CREATE TABLE [dbo].[WaitStats]
 	[AvgRes_S] AS ([Resource_S]/[WaitCount]),
 	[AvgSig_S] AS ([Signal_S]/[WaitCount]),
 	[Help_URL] AS (CONVERT([xml],'https://www.sqlskills.com/help/waits/'+[WaitType]))
-)
+) ON [fg_ci]
 GO
 ALTER TABLE dbo.WaitStats
-   ADD CONSTRAINT pk_WaitStats PRIMARY KEY CLUSTERED (Collection_Time, RowNum, WaitType);
+   ADD CONSTRAINT pk_WaitStats PRIMARY KEY CLUSTERED (Collection_Time, RowNum, WaitType) ON [fg_ci];
 GO
 
 
@@ -627,10 +675,10 @@ CREATE TABLE [dbo].[WaitStats_aggregated]
 	[AvgRes_S] AS ([Resource_S]/[WaitCount]),
 	[AvgSig_S] AS ([Signal_S]/[WaitCount]),
 	[Help_URL] AS (CONVERT([xml],'https://www.sqlskills.com/help/waits/'+[WaitType]))
-)
+) ON [fg_archive]
 GO
 ALTER TABLE dbo.WaitStats_aggregated
-   ADD CONSTRAINT pk_WaitStats_aggregated PRIMARY KEY CLUSTERED (Collection_Time, RowNum, WaitType);
+   ADD CONSTRAINT pk_WaitStats_aggregated PRIMARY KEY CLUSTERED (Collection_Time, RowNum, WaitType)  ON [fg_archive];
 GO
 
 
@@ -645,10 +693,10 @@ CREATE TABLE [dbo].[dm_os_process_memory]
 	[process_virtual_memory_low] [bit] NOT NULL,
 	[SQL Server Locked Pages Allocation (MB)] [bigint] NULL,
 	[SQL Server Large Pages Allocation (MB)] [bigint] NULL
-)
+) ON [fg_ci]
 GO
 alter table [dbo].[dm_os_process_memory]
-	add constraint pk_dm_os_process_memory primary key clustered (collection_time)
+	add constraint pk_dm_os_process_memory primary key clustered (collection_time) ON [fg_ci]
 go
 
 
@@ -663,10 +711,10 @@ CREATE TABLE [dbo].[dm_os_process_memory_aggregated]
 	[process_virtual_memory_low] [bit] NOT NULL,
 	[SQL Server Locked Pages Allocation (MB)] [bigint] NULL,
 	[SQL Server Large Pages Allocation (MB)] [bigint] NULL
-)
+) ON [fg_archive]
 GO
 alter table [dbo].[dm_os_process_memory_aggregated]
-	add constraint pk_dm_os_process_memory_aggregated primary key clustered (collection_time)
+	add constraint pk_dm_os_process_memory_aggregated primary key clustered (collection_time) ON [fg_archive]
 go
 
 
@@ -675,10 +723,10 @@ CREATE TABLE [dbo].[dm_os_ring_buffers]
 	[collection_time] [datetime2] NOT NULL DEFAULT SYSDATETIME(),
 	[system_cpu_utilization] [int] NOT NULL,
 	[sql_cpu_utilization] [int] NOT NULL
-)
+) ON [fg_ci]
 GO
 alter table [dbo].[dm_os_ring_buffers]
-	add constraint pk_dm_os_ring_buffers primary key clustered (collection_time)
+	add constraint pk_dm_os_ring_buffers primary key clustered (collection_time) ON [fg_ci]
 go
 
 
@@ -687,10 +735,10 @@ CREATE TABLE [dbo].[dm_os_ring_buffers_aggregated]
 	[collection_time] [datetime2] NOT NULL,
 	[system_cpu_utilization] [int] NOT NULL,
 	[sql_cpu_utilization] [int] NOT NULL
-)
+) ON [fg_archive]
 GO
 alter table [dbo].[dm_os_ring_buffers_aggregated]
-	add constraint pk_dm_os_ring_buffers_aggregated primary key clustered (collection_time)
+	add constraint pk_dm_os_ring_buffers_aggregated primary key clustered (collection_time) ON [fg_archive]
 go
 
 
@@ -699,10 +747,11 @@ CREATE TABLE [dbo].[dm_os_memory_clerks]
 	[collection_time] [datetime2] NOT NULL DEFAULT SYSDATETIME(),
 	[memory_clerk] [nvarchar](60) NOT NULL,
 	[size_mb] [bigint] NULL
-)
+) ON [fg_ci]
 GO
 alter table [dbo].[dm_os_memory_clerks]
 	add constraint pk_dm_os_memory_clerks primary key clustered (collection_time,memory_clerk)
+	ON [fg_ci]
 go
 
 -- drop table [dbo].[dm_os_memory_clerks_aggregated]
@@ -711,28 +760,90 @@ CREATE TABLE [dbo].[dm_os_memory_clerks_aggregated]
 	[collection_time] [datetime2] NOT NULL,
 	[memory_clerk] [nvarchar](60) NOT NULL,
 	[size_mb] [bigint] NULL
-)
+) ON [fg_archive]
 GO
 alter table [dbo].[dm_os_memory_clerks_aggregated]
 	add constraint pk_dm_os_memory_clerks_aggregated primary key clustered (collection_time,memory_clerk)
+	ON [fg_archive]
 go
 
 USE [master]
 GO
-EXEC master.dbo.sp_addlinkedserver @server = N'SQL-A', @srvproduct=N'SQL Server'
-EXEC master.dbo.sp_addlinkedsrvlogin @rmtsrvname=N'SQL-A',@useself=N'False',@locallogin=NULL,@rmtuser=N'grafana',@rmtpassword='Pa$$w0rd'
+CREATE LOGIN [grafana] WITH PASSWORD=N'Pa$$w0rd', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
 GO
-EXEC master.dbo.sp_serveroption @server=N'SQL-A', @optname=N'data access', @optvalue=N'true'
+ALTER SERVER ROLE [sysadmin] ADD MEMBER [grafana]
 GO
-EXEC master.dbo.sp_serveroption @server=N'SQL-A', @optname=N'rpc', @optvalue=N'true'
+ALTER LOGIN [grafana] WITH DEFAULT_DATABASE=[DBA]
 GO
-EXEC master.dbo.sp_serveroption @server=N'SQL-A', @optname=N'rpc out', @optvalue=N'true'
+USE [master]
 GO
-EXEC master.dbo.sp_serveroption @server=N'SQL-A', @optname=N'connect timeout', @optvalue=N'120'
+EXEC master.dbo.sp_addlinkedserver @server = N'SQL-A\V17', @srvproduct=N'SQL Server'
+
 GO
-EXEC master.dbo.sp_serveroption @server=N'SQL-A', @optname=N'query timeout', @optvalue=N'240'
+EXEC master.dbo.sp_serveroption @server=N'SQL-A\V17', @optname=N'collation compatible', @optvalue=N'false'
+GO
+EXEC master.dbo.sp_serveroption @server=N'SQL-A\V17', @optname=N'data access', @optvalue=N'true'
+GO
+EXEC master.dbo.sp_serveroption @server=N'SQL-A\V17', @optname=N'dist', @optvalue=N'false'
+GO
+EXEC master.dbo.sp_serveroption @server=N'SQL-A\V17', @optname=N'pub', @optvalue=N'false'
+GO
+EXEC master.dbo.sp_serveroption @server=N'SQL-A\V17', @optname=N'rpc', @optvalue=N'true'
+GO
+EXEC master.dbo.sp_serveroption @server=N'SQL-A\V17', @optname=N'rpc out', @optvalue=N'true'
+GO
+EXEC master.dbo.sp_serveroption @server=N'SQL-A\V17', @optname=N'sub', @optvalue=N'false'
+GO
+EXEC master.dbo.sp_serveroption @server=N'SQL-A\V17', @optname=N'connect timeout', @optvalue=N'120'
+GO
+EXEC master.dbo.sp_serveroption @server=N'SQL-A\V17', @optname=N'collation name', @optvalue=null
+GO
+EXEC master.dbo.sp_serveroption @server=N'SQL-A\V17', @optname=N'lazy schema validation', @optvalue=N'false'
+GO
+EXEC master.dbo.sp_serveroption @server=N'SQL-A\V17', @optname=N'query timeout', @optvalue=N'300'
+GO
+EXEC master.dbo.sp_serveroption @server=N'SQL-A\V17', @optname=N'use remote collation', @optvalue=N'true'
+GO
+EXEC master.dbo.sp_serveroption @server=N'SQL-A\V17', @optname=N'remote proc transaction promotion', @optvalue=N'true'
+GO
+USE [master]
+GO
+EXEC master.dbo.sp_addlinkedsrvlogin @rmtsrvname = N'SQL-A\V17', @locallogin = NULL , @useself = N'False', @rmtuser = N'grafana', @rmtpassword = N'Pa$$w0rd'
 GO
 
 
 */
 
+/* *********************** For Multi Instance Scenario ********************************************
+-- ************************ CAUTION *************************************************************--
+use DBA
+go
+
+select @@SERVERNAME
+go
+
+if object_id('dbo.dm_os_performance_counters_aggregated') is not null
+	drop view dbo.dm_os_performance_counters_aggregated;
+go
+create view dbo.dm_os_performance_counters_aggregated
+as
+select [collection_time], [server_name], [object_name], [counter_name], [instance_name], [cntr_value], [cntr_type], [id]
+from [SQL-A].[DBA].[dbo].[dm_os_performance_counters_aggregated_90days]
+union all
+select [collection_time], [server_name], [object_name], [counter_name], [instance_name], [cntr_value], [cntr_type], [id]
+from [SQL-A].[DBA].[dbo].[dm_os_performance_counters_aggregated_1year]
+go
+
+if object_id('dbo.dm_os_performance_counters_nonsql_aggregated') is not null
+	drop view dbo.dm_os_performance_counters_nonsql_aggregated;
+go
+create view dbo.dm_os_performance_counters_nonsql_aggregated
+as
+select [collection_time], [server_name], [object_name], [counter_name], [instance_name], [cntr_value], [cntr_type], [id]
+from [SQL-A].[DBA].[dbo].[dm_os_performance_counters_nonsql_aggregated_90days]
+union all
+select [collection_time], [server_name], [object_name], [counter_name], [instance_name], [cntr_value], [cntr_type], [id]
+from [SQL-A].[DBA].[dbo].[dm_os_performance_counters_nonsql_aggregated_1year]
+go
+
+*/
