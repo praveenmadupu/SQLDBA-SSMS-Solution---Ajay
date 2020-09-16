@@ -50,6 +50,7 @@ BEGIN
 	CREATE NONCLUSTERED INDEX [nci_WhoIsActive_blockings] ON [dbo].[WhoIsActive]
 	(	blocking_session_id, blocked_session_count, [collection_time] ASC, session_id)
 	INCLUDE (login_name, [host_name], [database_name], [program_name])
+	--ON [fg_nci]
 END
 GO
 
