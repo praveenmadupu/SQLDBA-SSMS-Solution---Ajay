@@ -68,9 +68,9 @@
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="(dba) Collect Metrics.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:SQL-A:False:sa</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>SQL-A</AssociatedConnSrvName>
+          <AssociatedConnUserName>sa</AssociatedConnUserName>
           <FullPath>(dba) Collect Metrics.sql</FullPath>
         </FileNode>
         <FileNode Name="(dba) Collect XEvents.sql">

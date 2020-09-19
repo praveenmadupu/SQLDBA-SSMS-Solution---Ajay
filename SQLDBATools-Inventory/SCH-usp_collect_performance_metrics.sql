@@ -770,12 +770,17 @@ go
 
 USE [master]
 GO
-CREATE LOGIN [grafana] WITH PASSWORD=N'Pa$$w0rd', DEFAULT_DATABASE=[master], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
+CREATE LOGIN [grafana] WITH PASSWORD=N'grafana', DEFAULT_DATABASE=[DBA], CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
 GO
-ALTER SERVER ROLE [sysadmin] ADD MEMBER [grafana]
+GRANT VIEW SERVER STATE TO [grafana];
 GO
-ALTER LOGIN [grafana] WITH DEFAULT_DATABASE=[DBA]
+USE [DBA]
 GO
+CREATE USER [grafana] FOR LOGIN [grafana]
+GO
+ALTER ROLE [db_datareader] ADD MEMBER [grafana]
+GO
+
 USE [master]
 GO
 EXEC master.dbo.sp_addlinkedserver @server = N'SQL-A\V17', @srvproduct=N'SQL Server'
