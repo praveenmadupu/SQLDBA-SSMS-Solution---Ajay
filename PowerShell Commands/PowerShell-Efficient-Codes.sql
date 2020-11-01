@@ -14,3 +14,5 @@ $files.ForEach({$obj = [PSCustomObject]@{ FileName  = $_.fullname; LastWrite = $
 
 <#	03 - All various ways to work on Array Collection	#>
 https://www.red-gate.com/simple-talk/sysadmin/powershell/powershell-one-liners-collections-hashtables-arrays-and-strings/
+
+$BlitzIndex_Summary_Groups.ForEach({$obj = [PSCustomObject]@{ Finding  = $_.Values[0]; Database = $_.Values[1]; Count = $_.Count} $obj;})

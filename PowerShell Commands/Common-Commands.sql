@@ -31,7 +31,14 @@ Get-ChildItem -Path 'F:\' -Recurse -Force -ErrorAction SilentlyContinue |
     Sort-Object -Property SizeBytes -Descending | Out-GridView
 
 -- 9) Check if -Verbose switch is used
-$PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent
+$Verbose = $false;
+if($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -or [String]::IsNullOrEmpty($MyInvocation.PSScriptRoot)) {
+    $Verbose = $true;
+}
+
+if($Verbose) {
+    Write-Host ("{0,-8} {1} - {2}" -f 'INFO:', "$(Get-Date)", "Extract 'Finding' & 'Create TSQL' from Index Summary to match with Non-Prod");
+}
 
 -- 10) Check if Module is installed
 if (Get-Module -ListAvailable -Name SqlServer) {

@@ -1,26 +1,25 @@
 -- At Publisher Server
 	-- Creating a PUSH subscription
-USE [ContsoSQLInventory];
+USE DBA;
 EXEC sp_addsubscription 
-@publication = N'DIMS', 
-@subscriber = N'YourPublisherServerName\SQL2016', 
-@destination_db = N'ContsoSQLInventory_Ajay', 
-@subscription_type = N'Push', 
-@article = N'all',
---BEGIN Backup Params
-@sync_type = N'initialize with backup',
-@backupdevicetype = 'disk',
-@backupdevicename = 'G:\MSSQLData\SQL2016_Backup\ContsoSQLInventory\FULL\ContsoSQLInventory_FULL_20190214_025710.bak'
---END Backup Params
+	@publication = N'DBA_Arc', 
+	@subscriber = N'MSI\SQL2019', 
+	@destination_db = N'DBA', 
+	@subscription_type = N'Push', 
+	@article = N'all',
+	--BEGIN Backup Params
+	@sync_type = N'initialize with backup',
+	@backupdevicetype = 'disk',
+	@backupdevicename = 'D:\MSSQL15.MSSQLSERVER\Backup\DBA-Log-20201101.trn'
+	--END Backup Params
 GO
 
-
 -- Create distribution agent
-USE [ContsoSQLInventory];
+USE DBA;
 EXEC sp_addpushsubscription_agent 
-	@publication = N'DIMS', 
-	@subscriber = N'YourPublisherServerName\SQL2016', 
-	@subscriber_db = N'ContsoSQLInventory_Ajay', 
+	@publication = N'DBA_Arc', 
+	@subscriber = N'MSI\SQL2019', 
+	@subscriber_db = N'DBA', 
 	--@job_login = N'SQLSKILLSDEMOs\Administrator', 
 	--@job_password = 'Password;1', 
 	@subscriber_security_mode = 1, 
@@ -36,6 +35,10 @@ EXEC sp_addpushsubscription_agent
 	@active_start_date = 20120215, 
 	@active_end_date = 99991231;
 GO
+
+-- Create Snapshot Agent without Schedule
+exec sp_addpublication_snapshot @publication = 'DBA_desco'  
+go
 
 -- Check snapshot agent job
 :CONNECT SQL2K12-SVR2

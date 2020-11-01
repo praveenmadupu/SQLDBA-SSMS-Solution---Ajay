@@ -467,6 +467,30 @@ WHERE forwarded_record_count > 0
 go
 
 
+/* Get procedure with RECOMPILE HINT */
+SET QUOTED_IDENTIFIER OFF
+if OBJECT_ID('tempdb..#procs_with_compile_hint') is not null drop table #procs_with_compile_hint;
+create table #procs_with_compile_hint (DB nvarchar(256), OBJ_NAME nvarchar(256), OBJ_TYPE nvarchar(120), [definition] nvarchar(2000));
+insert #procs_with_compile_hint
+EXEC sp_MSforeachdb "
+USE [?];
+
+begin try
+	SELECT DB_NAME() AS [DB], o.name AS [OBJ_NAME], o.type_desc AS [OBJ_TYPE], t.definition
+	FROM sys.sql_modules t
+	INNER JOIN sys.objects o
+	ON t.object_id = o.object_id
+	WHERE t.definition LIKE '%RECOMPILE%'
+	OR t.definition LIKE '%recompile%';
+end try
+begin catch
+	print 'Error for '+QUOTENAME(DB_NAME());
+end catch
+";
+select * from #procs_with_compile_hint
+go
+
+
 /*	Find Forwarded Records using Cursor Method for VLDBs	*/
 SET NOCOUNT ON;
 IF OBJECT_ID('tempdb..#objects') IS NOT NULL
@@ -826,7 +850,10 @@ EXEC master..xp_readerrorlog 0,1, N'virtual log files which is excessive.'
 
 --	Foreign Keys Not Trusted.
 	--	https://BrentOzar.com/go/trust
-EXEC sp_msForEachDB '
+if OBJECT_ID('tempdb..#foreign_keys') is not null drop table #foreign_keys;
+create table #foreign_keys (id int identity(1,1) not null, dbName nvarchar(256), TableName nvarchar(500), keyname nvarchar(256));
+insert #foreign_keys
+EXEC sp_MSforeachdb '
 USE [?];
 SELECT	*
 FROM (values (DB_NAME())) as DBs(dbName)
@@ -839,10 +866,9 @@ LEFT JOIN
 		WHERE i.is_not_trusted = 1 AND i.is_not_for_replication = 0
 	) AS r
 	ON	1 = 1
+WHERE TableName is not null
 ';
-/*
-The [SRA] database has foreign keys that were probably disabled, data was changed, and then the key was enabled again.  Simply enabling the key is not enough for the optimizer to use this key - we have to alter the table using the WITH CHECK CHECK CONSTRAINT parameter. (https://www.brentozar.com/blitz/foreign-key-trusted/ ). It turns out this can have a huge performance impact on queries, too, because SQL Server won’t use untrusted constraints to build better execution plans.
-*/
+select * from #foreign_keys
 
 --	Disk Latency Logs
 $serverName = 'dbsep0456';

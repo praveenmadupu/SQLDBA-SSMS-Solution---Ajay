@@ -6,21 +6,20 @@
 5. Done. Test to make sure the flow is working.
 */
 
-
-USE [ContsoSQLInventory];
+USE [DBA];
 GO
 
-exec sp_helppublication @publication = 'DIMS_Dev'  
+exec sp_helppublication @publication = 'DBA_Arc'  
 
-EXEC sp_replicationdboption @dbname = N'ContsoSQLInventory', 
+EXEC sp_replicationdboption @dbname = N'DBA', 
 	-- Can be "subscribe", "publish", "merge publish"
 	-- and "sync with backup"
     @optname = N'publish', -- any type of publication
     @value = N'true';
 
 -- ** Validate the new Log Reader SQL Server Agent Job created after adding publication with below query **
-EXEC sp_addpublication @publication = N'DIMS_Dev',
-	@description = N'Transactional publication for database ''ContsoSQLInventory_Dev'' from Publisher ''YourPublisherServerName\SQL2016''.',
+EXEC sp_addpublication @publication = N'DBA_Arc',
+	@description = N'Transactional publication for database ''DBA'' from Publisher ''MSI''.',
     @sync_method = N'concurrent',
 	@retention = 0, 
 	@allow_push = N'true', 

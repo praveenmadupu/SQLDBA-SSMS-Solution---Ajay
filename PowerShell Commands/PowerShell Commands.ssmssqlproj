@@ -3,7 +3,7 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="(local):CORPORATE\adwivedi">
+        <ConnectionNode Name="(local):MSI\ajayd">
           <Created>2019-09-02T11:16:14.9489194+05:30</Created>
           <Type>SQL</Type>
           <Server>(local)</Server>
@@ -15,7 +15,7 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="LOCALHOST:CORPORATE\adwivedi">
+        <ConnectionNode Name="LOCALHOST:MSI\ajayd">
           <Created>2019-10-08T19:38:44.0054106+05:30</Created>
           <Type>SQL</Type>
           <Server>LOCALHOST</Server>
@@ -114,6 +114,24 @@
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Get-SqlResult2Excel.sql</FullPath>
+        </FileNode>
+        <FileNode Name="MultiThreading-Powershell-Jobs.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>MultiThreading-Powershell-Jobs.sql</FullPath>
+        </FileNode>
+        <FileNode Name="MultiThreading-Powershell-PoshRSJob.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>MultiThreading-Powershell-PoshRSJob.sql</FullPath>
+        </FileNode>
+        <FileNode Name="MultiThreading-Powershell-RunSpaces.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>MultiThreading-Powershell-RunSpaces.sql</FullPath>
         </FileNode>
         <FileNode Name="Ping Servers.sql">
           <AssociatedConnectionMoniker />

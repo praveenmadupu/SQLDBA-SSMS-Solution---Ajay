@@ -37,6 +37,12 @@
           <AssociatedConnUserName />
           <FullPath>_URLs-Resource-Governor.sql</FullPath>
         </FileNode>
+        <FileNode Name="Arc-RS-Settings.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MSI:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MSI</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Arc-RS-Settings.sql</FullPath>
+        </FileNode>
         <FileNode Name="Find-Queries-Consuming-CPU.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>

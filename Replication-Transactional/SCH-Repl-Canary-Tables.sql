@@ -1,3 +1,30 @@
+-- Publisher Server
+use DBA
+go
+
+create table dbo.Canary
+( id bigint identity(1,1) not null,
+	pub_server varchar(256) default @@servername,
+	pub_insertion_date datetime2 default SYSDATETIME()
+)
+
+alter table dbo.Canary add constraint pk_Canary primary key clustered (id);
+
+insert dbo.Canary
+values (default, default)
+go
+
+-- Subscriber Server
+use DBA
+alter table dbo.Canary add sub_server varchar(256) default @@servername;
+alter table dbo.Canary add sub_insertion_date datetime2 default SYSDATETIME();
+
+select top 2 * from DBA.dbo.Canary order by pub_insertion_date desc
+select top 2 * from DBAReplSnapshotSync.dbo.Canary order by pub_insertion_date desc
+select top 2 * from DBAReplSyncOnly.dbo.Canary order by pub_insertion_date desc
+
+
+/*
 Adding new article without generating a complete snapshot :
 
 1)      Make sure that your publication has IMMEDIATE_SYNC and ALLOW_ANONYMOUS properties set to FALSE or 0.
@@ -15,9 +42,9 @@ Go
 
 2)      Now add the article to the publication
 
-Use yourDB
-EXEC sp_addarticle @publication = 'yourpublication', @article ='test',
-@source_object='test', @force_invalidate_snapshot=1
+Use DBA
+EXEC sp_addarticle @publication = 'DBA_Arc', @article ='Canary',
+@source_object='Canary', @force_invalidate_snapshot=1
 
 If you do not use the @force_invalidate_snapshot option then you will receive the
 following error
@@ -27,7 +54,7 @@ Cannot make the change because a snapshot is already generated. Set
 
 3)      Verify if you are using CONCURRENT or NATIVE method for synchronization by running the following command.
 
-Use yourdb
+Use DBA
 select sync_method from syspublications
 
 If the value is 3 or 4 then it is CONCURRENT and if it is 0 then it is NATIVE.
@@ -36,9 +63,11 @@ http://msdn.microsoft.com/en-us/library/ms189805.aspx
 
 4)      Then add the subscription for this new article using the following command
 
-             EXEC sp_addsubscription @publication = 'yourpublication', @article = 'test', 
-             @subscriber ='subs_servername', @destination_db = 'subs_DBNAME', 
+             EXEC sp_addsubscription @publication = 'DBA_Arc', @article = 'Canary', 
+             @subscriber ='MSI\SQL2019', @destination_db = 'DBA', 
              @reserved='Internal'
+
+			 EXEC sp_dropsubscription @publication = 'DBAReplSyncOnly',  @subscriber ='MSI\SQL2019', @destination_db = 'DBA', @article = 'all'
 
 If you are using the NATIVE  method for synchronization then the parameter
 @reserved=’Internal’ is optional but there is no harm in using it anyways. But if it is CONCURRENT then you have to use that parameter. Else the next time you run the snapshot agent it is going to generate a snapshot for all the articles.
@@ -52,3 +81,4 @@ the job name follow these steps.
                          start from the first step.
 
 Verify that the snapshot was generated for only one article.
+*/

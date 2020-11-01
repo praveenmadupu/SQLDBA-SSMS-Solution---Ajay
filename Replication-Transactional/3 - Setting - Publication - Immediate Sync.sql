@@ -1,7 +1,7 @@
-USE [Credit];
+USE DBA;
 GO
 
-EXEC sp_replicationdboption @dbname = N'Credit', 
+EXEC sp_replicationdboption @dbname = N'DBA', 
 	-- Can be "subscribe", "publish", "merge publish"
 	-- and "sync with backup"
     @optname = N'publish', -- any type of publication
@@ -14,7 +14,7 @@ GO
 
 -- ** Validate the new Log Reader SQL Server Agent Job **
 
-EXEC sp_addpublication @publication = N'Pub_Credit',
+EXEC sp_addpublication @publication = N'DBAReplSyncOnly',
     @sync_method = N'concurrent', @allow_push = N'true', @allow_pull = N'true',
     @snapshot_in_defaultfolder = N'true', @compress_snapshot = N'false',
     @repl_freq = N'continuous', @status = N'active',
@@ -27,15 +27,15 @@ EXEC sp_addpublication @publication = N'Pub_Credit',
 GO
 
 -- Create the snapshot agent
-EXEC sp_addpublication_snapshot @publication = N'DBA_Arc',
+EXEC sp_addpublication_snapshot @publication = N'DBAReplSyncOnly'
 	-- Daily 
-    @frequency_type = 4, @frequency_interval = 1,
-    @frequency_relative_interval = 1, @frequency_recurrence_factor = 0,
-    @frequency_subday = 8, @frequency_subday_interval = 1,
-    @active_start_time_of_day = 0, @active_end_time_of_day = 235959,
-    @active_start_date = 0, @active_end_date = 0,
-    @job_login = N'SQLSKILLSDEMOS\Administrator', @job_password = 'Password;1',
-    @publisher_security_mode = 1;
+    --,@frequency_type = 4, @frequency_interval = 1,
+    --@frequency_relative_interval = 1, @frequency_recurrence_factor = 0,
+    --@frequency_subday = 8, @frequency_subday_interval = 1,
+    --@active_start_time_of_day = 0, @active_end_time_of_day = 235959,
+    --@active_start_date = 0, @active_end_date = 0,
+    --@job_login = N'SQLSKILLSDEMOS\Administrator', @job_password = 'Password;1',
+    --@publisher_security_mode = 1;
 GO
 
 -- Table - HumanResources.Department

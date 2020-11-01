@@ -1,14 +1,30 @@
 -- At Publisher Server
-	-- Creating a PULL subscription
-USE [ContsoSQLInventory];
+	-- Creating a PUSH/PULL subscription with @sync_type = N'replication support only'
+USE DBA;
 EXEC sp_addsubscription 
-@publication = N'DIMS_Dev', 
-@subscriber = N'YourPublisherServerName\SQL2016', 
-@destination_db = N'ContsoSQLInventory_Dev', 
-@subscription_type = N'Pull', 
+	@publication = N'DBAReplSyncOnly', 
+	@subscriber = N'MSI\SQL2019', 
+	@destination_db = N'DBAReplSyncOnly', 
+	@subscription_type = N'Push', -- Pull for pull subscription
+	@article = N'all',
+	--BEGIN Backup Params
+	@sync_type = N'replication support only'
+	--END Backup Params
+GO
+
+-- OR --
+
+-- At Publisher Server
+	-- Creating a PUSH/PULL subscription with @sync_type = N'automatic'. For Snapshot methodStep
+USE DBA;
+EXEC sp_addsubscription 
+@publication = N'DBAReplSyncOnly', 
+@subscriber = N'MSI\SQL2019', 
+@destination_db = N'DBAReplSnapshotSync', 
+@subscription_type = N'Push', -- Pull for pull subscription
 @article = N'all',
 --BEGIN Backup Params
-@sync_type = N'replication support only'
+@sync_type = N'automatic '
 --END Backup Params
 GO
 

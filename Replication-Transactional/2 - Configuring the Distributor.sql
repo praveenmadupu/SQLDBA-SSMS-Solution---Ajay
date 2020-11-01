@@ -7,9 +7,11 @@ EXEC sp_get_distributor;
 GO
 
 -- Add the distributor
-EXEC sp_adddistributor @distributor = N'YourDistributorServerName',
+EXEC sp_adddistributor @distributor = N'MSI',
     @password = N'Pa$$w0rd'; 
 GO
+
+select * from sys.sysservers
 
 /*
 
@@ -33,13 +35,13 @@ EXEC sp_adddistributiondb @database = N'distribution',
     @history_retention = 48;
 GO
 
--- Configuring a publisher to use the distribution db
-USE ContsoSQLInventory_Distributor;
-GO
+--select * from sys.dm_server_services
 
-EXEC sp_adddistpublisher @publisher = N'YouPublisherServerName\SQL2016',
-    @distribution_db = N'ContsoSQLInventory_Distributor', @security_mode = 1,
-    @working_directory = N'\\YourNetworkPath\Replication\', @thirdparty_flag = 0, -- if SQL and not another product
+-- Configuring a publisher to use the distribution db
+USE distribution;
+EXEC sp_adddistpublisher @publisher = N'MSI',
+    @distribution_db = N'distribution', @security_mode = 1,
+    @working_directory = N'\\MSI\Replication\', @thirdparty_flag = 0, -- if SQL and not another product
     @publisher_type = N'MSSQLSERVER';
 GO
 

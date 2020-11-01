@@ -139,6 +139,198 @@
           <AssociatedConnUserName />
           <FullPath>QRY - Clensing StackOverflow Tables.sql</FullPath>
         </FileNode>
+        <FileNode Name="SCH - RPT-Low_views_high_votes_yet_unanswered.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-Low_views_high_votes_yet_unanswered.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Bounties_and_Questions_by_Month.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Bounties_and_Questions_by_Month.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Duplicate_Questions_Count_per_Month.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Duplicate_Questions_Count_per_Month.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_find_interesting_unanswered_questions.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_find_interesting_unanswered_questions.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_get_user_comment_score_distribution.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_get_user_comment_score_distribution.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_get_user_score.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_get_user_score.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_get_user_upvotes.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_get_user_upvotes.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Jon_Skeet_comparison.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Jon_Skeet_comparison.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Most_and_least_dangerous_tags_to_answer.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Most_and_least_dangerous_tags_to_answer.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Most_controversial_posts.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Most_controversial_posts.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Most_Down_Voted_Questions.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Most_Down_Voted_Questions.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Most_popular_StackOverflow_tags_4_Duration.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Most_popular_StackOverflow_tags_4_Duration.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_My_Money_for_Jam.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_My_Money_for_Jam.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Posts_containing_a_very_short_title.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Posts_containing_a_very_short_title.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Posts_with_many_thank_you_answers.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Posts_with_many_thank_you_answers.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Questions_Count_by_Month.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Questions_Count_by_Month.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Quickest_badge_earners.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Quickest_badge_earners.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Rising_stars.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Rising_stars.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_The_true_unsung_heros.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_The_true_unsung_heros.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Top_100_Users_that_rarely_upvote.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Top_100_Users_that_rarely_upvote.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Top_50_Most_Prolific_Editors.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Top_50_Most_Prolific_Editors.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Top_500_answerers.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Top_500_answerers.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Top_Users_by_Number_of_Bounties_Won.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Top_Users_by_Number_of_Bounties_Won.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Total_Questions_and_Answers_per_Month.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Total_Questions_and_Answers_per_Month.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_user_accepted_answer_percentage_rate.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_user_accepted_answer_percentage_rate.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_user_StackOverflow_Rank_and_Percentile.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_user_StackOverflow_Rank_and_Percentile.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_users_by_location.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_users_by_location.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Users_by_Popular_Question_ratio.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Users_by_Popular_Question_ratio.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Users_with_duplicate_account_and_1k_reputation.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Users_with_duplicate_account_and_1k_reputation.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Users_with_high_self_accept_rates.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Users_with_high_self_accept_rates.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH - RPT-usp_Vanity_search_links_to_user_website_posted_by_other_people_4_during.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH - RPT-usp_Vanity_search_links_to_user_website_posted_by_other_people_4_during.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SQLQuery1.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SQLQuery1.sql</FullPath>
+        </FileNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">

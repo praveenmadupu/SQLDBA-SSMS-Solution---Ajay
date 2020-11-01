@@ -182,8 +182,8 @@
           <FullPath>SQL Server 2012 Diagnostic Information Queries.sql</FullPath>
         </FileNode>
         <FileNode Name="SQL Server 2014 Diagnostic Information Queries.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SQL Server 2014 Diagnostic Information Queries.sql</FullPath>
         </FileNode>

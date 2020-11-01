@@ -13,3 +13,5 @@ select top 100 * from dbo.Users as u
 	--where u.WebsiteUrl like '%ajaydwivedi%'
 	order by u.Reputation desc
 */
+
+--	EXEC sp_WhoIsActive @get_plans = 1

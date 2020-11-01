@@ -62,11 +62,11 @@ https://repltalk.com/2010/03/11/divide-and-conquer-transactional-replication-usi
 
 https://docs.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sp-repltrans-transact-sql?view=sql-server-ver15
 --	All the transactions in the publication database transaction log that are marked for replication but have not been marked as distributed
-use Mosaic
+use DBA
 exec sp_repltrans  
 
 --	Commands for transactions marked for replication
-use Mosaic
+use DBA
 exec sp_replshowcmds
 
 --	How to enable replication agents for logging to output files in SQL Server
@@ -105,7 +105,7 @@ SELECT TOP 100
 FROM msdistribution_history as dh --WITH (nolock)
 join dbo.MSdistribution_agents as a
 on a.id = dh.agent_id
-where a.publication = 'Mosaic_2014'
+--where a.publication = 'Mosaic_2014'
 ORDER BY time DESC
 
 --select * from dbo.MSdistribution_agents as a

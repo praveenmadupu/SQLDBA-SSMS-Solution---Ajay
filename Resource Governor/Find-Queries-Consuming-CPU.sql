@@ -8,12 +8,20 @@ GO
 CREATE RESOURCE POOL pool_WebSite;
 CREATE RESOURCE POOL pool_Accounting;
 CREATE RESOURCE POOL pool_ReportingUsers;
+CREATE RESOURCE POOL pool_IPFreely;
+CREATE RESOURCE POOL pool_Ajay;
+CREATE RESOURCE POOL pool_SQLServiceAccount;
 GO
 
 CREATE WORKLOAD GROUP wg_WebSite USING [pool_WebSite];
 CREATE WORKLOAD GROUP wg_Accounting USING [pool_Accounting];
 CREATE WORKLOAD GROUP wg_ReportingUsers USING [pool_ReportingUsers];
+CREATE WORKLOAD GROUP wg_IPFreely USING [pool_IPFreely];
+CREATE WORKLOAD GROUP wg_Ajay USING [pool_Ajay];
+CREATE WORKLOAD GROUP wg_SQLServiceAccount USING [pool_SQLServiceAccount];
 GO
+
+select SYSTEM_USER, suser_name()
 
 /* For the purposes of my demo, I'm going to create
 a few SQL logins that I'm going to classify into
@@ -41,19 +49,25 @@ GO
 /* On login, this function will run and put people
 into different groups based on who they are. */
 
-CREATE FUNCTION [dbo].[ResourceGovernorClassifier]() 
+CREATE OR ALTER FUNCTION [dbo].[ResourceGovernorClassifier]() 
 RETURNS sysname 
 WITH SCHEMABINDING
 AS
 BEGIN
 	-- Define the return sysname variable for the function
 	DECLARE @grp_name AS sysname;
+	DECLARE @login AS sysname;
+	SET @login = SUSER_NAME();
 
-	SELECT @grp_name = CASE SUSER_NAME()
-		WHEN 'WebSiteApp' THEN 'wg_WebSite'
-		WHEN 'AccountingApp' THEN 'wg_Accounting'
-		WHEN 'IPFreely' THEN 'wg_ReportingUsers'
-		ELSE 'default' END;
+	SELECT @grp_name = CASE WHEN @login = 'WebSiteApp' THEN 'wg_WebSite'
+							WHEN @login = 'AccountingApp' THEN 'wg_Accounting'
+							WHEN @login LIKE 'Report%' THEN 'wg_ReportingUsers'
+							WHEN @login = 'IPFreely' THEN 'wg_IPFreely'
+							WHEN @login = 'MSI\ajayd' THEN 'wg_Ajay'
+							WHEN @login = 'NT Service\MSSQLSERVER' THEN 'wg_SQLServiceAccount'
+							WHEN @login = 'NT Service\SQLSERVERAGENT' THEN 'wg_SQLServiceAccount'
+							ELSE 'default' 
+						END;
 
 	RETURN @grp_name;
 END
@@ -62,6 +76,7 @@ GO
 /* Tell Resource Governor which function to use: */
 ALTER RESOURCE GOVERNOR 
 WITH ( CLASSIFIER_FUNCTION = dbo.[ResourceGovernorClassifier])
+--WITH ( CLASSIFIER_FUNCTION = dbo.[ResourceGovernorClassifier_Latest])
 GO
 
 /* Make changes effective
@@ -69,6 +84,13 @@ ALTER RESOURCE GOVERNOR RECONFIGURE
 GO
 */
 
+/*
+exec sp_WhoIsActive @get_plans = 1;
+exec sp_BlitzWho @ExpertMode = 1;
 
-SELECT *
-FROM sys.dm_resource_governor_resource_pools;
+select * from sys.dm_resource_governor_resource_pools;
+select * from sys.dm_resource_governor_workload_groups;
+
+-- Releases all unused cache entries from all caches
+DBCC FREESYSTEMCACHE  ('ALL')
+*/
