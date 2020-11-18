@@ -139,6 +139,12 @@
           <AssociatedConnUserName />
           <FullPath>Ola Update Stats Formula.sql</FullPath>
         </FileNode>
+        <FileNode Name="QRY-Last_Updated-Statistics.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QRY-Last_Updated-Statistics.sql</FullPath>
+        </FileNode>
         <FileNode Name="Queries-Used.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>

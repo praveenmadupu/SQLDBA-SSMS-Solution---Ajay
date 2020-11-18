@@ -3,6 +3,7 @@ ssms.exe <scriptfile> -S $serverName -E
 
 -- 2) Add datetime in FileName
 Write-Host "fileName_$(Get-Date -Format ddMMMyyyyTHHmm).sql";
+Write-Host "fileName_$(Get-Date -Format yyyyMMdd_HHmm).sql";
 
 -- 3) Unattended script execution
 	https://dba.stackexchange.com/questions/197360/how-to-execute-sql-server-query-in-ssms-using-powershell
@@ -334,3 +335,12 @@ $BackupSizeBytes = $backup.BackupSize;
                             }
                         }
         $BackupSize | Add-Member -MemberType ScriptMethod -Name tostring -Value $MethodBlock -Force;
+
+
+-- 28) https://stackoverflow.com/questions/49702843/powershell-group-object-psobject-with-multiple-properties
+	-- https://stackoverflow.com/a/49704328/4449743
+$list | Group-Object -Property BakId, Lsn, Name | 
+ Select-Object @{n='BakId'; e={ $_.Values[0] }}, 
+                @{n='Lsn';   e={ $_.Values[1] }},
+                @{n='Name';  e={ $_.Values[2] }},
+                @{n='Files'; e={ $_.Group | Select-Object File, Size }}

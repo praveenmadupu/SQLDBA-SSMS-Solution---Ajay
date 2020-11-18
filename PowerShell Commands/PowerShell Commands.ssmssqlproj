@@ -3,6 +3,18 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
+        <ConnectionNode Name="(local):bulk-access">
+          <Created>2020-11-18T10:51:31.2425505+05:30</Created>
+          <Type>SQL</Type>
+          <Server>(local)</Server>
+          <UserName>bulk-access</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB>Test</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="(local):MSI\ajayd">
           <Created>2019-09-02T11:16:14.9489194+05:30</Created>
           <Type>SQL</Type>
@@ -145,6 +157,12 @@
           <AssociatedConnUserName />
           <FullPath>PowerShell-Efficient-Codes.sql</FullPath>
         </FileNode>
+        <FileNode Name="PS-Clear-OrphanDbFiles.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):False:bulk-access</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName>bulk-access</AssociatedConnUserName>
+          <FullPath>PS-Clear-OrphanDbFiles.sql</FullPath>
+        </FileNode>
         <FileNode Name="QueryResults-2-Excel.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
@@ -156,6 +174,12 @@
           <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>RoboCopy-Mirror-Entire-Drive.sql</FullPath>
+        </FileNode>
+        <FileNode Name="RSJob-with-Progress-Bar.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>RSJob-with-Progress-Bar.sql</FullPath>
         </FileNode>
         <FileNode Name="Save-Credentials.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>

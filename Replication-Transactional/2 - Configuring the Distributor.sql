@@ -1,3 +1,5 @@
+-- :CONNECT <Distributor>
+
 -- Where am I?
 SELECT  @@SERVERNAME;
 GO
@@ -7,7 +9,7 @@ EXEC sp_get_distributor;
 GO
 
 -- Add the distributor
-EXEC sp_adddistributor @distributor = N'MSI',
+EXEC sp_adddistributor @distributor = @@SERVERNAME, -- Name of Distributor Server
     @password = N'Pa$$w0rd'; 
 GO
 
