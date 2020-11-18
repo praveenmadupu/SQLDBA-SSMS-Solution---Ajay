@@ -30,8 +30,8 @@ BEGIN
 
     DECLARE @workload_group sysname
 
-    IF (lower(APP_NAME())  like '%despytest%')
-        SET @workload_group = 'DESPYTEST'
+    IF (lower(APP_NAME())  like '%facebook%')
+        SET @workload_group = 'FACEBOOK'
 
     IF (lower(APP_NAME())  like '%enerhyd%')
         SET @workload_group = 'ENERGY'
@@ -54,9 +54,8 @@ BEGIN
 
     IF (
 	
-			LOWER(ORIGINAL_LOGIN()) IN ('sa','deshaw\sqlexec','win\sqlexec', 'dbmon','sqlmon','nt authority\system','nt authority\network service','ignitep',
-		'deshaw\iscsiadmin') 
-		OR 	LOWER(ORIGINAL_LOGIN()) LIKE N'corp\%[_]sa%' OR LOWER(ORIGINAL_LOGIN()) LIKE 'deshaw\g-sqlrepl1%' 
+			LOWER(ORIGINAL_LOGIN()) IN ('sa','lab\SQLServices','sqlmon','nt authority\system','nt authority\network service') 
+		OR 	LOWER(ORIGINAL_LOGIN()) LIKE N'lab\%[_]sa%' OR LOWER(ORIGINAL_LOGIN()) LIKE 'lab\sqlrepl%' 
 		)
        
 	   SET @workload_group = 'SQLADMIN'
