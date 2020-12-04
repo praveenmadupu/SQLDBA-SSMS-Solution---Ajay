@@ -116,8 +116,8 @@
           <FullPath>Get-CPU.sql</FullPath>
         </FileNode>
         <FileNode Name="Get-EventLog.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Get-EventLog.sql</FullPath>
         </FileNode>
@@ -168,6 +168,12 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>QueryResults-2-Excel.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Retry-Command.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>Retry-Command.sql</FullPath>
         </FileNode>
         <FileNode Name="RoboCopy-Mirror-Entire-Drive.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>

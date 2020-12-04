@@ -344,3 +344,47 @@ $list | Group-Object -Property BakId, Lsn, Name |
                 @{n='Lsn';   e={ $_.Values[1] }},
                 @{n='Name';  e={ $_.Values[2] }},
                 @{n='Files'; e={ $_.Group | Select-Object File, Size }}
+
+
+-- 29) Using the -F format Operator
+https://social.technet.microsoft.com/wiki/contents/articles/7855.powershell-using-the-f-format-operator.aspx
+"$(Get-Date -Format yyyyMMMdd_HHmm) {0,-10} {1}" -f 'INFO:', "Creating Log file '$LogFile'.." | Tee-Object -FilePath $LogFile -Append | Write-Host -ForegroundColor Green
+<#
+$cmd = "-noexit -command `"Get-Content -Path '$LogFile' -Wait`""
+start-process powershell -ArgumentList $cmd
+#>
+
+
+-- 30) Using Robocopy to Copy Entire Directories
+robocopy "I:\Study Materials" "F:\AjayDwivedi-SQL-Server" /z /e /mt 4 /it *.*
+
+-- 31) Import latest module version
+$dbatools_latestversion = ((Get-Module dbatools -ListAvailable | Sort-Object Version -Descending | select -First 1).Version);
+Import-Module dbatools -RequiredVersion $dbatools_latestversion;
+
+-- 32) How to pass a Function to a scriptblock
+	--	https://social.technet.microsoft.com/Forums/ie/en-US/485df2df-1577-4770-9db9-a9c5627dd04a/how-to-pass-a-function-to-a-scriptblock
+$code = @"
+Function Foo
+{
+$(Get-Command Foo | Select -expand Definition)
+}
+"@
+
+$MyScriptblock =
+{
+Param ( $FunctionCode )
+
+. Invoke-Expression $FunctionCode
+#Lots of code and stuff...
+
+#Run the Function Foo:
+Foo
+
+#More code
+}
+
+Invoke-Command -ComputerName vm01 -ScriptBlock $MyScriptblock -ArgumentList $code
+
+
+

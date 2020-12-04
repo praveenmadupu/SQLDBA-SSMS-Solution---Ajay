@@ -3,6 +3,18 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
+        <ConnectionNode Name="(local):bulk-access">
+          <Created>2020-11-19T15:12:47.0767961+05:30</Created>
+          <Type>SQL</Type>
+          <Server>(local)</Server>
+          <UserName>bulk-access</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB>Test</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="(local):MSI\ajayd">
           <Created>2019-08-27T10:15:39.8361802+05:30</Created>
           <Type>SQL</Type>
@@ -62,9 +74,9 @@
           <FullPath>3) Generate - Restore Script - BackupHistory.sql</FullPath>
         </FileNode>
         <FileNode Name="3) Generate - Restore Script - DiskFiles.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):False:bulk-access</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName>bulk-access</AssociatedConnUserName>
           <FullPath>3) Generate - Restore Script - DiskFiles.sql</FullPath>
         </FileNode>
         <FileNode Name="4) Script Out DB_Owner from Source.sql">
