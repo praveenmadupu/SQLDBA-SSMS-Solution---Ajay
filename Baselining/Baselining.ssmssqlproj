@@ -169,6 +169,12 @@
           <AssociatedConnUserName />
           <FullPath>PerfMon-Dbatools-DataCollection.sql</FullPath>
         </FileNode>
+        <FileNode Name="PS-Copy-RG-Classifier-Function.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>PS-Copy-RG-Classifier-Function.sql</FullPath>
+        </FileNode>
         <FileNode Name="QRY-ExtendedEvents-Queries.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
