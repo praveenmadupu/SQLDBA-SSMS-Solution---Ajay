@@ -1,9 +1,10 @@
 [CmdletBinding()]
 Param (
 # Accept Parameters
-[String[]]$SqlInstance = 'MSI',
+[String[]]$SqlInstance = 'DBSEP1234',
 [String]$Database = 'DBA',
-[String]$FunctionName = "fn_classifier"
+[String]$FunctionName = "fn_classifier",
+[String]$InventoryServer = 'dbinventory.contso.com'
 )
 
 # Loop each SqlInstance
@@ -47,6 +48,15 @@ GO
         $line | Out-File -FilePath $FilePath -Force -Append
     }
 
-    # Compile function
+    # Compile function 
     Invoke-DbaQuery -SqlInstance $SqlInstance -Database $Database -File $FilePath
+
+    # Read CREATE FUNCTION code
+    $query = Get-Content -Path $FilePath
+    $query = $query.Replace($FunctionName,"$FunctionName`_$($srv.ToLower())")
+    $query = $query -join '
+'
+    # Compile function on DBMONITOR
+    Invoke-DbaQuery -SqlInstance $InventoryServer -Database $Database -Query $query
+    $query
 }

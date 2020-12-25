@@ -12,7 +12,7 @@ EXEC sp_WhoIsActive @get_outer_command = 1, @get_task_info=2 --,@get_avg_time=1,
 					--,@sort_order = '[reads] desc'
 
 --kill 814 with statusonly
-					
+EXEC sp_WhoIsActive @get_outer_command = 1, @get_task_info=2, @get_locks=1
 					
 /*
 EXEC sp_WhoIsActive @filter_type = 'login' ,@filter = 'CORP\dwivedaj_sa'

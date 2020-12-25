@@ -7,6 +7,8 @@
 SELECT @@SERVERNAME as srvName
 GO
 
+sp_dropdistributiondb 'distribution'
+
 -- Step 01 - Script out Publication from Publication Server
 	--	Replication > Local Publications > [PubDatabase]: PubName > Right Click > Generate Scripts..
 

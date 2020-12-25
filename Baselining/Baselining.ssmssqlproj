@@ -27,6 +27,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="MSI:IPFreely">
+          <Created>2020-12-22T21:53:24.4920344+05:30</Created>
+          <Type>SQL</Type>
+          <Server>MSI</Server>
+          <UserName>IPFreely</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="SQL-A:sa">
           <Created>2020-09-16T00:17:41.6753159+05:30</Created>
           <Type>SQL</Type>
@@ -181,6 +193,12 @@
           <AssociatedConnUserName />
           <FullPath>QRY-ExtendedEvents-Queries.sql</FullPath>
         </FileNode>
+        <FileNode Name="SCH-DataTimeDimension.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-DataTimeDimension.sql</FullPath>
+        </FileNode>
         <FileNode Name="SCH-ExtendedEvents-Queries.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
@@ -204,12 +222,6 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>sp_Blitz Views Extra.sql</FullPath>
-        </FileNode>
-        <FileNode Name="SQLQuery1.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>SQLQuery1.sql</FullPath>
         </FileNode>
         <FileNode Name="StackOverflow-TopQueries.sql">
           <AssociatedConnectionMoniker />
