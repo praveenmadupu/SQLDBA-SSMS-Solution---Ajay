@@ -12,7 +12,9 @@ EXEC sp_WhoIsActive @get_outer_command = 1, @get_task_info=2 --,@get_avg_time=1,
 					--,@sort_order = '[reads] desc'
 
 --kill 814 with statusonly
-EXEC sp_WhoIsActive @get_outer_command = 1, @get_task_info=2, @get_locks=1
+--EXEC sp_WhoIsActive @get_outer_command = 1, @get_task_info=2, @get_locks=1
+
+-- EXEC sp_WhoIsActive  @delta_interval = 5
 					
 /*
 EXEC sp_WhoIsActive @filter_type = 'login' ,@filter = 'CORP\dwivedaj_sa'
@@ -26,3 +28,4 @@ EXEC sp_WhoIsActive @filter_type = 'session' ,@filter = '174'
 */
 
 --	exec sp_WhoIsActive @help = 1
+

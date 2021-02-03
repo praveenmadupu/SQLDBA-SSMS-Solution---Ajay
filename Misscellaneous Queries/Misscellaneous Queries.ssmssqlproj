@@ -181,6 +181,12 @@
           <AssociatedConnUserName />
           <FullPath>PS-Keep-Skype-Alive.sql</FullPath>
         </FileNode>
+        <FileNode Name="QRY-AlwaysOn-Health.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QRY-AlwaysOn-Health.sql</FullPath>
+        </FileNode>
         <FileNode Name="Replace-Words-In-Body-Text-HTML.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />

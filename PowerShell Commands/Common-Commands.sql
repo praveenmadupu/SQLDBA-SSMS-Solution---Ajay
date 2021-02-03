@@ -386,5 +386,18 @@ Foo
 
 Invoke-Command -ComputerName vm01 -ScriptBlock $MyScriptblock -ArgumentList $code
 
+-- 33) Clean up session variables without restarting Powershell Terminal
+Remove-Variable * -ErrorAction SilentlyContinue; Remove-Module *; $Error.Clear()
+
+-- 34) How to return several items from a Powershell function
+https://stackoverflow.com/questions/12620375/how-to-return-several-items-from-a-powershell-function
+> function test () {return @('a','c'),'b'}
+> $a,$b = test
+
+-- 35) Multiple Program Names using Invoke-DbaQuery
+$con = New-DbaConnectionString -SqlInstance msi -ClientName 'Powershell - 1' -Database master
+Invoke-DbaQuery -SqlInstance $con `
+				-Query 'SELECT getutcdate() as time, @@servername as srv_name, SUSER_NAME() as login_name, PROGRAM_NAME() as program_name;' `
+                -As DataTable
 
 

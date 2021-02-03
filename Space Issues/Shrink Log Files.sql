@@ -1,6 +1,7 @@
 exec sp_HealthCheck 1
 exec sp_HealthCheck 5
 --exec sp_HealthCheck 3
+
 select d.name, d.log_reuse_wait_desc from sys.databases as d
 SELECT db_name(database_id) as dbName, ((mf.size * 8.0)/1024)/1024 as size_GB
 FROM sys.master_files mf  where (mf.size * 8)/1024 >= 5000 and type_desc = 'LOG'

@@ -103,17 +103,23 @@
           <AssociatedConnUserName />
           <FullPath>Blocking-Alert-Azure.sql</FullPath>
         </FileNode>
-        <FileNode Name="BlockingTree-Live.sql">
+        <FileNode Name="BT-Capturing-ThresholdBased.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MSI:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>MSI</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>BlockingTree-Live.sql</FullPath>
+          <FullPath>BT-Capturing-ThresholdBased.sql</FullPath>
         </FileNode>
-        <FileNode Name="BlockingTree-Live-WhoIsActive.sql">
+        <FileNode Name="BT-Live.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MSI:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>MSI</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>BlockingTree-Live-WhoIsActive.sql</FullPath>
+          <FullPath>BT-Live.sql</FullPath>
+        </FileNode>
+        <FileNode Name="BT-Live-WhoIsActive.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MSI:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MSI</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>BT-Live-WhoIsActive.sql</FullPath>
         </FileNode>
         <FileNode Name="Find-Blocking-Tree-LockTime.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>

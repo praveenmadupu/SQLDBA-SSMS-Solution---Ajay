@@ -81,12 +81,14 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "TempScripts", "TempScripts\
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "ErrorLogs", "ErrorLogs\ErrorLogs.ssmssqlproj", "{5BC08764-DBEC-4148-AD69-4DF9BE6CAFDC}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Projects-Testing", "Projects-Testing\Projects-Testing.ssmssqlproj", "{ABC58D6E-0694-4E25-8FA6-1F1647C9E7D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{28F29A52-38EA-4A6F-8972-92E181352B36}.Default|Default.ActiveCfg = Default
+		{3B755108-FB9C-45D8-9640-B1E2DA5582FE}.Default|Default.ActiveCfg = Default
 		{34D3C094-4DA1-4402-BCC7-D7D3C964B2AD}.Default|Default.ActiveCfg = Default
 		{15CC463C-A8D2-4F91-BF9C-5D8D86E815E2}.Default|Default.ActiveCfg = Default
 		{97D05A33-770A-4C00-B526-9FA045863965}.Default|Default.ActiveCfg = Default
@@ -126,6 +128,7 @@ Global
 		{9DBE8D07-B02C-4B14-9274-FF2D318432FA}.Default|Default.ActiveCfg = Default
 		{2AA8E206-6A25-4890-8FDA-08B61B56AD00}.Default|Default.ActiveCfg = Default
 		{5BC08764-DBEC-4148-AD69-4DF9BE6CAFDC}.Default|Default.ActiveCfg = Default
+		{ABC58D6E-0694-4E25-8FA6-1F1647C9E7D8}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

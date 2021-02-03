@@ -1,9 +1,84 @@
 --	https://www.sqlskills.com/blogs/jonathan/identifying-external-memory-pressure-with-dm_os_ring_buffers-and-ring_buffer_resource_monitor/
-DECLARE @pool_name sysname --= 'REST';
-DECLARE @top_x_program_rows SMALLINT = 10;
-DECLARE @top_x_query_rows SMALLINT = 25;
+SET NOCOUNT ON; 
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+DECLARE @pool_name sysname = 'MOSS';
 DECLARE @cpu_trend_minutes INT = 30;
+DECLARE @top_x_program_rows SMALLINT = 10;
+DECLARE @top_x_query_rows SMALLINT = 20;
+DECLARE @long_running_query_threshold_minutes INT = 15;
 
+
+DECLARE @current_time_UTC datetime = sysutcdatetime();
+-- Capture running sessions for Blocking
+IF OBJECT_ID('tempdb..#SysProcesses') IS NOT NULL
+	DROP TABLE #SysProcesses;
+select  Concat
+        (
+            RIGHT('00'+CAST(ISNULL((datediff(second,er.start_time,GETDATE()) / 3600 / 24), 0) AS VARCHAR(2)),2)
+            ,' '
+            ,RIGHT('00'+CAST(ISNULL(datediff(second,er.start_time,GETDATE()) / 3600  % 24, 0) AS VARCHAR(2)),2)
+            ,':'
+            ,RIGHT('00'+CAST(ISNULL(datediff(second,er.start_time,GETDATE()) / 60 % 60, 0) AS VARCHAR(2)),2)
+            ,':'
+            ,RIGHT('00'+CAST(ISNULL(datediff(second,er.start_time,GETDATE()) % 3600 % 60, 0) AS VARCHAR(2)),2)
+        ) as [dd hh:mm:ss]
+		,r.spid as session_id
+		,t.text as sql_command
+		,SUBSTRING(t.text, (r.stmt_start/2)+1,   
+        ((CASE r.stmt_end WHEN -1 THEN DATALENGTH(t.text)  
+				ELSE r.stmt_end END - r.stmt_start)/2) + 1) AS sql_text
+		,r.cmd as command
+		,tsk.tasks
+		,r.loginame as login_name
+		,db_name(r.dbid) as database_name
+		,[program_name] = CASE	WHEN	r.program_name like 'SQLAgent - TSQL JobStep %'
+				THEN	(	select	top 1 'SQL Job = '+j.name 
+							from msdb.dbo.sysjobs (nolock) as j
+							inner join msdb.dbo.sysjobsteps (nolock) AS js on j.job_id=js.job_id
+							where right(cast(js.job_id as nvarchar(50)),10) = RIGHT(substring(r.program_name,30,34),10) 
+						) + ' ( '+SUBSTRING(LTRIM(RTRIM(r.program_name)), CHARINDEX(': Step ',LTRIM(RTRIM(r.program_name)))+2,LEN(LTRIM(RTRIM(r.program_name)))-CHARINDEX(': Step ',LTRIM(RTRIM(r.program_name)))-2)+' )'
+				ELSE	REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE (r.program_name, '0', '#'),'1', '#'),'2', '#'),'3', '#'),'4', '#'),'5', '#'),'6', '#'),'7', '#'),'8', '#'),'9', '#')
+				END
+		,(case when r.waittime = 0 then null else r.lastwaittype end) as wait_type
+		,r.waittime as wait_time
+		,(SELECT CASE
+				WHEN pageid = 1 OR pageid % 8088 = 0 THEN 'PFS'
+				WHEN pageid = 2 OR pageid % 511232 = 0 THEN 'GAM'
+				WHEN pageid = 3 OR (pageid - 1) % 511232 = 0 THEN 'SGAM'
+				WHEN pageid IS NULL THEN NULL
+				ELSE 'Not PFS/GAM/SGAM' END
+				FROM (SELECT CASE WHEN er.[wait_type] LIKE 'PAGE%LATCH%' AND er.[wait_resource] LIKE '%:%'
+				THEN CAST(RIGHT(er.[wait_resource], LEN(er.[wait_resource]) - CHARINDEX(':', er.[wait_resource], LEN(er.[wait_resource])-CHARINDEX(':', REVERSE(er.[wait_resource])))) AS INT)
+				ELSE NULL END AS pageid) AS latch_pageid
+		) AS wait_resource_type
+		,null as tempdb_allocations
+		,null as tempdb_current
+		,case when r.blocked = 0 then null else r.blocked end as blocking_session_id
+		,er.logical_reads as reads
+		,er.writes as writes
+		,r.physical_io
+		,r.cpu
+		,r.memusage
+		,r.status
+		,r.open_tran
+		,r.hostname as host_name
+		,er.start_time as start_time
+		,r.login_time as login_time
+		,rp.Pool
+		,GETDATE() as collection_time
+INTO #SysProcesses
+from sys.sysprocesses as r inner join sys.dm_exec_requests as er on er.session_id = r.spid
+LEFT JOIN (	select t.session_id, count(*) AS tasks from sys.dm_os_tasks t group by t.session_id) tsk on r.spid = tsk.session_id
+OUTER APPLY sys.dm_exec_sql_text(r.SQL_HANDLE) as t
+OUTER APPLY
+		(	select rgrp.name as [Pool]
+			from sys.resource_governor_workload_groups rgwg 
+			join sys.resource_governor_resource_pools rgrp ON rgwg.pool_id = rgrp.pool_id
+			where rgwg.group_id = er.group_id
+		) rp;
+
+
+/* Get Metrics related to Memory/Blockings */
 ;with t_PerfMon as
 (
 	--Total amount of RAM consumed by database data (Buffer Pool). This should be the highest usage of Memory on the server.
@@ -17,7 +92,9 @@ DECLARE @cpu_trend_minutes INT = 30;
 		   --How many memory operations are Outstanding (should always be 0, anything above 0 for extended periods of time is a very high sign of memory pressure)
 		   ,[MemoryGrantsOutstanding] = (SELECT cntr_value FROM sys.dm_os_performance_counters WITH (NOLOCK) WHERE [object_name] LIKE N'%Memory Manager%' AND counter_name = N'Memory Grants Outstanding' )
 )
-select  'Memory-Status' as RunningQuery, convert(datetime,sysutcdatetime()) as [Current-Time-UTC], [MemoryGrantsPending] as [**M/r-Grants-Pending**], [PageLifeExpectancy],
+select  'Memory-Status' as RunningQuery, @current_time_UTC as [Current-Time-UTC], [MemoryGrantsPending] as [**M/r-Grants-Pending**], 
+		[**Blocking-Count**] = (select count(*) from #SysProcesses sp where sp.blocking_session_id <> 0 and sp.blocking_session_id <> sp.session_id),
+		[PageLifeExpectancy],
 		cast(sm.total_physical_memory_kb * 1.0 / 1024 / 1024 as numeric(20,0)) as SqlServer_Process_memory_gb, 
 		cast(sm.available_physical_memory_kb * 1.0 / 1024 / 1024 as numeric(20,2)) as available_physical_memory_gb, 
 		cast((sm.total_page_file_kb - sm.available_page_file_kb) * 1.0 / 1024 / 1024 as numeric(20,0)) as used_page_file_gb,
@@ -30,6 +107,7 @@ full outer join sys.dm_os_process_memory as pm on 1 = 1
 full outer join t_PerfMon as pfm on 1 = 1;
 
 
+/* Get CPU Usage Trend at OS & SQL Server Level */
 DECLARE @system_cpu_utilization VARCHAR(2000);
 DECLARE @sql_cpu_utilization VARCHAR(2000);
 ;WITH T_Cpu_Ring_Buffer AS
@@ -78,8 +156,6 @@ select rp.name,rp.pool_id,pa.scheduler_mask
 from sys.dm_resource_governor_resource_pools rp 
 left join sys.resource_governor_resource_pool_affinity pa on rp.pool_id=pa.pool_id
 where rp.pool_id>2;
-
---select * from #temp
 
 if not exists (select * from #temp where scheduler_mask is not null)
 	print 'WARNING: No Scheduler Affinity Defined';
@@ -151,7 +227,7 @@ set @object_name = (case when @@SERVICENAME = 'MSSQLSERVER' then 'SQLServer' els
 			( fr.[object_name] like (@object_name+':Resource Pool Stats%') and fr.counter_name like 'CPU usage %' )
 		)
 )
-SELECT RunningQuery, convert(datetime,sysutcdatetime()) as [Current-Time-UTC], [Pool], 
+SELECT RunningQuery, @current_time_UTC as [Current-Time-UTC], [Pool], 
 		[% CPU @Pool-Level] = CASE WHEN [Assigned Schedulers] IS NULL THEN NULL WHEN [% Schedulers@Total] <> 0 THEN CONVERT(NUMERIC(20,2),([% CPU @Server-Level]*100.0)/[% Schedulers@Total]) ELSE [% CPU @Server-Level] END,
 		[% CPU @Server-Level], [% Schedulers@Total],		
 		[% Schedulers@Sql], [Assigned Schedulers]
@@ -166,7 +242,7 @@ IF (SELECT count(distinct rpoolname) FROM #resource_pool) < 2
 	SET @pool_name = NULL;
 ;WITH T_Requests AS 
 (
-	SELECT [Pool], s.program_name, r.session_id, r.request_id
+	SELECT [Pool], REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE (s.program_name, '0', '#'),'1', '#'),'2', '#'),'3', '#'),'4', '#'),'5', '#'),'6', '#'),'7', '#'),'8', '#'),'9', '#') as program_name, r.session_id, r.request_id
 	FROM  sys.dm_exec_requests r
 	JOIN	sys.dm_exec_sessions s ON s.session_id = r.session_id
 	OUTER APPLY
@@ -186,7 +262,7 @@ IF (SELECT count(distinct rpoolname) FROM #resource_pool) < 2
 			[num_tasks] = SUM(t.tasks)
 	FROM  T_Requests as r
 	OUTER APPLY (	select count(*) AS tasks, count(distinct t.scheduler_id) as schedulers 
-								from sys.dm_os_tasks t where r.session_id = t.session_id and r.request_id = t.request_id
+								from sys.dm_os_tasks t where r.session_id = t.session_id --and r.request_id = t.request_id
 							) t
 	GROUP  BY [Pool], r.program_name
 )
@@ -198,7 +274,8 @@ IF (SELECT count(distinct rpoolname) FROM #resource_pool) < 2
 		ON t.session_id = r.session_id AND t.request_id = r.request_id
 	GROUP BY [Pool], program_name
 )
-SELECT RunningQuery = (COALESCE(@pool_name,'ALL')+'-POOL/')+'Active Requests/program',
+SELECT RunningQuery = (COALESCE(@pool_name,'ALL')+'-POOL/')+'Requests',
+		@current_time_UTC as [Current-Time-UTC],
 		ptt.[Pool],
 		ptt.program_name, ptt.active_request_counts, ptt.num_tasks, ps.num_schedulers, 
 		[scheduler_percent] = case when @pool_name is not null then Floor(ps.num_schedulers * 100.0 / rp.Scheduler_Count)
@@ -212,10 +289,10 @@ ORDER  BY [Pool], [scheduler_percent] desc, active_request_counts desc, [num_tas
 OFFSET 0 ROWS FETCH NEXT @top_x_program_rows ROWS ONLY; 
 
 
---	Query to find what's is running on server
+--	Query to find what's running on server (Similar to sp_WhoIsActive)
 ;WITH T_Active_Requests AS
 (
-SELECT	[Pool] = case when @pool_name is null then rgrp.name else @pool_name end,
+SELECT	[Pool] = rgrp.name,
 				Concat
         (
             RIGHT('00'+CAST(ISNULL((datediff(second,r.start_time,GETDATE()) / 3600 / 24), 0) AS VARCHAR(2)),2)
@@ -232,14 +309,15 @@ SELECT	[Pool] = case when @pool_name is null then rgrp.name else @pool_name end,
 							inner join msdb.dbo.sysjobsteps (nolock) AS js on j.job_id=js.job_id
 							where right(cast(js.job_id as nvarchar(50)),10) = RIGHT(substring(s.program_name,30,34),10) 
 						)
-				ELSE	s.program_name
+				ELSE	REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE (s.program_name, '0', '#'),'1', '#'),'2', '#'),'3', '#'),'4', '#'),'5', '#'),'6', '#'),'7', '#'),'8', '#'),'9', '#')
 				END,
 				s.login_name,
 				DB_NAME(r.database_id) as DBName,
 				[running_command] = r.command,
 				s.host_name,
-				COUNT(*) OVER(PARTITION BY program_name, LEFT(st.text,500)) as query_count,
+				--COUNT(*) OVER(PARTITION BY (case when @pool_name is null then rgrp.name else @pool_name end), LEFT(program_name,15), r.database_id, LEFT(st.text,100)) as query_count,
 				s.session_id,
+				t.tasks,
 				[request_status] = r.status,
 				--[request_status] = r.status,
 				[request_wait_type] = r.wait_type+case when wait_resource is not null then '('+wait_resource+')' else '' end,
@@ -279,9 +357,9 @@ SELECT	[Pool] = case when @pool_name is null then rgrp.name else @pool_name end,
 				r.query_hash, 
 				r.query_plan_hash,
 				[BatchQueryPlan] = bqp.query_plan,
-				[SqlQueryPlan] = CAST(sqp.query_plan AS xml),		
-				[IsSqlJob] = CASE WHEN s.program_name like 'SQLAgent - TSQL JobStep %'THEN 1 ELSE 2	END
-				,open_resultset_count
+				[SqlQueryPlan] = sqp.query_plan
+				--[IsSqlJob] = CASE WHEN s.program_name like 'SQLAgent - TSQL JobStep %'THEN 1 ELSE 2	END
+				--,open_resultset_count
 FROM	sys.dm_exec_sessions AS s
 LEFT JOIN sys.dm_exec_requests AS r ON r.session_id = s.session_id
 OUTER APPLY sys.dm_exec_sql_text(r.sql_handle) AS st
@@ -289,6 +367,7 @@ OUTER APPLY sys.dm_exec_query_plan(r.plan_handle) AS bqp
 OUTER APPLY sys.dm_exec_text_query_plan(r.plan_handle,r.statement_start_offset, r.statement_end_offset) as sqp
 LEFT JOIN sys.resource_governor_workload_groups rgwg ON s.group_id = rgwg.group_id
 LEFT JOIN sys.resource_governor_resource_pools rgrp ON rgwg.pool_id = rgrp.pool_id
+LEFT JOIN (	select t.session_id, count(*) AS tasks from sys.dm_os_tasks t group by t.session_id) t on s.session_id = t.session_id
 WHERE	s.session_id != @@SPID
 	AND (	(CASE	WHEN	s.session_id IN (select ri.blocking_session_id from sys.dm_exec_requests as ri )
 					--	Get sessions involved in blocking (including system sessions)
@@ -312,9 +391,96 @@ WHERE	s.session_id != @@SPID
 					ELSE	0
 			END) = 1
 		)		
-AND (@pool_name is null or s.group_id is null or rgrp.name = @pool_name )
+--AND (@pool_name is null or s.group_id is null or rgrp.name = @pool_name )
 )
-SELECT *
-FROM T_Active_Requests
-ORDER BY query_count desc, [request_start_time]
+SELECT RunningQuery = 'Concurrent-Session-Queries',
+			[Pool], [dd hh:mm:ss], [program_name], [login_name], [DBName], [running_command], [host_name], 
+			[query_count] = COUNT(*) OVER(PARTITION BY LEFT(statement_text,100)), 
+			[tasks_count] = SUM(tasks) OVER(PARTITION BY LEFT(statement_text,100)), 
+			--[tasks_count] = SUM(tasks) OVER(PARTITION BY Pool, LEFT(program_name,15), [DBName], LEFT(statement_text,100)), 
+			[session_id], [tasks], [request_status], [request_wait_type], [blocked by], [open_transaction_count], [granted_query_memory], [statement_text], [Batch_Text], [WaitTime(S)], [total_elapsed_time(S)], [login_time], [client_interface_name], [memory_usage], [session_writes], [request_writes], [session_logical_reads], [request_logical_reads], [is_user_process], [session_row_count], [request_row_count], [sql_handle], [plan_handle], [request_cpu_time], [request_start_time], [query_hash], [query_plan_hash], [BatchQueryPlan], [SqlQueryPlan],
+			collection_time_utc = @current_time_UTC
+FROM T_Active_Requests ar
+WHERE @pool_name IS NULL -- No pool filter applied
+	-- All sessions of Pool, or blockers of Pool session
+	OR (ar.Pool = @pool_name OR ar.session_id IN (SELECT bl.[blocked by] FROM T_Active_Requests bl WHERE bl.Pool = @pool_name and ISNULL(bl.[blocked by],0) <> 0)
+			)
+ORDER BY [tasks_count] desc, query_count desc, LEFT(statement_text,100), [request_start_time]
 OFFSET 0 ROWS FETCH NEXT @top_x_query_rows ROWS ONLY; 
+
+
+
+-- Get Blocking Tree
+if exists (select * from #SysProcesses where blocking_session_id <> 0 and session_id <> blocking_session_id)
+begin
+	;WITH T_BLOCKERS AS
+	(
+		-- Find block Leaders
+		SELECT	[dd hh:mm:ss], [collection_time], [session_id], 
+				[sql_text] = REPLACE(REPLACE(REPLACE(REPLACE(CAST(COALESCE([sql_command],[sql_text]) AS VARCHAR(MAX)),char(13),''),CHAR(10),''),'<?query --',''),'--?>',''), 
+				command, [login_name], wait_type, r.wait_time, r.wait_resource_type, [blocking_session_id], null as [blocked_session_count],
+				[status], open_tran, [host_name], [database_name], [program_name], Pool, tasks,
+				r.cpu, r.[tempdb_allocations], r.[tempdb_current], r.[reads], r.[writes], r.[physical_io],
+				[LEVEL] = CAST (REPLICATE ('0', 4-LEN (CAST (r.session_id AS VARCHAR))) + CAST (r.session_id AS VARCHAR) AS VARCHAR (1000))
+				,[head_blocker] = session_id
+		FROM	#SysProcesses AS r
+		WHERE	(ISNULL(r.blocking_session_id,0) = 0 OR ISNULL(r.blocking_session_id,0) = r.session_id)
+			AND EXISTS (SELECT * FROM #SysProcesses AS R2 WHERE R2.collection_time = r.collection_time AND ISNULL(R2.blocking_session_id,0) = r.session_id AND ISNULL(R2.blocking_session_id,0) <> R2.session_id)
+		--	
+		UNION ALL
+		--
+		SELECT	r.[dd hh:mm:ss], r.[collection_time], r.[session_id], 
+				[sql_text] = REPLACE(REPLACE(REPLACE(REPLACE(CAST(COALESCE(r.[sql_command],r.[sql_text]) AS VARCHAR(MAX)),char(13),''),CHAR(10),''),'<?query --',''),'--?>',''), 
+				r.command, r.[login_name], r.wait_type, r.wait_time, r.wait_resource_type, r.[blocking_session_id], null as [blocked_session_count],
+				r.[status], r.open_tran, r.[host_name], r.[database_name], r.[program_name], r.Pool, r.tasks,
+				r.cpu, r.[tempdb_allocations], r.[tempdb_current], r.[reads], r.[writes], r.[physical_io],
+				CAST (B.LEVEL + RIGHT (CAST ((1000 + r.session_id) AS VARCHAR (100)), 4) AS VARCHAR (1000)) AS LEVEL
+				,[head_blocker] = case when B.[head_blocker] is null then B.session_id else B.[head_blocker] end
+		FROM	#SysProcesses AS r
+		INNER JOIN 
+				T_BLOCKERS AS B
+			ON	r.collection_time = B.collection_time
+			AND	r.blocking_session_id = B.session_id
+		WHERE	r.blocking_session_id <> r.session_id
+	)
+	,T_BlockingTree AS
+	(
+		SELECT	[dd hh:mm:ss], 
+				[BLOCKING_TREE] = N'    ' + REPLICATE (N'|         ', LEN (LEVEL)/4 - 1) 
+								+	CASE	WHEN (LEN(LEVEL)/4 - 1) = 0
+											THEN 'HEAD -  '
+											ELSE '|------  ' 
+									END
+								+	CAST (r.session_id AS NVARCHAR (10)) + N' ' + (CASE WHEN LEFT(ISNULL(r.[sql_text],''),1) = '(' THEN SUBSTRING(ISNULL(r.[sql_text],''),CHARINDEX('exec',ISNULL(r.[sql_text],'')),LEN(ISNULL(r.[sql_text],'')))  ELSE ISNULL(r.[sql_text],'') END),
+				[session_id], [blocking_session_id], 
+				--w.lock_text,
+				[head_blocker],		
+				[blocked_session_count] = COUNT(*) OVER (PARTITION BY [head_blocker]),
+				tasks,
+				[sql_commad] = CONVERT(XML, '<?query -- '+char(13)
+								+ (CASE WHEN LEFT([sql_text],1) = '(' THEN SUBSTRING([sql_text],CHARINDEX('exec',[sql_text]),LEN([sql_text]))  ELSE [sql_text] END)
+								+ char(13)+'--?>')
+				,command, [login_name], [program_name], [database_name], wait_type, wait_time, wait_resource_type, status, 
+				r.open_tran, r.cpu, r.[reads], r.[writes], r.[physical_io]
+				,[host_name] ,Pool
+				,LEVEL
+		FROM	T_BLOCKERS AS r
+	)
+	SELECT Pool, [dd hh:mm:ss], [BLOCKING_TREE], [blocked_count] = case when session_id = [head_blocker] then [blocked_session_count] else null end, [sql_commad], [command], [login_name], [program_name], [database_name], [wait_type], [wait_time], [wait_resource_type], [status], [open_tran], [cpu], [reads], [writes], [physical_io], [host_name]
+	FROM T_BlockingTree
+	ORDER BY [blocked_session_count] DESC, LEVEL ASC;
+end
+
+-- Display Log Running Queries
+if exists (select * from #SysProcesses s where s.start_time <= dateadd(minute,-@long_running_query_threshold_minutes,getdate()) and (@pool_name is null or s.Pool = @pool_name) )
+begin
+	select RunningQuery = ISNULL(@pool_name+'-','')+'Running over '+cast(@long_running_query_threshold_minutes as varchar)+' minutes',
+			@current_time_UTC as [Current-Time-UTC],
+			Pool,
+			*
+	from #SysProcesses s
+	where s.start_time <= dateadd(minute,-@long_running_query_threshold_minutes,getdate())
+	and (@pool_name is null or s.Pool = @pool_name)
+	order by start_time asc
+	OFFSET 0 ROWS FETCH NEXT @top_x_query_rows ROWS ONLY; 
+end
