@@ -50,8 +50,8 @@
           <FullPath>Aadhar Loan Calculator.sql</FullPath>
         </FileNode>
         <FileNode Name="AO_RoleSwitch_History.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>AO_RoleSwitch_History.sql</FullPath>
         </FileNode>

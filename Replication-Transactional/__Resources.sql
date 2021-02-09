@@ -21,6 +21,9 @@ http://maginaumova.com/the-replication-agent-has-not-logged-a-progress-message-i
 https://dba.stackexchange.com/questions/86794/how-to-restart-the-distributor-agent-of-transactional-replication
 https://dba.stackexchange.com/questions/88923/replication-monitor-information-using-t-sql
 
+10) Script out Replication
+https://www.sqlservercentral.com/articles/script-sql-server-replication-with-powershell
+
 Rules:-
 -----
 1) Log Reader agent always resides at Distributor
