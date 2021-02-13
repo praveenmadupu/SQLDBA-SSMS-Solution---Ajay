@@ -13,7 +13,7 @@ outer apply (SELECT SUM(ps.row_count) AS rows_total
 						GROUP BY ps.object_id
 ) as ps
 where o.is_ms_shipped = 0
-and (schema_name(o.schema_id)+'.'+o.name) IN ('dbo.trade_current','dbo.trade_archive','dbo.special_trade')
+and (schema_name(o.schema_id)+'.'+o.name) IN ('dbo.table1','dbo.table2')
 and (case when sp.modification_counter >= convert(numeric(20,0),SQRT(ps.rows_total * 1000)) then 1 else 0 end) = 1
 order by  sp.last_updated asc
 go
