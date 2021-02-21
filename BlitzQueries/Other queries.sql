@@ -206,7 +206,7 @@ ORDER BY qs.total_logical_reads DESC -- logical reads
 -- ORDER BY qs.total_logical_writes DESC -- logical writes
 -- ORDER BY qs.total_worker_time DESC -- CPU time
 
---	Performance – Top Queries by Average IO
+--	Performance ï¿½ Top Queries by Average IO
 SELECT TOP 100
 		DB_NAME(st.dbid) AS database_name
 		,creation_time
@@ -321,15 +321,15 @@ ORDER BY usecounts desc
 ;with cte_MultiPlanQueries AS
 (	select *, ROW_NUMBER()OVER(PARTITION BY qs.query_plan_hash ORDER BY qs.creation_time) as RowID
 			,COUNT(qs.sql_handle) OVER(PARTITION BY qs.query_plan_hash) as occurrences
-	from sys.dm_exec_query_stats as qs			
+	from sys.dm_exec_query_stats as qs
 	where qs.query_plan_hash in (select qsi.query_plan_hash from sys.dm_exec_query_stats as qsi
 								group by qsi.query_plan_hash
 								having COUNT(*) > 1
 								)
 )
-select	qs.query_hash, qs.query_plan_hash, occurrences as PlanCounts, 
-		qs.sql_handle, qs.statement_start_offset, qs.statement_end_offset, qs.plan_handle, 
-		qs.execution_count 
+select	qs.query_hash, qs.query_plan_hash, occurrences as PlanCounts,
+		qs.sql_handle, qs.statement_start_offset, qs.statement_end_offset, qs.plan_handle,
+		qs.execution_count
 		,st.text as BatchText
 		,[statement_text] = Substring(st.TEXT, (qs.statement_start_offset / 2) + 1, (
 				(
@@ -418,11 +418,11 @@ ORDER BY r.io_pending , r.io_pending_ms_ticks DESC ;
 
 /*	active tables without clustered index	 */
 SET NOCOUNT ON;
-DECLARE @MinTableRowsThreshold [int]; 
-SET @MinTableRowsThreshold = 5000; 
+DECLARE @MinTableRowsThreshold [int];
+SET @MinTableRowsThreshold = 5000;
 ;WITH [TablesWithoutClusteredIndexes] --( [db_name], [table_name], [table_schema], [row_count] )
-AS 
-( 
+AS
+(
 	SELECT   DB_NAME() AS [db_name],
             t.[name] AS [table_name],
             SCHEMA_NAME(t.[schema_id]) AS [table_schema],
@@ -442,7 +442,7 @@ AND COALESCE(us.[user_seeks] ,
                 us.[user_scans] ,
                 us.[user_lookups] ,
                 us.[user_updates]) IS NOT NULL
-    GROUP BY t.[name] , t.[schema_id] 
+    GROUP BY t.[name] , t.[schema_id]
 )
     SELECT  *
     FROM    [TablesWithoutClusteredIndexes]
@@ -871,7 +871,7 @@ WHERE TableName is not null
 select * from #foreign_keys
 
 --	Disk Latency Logs
-$serverName = 'dbsep0456';
+$serverName = 'dbsql0456';
 $rs = Get-ChildItem "\\$serverName\e$\MSSQL\MSSQL11.MSSQLSERVER\MSSQL\Log\ERRORLOG*" | Select-String -Pattern "I/O requests taking longer than" | fl Filename, Line | Out-File "C:\temp\$serverName-DiskLatencyLogs.txt"
 
 --	Find Usage Stats for Table and Indexes

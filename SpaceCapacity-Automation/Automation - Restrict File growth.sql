@@ -14,7 +14,7 @@ BEGIN
 		Updated on:		22-Mar-2018
 		Current Ver:	3.6 - Fixed Below Issues
 						Issue# 07) https://github.com/imajaydwivedi/Space-Capacity-Automation/issues/7
-		Purpose:		This procedure can be used to generate automatic TSQL code for working with ESCs like 'DBSEP1234 - Data- Create and Restrict Database File Names' type.
+		Purpose:		This procedure can be used to generate automatic TSQL code for working with ESCs like 'dbsql1234 - Data- Create and Restrict Database File Names' type.
 	*/
 
 	SET NOCOUNT ON;

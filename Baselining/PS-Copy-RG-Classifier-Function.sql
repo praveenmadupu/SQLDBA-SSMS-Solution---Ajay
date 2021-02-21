@@ -1,7 +1,7 @@
 [CmdletBinding()]
 Param (
 # Accept Parameters
-[String[]]$SqlInstance = 'DBSEP1234',
+[String[]]$SqlInstance = 'dbsql1234',
 [String]$Database = 'DBA',
 [String]$FunctionName = "fn_classifier",
 [String]$InventoryServer = 'dbinventory.contso.com'

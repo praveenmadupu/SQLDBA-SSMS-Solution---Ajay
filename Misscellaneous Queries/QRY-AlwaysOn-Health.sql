@@ -43,12 +43,12 @@ select * from sys.dm_hadr_auto_page_repair
 SELECT ag.name AS 'AG Name'
 	,ar.replica_server_name AS 'Replica Instance'
 	,d.name as 'Database Name'
-	,Location = CASE 
+	,Location = CASE
 		WHEN ar_state.is_local = 1
 			THEN N'LOCAL'
 		ELSE 'REMOTE'
 		END
-	,ROLE = CASE 
+	,ROLE = CASE
 		WHEN ar_state.role_desc IS NULL
 			THEN N'DISCONNECTED'
 		ELSE ar_state.role_desc
@@ -69,12 +69,12 @@ JOIN sys.databases d ON d.database_id = dr_state.database_id
 SELECT ag.name AS 'AG Name'
 	,ar.replica_server_name AS 'Replica Instance'
 	,dr_state.database_id AS 'Database ID'
-	,Location = CASE 
+	,Location = CASE
 		WHEN ar_state.is_local = 1
 			THEN N'LOCAL'
 		ELSE 'REMOTE'
 		END
-	,ROLE = CASE 
+	,ROLE = CASE
 		WHEN ar_state.role_desc IS NULL
 			THEN N'DISCONNECTED'
 		ELSE ar_state.role_desc
@@ -95,3 +95,4 @@ JOIN sys.dm_hadr_database_replica_states dr_state ON ag.group_id = dr_state.grou
 SELECT * FROM sys.dm_os_wait_stats
 WHERE wait_type LIKE '%HADR%'
 ORDER BY wait_time_ms DESC;
+
