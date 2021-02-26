@@ -1,0 +1,14 @@
+{
+    "powershell.codeFormatting.addWhitespaceAroundPipe": true,
+    "editor.fontLigatures": true,
+    "editor.fontFamily": "'cascadia code','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.wordWrap": "on",
+    "editor.cursorBlinking": "expand",
+    "[git-commit]": {
+    
+        "editor.rulers": [
+            72
+        ],
+        "workbench.editor.restoreViewState": false
+    }
+}
