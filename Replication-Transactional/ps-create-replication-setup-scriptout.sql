@@ -1,3 +1,4 @@
+# Remove local shell variables, modules and clear error pipleline
 Remove-Variable * -ErrorAction SilentlyContinue; $Error.Clear()
 #Remove-Module *; 
 #$dbatools_latestversion = ((Get-Module dbatools -ListAvailable | Sort-Object Version -Descending | select -First 1).Version);
