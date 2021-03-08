@@ -1,7 +1,7 @@
 {
     "powershell.codeFormatting.addWhitespaceAroundPipe": true,
     "editor.fontLigatures": true,
-    "editor.fontFamily": "'cascadia code','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.fontFamily": "'cascadia code','Fira Code','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "editor.wordWrap": "on",
     "editor.cursorBlinking": "expand",
     "[git-commit]": {
@@ -10,5 +10,6 @@
             72
         ],
         "workbench.editor.restoreViewState": false
-    }
+    },
+    "files.autoSave": "afterDelay"
 }
