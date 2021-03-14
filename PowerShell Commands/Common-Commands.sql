@@ -1,3 +1,5 @@
+https://adamtheautomator.com/powershell-modules/
+
 -- 1) Open SQL Server Management Studio and Connect to Server from PowerShell
 ssms.exe <scriptfile> -S $serverName -E
 
@@ -35,6 +37,10 @@ Get-ChildItem -Path 'F:\' -Recurse -Force -ErrorAction SilentlyContinue |
 $Verbose = $false;
 if($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -or [String]::IsNullOrEmpty($MyInvocation.PSScriptRoot)) {
     $Verbose = $true;
+}
+$verbose = $false;
+if ($PSBoundParameters.ContainsKey('Verbose')) { # Command line specifies -Verbose[:$false]
+    $verbose = $PSBoundParameters.Get_Item('Verbose')
 }
 
 if($Verbose) {
