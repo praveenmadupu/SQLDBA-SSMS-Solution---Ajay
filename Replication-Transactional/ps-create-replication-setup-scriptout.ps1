@@ -1,6 +1,6 @@
 # Remove local shell variables, modules and clear error pipleline
 Remove-Variable * -ErrorAction SilentlyContinue; $Error.Clear()
-#Remove-Module *; 
+#Remove-Module *;
 #$dbatools_latestversion = ((Get-Module dbatools -ListAvailable | Sort-Object Version -Descending | select -First 1).Version);
 #Import-Module dbatools -RequiredVersion $dbatools_latestversion;
 
@@ -30,7 +30,7 @@ if($CreatePubDb -eq $false) {
     $resultPubDbExist = Invoke-Sqlcmd -ServerInstance $Publisher -Query "select name from sys.databases where name = '$PublisherDb'"
     if([String]::IsNullOrEmpty($resultPubDbExist))
     {
-        Write-Host "[$PublisherDb] does not exist.`nKindly use below tsql to create sample Publisher database-`n`n" -ForegroundColor Yellow
+        Write-Host "[$PublisherDb] does not exist on [$Publisher].`nKindly use below tsql to create sample Publisher database-`n`n" -ForegroundColor Yellow
         @"
 use master
 go
@@ -44,7 +44,7 @@ go
 create table dbo.repl_table_01
 (	id bigint identity(1,1) not null,
 	remarks char(200) null,
-	created_date datetime2 default sysdatetime()
+	created_date_publisher datetime2 default sysdatetime()
 )
 go
 
@@ -59,7 +59,7 @@ select @@servername, * from dbo.repl_table_01 order by id asc
 go
 
 "@ | Write-Host -ForegroundColor Magenta
-    
+
         "***************** Please create publisher database first ************" | Write-Error -ErrorAction Stop;
     }
 }
@@ -72,7 +72,7 @@ if($true)
     }
     if($isSubDbExisting -eq $false -and $CreateSubDb -eq $false)
     {
-        Write-Host "[$SubscriberDb] does not exist.`nKindly use below tsql to create sample subscriber database (or restore it from previous backup copy):-`n`n" -ForegroundColor Yellow
+        Write-Host "[$SubscriberDb] does not exist on [$Subscriber].`nKindly use below tsql to create sample subscriber database (or restore it from previous backup copy):-`n`n" -ForegroundColor Yellow
         @"
 use master
 go
@@ -86,7 +86,8 @@ go
 create table dbo.repl_table_01
 (	id bigint not null,
 	remarks char(200) null,
-	created_date datetime2 default sysdatetime()
+	created_date_publisher datetime2 default sysdatetime(),
+    created_date_subscriber datetime2 default sysdatetime()
 )
 go
 
@@ -97,7 +98,7 @@ select @@servername, * from dbo.repl_table_01 order by id asc
 go
 
 "@ | Write-Host -ForegroundColor Magenta
-    
+
         "***************** Please create publisher database first ************" | Write-Error -ErrorAction Stop;
     }
 }
@@ -145,12 +146,12 @@ SELECT agl.dns_name as ag_listener
 	,ag.name AS 'AG Name'
 	,ar.replica_server_name AS 'Replica Instance'
 	,d.name AS 'Database Name'
-	,Location = CASE 
+	,Location = CASE
 		WHEN ar_state.is_local = 1
 			THEN N'LOCAL'
 		ELSE 'REMOTE'
 		END
-	,ROLE = CASE 
+	,ROLE = CASE
 		WHEN ar_state.role_desc IS NULL
 			THEN N'DISCONNECTED'
 		ELSE ar_state.role_desc
@@ -207,12 +208,12 @@ if OBJECT_ID('tempdb..#availability_database_config') is not null
 SELECT agl.dns_name as ag_listener
 	,ag.name AS 'AG Name'
 	,ar.replica_server_name AS 'Replica Instance'
-	,Location = CASE 
+	,Location = CASE
 		WHEN ar_state.is_local = 1
 			THEN N'LOCAL'
 		ELSE 'REMOTE'
 		END
-	,ROLE = CASE 
+	,ROLE = CASE
 		WHEN ar_state.role_desc IS NULL
 			THEN N'DISCONNECTED'
 		ELSE ar_state.role_desc
@@ -380,7 +381,7 @@ go
 create table dbo.repl_table_01
 (	id bigint identity(1,1) not null,
 	remarks char(200) null,
-	created_date datetime2 default sysdatetime()
+	created_date_publisher datetime2 default sysdatetime()
 )
 go
 
@@ -416,7 +417,7 @@ go
 create table dbo.repl_table_01
 (	id bigint not null,
 	remarks char(200) null,
-	created_date datetime2 default sysdatetime()
+	created_date_publisher datetime2 default sysdatetime()
 )
 go
 
@@ -592,8 +593,8 @@ if($CreatePubDb -eq $false)
 select [tsql] = 'EXEC sp_addarticle @publication = '''+@Publication+''', @article = '''+t.name+''', @source_object = '''+t.name+''', @source_owner = '''+SCHEMA_NAME(t.schema_id)+''';'
 from sys.tables t
 where t.is_ms_shipped = 0
-	and exists(select 1 from sys.indexes i 
-				where i.object_id = t.object_id 
+	and exists(select 1 from sys.indexes i
+				where i.object_id = t.object_id
 					and i.is_primary_key = 1
 			);
 "@
@@ -699,7 +700,7 @@ Go
 :CONNECT $( if($isPublisherAg){$publisherPrimary}else{$publisherSqlInstance} )
 USE [$PublisherDb];
 go
-exec sp_addsubscriber @subscriber = '$Subscriber' 
+exec sp_addsubscriber @subscriber = '$Subscriber'
 go
 
 "@ | Out-File -FilePath $filePath -Append -Encoding ascii
@@ -773,12 +774,12 @@ if($isPublisherAg)
 use [$DistributionDb]
 go
 exec sp_redirect_publisher @original_publisher = '$publisherPrimary',
-                           @publisher_db = '$PublisherDb',  
+                           @publisher_db = '$PublisherDb',
                            @redirected_publisher = '$publisherListener'
 GO
 
 "@ | Out-File -FilePath $filePath -Append -Encoding ascii
-    
+
     <#
     if($isDistributorAg)
     {
@@ -787,7 +788,7 @@ GO
 use [$DistributionDb]
 go
 exec sp_redirect_publisher @original_publisher = '$publisherPrimary',
-                           @publisher_db = '$PublisherDb'  , 
+                           @publisher_db = '$PublisherDb'  ,
                            @redirected_publisher = '$publisherListener'
 GO
 
@@ -809,13 +810,13 @@ go
 Declare @snapshot_agent_job_name nvarchar(256);
 
 SELECT @snapshot_agent_job_name = sa.name
-FROM MSpublications p 
+FROM MSpublications p
 OUTER APPLY (	select distinct s.publication_id, s.subscriber_id, s.subscriber_db, s.subscription_type
-				from MSsubscriptions s 
+				from MSsubscriptions s
 				where s.publication_id = p.publication_id
 			) AS s
-JOIN MSreplservers ss ON s.subscriber_id = ss.srvid 
-JOIN MSreplservers srv ON srv.srvid = p.publisher_id 
+JOIN MSreplservers ss ON s.subscriber_id = ss.srvid
+JOIN MSreplservers srv ON srv.srvid = p.publisher_id
 JOIN MSdistribution_agents da ON da.publisher_id = p.publisher_id AND da.subscriber_id = s.subscriber_id and da.publication = p.publication and da.subscriber_db = s.subscriber_db
 JOIN MSlogreader_agents la ON la.publisher_id = p.publisher_id and la.publisher_db = p.publisher_db --and la.publication = p.publication
 LEFT JOIN MSsnapshot_agents sa ON sa.publisher_id = p.publisher_id and sa.publisher_db = p.publisher_db and sa.publication = p.publication
@@ -1073,3 +1074,11 @@ go
 Write-Host "Opening generated file '$filePath' in Notepad" -ForegroundColor Yellow
 notepad $filePath
 
+<#
+$primaryReplica = 'dist_primary'
+$drReplica = 'dist_secondary'
+
+Copy-DbaLinkedServer -Source $primaryReplica -Destination $drReplica
+Copy-DbaLinkedServer -Source $drReplica -Destination $primaryReplica
+
+#>
