@@ -34,6 +34,19 @@ select pl.publisher, pl.publisher_db, pl.publication, pl.publication_type_desc, 
 from #publications pl join #subscriptions sb on sb.publication_id = pl.publication_id and sb.publisher_db = pl.publisher_db
 order by pl.publisher, pl.publisher_db, sb.subscriber, sb.subscriber_db, pl.publication;
 
+/*
+if object_id('tempdb..#MSarticles') is not null
+	drop table #MSarticles;
+select pl.publisher, pl.publisher_db, pl.publication, pl.publication_type_desc, sb.subscriber, sb.subscriber_db, sb.subscription_type_desc, sb.sync_type_desc, sb.status_desc, a.article, a.article_id, a.destination_object, a.source_owner, a.source_object, a.description, a.destination_owner
+into #MSarticles
+from #publications pl join #subscriptions sb on sb.publication_id = pl.publication_id and sb.publisher_db = pl.publisher_db
+join dbo.MSarticles a with (nolock) on a.publication_id = pl.publication_id and a.publisher_db = pl.publisher_db;
+
+select *
+from #MSarticles a
+order by a.publisher, a.publisher_db, a.publication, a.article
+*/
+
 declare @tsql_add_subscription nvarchar(4000);
 declare @publisher sysname, @publisher_db sysname, @publication sysname, @subscriber sysname, @subscriber_db sysname, @subscription_type_desc varchar(20);
 declare cur_publications cursor local forward_only for
@@ -67,12 +80,4 @@ deallocate cur_publications
 
 SELECT '*** Check Messages Tab for ScriptOut ***' as [-- Add Subscription --]
 
-/*
-if object_id('tempdb..#MSarticles') is not null
-	drop table #MSarticles;
-select pl.*, a.article, a.article_id, a.destination_object, a.source_owner, a.source_object, a.description, a.destination_owner
-into #MSarticles
-from dbo.MSarticles a with (nolock)
-join #publications pl on a.publication_id = pl.publication_id and a.publisher_db = pl.publisher_db;
-*/
 

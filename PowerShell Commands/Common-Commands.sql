@@ -6,6 +6,7 @@ ssms.exe <scriptfile> -S $serverName -E
 -- 2) Add datetime in FileName
 Write-Host "fileName_$(Get-Date -Format ddMMMyyyyTHHmm).sql";
 Write-Host "fileName_$(Get-Date -Format yyyyMMdd_HHmm).sql";
+Write-Host "fileName_$(Get-Date -Format 'yyyy-MM-dd HH.mm.ss').sql";
 
 -- 3) Unattended script execution
 	https://dba.stackexchange.com/questions/197360/how-to-execute-sql-server-query-in-ssms-using-powershell
@@ -126,6 +127,7 @@ $srv.JobServer.Alter();
 
 --	16) CollectionTime
 @{l='CollectionTime';e={(Get-Date).ToString("yyyy-MM-dd HH:mm:ss")}}
+@{l='CollectionTime';e={(Get-Date).ToString("yyyy-MM-dd HH.mm.ss")}}
 
 -- 17) Out-GridView
 Get-Process|Where {$_.cpu -ne $null}|ForEach {New-Object -TypeName psObject -Property @{name=$_.Name;cpu=[double]$_.cpu}}|Out-GridView
@@ -407,3 +409,5 @@ Invoke-DbaQuery -SqlInstance $con `
                 -As DataTable
 
 
+-- 35) Get Properties from Object(Result)
+($resultGetReplState | Get-Member -MemberType Property | Select-Object -ExpandProperty Name) -join ', '
