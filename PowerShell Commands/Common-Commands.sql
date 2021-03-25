@@ -411,3 +411,27 @@ Invoke-DbaQuery -SqlInstance $con `
 
 -- 35) Get Properties from Object(Result)
 ($resultGetReplState | Get-Member -MemberType Property | Select-Object -ExpandProperty Name) -join ', '
+
+-- 36) Install Assembly into GAC (Register dll in gac)
+# Method 01
+$dllpath = 'C:\Users\Public\Documents\ProjectWork\sql2019upgrade\Microsoft.SqlServer.Replication.dll'
+try {
+    Add-Type -Path $dllpath
+}
+catch {
+    $_.Exception.LoaderExceptions | % { Write-Host $_.Message -ForegroundColor Red }
+}
+
+# Method 02
+$dllpath = c:\path\yourdll.dll
+[System.Reflection.Assembly]::Load("System.EnterpriseServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")
+$publish = New-Object System.EnterpriseServices.Internal.Publish
+$publish.GacInstall($dllpath)
+** Restart Computer **
+
+-- 37) Find loaded Assemblies
+[System.AppDomain]::CurrentDomain.GetAssemblies() |
+  Where-Object Location |
+  Sort-Object -Property FullName |
+  Select-Object -Property Name, Location, Version |
+  Out-GridView
