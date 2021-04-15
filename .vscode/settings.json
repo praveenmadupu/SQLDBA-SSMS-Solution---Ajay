@@ -5,11 +5,16 @@
     "editor.wordWrap": "on",
     "editor.cursorBlinking": "expand",
     "[git-commit]": {
-    
         "editor.rulers": [
             72
         ],
         "workbench.editor.restoreViewState": false
     },
-    "files.autoSave": "afterDelay"
+    "files.autoSave": "afterDelay",
+    "workbench.activityBar.visible": true,
+    "debug.openDebug": "neverOpen",
+    "editor.tabCompletion": "on",
+    "powershell.integratedConsole.focusConsoleOnExecute": false,
+    "powershell.integratedConsole.showOnStartup": false,
+
 }
