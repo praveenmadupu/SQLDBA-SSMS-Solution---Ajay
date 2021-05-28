@@ -1,19 +1,94 @@
-use StackOverflow
-
 set transaction isolation level read uncommitted;
-select	db_name() as DbName, schema_name(o.schema_id)+'.'+o.name as ObjectName, sp.stats_id, st.name, sp.last_updated, ps.rows_total,
-		sp.rows_sampled, sp.steps, sp.unfiltered_rows, sp.modification_counter
-		,convert(numeric(20,0),SQRT(ps.rows_total * 1000)) as SqrtFormula
-		,case when sp.modification_counter >= convert(numeric(20,0),SQRT(ps.rows_total * 1000)) then 1 else 0 end as _Ola_IndexOptimize
-from sys.stats as st
-cross apply sys.dm_db_stats_properties(st.object_id, st.stats_id) as sp
-join sys.objects o on o.object_id = st.object_id
-outer apply (SELECT SUM(ps.row_count) AS rows_total
-						FROM sys.dm_db_partition_stats as ps WHERE ps.object_id = st.object_id AND ps.index_id < 2
-						GROUP BY ps.object_id
-) as ps
-where o.is_ms_shipped = 0
-and (schema_name(o.schema_id)+'.'+o.name) IN ('dbo.table1','dbo.table2')
-and (case when sp.modification_counter >= convert(numeric(20,0),SQRT(ps.rows_total * 1000)) then 1 else 0 end) = 1
-order by  sp.last_updated asc
+set nocount on;
+set quoted_identifier off;
+
+declare @execute_indexoptimize bit = 1
+declare @p_db_name sysname 
+--set @p_db_name = 'fuma'
+
+if object_id('tempdb..#stats') is not null
+	drop table #stats;
+create table #stats
+(	id bigint identity(1,1) not null, [db_name] sysname, table_name sysname, stats_id bigint, stats_name sysname,
+	last_updated datetime2, rows_total bigint, rows_sampled bigint, steps int, unfiltered_rows bigint,
+	modification_count bigint, sqrt_formula bigint, [threshold %] numeric(20,2), order_id numeric(20,2)
+);
+
+declare @query_get_stats nvarchar(max)
+set @query_get_stats = "
+use [?]
+if (db_name() not in ('master','model','tempdb','msdb'))
+begin
+	--print 'executing for ['+db_name()+']';
+	;with tStats as (
+	select	db_name() as DbName, schema_name(o.schema_id)+'.'+o.name as ObjectName, sp.stats_id, st.name, sp.last_updated, ps.rows_total,
+			sp.rows_sampled, sp.steps, sp.unfiltered_rows, sp.modification_counter
+			,(SELECT CONVERT(decimal(20,0),MIN (val)) FROM (VALUES (500 + (0.20 * ps.rows_total)),(SQRT(1000 * ps.rows_total))) as Thresholds(val)) as SqrtFormula
+			--,(case when sp.modification_counter >= (SELECT CONVERT(decimal(20,0),MIN (val)) FROM (VALUES (500 + (0.20 * ps.rows_total)),(SQRT(1000 * ps.rows_total))) as Thresholds(val)) then 1 else 0 end) as _Ola_IndexOptimize
+	from sys.stats as st
+	cross apply sys.dm_db_stats_properties(st.object_id, st.stats_id) as sp
+	join sys.objects o on o.object_id = st.object_id
+	outer apply (SELECT SUM(ps.row_count) AS rows_total
+							FROM sys.dm_db_partition_stats as ps WHERE ps.object_id = st.object_id AND ps.index_id < 2
+							GROUP BY ps.object_id
+	) as ps
+	where o.is_ms_shipped = 0
+	--and (schema_name(o.schema_id)+'.'+o.name) IN ('dbo.trade_current','dbo.trade_archive','dbo.special_trade')
+	and (case when sp.modification_counter >= (SELECT CONVERT(decimal(20,0),MIN (val)) FROM (VALUES (500 + (0.20 * ps.rows_total)),(SQRT(1000 * ps.rows_total))) as Thresholds(val)) then 1 else 0 end) = 1
+	and ps.rows_total >= 1000
+	--order by  sp.last_updated asc;
+	)
+	select *, convert(decimal(20,0),(modification_counter*100)/SqrtFormula) as [threshold %]
+			,(SQRT(s.rows_total)*0.3) +(convert(decimal(20,0),(modification_counter*100)/SqrtFormula)) as order_id
+	from tStats s
+	--order by (SQRT(s.rows_total)*0.3) +(convert(decimal(20,0),(modification_counter*100)/SqrtFormula)) DESC
+end
+"
+insert #stats
+exec sp_MSforeachdb @query_get_stats
+
+select db_name, table_name, COUNT(*) as stats_count_total,
+				max(last_updated) as last_updated, max(rows_total) as rows_total, max(modification_count) as modification_count
+				,db_name+'.'+table_name as [@Indexes]
+from #stats
+group by db_name, table_name
+order by max(order_id) desc;
+
+if(@execute_indexoptimize = 1)
+begin
+	declare @db_name sysname, @indexes nvarchar(500);
+	declare cur_stats cursor local forward_only for
+			select db_name, db_name+'.'+table_name as [@Indexes]
+			from #stats
+			where (db_name = @p_db_name or @p_db_name is null)
+			group by db_name, table_name
+			order by max(order_id) desc;
+
+	open cur_stats;
+	fetch next from cur_stats into @db_name, @indexes;
+
+	while @@FETCH_STATUS = 0
+	begin
+		EXECUTE audit_archive.dbo.IndexOptimize
+								@Databases = @db_name,
+								@FragmentationLow = NULL,
+								@FragmentationMedium = NULL,
+								@FragmentationHigh = NULL,
+								@UpdateStatistics = 'ALL',
+								@OnlyModifiedStatistics = 'Y',
+								--@StatisticsSample = 100,
+								@PartitionLevel = 'Y',
+								@LogToTable = 'Y',
+								@SortInTempdb = 'Y',
+								@MSShippedObjects = 'Y',
+								--@MaxDOP = 4,
+								/* Run parallel update stats for each table */
+								@Indexes = @indexes
+								,@Execute = 'Y';
+
+		fetch next from cur_stats into @db_name, @indexes;
+	end
+	CLOSE cur_stats;  
+	DEALLOCATE cur_stats; 
+end
 go

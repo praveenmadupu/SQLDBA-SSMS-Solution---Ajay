@@ -439,3 +439,10 @@ $publish.GacInstall($dllpath)
   Sort-Object -Property FullName |
   Select-Object -Property Name, Location, Version |
   Out-GridView
+
+-- 38) Take file folder ownership
+# Cmd
+icacls "E:\Ajay\*" /grant "DOMAIN\SQL Services":F /T
+
+# Powershell
+icacls --% "E:\Ajay\*" /grant "DOMAIN\SQL Services":F /T
