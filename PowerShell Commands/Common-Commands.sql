@@ -34,7 +34,7 @@ Get-ChildItem -Path 'F:\' -Recurse -Force -ErrorAction SilentlyContinue |
     Select-Object Name, @{l='ParentPath';e={$_.DirectoryName}}, @{l='SizeBytes';e={$_.Length}}, @{l='Owner';e={((Get-ACL $_.FullName).Owner)}}, CreationTime, LastAccessTime, LastWriteTime, @{l='IsFolder';e={if($_.PSIsContainer) {1} else {0}}}, @{l='SizeMB';e={$_.Length/1mb}}, @{l='SizeGB';e={$_.Length/1gb}} |
     Sort-Object -Property SizeBytes -Descending | Out-GridView
 
--- 9) Check if -Verbose switch is used
+-- 9) Check if -Verbose switch is used. Fixed width display with Write-Host
 $Verbose = $false;
 if($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -or [String]::IsNullOrEmpty($MyInvocation.PSScriptRoot)) {
     $Verbose = $true;
@@ -46,6 +46,10 @@ if ($PSBoundParameters.ContainsKey('Verbose')) { # Command line specifies -Verbo
 
 if($Verbose) {
     Write-Host ("{0,-8} {1} - {2}" -f 'INFO:', "$(Get-Date)", "Extract 'Finding' & 'Create TSQL' from Index Summary to match with Non-Prod");
+    $startTime = Get-Date
+    "{0} {1,-10} {2}" -f "($($startTime.ToString('yyyy-MM-dd HH:mm:ss')))","(START)","Launch setup.exe to upgrade [TestServer\SQLEXPRESS] SqlInstance.." | Write-Host -ForegroundColor Yellow
+
+    "{0} {1,-10} {2}" -f "($((Get-Date).ToString('yyyy-MM-dd HH:mm:ss')))","(START)","Launch setup.exe to upgrade [TestServer\SQLEXPRESS] SqlInstance.." | Write-Host -ForegroundColor Yellow
 }
 
 -- 10) Check if Module is installed
