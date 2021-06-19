@@ -3,11 +3,11 @@ go
 alter view dbo.vw_Repl_Latency
 as
 with t_Tokens as (
-	select *, row_number()over(partition by publication order by ID) as rowID		
+	select *, row_number()over(partition by publication order by ID) as rowID
 	from DBA..Repl_TracerToken_Header h where h.is_processed = 0
 )
 ,t_History as (
-	select *, row_number()over(partition by publication order by collection_time desc) as rowID		
+	select *, row_number()over(partition by publication order by collection_time desc) as rowID
 	from DBA..[Repl_TracerToken_History]
 	where publication not in (select t.publication from t_Tokens as t)
 )
