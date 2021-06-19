@@ -3,8 +3,8 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="(local):CORPORATE\adwivedi">
-          <Created>2020-04-01T09:50:44.6395028+05:30</Created>
+        <ConnectionNode Name="(local):LAB\adwivedi">
+          <Created>2020-04-01T04:20:44.6395028+00:00</Created>
           <Type>SQL</Type>
           <Server>(local)</Server>
           <UserName />
@@ -15,8 +15,20 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="TUL1DBAPMTDB1\SQL2017:CORPORATE\adwivedi">
-          <Created>2019-10-21T23:34:12.5976745+05:30</Created>
+        <ConnectionNode Name="sqlprod1:LAB\adwivedi">
+          <Created>2021-06-19T08:29:10.2228579+00:00</Created>
+          <Type>SQL</Type>
+          <Server>sqlprod1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="TUL1DBAPMTDB1\SQL2017:LAB\adwivedi">
+          <Created>2019-10-21T18:04:12.5976745+00:00</Created>
           <Type>SQL</Type>
           <Server>TUL1DBAPMTDB1\SQL2017</Server>
           <UserName />
@@ -54,6 +66,12 @@
           <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Raw-Queries-TempDb-Space-Issues.sql</FullPath>
+        </FileNode>
+        <FileNode Name="SCH-[sp__tempdb_saver].sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:sqlprod1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>sqlprod1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-[sp__tempdb_saver].sql</FullPath>
         </FileNode>
         <FileNode Name="v0.0 - [usp_getDatabaseFileSpaceUsageNotification].sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:TUL1DBAPMTDB1\SQL2017:True</AssociatedConnectionMoniker>
