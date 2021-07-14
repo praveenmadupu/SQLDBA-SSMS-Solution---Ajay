@@ -12,7 +12,7 @@ USE [SpringBatch_Association]
 GO
 CREATE USER ['+myUser+'] FOR LOGIN ['+myUser+']
 GO
-USE [RCM_rovicore_20130710_NoMusic1a_en-US]
+USE [RCM_morecore_20130710_NoMusic1a_en-US]
 GO
 EXEC sp_addrolemember N''db_datareader'', N'''+myUser+'''
 GO

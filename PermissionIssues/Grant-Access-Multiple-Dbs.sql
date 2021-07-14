@@ -4,7 +4,7 @@ if OBJECT_ID('tempdb..#dbs') is not null
 	drop table #dbs;
 select IDENTITY(INT,1,1) AS id, dbName
 into #dbs
-from (values --('RCM_rovicore_20130710_NoMusic1a_en-US'),
+from (values --('RCM_morecore_20130710_NoMusic1a_en-US'),
 			 --('Babel'),('Mosaic'),('Prism'),('Staging')
 			 ('RoviVideo_Filter_Perf'),('Cosmos'),('RoviVideo1_1_Filter_Perf1')
 	 ) as Dbs (dbName)

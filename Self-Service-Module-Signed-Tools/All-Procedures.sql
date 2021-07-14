@@ -6786,10 +6786,10 @@ EXEC DBA.dbo.usp_WhoIsActive_Blocking @p_Collection_time_Start = 'May 12 2019 11
 										--,@p_Program_Name = 'SQL Job = <job name>';
 go
 
-exec dbo.sp_Kill @p_DbName = 'RCM_rovicore_20130710_NoMusic1a_en-US', @p_Force = 1
+exec dbo.sp_Kill @p_DbName = 'RCM_morecore_20130710_NoMusic1a_en-US', @p_Force = 1
 					,@p_Verbose = 1
 
-exec msdb..sp_start_job [DBA Log Walk - Restore RCM_rovicore_20130710_NoMusic1a_en-US]
+exec msdb..sp_start_job [DBA Log Walk - Restore RCM_morecore_20130710_NoMusic1a_en-US]
 go
 
 exec sp_HealthCheck 5

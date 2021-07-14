@@ -3,7 +3,7 @@ $server = 'TestVm'
 <#
 $result_all = Get-DbaDbSpace -SqlInstance $server
 # Get Log Shipped Database from Source
-$result_rcm = Get-DbaDbSpace -SqlInstance SourceTestVM -Database 'RCM_rovicore_20130710_NoMusic1a_en-US'
+$result_rcm = Get-DbaDbSpace -SqlInstance SourceTestVM -Database 'RCM_morecore_20130710_NoMusic1a_en-US'
 #>
 
 # Group result by Database, and Get Drive size required

@@ -290,7 +290,7 @@ BEGIN
 	ELSE
 	BEGIN
 		IF @verbose > 0
-			PRINT '('+convert(varchar, getdate(), 21)+') Current tempdb space usage under threshold.'	
+			PRINT '('+convert(varchar, getdate(), 21)+') Current tempdb space usage under threshold.'
 	END
 
 	IF @verbose > 0
