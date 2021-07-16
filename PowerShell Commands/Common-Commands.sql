@@ -35,12 +35,8 @@ Get-ChildItem -Path 'F:\' -Recurse -Force -ErrorAction SilentlyContinue |
     Sort-Object -Property SizeBytes -Descending | Out-GridView
 
 -- 9) Check if -Verbose switch is used. Fixed width display with Write-Host
-$Verbose = $false;
-if($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent -or [String]::IsNullOrEmpty($MyInvocation.PSScriptRoot)) {
-    $Verbose = $true;
-}
 $verbose = $false;
-if ($PSBoundParameters.ContainsKey('Verbose')) { # Command line specifies -Verbose[:$false]
+if ($PSBoundParameters.ContainsKey('Verbose') -and $PSBoundParameters.Verbose.Equals($true)) { # Command line specifies -Verbose[:$false]
     $verbose = $PSBoundParameters.Get_Item('Verbose')
 }
 
@@ -57,7 +53,7 @@ if (Get-Module -ListAvailable -Name SqlServer) {
     Write-Host "Module exists"
 } else {
     Write-Host "Module does not exist"
-}
+}    
 
 -- 11) Find path of SQLDBATools Module
 (Get-Module -ListAvailable SQLDBATools).Path
