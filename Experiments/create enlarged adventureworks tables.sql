@@ -1,7 +1,7 @@
 /*****************************************************************************
-*   FileName:  Create Enlarged AdventureWorks Tables.sql
-*	https://www.sqlskills.com/blogs/jonathan/enlarging-the-adventureworks-sample-databases/
-*   Summary: Creates an enlarged version of the AdventureWorks database
+*   FileName:  Create Enlarged AdventureWorks2019 Tables.sql
+*	https://www.sqlskills.com/blogs/jonathan/enlarging-the-AdventureWorks2019-sample-databases/
+*   Summary: Creates an enlarged version of the AdventureWorks2019 database
 *            for use in demonstrating SQL Server performance tuning and
 *            execution plan issues.
 *
@@ -31,7 +31,7 @@
 
 
 
-USE [AdventureWorks];
+USE [AdventureWorks2019];
 GO
 
 IF OBJECT_ID('Sales.SalesOrderHeaderEnlarged') IS NOT NULL
