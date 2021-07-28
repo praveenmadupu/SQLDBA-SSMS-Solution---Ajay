@@ -100,6 +100,29 @@ db_buffer_pages * 100.0 / @total_buffer)
 FROM src
 ORDER BY db_buffer_MB DESC; 
 
+-- Find fragmentation on inbuffer pages
+use facebook;
+SELECT  buf.page_id PageID, buf.page_level PageLevel, 
+        buf.page_type PageType, buf.row_count RowCounts,
+        au.type_desc AS AllocationUnitID, 
+        OBJECT_SCHEMA_NAME(i.object_id) SchemaName, 
+        OBJECT_NAME(i.object_id) TableName,
+        i.name IndexName, i.type_desc IndexType
+		,buf.*
+FROM
+sys.dm_os_buffer_descriptors buf
+INNER JOIN sys.allocation_units AS au
+    ON au.[allocation_unit_id] = buf.[allocation_unit_id]
+INNER JOIN sys.partitions AS p
+    ON au.[container_id] = p.[partition_id]
+INNER JOIN sys.indexes AS i
+    ON i.[index_id] = p.[index_id] AND p.[object_id] = i.[object_id]
+WHERE [database_id] = DB_ID() 
+AND i.object_id = OBJECT_ID('facebook.reconciler.manifestation')
+ORDER BY IndexType, IndexName, PageLevel DESC, PageID
+
+
+
 --	Check if compatibility Model of databases are up to date
 SELECT	[dbName] = d.name, d.create_date, d.collation_name, 
 		[model_compatibility_level] = (SELECT d1.compatibility_level FROM sys.databases as d1 WHERE d1.name = 'model'), d.compatibility_level,

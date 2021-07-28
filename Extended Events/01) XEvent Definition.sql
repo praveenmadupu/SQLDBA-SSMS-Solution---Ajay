@@ -5,13 +5,13 @@ GO
 
 CREATE EVENT SESSION [LongRunningQueries] ON SERVER 
 ADD EVENT sqlserver.rpc_completed(SET collect_statement=(1)
-    ACTION(sqlserver.client_app_name,sqlserver.client_hostname,sqlserver.database_name,sqlserver.query_hash,sqlserver.query_plan_hash,sqlserver.sql_text,sqlserver.username)
+    ACTION(sqlos.scheduler_id,sqlserver.client_app_name,sqlserver.client_hostname,sqlserver.context_info,sqlserver.database_name,sqlserver.query_hash,sqlserver.query_plan_hash,sqlserver.session_id,sqlserver.session_resource_group_id,sqlserver.session_resource_pool_id,sqlserver.sql_text,sqlserver.username)
     WHERE ([duration]>(5000000))),
-ADD EVENT sqlserver.sql_batch_completed(SET collect_batch_text=(1)
-    ACTION(sqlserver.client_app_name,sqlserver.client_hostname,sqlserver.database_name,sqlserver.query_hash,sqlserver.query_plan_hash,sqlserver.sql_text,sqlserver.username)
+ADD EVENT sqlserver.sql_batch_completed(SET collect_batch_text=(0)
+    ACTION(sqlos.scheduler_id,sqlserver.client_app_name,sqlserver.client_hostname,sqlserver.context_info,sqlserver.database_name,sqlserver.query_hash,sqlserver.query_plan_hash,sqlserver.session_id,sqlserver.session_resource_group_id,sqlserver.session_resource_pool_id,sqlserver.sql_text,sqlserver.username)
     WHERE ([duration]>(5000000))),
-ADD EVENT sqlserver.sql_statement_completed(
-    ACTION(sqlserver.client_app_name,sqlserver.client_hostname,sqlserver.database_name,sqlserver.query_hash,sqlserver.query_plan_hash,sqlserver.sql_text,sqlserver.username)
+ADD EVENT sqlserver.sql_statement_completed(SET collect_statement=(0)
+    ACTION(sqlos.scheduler_id,sqlserver.client_app_name,sqlserver.client_hostname,sqlserver.context_info,sqlserver.database_name,sqlserver.query_hash,sqlserver.query_plan_hash,sqlserver.session_id,sqlserver.session_resource_group_id,sqlserver.session_resource_pool_id,sqlserver.sql_text,sqlserver.username)
     WHERE ([duration]>(5000000))),
 ADD EVENT sqlserver.xml_deadlock_report(
     ACTION(sqlserver.sql_text))
