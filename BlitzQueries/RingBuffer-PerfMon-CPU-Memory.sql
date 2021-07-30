@@ -1,7 +1,7 @@
 --	https://www.sqlskills.com/blogs/jonathan/identifying-external-memory-pressure-with-dm_os_ring_buffers-and-ring_buffer_resource_monitor/
 SET NOCOUNT ON; 
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
-DECLARE @pool_name sysname = 'MOSS';
+DECLARE @pool_name sysname = 'REST';
 DECLARE @cpu_trend_minutes INT = 30;
 DECLARE @top_x_program_rows SMALLINT = 10;
 DECLARE @top_x_query_rows SMALLINT = 20;
@@ -95,6 +95,7 @@ OUTER APPLY
 select  'Memory-Status' as RunningQuery, @current_time_UTC as [Current-Time-UTC], [MemoryGrantsPending] as [**M/r-Grants-Pending**], 
 		[**Blocking-Count**] = (select count(*) from #SysProcesses sp where sp.blocking_session_id <> 0 and sp.blocking_session_id <> sp.session_id),
 		[PageLifeExpectancy],
+		[CPU Count] = (select count(*) from sys.dm_os_schedulers as dos where dos.status IN ('VISIBLE ONLINE')),
 		cast(sm.total_physical_memory_kb * 1.0 / 1024 / 1024 as numeric(20,0)) as SqlServer_Process_memory_gb, 
 		cast(sm.available_physical_memory_kb * 1.0 / 1024 / 1024 as numeric(20,2)) as available_physical_memory_gb, 
 		cast((sm.total_page_file_kb - sm.available_page_file_kb) * 1.0 / 1024 / 1024 as numeric(20,0)) as used_page_file_gb,
@@ -200,43 +201,55 @@ where rpl.scheduler_id is NULL and dos.status = 'VISIBLE ONLINE';
 
 declare @object_name varchar(255);
 set @object_name = (case when @@SERVICENAME = 'MSSQLSERVER' then 'SQLServer' else 'MSSQL$'+@@SERVICENAME end);
-;WITH T_Pools AS (
-	SELECT /* counter that require Fraction & Base */
-			'Resource Pool CPU %' as RunningQuery,
-			rtrim(fr.instance_name) as [Pool], 
-			[% CPU @Server-Level] = convert(numeric(20,1),case when bs.cntr_value <> 0 then (100*((fr.cntr_value*1.0)/bs.cntr_value)) else fr.cntr_value end),		
-			[% Schedulers@Total] = case when rp.Scheduler_Count <> 0 then convert(numeric(20,1),((rp.Scheduler_Count*1.0)/(select count(1) as cpu_counts from sys.dm_os_schedulers as dos where dos.status IN ('VISIBLE ONLINE','VISIBLE OFFLINE')))*100) else NULL end,	
-			[% Schedulers@Sql] = case when rp.Scheduler_Count <> 0 then convert(numeric(20,1),((rp.Scheduler_Count*1.0)/(select count(1) as cpu_counts from sys.dm_os_schedulers as dos where dos.status = 'VISIBLE ONLINE'))*100) else NULL end,	
-			[Assigned Schedulers] = case when rp.Scheduler_Count <> 0 then rp.Scheduler_Count else null end
-	FROM sys.dm_os_performance_counters as fr
-	OUTER APPLY
-		(	SELECT * FROM sys.dm_os_performance_counters as bs 
-			WHERE bs.cntr_type = 1073939712 /* PERF_LARGE_RAW_BASE  */ 
-			AND bs.[object_name] = fr.[object_name] 
-			AND (	REPLACE(LOWER(RTRIM(bs.counter_name)),' base','') = REPLACE(LOWER(RTRIM(fr.counter_name)),' ratio','')
-				OR
-				REPLACE(LOWER(RTRIM(bs.counter_name)),' base','') = LOWER(RTRIM(fr.counter_name))
-				)
-			AND bs.instance_name = fr.instance_name
-		) as bs
-	OUTER APPLY (	SELECT COUNT(*) as Scheduler_Count FROM #resource_pool AS rp WHERE rp.rpoolname = rtrim(fr.instance_name)	) as rp
-	WHERE fr.cntr_type = 537003264 /* PERF_LARGE_RAW_FRACTION */
-		--and fr.cntr_value > 0.0
-		and
-		(
-			( fr.[object_name] like (@object_name+':Resource Pool Stats%') and fr.counter_name like 'CPU usage %' )
-		)
-)
-SELECT RunningQuery, @current_time_UTC as [Current-Time-UTC], [Pool], 
-		[% CPU @Pool-Level] = CASE WHEN [Assigned Schedulers] IS NULL THEN NULL WHEN [% Schedulers@Total] <> 0 THEN CONVERT(NUMERIC(20,2),([% CPU @Server-Level]*100.0)/[% Schedulers@Total]) ELSE [% CPU @Server-Level] END,
-		[% CPU @Server-Level], [% Schedulers@Total],		
-		[% Schedulers@Sql], [Assigned Schedulers]
-FROM T_Pools
-WHERE NOT ([Assigned Schedulers] IS NULL AND [% CPU @Server-Level] = 0)
-ORDER BY [% CPU @Pool-Level] desc, [% CPU @Server-Level] desc;
+IF EXISTS (select * from sys.resource_governor_configuration where is_enabled = 1)
+BEGIN
+	;WITH T_Pools AS (
+		SELECT /* counter that require Fraction & Base */
+				'Resource Pool CPU %' as RunningQuery,
+				rtrim(fr.instance_name) as [Pool], 
+				[% CPU @Server-Level] = case when bs.cntr_value <> 0 then (100.0*((fr.cntr_value*1.0)/(bs.cntr_value*1.0))) else fr.cntr_value*1.0 end,
+				[% CPU @SqlInstance-Level] = case when bs.cntr_value <> 0 then (100.0*((fr.cntr_value*1.0)/(bs.cntr_value*1.0*((1.0*dos.cpu_sql_counts)/(dos.cpu_total_counts*1.0))))) else fr.cntr_value*1.0 end,
+				[% Schedulers@Total] = case when rp.Scheduler_Count <> 0 then (((rp.Scheduler_Count*1.0)/dos.cpu_total_counts)*100.0) else NULL end,	
+				[% Schedulers@Sql] = case when rp.Scheduler_Count <> 0 then (((rp.Scheduler_Count*1.0)/dos.cpu_sql_counts)*100.0) else NULL end,	
+				[Assigned Schedulers] = case when rp.Scheduler_Count <> 0 then rp.Scheduler_Count else null end
+				,dos.cpu_sql_counts ,dos.cpu_total_counts
+		FROM sys.dm_os_performance_counters as fr
+		JOIN (select count(1) as cpu_total_counts, sum(case when dos.status = 'VISIBLE ONLINE' then 1 else 0 end) as cpu_sql_counts
+				from sys.dm_os_schedulers as dos where dos.status IN ('VISIBLE ONLINE','VISIBLE OFFLINE')
+			) AS dos ON 1 = 1
+		OUTER APPLY
+			(	SELECT * FROM sys.dm_os_performance_counters as bs 
+				WHERE bs.cntr_type = 1073939712 /* PERF_LARGE_RAW_BASE  */ 
+				AND bs.[object_name] = fr.[object_name] 
+				AND (	REPLACE(LOWER(RTRIM(bs.counter_name)),' base','') = REPLACE(LOWER(RTRIM(fr.counter_name)),' ratio','')
+					OR
+					REPLACE(LOWER(RTRIM(bs.counter_name)),' base','') = LOWER(RTRIM(fr.counter_name))
+					)
+				AND bs.instance_name = fr.instance_name
+			) as bs
+		OUTER APPLY (	SELECT COUNT(*) as Scheduler_Count FROM #resource_pool AS rp WHERE rp.rpoolname = rtrim(fr.instance_name)	) as rp
+		WHERE fr.cntr_type = 537003264 /* PERF_LARGE_RAW_FRACTION */
+			--and fr.cntr_value > 0.0
+			and
+			(
+				( fr.[object_name] like (@object_name+':Resource Pool Stats%') and fr.counter_name like 'CPU usage %' )
+			)
+	)
+	SELECT TOP 7 RunningQuery, @current_time_UTC as [Current-Time-UTC], [Pool], 
+			[% CPU @Pool-Level] = CONVERT(NUMERIC(20,2),
+								CASE	WHEN [Assigned Schedulers] IS NULL THEN NULL 
+										WHEN [% Schedulers@Sql] <> 0 THEN (([% CPU @SqlInstance-Level]*100.0)/([% Schedulers@Sql]*1.0)) 
+										ELSE [% CPU @SqlInstance-Level] END
+								),
+			[% CPU @SqlInstance-Level] = CONVERT(numeric(20,2),[% CPU @SqlInstance-Level]),
+			CONVERT(NUMERIC(20,2),[% CPU @Server-Level]) AS [% CPU @Server-Level],
+			[Assigned Schedulers], p.cpu_sql_counts as [Sql Schedulers], p.cpu_total_counts as [Total Schedulers]
+	FROM T_Pools as p
+	WHERE NOT ([Assigned Schedulers] IS NULL AND [% CPU @Server-Level] = 0)
+	ORDER BY [% CPU @SqlInstance-Level] desc, [% CPU @Server-Level] desc;
+END
 
 --SELECT scheduler_id,count(*) FROM #resource_pool AS rp group by scheduler_id
-
 
 IF (SELECT count(distinct rpoolname) FROM #resource_pool) < 2
 	SET @pool_name = NULL;
@@ -323,11 +336,11 @@ SELECT	[Pool] = rgrp.name,
 				[request_wait_type] = r.wait_type+case when wait_resource is not null then '('+wait_resource+')' else '' end,
 				[blocked by] = r.blocking_session_id,
 				r.open_transaction_count,
-				[granted_query_memory] = CASE WHEN ((CAST(r.granted_query_memory AS numeric(20,2))*8)/1024/1024) >= 1.0
-												THEN CAST(((CAST(r.granted_query_memory AS numeric(20,2))*8)/1024/1024) AS VARCHAR(23)) + ' GB'
-												WHEN ((CAST(r.granted_query_memory AS numeric(20,2))*8)/1024) >= 1.0
-												THEN CAST(((CAST(r.granted_query_memory AS numeric(20,2))*8)/1024) AS VARCHAR(23)) + ' MB'
-												ELSE CAST((CAST(r.granted_query_memory AS numeric(20,2))*8) AS VARCHAR(23)) + ' KB'
+				[granted_query_memory] = CASE WHEN ((r.granted_query_memory*8.0)/1024/1024) >= 1.0
+												THEN CAST(CONVERT(NUMERIC(20,2),(r.granted_query_memory *8.0)/1024/1024) AS VARCHAR(23)) + ' GB'
+												WHEN ((r.granted_query_memory *8.0)/1024) >= 1.0
+												THEN CAST(CONVERT(NUMERIC(20,2),(r.granted_query_memory *8.0)/1024) AS VARCHAR(23)) + ' MB'
+												ELSE CAST(CONVERT(NUMERIC(20,2),r.granted_query_memory *8.0) AS VARCHAR(23)) + ' KB'
 												END,
 				[statement_text] = Substring(st.TEXT, (r.statement_start_offset / 2) + 1, (
 						(
@@ -467,12 +480,12 @@ begin
 		FROM	T_BLOCKERS AS r
 	)
 	SELECT Pool, [dd hh:mm:ss], [BLOCKING_TREE], [blocked_count] = case when session_id = [head_blocker] then [blocked_session_count] else null end, [sql_commad], [command], [login_name], [program_name], [database_name], [wait_type], [wait_time], [wait_resource_type], [status], [open_tran], [cpu], [reads], [writes], [physical_io], [host_name]
-	FROM T_BlockingTree
-	ORDER BY [blocked_session_count] DESC, LEVEL ASC;
+	FROM T_BlockingTree t
+	ORDER BY t.LEVEL;
 end
 
 -- Display Log Running Queries
-if exists (select * from #SysProcesses s where s.start_time <= dateadd(minute,-@long_running_query_threshold_minutes,getdate()) and (@pool_name is null or s.Pool = @pool_name) )
+if exists (select * from #SysProcesses s where s.start_time <= dateadd(minute,-@long_running_query_threshold_minutes,getdate()) and (@pool_name is null or s.Pool = @pool_name) and s.session_id > 50 )
 begin
 	select RunningQuery = ISNULL(@pool_name+'-','')+'Running over '+cast(@long_running_query_threshold_minutes as varchar)+' minutes',
 			@current_time_UTC as [Current-Time-UTC],
@@ -480,7 +493,7 @@ begin
 			*
 	from #SysProcesses s
 	where s.start_time <= dateadd(minute,-@long_running_query_threshold_minutes,getdate())
-	and (@pool_name is null or s.Pool = @pool_name)
+	and (@pool_name is null or s.Pool = @pool_name) and s.session_id > 50
 	order by start_time asc
 	OFFSET 0 ROWS FETCH NEXT @top_x_query_rows ROWS ONLY; 
 end
