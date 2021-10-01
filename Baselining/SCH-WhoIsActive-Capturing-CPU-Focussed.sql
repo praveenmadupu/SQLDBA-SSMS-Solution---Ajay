@@ -1,3 +1,4 @@
+-- Created on Oct 01, 2021
 USE DBA;
 go
 
