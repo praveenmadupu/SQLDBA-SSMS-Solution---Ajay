@@ -8,7 +8,7 @@ USE master;
 SET NOCOUNT ON; 
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 SET LOCK_TIMEOUT 60000; -- 60 seconds  
-DECLARE @pool_name sysname --= 'SEED';
+DECLARE @pool_name sysname --= 'FACEBOOK';
 DECLARE @cpu_trend_minutes INT = 30;
 DECLARE @top_x_program_rows SMALLINT = 10;
 DECLARE @top_x_query_rows SMALLINT = 20;
@@ -297,7 +297,7 @@ IF (SELECT count(distinct rpoolname) FROM #resource_pool) < 2
 			where rgwg.group_id = s.group_id
 		) rp
 	WHERE s.is_user_process = 1	
-		AND login_name NOT LIKE '%sqlexec%'
+		AND login_name NOT LIKE '%SQLServices%'
 		AND (@pool_name is null or [Pool] = @pool_name )
 )
 ,T_Programs_Tasks_Total AS
