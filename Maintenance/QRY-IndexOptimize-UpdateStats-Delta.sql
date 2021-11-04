@@ -1,6 +1,7 @@
 set transaction isolation level read uncommitted;
 set nocount on;
 set quoted_identifier off;
+set lock_timeout 60000; -- 60 seconds
 
 declare @execute_indexoptimize bit = 1
 declare @p_db_name sysname 
@@ -17,7 +18,7 @@ create table #stats
 declare @query_get_stats nvarchar(max)
 set @query_get_stats = "
 use [?];
-if (len('"+ISNULL(@p_db_name,'')+"') = 0 or (DB_NAME() = '"+ISNULL(@p_db_name,'')+"') )
+if (len('"+ISNULL(@p_db_name,'')+"') = 0 or (DB_NAME() = '"+ISNULL(@p_db_name,'')+"') ) and (DB_NAME() NOT IN ('DBA','msdb'))
 begin
 	--print 'executing for ['+db_name()+']';
 	;with tStats as (
@@ -34,7 +35,9 @@ begin
 	) as ps
 	where ps.rows_total >= 50000
 	and (NOT ( o.name like '!_td!_bl%' escape '!' or o.name like '%audit%'))
-	and (sp.modification_counter >= 10000 or (case when sp.modification_counter >= (SELECT CONVERT(decimal(20,0),MIN (val)) FROM (VALUES (500 + (0.20 * ps.rows_total)),(SQRT(1000 * ps.rows_total))) as Thresholds(val)) then 1 else 0 end) = 1)
+	and (   --sp.modification_counter >= 10000 or 
+            (case when sp.modification_counter >= (SELECT CONVERT(decimal(20,0),MIN (val)) FROM (VALUES (500 + (0.20 * ps.rows_total)),(SQRT(1000 * ps.rows_total))) as Thresholds(val)) then 1 else 0 end) = 1
+        )
 	and ( (case when o.is_ms_shipped = 1 and ps.rows_total >= 100000 then 1 when o.is_ms_shipped = 0 then 1 else 0 end) = 1 )
 	--order by  sp.last_updated asc;
 	)
@@ -92,7 +95,7 @@ begin
 
 		fetch next from cur_stats into @db_name, @indexes;
 	end
-	CLOSE cur_stats;  
-	DEALLOCATE cur_stats; 
+	CLOSE cur_stats;
+	DEALLOCATE cur_stats;
 end
 go

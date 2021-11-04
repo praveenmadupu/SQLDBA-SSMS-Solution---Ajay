@@ -1,7 +1,7 @@
-USE [DBA]
+USE [audit_archive]
 GO
 
-CREATE PROCEDURE [dbo].[IndexOptimize_Modified]	@Databases nvarchar(max) = NULL,
+ALTER PROCEDURE [dbo].[IndexOptimize_Modified]	@Databases nvarchar(max) = NULL,
 												@FragmentationLow nvarchar(max) = NULL,
 												@FragmentationMedium nvarchar(max) = 'INDEX_REORGANIZE,INDEX_REBUILD_ONLINE,INDEX_REBUILD_OFFLINE',
 												@FragmentationHigh nvarchar(max) = 'INDEX_REBUILD_ONLINE,INDEX_REBUILD_OFFLINE',
@@ -35,7 +35,8 @@ CREATE PROCEDURE [dbo].[IndexOptimize_Modified]	@Databases nvarchar(max) = NULL,
 												@LogToTable nvarchar(max) = 'N',
 												@Execute nvarchar(max) = 'Y',
 												@Help bit = 0,
-												@forceReInitiate bit = 0
+												@ForceReInitiate bit = 0,
+												@Index2FreeSpaceRatio numeric(20,2) = 2.0
 												,@Verbose bit = 0
 AS
 BEGIN
@@ -45,10 +46,11 @@ BEGIN
 		Version:			0.1
 		Modifications:		May 18, 2019 - Created for 1st time
 							Nov 12, 2019 - Trying to solve Bug
+							Nov 04, 2021 - Enhance for Non-Repl databases. Add parallelism. Log Space Check
 	*/
 	IF(@Verbose = 1)
 		PRINT 'Declaring local variables..';
-	DECLARE @_isFreshStart bit = ISNULL(@forceReInitiate,0);
+	DECLARE @_isFreshStart bit = ISNULL(@ForceReInitiate,0);
 	DECLARE @c_ID BIGINT;
 	DECLARE @c_DbName VARCHAR(125);
 	DECLARE @c_ParameterValue VARCHAR(500);
@@ -58,12 +60,17 @@ BEGIN
 	DECLARE @_DelayLength char(8)= '00:00:00'
 	DECLARE @c_IndexParameterValue VARCHAR(500);
 	DECLARE @_SQLString NVARCHAR(MAX);
+	DECLARE @_SQLString_Params NVARCHAR(500);  
 	DECLARE @tbl_Databases TABLE (ID INT IDENTITY(1,1), DBName VARCHAR(200));
 	DECLARE @_IndexingStartTime datetime = GETDATE();
 	DECLARE @_IndexingEndTime datetime;
 	DECLARE @_CountReplIndexes INT;
 	DECLARE @_CountNonReplIndexes INT;
 	DECLARE @_CountMin INT;
+	DECLARE @_is_already_printed_frag_query bit = 0;
+	DECLARE @_is_already_printed_logspace_check_query bit = 0;
+	DECLARE @_log_free_space_mb bigint;
+
 	IF OBJECT_ID('dbo.IndexProcessing_IndexOptimize') IS NULL
 	BEGIN
 		IF(@Verbose = 1)
@@ -100,16 +107,48 @@ BEGIN
 	IF(@Verbose = 1)
 	BEGIN
 		PRINT 'SELECT * FROM @tbl_Databases;';
-		SELECT * FROM @tbl_Databases;
+		SELECT '@tbl_Databases' as RunningQuery, * FROM @tbl_Databases;
 	END
 
 	-- Check if there is any database for which there is no index to process
 	IF(@Verbose = 1)
-		PRINT 'Checking if there is any database for which there is no index to process';
-	IF @_isFreshStart = 1 OR exists (SELECT * FROM @tbl_Databases as d where not exists(select * from dbo.IndexProcessing_IndexOptimize as ipio WHERE ipio.IsProcessed = 0 and ipio.DbName = d.DBName))
+	begin
+		print 'Checking if there is any database for which there is no index to process';
+		select [@_isFreshStart] = @_isFreshStart;
+		select 'Index Count for Processing' as RunningQuery, * 
+		from @tbl_Databases as d
+		left join (	select DbName, processed = sum(case when ipio.IsProcessed = 1 then 1 else 0 end), pending = sum(case when ipio.IsProcessed = 0 then 1 else 0 end)
+					from dbo.IndexProcessing_IndexOptimize as ipio
+					group by DbName
+				) i
+		on d.DBName = i.DbName
+	end
+
+	IF @_isFreshStart = 1 
+		OR EXISTS (	select 'Index Count for Processing' as RunningQuery, * 
+					from @tbl_Databases as d
+					left join (select DbName, processed = sum(case when ipio.IsProcessed = 1 then 1 else 0 end), pending = sum(case when ipio.IsProcessed = 0 then 1 else 0 end)
+								from dbo.IndexProcessing_IndexOptimize as ipio
+								group by DbName
+							) i
+					on d.DBName = i.DbName
+					where i.pending is null or i.pending = 0
+				)
 	BEGIN
 		DECLARE cursor_Databases CURSOR LOCAL FORWARD_ONLY FAST_FORWARD READ_ONLY FOR
-							SELECT DBName FROM @tbl_Databases ORDER BY DBName;
+							SELECT DBName FROM @tbl_Databases dbs
+							WHERE @_isFreshStart = 1
+							OR dbs.DBName IN (
+								select  d.DBName
+								from @tbl_Databases as d
+								left join (select DbName, processed = sum(case when ipio.IsProcessed = 1 then 1 else 0 end), pending = sum(case when ipio.IsProcessed = 0 then 1 else 0 end)
+											from dbo.IndexProcessing_IndexOptimize as ipio
+											group by DbName
+										) i
+								on d.DBName = i.DbName
+								where i.pending is null or i.pending = 0
+							)
+							ORDER BY DBName;
 
 		OPEN cursor_Databases;
 
@@ -118,7 +157,6 @@ BEGIN
 		BEGIN
 			IF(@Verbose = 1)
 			BEGIN
-				SELECT [@c_DbName] = @c_DbName;
 				PRINT '@c_DbName = '+@c_DbName;
 			END
 
@@ -166,11 +204,11 @@ BEGIN
 						and avg_fragmentation_in_percent >= '+cast(@FragmentationLevel1 as varchar(4))+ '
 					)
 					-- Index Defrag Filters
-					OR
+					--OR
 					-- Update Stats filter
-					(	(case when sp.modification_counter > 0 then ''Yes'' else ''No'' end) = ''Yes''
-						and (case when sp.modification_counter >= SQRT(ps.row_count * 1000) then ''Yes'' else ''No'' end) = ''Yes''
-					)
+					--(	(case when sp.modification_counter > 0 then ''Yes'' else ''No'' end) = ''Yes''
+						--and (case when sp.modification_counter >= SQRT(ps.row_count * 1000) then ''Yes'' else ''No'' end) = ''Yes''
+					--)
 				)
 			OPTION (RECOMPILE);
 			';
@@ -178,7 +216,11 @@ BEGIN
 			IF(@Verbose = 1)
 			BEGIN
 				PRINT 'Repopulating table dbo.IndexProcessing_IndexOptimize with Indexes of DbName = '+@c_DbName;
-				PRINT @_SQLString;
+				IF @_is_already_printed_frag_query = 0
+				BEGIN
+					PRINT @_SQLString;
+					SET @_is_already_printed_frag_query = 1;
+				END
 			END
 
 			INSERT dbo.IndexProcessing_IndexOptimize
@@ -194,34 +236,117 @@ BEGIN
 		PRINT 'Initializing variable @_CountReplIndexes, @_CountNonReplIndexes, @_CountMin ';
 	END
 
-	SET @_CountReplIndexes = (SELECT COUNT(*) FROM dbo.IndexProcessing_IndexOptimize as ipio WHERE IsProcessed = 0 AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d));
+	-- Find out Repl database indexes
+	SELECT @_CountReplIndexes = COUNT(*)
+	FROM dbo.IndexProcessing_IndexOptimize as ipio 
+	WHERE IsProcessed = 0 
+	AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1)
+	AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d);
 
-	SET @_CountNonReplIndexes = (SELECT COUNT(*) FROM dbo.IndexProcessing_IndexOptimize WHERE IsProcessed = 0 AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d));
+	-- Find out Non-Repl database indexes
+	SELECT @_CountNonReplIndexes = COUNT(*)
+	FROM dbo.IndexProcessing_IndexOptimize
+	WHERE IsProcessed = 0
+	AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) 
+	AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d);
 
-	IF @_CountReplIndexes <= @_CountNonReplIndexes
-		SET @_CountMin = @_CountReplIndexes;
+	/* Set Bucket Size */
+	SELECT @_CountMin =	CASE	WHEN @_CountReplIndexes = 0 /* When repl indexes are 0, set bucket count to min(count) of index of non-repl database */
+								THEN (	SELECT TOP 1 COUNT(*) AS index_counts
+										FROM dbo.IndexProcessing_IndexOptimize
+										WHERE IsProcessed = 0
+										AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1)
+										AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+										GROUP BY DbName ORDER BY COUNT(*) ASC
+									)
+								WHEN @_CountNonReplIndexes = 0 /* When non-repl indexes are 0, set bucket count to min(count) of index of repl database */
+								THEN (	SELECT TOP 1 COUNT(*) AS index_counts
+										FROM dbo.IndexProcessing_IndexOptimize
+										WHERE IsProcessed = 0
+										AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1)
+										AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+										GROUP BY DbName ORDER BY COUNT(*) ASC
+									)
+								WHEN @_CountReplIndexes <= @_CountNonReplIndexes
+								THEN @_CountReplIndexes
+								ELSE @_CountNonReplIndexes
+								END
+
+	IF(@Verbose = 1)
+		SELECT 'Bucket Size' AS RunningQuery, [@_CountReplIndexes] = @_CountReplIndexes, [@_CountNonReplIndexes] = @_CountNonReplIndexes, [@_CountMin] = @_CountMin;
+
+	IF @Verbose = 1
+	BEGIN
+		SELECT 'Index Counts By Database' as RunningQuery, 'Non-Repl' as Category, DbName, COUNT(*) AS index_counts
+		FROM dbo.IndexProcessing_IndexOptimize
+		WHERE IsProcessed = 0
+		AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) 
+		AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+		GROUP BY DbName
+		--
+		UNION ALL
+		--
+		SELECT 'Index Counts By Database' as RunningQuery, 'Repl' as Category, DbName, COUNT(*) AS index_counts
+		FROM dbo.IndexProcessing_IndexOptimize
+		WHERE IsProcessed = 0
+		AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) 
+		AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+		GROUP BY DbName
+		ORDER BY COUNT(*) ASC, Category, DbName
+	END
+
+	CREATE TABLE #IndexOptimize_Modified_Processing (ID bigint, DbName varchar(125), ParameterValue nvarchar(max), TotalPages bigint, RowRank int, OrderID int );
+
+	IF NOT (@_CountReplIndexes = 0 OR @_CountNonReplIndexes = 0)
+	BEGIN /* When Repl + NonRepl indexes */
+		INSERT #IndexOptimize_Modified_Processing (ID, DbName, ParameterValue, TotalPages ,RowRank, OrderID)
+		SELECT	ID, DbName, ParameterValue, TotalPages ,RowRank = NTILE(@_CountMin)OVER(PARTITION BY IsReplIndex ORDER BY OrderID), OrderID
+		FROM (
+			SELECT ID, DbName, ParameterValue, TotalPages, IsReplIndex = 1, OrderID = ROW_NUMBER()OVER(ORDER BY TotalPages DESC)
+			FROM dbo.IndexProcessing_IndexOptimize -- REPL databases
+			WHERE IsProcessed = 0 AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+			--
+			UNION ALL
+			--
+			SELECT ID, DbName, ParameterValue, TotalPages, IsReplIndex = 0, OrderID = ROW_NUMBER()OVER(ORDER BY TotalPages DESC)
+			FROM dbo.IndexProcessing_IndexOptimize -- Not REPL databases
+			WHERE IsProcessed = 0 AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+		) AS R
+		ORDER BY NTILE(@_CountMin)OVER(PARTITION BY IsReplIndex ORDER BY OrderID), OrderID;
+	END
 	ELSE
-		SET @_CountMin = @_CountNonReplIndexes;
+	BEGIN /* When Only either Repl or NonRepl indexes */
+		INSERT #IndexOptimize_Modified_Processing (ID, DbName, ParameterValue, TotalPages ,RowRank, OrderID)
+		SELECT	ID, DbName, ParameterValue, TotalPages ,RowRank = NTILE(@_CountMin)OVER(PARTITION BY IsReplIndex ORDER BY OrderID, DbName), OrderID
+		FROM (
+			SELECT ID, DbName, ParameterValue, TotalPages, IsReplIndex = 1, OrderID = ROW_NUMBER()OVER(PARTITION BY DbName ORDER BY TotalPages DESC)
+			FROM dbo.IndexProcessing_IndexOptimize -- REPL databases
+			WHERE IsProcessed = 0 AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+			--
+			UNION ALL
+			--
+			SELECT ID, DbName, ParameterValue, TotalPages, IsReplIndex = 0, OrderID = ROW_NUMBER()OVER(PARTITION BY DbName ORDER BY TotalPages DESC)
+			FROM dbo.IndexProcessing_IndexOptimize -- Not REPL databases
+			WHERE IsProcessed = 0 AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+		) AS R
+		ORDER BY NTILE(@_CountMin)OVER(PARTITION BY IsReplIndex ORDER BY OrderID, DbName), OrderID;
+	END
 
-	IF @_CountMin = 0
-		SET @_CountMin = 50;
+	IF @Verbose = 1
+	BEGIN
+		PRINT 'SELECT * FROM #IndexOptimize_Modified_Processing;'
+		SELECT '#IndexOptimize_Modified_Processing' as RunningQuery, *
+		FROM #IndexOptimize_Modified_Processing
+		ORDER BY RowRank, OrderID;
+	END
+
 
 	IF(@Verbose = 1)
 		PRINT 'Declaring cursor cursor_Indexes for processing of Indexes';
 	DECLARE cursor_Indexes CURSOR LOCAL FORWARD_ONLY FAST_FORWARD READ_ONLY FOR
-						SELECT	ID, DBName, ParameterValue, TotalPages --,RowRank = NTILE(@_CountMin)OVER(PARTITION BY IsReplIndex ORDER BY OrderID), OrderID
-						FROM (
-						SELECT ID, DBName, ParameterValue, TotalPages, IsReplIndex = 1, OrderID = ROW_NUMBER()OVER(ORDER BY TotalPages DESC)
-						FROM dbo.IndexProcessing_IndexOptimize -- REPL databases
-						WHERE IsProcessed = 0 AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
-						--
-						UNION ALL
-						--
-						SELECT ID, DBName, ParameterValue, TotalPages, IsReplIndex = 0, OrderID = ROW_NUMBER()OVER(ORDER BY TotalPages DESC)
-						FROM dbo.IndexProcessing_IndexOptimize -- Not REPL databases
-						WHERE IsProcessed = 0 AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
-							) AS R
-						ORDER BY NTILE(@_CountMin)OVER(PARTITION BY IsReplIndex ORDER BY OrderID), OrderID;
+				SELECT ID, DbName, ParameterValue, TotalPages
+				FROM #IndexOptimize_Modified_Processing
+				ORDER BY RowRank, OrderID;
 
 	OPEN cursor_Indexes;
 
@@ -231,7 +356,8 @@ BEGIN
 		IF(@Verbose = 1)
 		BEGIN
 			PRINT 'Processing Index '+@c_IndexParameterValue;
-			SELECT [@c_ID] = @c_ID, [@c_DbName] = @c_DbName, [@c_IndexParameterValue] = @c_IndexParameterValue, [@c_TotalPages] = @c_TotalPages
+			IF @Execute = 'Y'
+				SELECT [@c_ID] = @c_ID, [@c_DbName] = @c_DbName, [@c_IndexParameterValue] = @c_IndexParameterValue, [@c_TotalPages] = @c_TotalPages;
 		END
 
 		-- If Trying to Rebuild/ReOrg continsouly for Repl involved database, then Delay for 5 Minutes
@@ -239,8 +365,8 @@ BEGIN
 		BEGIN
 			SET @_DelaySeconds = 20 + (@c_TotalPages/10000)*0.56;
 
-			SELECT @_DelayLength = 
-						(CASE WHEN @_DelaySeconds < 60 
+			SELECT @_DelayLength =
+						(CASE WHEN @_DelaySeconds < 60
 							THEN '00:00:'+REPLICATE('0',2-LEN(@_DelaySeconds))+CAST(@_DelaySeconds AS VARCHAR(20))-- Less than a Minute
 							WHEN (@_DelaySeconds/60) < 60
 							THEN '00:'+REPLICATE('0',2-LEN(@_DelaySeconds/60))+CAST(@_DelaySeconds/60 AS VARCHAR(2))+':'+REPLICATE('0',2-LEN(@_DelaySeconds%60))+CAST(@_DelaySeconds%60 AS VARCHAR(20)) -- Less than an Hour
@@ -252,8 +378,47 @@ BEGIN
 			ELSE
 				PRINT CHAR(10)+CHAR(9)+'@_DelayLength = '''+@_DelayLength+''''+CHAR(10);
 		END
-		
-		EXECUTE DBA.dbo.IndexOptimize
+
+		-- Check Free Space in Log File
+		SET @_SQLString_Params = '@_log_free_space_mb bigint OUTPUT'
+		SET @_SQLString = N'
+
+	USE '+QUOTENAME(@c_DbName)+';
+	with t_log_free_space as (
+	select log_free_space_mb = SUM((size/128 - CAST(FILEPROPERTY(f.name,''SpaceUsed'') AS bigint)/128))
+	from sys.database_files f left join sys.filegroups fg on fg.data_space_id = f.data_space_id
+	where (not (growth <> 0 and (max_size = -1 or max_size >= size))) and f.type_desc = ''LOG''
+	)
+	select @_log_free_space_mb = ISNULL(log_free_space_mb,value)
+	from t_log_free_space full outer join (select -1 as value) d on 1 = 1
+
+';
+		IF(@Verbose = 1)
+		BEGIN
+			PRINT 'Check for free space on Log file of '''+@c_DbName+'''';
+			IF @_is_already_printed_logspace_check_query = 0
+			BEGIN
+				PRINT @_SQLString;
+				SET @_is_already_printed_logspace_check_query = 1;
+			END
+		END
+
+		IF @Execute = 'Y' OR @Verbose = 1
+		BEGIN
+			EXECUTE sp_executesql @_SQLString, @_SQLString_Params, @_log_free_space_mb=@_log_free_space_mb OUTPUT;
+			IF @Verbose = 1
+				PRINT '@_log_free_space_mb = '+cast(@_log_free_space_mb as varchar(20));
+
+			IF @_log_free_space_mb <> -1 AND (((@c_TotalPages/128)*@Index2FreeSpaceRatio) > @_log_free_space_mb)
+			BEGIN
+				SET @_SQLString = QUOTENAME(@c_DbName)+' => Free Log File Space of '+convert(varchar(20),@_log_free_space_mb)+' MB is not sufficient for index '''+@c_IndexParameterValue+''' of size '+convert(varchar(20), @c_TotalPages/128)+' MB with @Index2FreeSpaceRatio = '+CONVERT(varchar,@Index2FreeSpaceRatio);
+				THROW 51000, @_SQLString, 1;
+			END
+		END
+
+		IF NOT (@Verbose = 1 AND @Execute = 'N')
+		BEGIN
+			EXECUTE dbo.IndexOptimize
 									@Databases = @c_DbName, -- Changed Value
 									@FragmentationLow =  @FragmentationLow,
 									@FragmentationMedium =  @FragmentationMedium,
@@ -287,7 +452,8 @@ BEGIN
 									@DatabasesInParallel =  @DatabasesInParallel,
 									@LogToTable =  @LogToTable,
 									@Execute =  @Execute;
-		
+		END
+
 		IF @Execute = 'Y'
 		BEGIN
 			UPDATE dbo.IndexProcessing_IndexOptimize
