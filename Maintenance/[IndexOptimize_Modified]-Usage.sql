@@ -35,6 +35,7 @@ EXECUTE dbo.IndexOptimize_Modified
 @Indexes = 'ALL_INDEXES', /* Default is not specified. Db1.Schema1.Tbl1.Idx1, Db2.Schema2.Tbl2.Idx2 */
 @Delay = 60, /* Introduce 300 seconds of Delay b/w Indexes of Replicated Databases */
 @LogToTable = 'Y'
+,@Index2FreeSpaceRatio = 2.0
 ,@Execute = 'N'
 ,@ForceReInitiate = 1
 ,@Verbose = 1

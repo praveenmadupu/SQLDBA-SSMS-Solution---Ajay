@@ -1,3 +1,7 @@
+SET NOCOUNT ON; 
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+SET LOCK_TIMEOUT 60000; -- 60 seconds  
+
 declare @sql_text_fragment_filter nvarchar(200) --= 'settlement_booking_dat'
 declare @get_plans bit = 0;
 

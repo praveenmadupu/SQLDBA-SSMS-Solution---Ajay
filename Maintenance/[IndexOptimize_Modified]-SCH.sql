@@ -272,6 +272,9 @@ BEGIN
 								ELSE @_CountNonReplIndexes
 								END
 
+    IF @_CountMin < 10
+        SET @_CountMin = 10;
+
 	IF(@Verbose = 1)
 		SELECT 'Bucket Size' AS RunningQuery, [@_CountReplIndexes] = @_CountReplIndexes, [@_CountNonReplIndexes] = @_CountNonReplIndexes, [@_CountMin] = @_CountMin;
 
