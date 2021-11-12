@@ -1,6 +1,17 @@
 # SQLDBA-SSMS-Solution
 
-This is SQL Server Management Solution containing various projects having SQL scripts to help DBA in carrying out daily activities. Below are some highlights:-
+This is SQL Server Management Solution containing various projects having SQL scripts to help DBA in carrying out daily activities. 
+
+## Donation
+If this project help you reduce time to develop, you can give me a cup of coffee :) 
+
+PayPal |   | UPI
+------ | - | -----------
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://paypal.me/imajaydwivedi?country.x=IN&locale.x=en_GB) | | [![upi](https://www.vectorlogo.zone/logos/upi/upi-ar21.svg)](https://github.com/imajaydwivedi/Images/raw/master/Miscellaneous/UPI-PhonePe-Main.jpeg)
+
+-------------------------------------------------------------------------------------
+
+Below are some highlights:-
 
 ### 1. Backup-Restore
 This project contains Scripts for SQL Server Instance/Database migration. Following are the files:-

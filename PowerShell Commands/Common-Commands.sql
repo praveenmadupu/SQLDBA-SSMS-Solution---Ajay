@@ -442,3 +442,11 @@ icacls "E:\Ajay\*" /grant "DOMAIN\SQL Services":F /T
 
 # Powershell
 icacls --% "E:\Ajay\*" /grant "DOMAIN\SQL Services":F /T
+
+-- 39) Runing executable using PowerShell
+https://social.technet.microsoft.com/wiki/contents/articles/7703.powershell-running-executables.aspx
+
+-- 40) Running PowerShell script in SQL Server Agent Job using CmdExec Job Step Type
+powershell.exe -ExecutionPolicy Bypass -Command {
+    Invoke-SqlCmd -ServerInstance "servername" -Query "insert into DB.dbo.tbl values ('cat')"
+}
