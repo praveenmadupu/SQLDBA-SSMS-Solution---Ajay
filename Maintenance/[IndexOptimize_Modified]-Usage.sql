@@ -1,4 +1,4 @@
-use audit_archive
+use DBA
 go
 
 SET NOCOUNT ON;
@@ -17,13 +17,14 @@ AND DB_NAME(mf.database_id) NOT IN ('master','tempdb','model','msdb','resourcedb
 --select @_dbNames;
 
 EXECUTE dbo.IndexOptimize_Modified
-@Databases = 'dba,facebook,twitter,nvidia', -- Multiple databases can also be passed here
+@Databases = @_dbNames, -- Multiple databases can also be passed here
 @TimeLimit = 1800, -- 30 Minutes
 @FragmentationLow = NULL,
 @FragmentationMedium = 'INDEX_REBUILD_ONLINE,INDEX_REBUILD_OFFLINE',
 @FragmentationHigh = 'INDEX_REBUILD_ONLINE,INDEX_REBUILD_OFFLINE',
 @FragmentationLevel1 = 20,
 @FragmentationLevel2 = 30,
+@PartitionLevel = 'Y',
 @MinNumberOfPages = 1000,
 @Resumable = 'Y',
 --@SortInTempdb = 'Y',
@@ -36,8 +37,8 @@ EXECUTE dbo.IndexOptimize_Modified
 @Delay = 60, /* Introduce 300 seconds of Delay b/w Indexes of Replicated Databases */
 @LogToTable = 'Y'
 ,@Index2FreeSpaceRatio = 2.0
-,@Execute = 'N'
-,@ForceReInitiate = 1
+,@Execute = 'Y'
+,@ForceReInitiate = 0
 ,@Verbose = 1
 
 /*

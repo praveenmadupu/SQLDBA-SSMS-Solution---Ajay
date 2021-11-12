@@ -1,6 +1,9 @@
-USE [audit_archive]
+USE DBA
 GO
 
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_NAME = 'IndexOptimize_Modified')
+    EXEC ('CREATE PROC dbo.IndexOptimize_Modified AS SELECT ''stub version, to be replaced''')
+GO
 ALTER PROCEDURE [dbo].[IndexOptimize_Modified]	@Databases nvarchar(max) = NULL,
 												@FragmentationLow nvarchar(max) = NULL,
 												@FragmentationMedium nvarchar(max) = 'INDEX_REORGANIZE,INDEX_REBUILD_ONLINE,INDEX_REBUILD_OFFLINE',
@@ -47,6 +50,7 @@ BEGIN
 		Modifications:		May 18, 2019 - Created for 1st time
 							Nov 12, 2019 - Trying to solve Bug
 							Nov 04, 2021 - Enhance for Non-Repl databases. Add parallelism. Log Space Check
+							Nov 13, 2021 - Enhance code for more debugging
 	*/
 	IF(@Verbose = 1)
 		PRINT 'Declaring local variables..';
@@ -77,9 +81,9 @@ BEGIN
 			PRINT 'Creating table dbo.IndexProcessing_IndexOptimize';
 		--DROP TABLE dbo.IndexProcessing_IndexOptimize
 		CREATE TABLE dbo.IndexProcessing_IndexOptimize
-			(ID BIGINT IDENTITY(1,1) PRIMARY KEY, DbName varchar(125) NOT NULL, SchemaName varchar(125) NOT NULL, TableName varchar(125) NOT NULL, IndexName varchar(125) NOT NULL, TotalPages BIGINT NOT NULL, UsedPages BIGINT NOT NULL, ParameterValue AS (QUOTENAME(DbName)+'.'+QUOTENAME(SchemaName)+'.'+QUOTENAME(TableName)+'.'+QUOTENAME(IndexName)), EntryTime datetime default getdate(), IsProcessed bit default 0);
+			(ID BIGINT IDENTITY(1,1) PRIMARY KEY, DbName varchar(125) NOT NULL, SchemaName varchar(125) NOT NULL, TableName varchar(125) NOT NULL, IndexName varchar(125) NULL, IndexType varchar(50) not null, TotalPages BIGINT NOT NULL, TotalRows BIGINT NOT NULL, AvgFragmentationPcnt numeric(28,2) not null, Defrag bit not null default 1, ParameterValue AS (QUOTENAME(DbName)+'.'+QUOTENAME(SchemaName)+'.'+QUOTENAME(TableName)+'.'+QUOTENAME(IndexName)), EntryTime datetime default getdate(), IsProcessed bit default 0);
 
-		CREATE NONCLUSTERED INDEX NCI_IsProcessed_DBName ON dbo.IndexProcessing_IndexOptimize(IsProcessed,DbName);
+		--CREATE NONCLUSTERED INDEX NCI_IsProcessed_DBName ON dbo.IndexProcessing_IndexOptimize(IsProcessed,DbName);
 	END
 		
 	-- Check is specific databases have been mentioned
@@ -107,18 +111,28 @@ BEGIN
 	IF(@Verbose = 1)
 	BEGIN
 		PRINT 'SELECT * FROM @tbl_Databases;';
-		SELECT '@tbl_Databases' as RunningQuery, * FROM @tbl_Databases;
+		IF(CAST(SERVERPROPERTY('ProductMajorVersion') AS SMALLINT)> 13)
+			SELECT '@tbl_Databases' as RunningQuery, [@_isFreshStart] = @_isFreshStart, STRING_AGG(DBName,', ') AS Dbs FROM @tbl_Databases;
+		ELSE
+			SELECT '@tbl_Databases' as RunningQuery, [@_isFreshStart] = @_isFreshStart, * FROM @tbl_Databases;
 	END
 
 	-- Check if there is any database for which there is no index to process
 	IF(@Verbose = 1)
 	begin
 		print 'Checking if there is any database for which there is no index to process';
-		select [@_isFreshStart] = @_isFreshStart;
-		select 'Index Count for Processing' as RunningQuery, * 
+		--select [@_isFreshStart] = @_isFreshStart;
+		select 'Previous Index Count for Processing' as RunningQuery, d.DBName, 
+				i.[nonqualified-indexes], i.[qualified-indexes], i.processed, i.pending
+				,'select * from dbo.IndexProcessing_IndexOptimize' as [for-details]
 		from @tbl_Databases as d
-		left join (	select DbName, processed = sum(case when ipio.IsProcessed = 1 then 1 else 0 end), pending = sum(case when ipio.IsProcessed = 0 then 1 else 0 end)
+		left join (	select DbName, 
+							[nonqualified-indexes] = sum(case when ipio.Defrag = 0 then 1 else 0 end),
+							[qualified-indexes] = sum(case when ipio.Defrag = 1 then 1 else 0 end),
+							processed = sum(case when ipio.Defrag = 1 and ipio.IsProcessed = 1 then 1 else 0 end), 
+							pending = sum(case when ipio.Defrag = 1 and ipio.IsProcessed = 0 then 1 else 0 end)
 					from dbo.IndexProcessing_IndexOptimize as ipio
+					--where ipio.Defrag = 1
 					group by DbName
 				) i
 		on d.DBName = i.DbName
@@ -129,6 +143,7 @@ BEGIN
 					from @tbl_Databases as d
 					left join (select DbName, processed = sum(case when ipio.IsProcessed = 1 then 1 else 0 end), pending = sum(case when ipio.IsProcessed = 0 then 1 else 0 end)
 								from dbo.IndexProcessing_IndexOptimize as ipio
+								where ipio.Defrag = 1
 								group by DbName
 							) i
 					on d.DBName = i.DbName
@@ -143,6 +158,7 @@ BEGIN
 								from @tbl_Databases as d
 								left join (select DbName, processed = sum(case when ipio.IsProcessed = 1 then 1 else 0 end), pending = sum(case when ipio.IsProcessed = 0 then 1 else 0 end)
 											from dbo.IndexProcessing_IndexOptimize as ipio
+											where ipio.Defrag = 1
 											group by DbName
 										) i
 								on d.DBName = i.DbName
@@ -161,7 +177,7 @@ BEGIN
 			END
 
 			-- If no remaining index is there to process, repopulate table
-			IF (NOT EXISTS (SELECT * FROM dbo.IndexProcessing_IndexOptimize WHERE IsProcessed = 0 and DbName = @c_DbName) OR @_isFreshStart = 1)
+			IF ( (NOT EXISTS (SELECT * FROM dbo.IndexProcessing_IndexOptimize WHERE (Defrag = 1 and IsProcessed = 0) and DbName = @c_DbName)) OR (@_isFreshStart = 1) )
 			BEGIN
 				--SET @_isFreshStart = 1;
 				IF(@Verbose = 1)
@@ -169,20 +185,6 @@ BEGIN
 				DELETE FROM dbo.IndexProcessing_IndexOptimize WHERE DbName = @c_DbName;
 			END
 
-			/*  
-			SET @_SQLString = '
-			USE '+QUOTENAME(@c_DbName)+';
-
-			SELECT DB_NAME() as DbName, s.name as SchemaName, o.name as TableName, i.name as IndexName, SUM(a.total_pages) AS TotalPages, SUM(a.used_pages) AS UsedPages
-			FROM sys.indexes AS i inner join sys.objects as o on o.object_id = i.object_id join sys.schemas as s on s.schema_id = o.schema_id
-			inner join sys.partitions as p on p.object_id = i.object_id and p.index_id = i.index_id
-			inner join sys.allocation_units as a on p.partition_id = a.container_id
-			WHERE o.type in (''U'',''V'') AND i.name IS NOT NULL
-				AND o.is_ms_shipped = 0 AND i.is_hypothetical = 0
-			GROUP BY s.name, o.name, i.name
-			ORDER BY TotalPages DESC
-			';
-			*/
 			SET @_SQLString = '
 			USE '+QUOTENAME(@c_DbName)+';
 
@@ -190,26 +192,22 @@ BEGIN
 					sch.name as SchemaName,
 					object_name(ips.object_id) as TableName,
 					ind.name as IndexName,
+					ips.index_type_desc as IndexType,
 					page_count as TotalPages,
-					0 as UsedPages
+					ps.row_count as TotalRows,
+					ips.avg_fragmentation_in_percent as [AvgFragmentationPcnt],
+					[Defrag] = (CASE WHEN	(case when ips.page_count >= '+CAST(@MinNumberOfPages AS VARCHAR(20))+' then ''Yes'' else ''No'' end) = ''Yes'' 
+											and avg_fragmentation_in_percent >= '+CAST(@FragmentationLevel1 AS varchar(20))+' 
+											and ind.name is not null
+									THEN 1 
+									ELSE 0 END)
 			from sys.dm_db_index_physical_stats(DB_ID(),NULL,NULL,NULL,''LIMITED'') as ips
 			inner join sys.indexes as ind on ips.index_id = ind.index_id and ips.object_id = ind.object_id
 			inner join sys.tables as tbl on ips.object_id = tbl.object_id
 			inner join sys.schemas as sch on tbl.schema_id = sch.schema_id
 			inner join sys.dm_db_partition_stats as ps on ps.object_id = ips.object_id and ps.index_id = ips.index_id
-			left join sys.stats as sts on sts.object_id = ind.object_id
-			cross apply sys.dm_db_stats_properties(ind.object_id, sts.stats_id) as sp
-			where sts.name = ind.name
-			AND (	(	(case when ips.page_count >= 1000 then ''Yes'' else ''No'' end) = ''Yes''
-						and avg_fragmentation_in_percent >= '+cast(@FragmentationLevel1 as varchar(4))+ '
-					)
-					-- Index Defrag Filters
-					--OR
-					-- Update Stats filter
-					--(	(case when sp.modification_counter > 0 then ''Yes'' else ''No'' end) = ''Yes''
-						--and (case when sp.modification_counter >= SQRT(ps.row_count * 1000) then ''Yes'' else ''No'' end) = ''Yes''
-					--)
-				)
+			where ips.alloc_unit_type_desc = ''IN_ROW_DATA''
+			ORDER BY  SchemaName, TableName, ips.avg_fragmentation_in_percent DESC
 			OPTION (RECOMPILE);
 			';
 
@@ -224,7 +222,7 @@ BEGIN
 			END
 
 			INSERT dbo.IndexProcessing_IndexOptimize
-			(DbName, SchemaName, TableName, IndexName, TotalPages, UsedPages)
+			(DbName, SchemaName, TableName, IndexName, IndexType, TotalPages, TotalRows, AvgFragmentationPcnt, Defrag)
 			EXEC(@_SQLString);
 
 			FETCH NEXT FROM cursor_Databases INTO @c_DbName;
@@ -239,14 +237,14 @@ BEGIN
 	-- Find out Repl database indexes
 	SELECT @_CountReplIndexes = COUNT(*)
 	FROM dbo.IndexProcessing_IndexOptimize as ipio 
-	WHERE IsProcessed = 0 
+	WHERE (Defrag = 1 and IsProcessed = 0)
 	AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1)
 	AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d);
 
 	-- Find out Non-Repl database indexes
 	SELECT @_CountNonReplIndexes = COUNT(*)
 	FROM dbo.IndexProcessing_IndexOptimize
-	WHERE IsProcessed = 0
+	WHERE (Defrag = 1 and IsProcessed = 0)
 	AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) 
 	AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d);
 
@@ -254,7 +252,7 @@ BEGIN
 	SELECT @_CountMin =	CASE	WHEN @_CountReplIndexes = 0 /* When repl indexes are 0, set bucket count to min(count) of index of non-repl database */
 								THEN (	SELECT TOP 1 COUNT(*) AS index_counts
 										FROM dbo.IndexProcessing_IndexOptimize
-										WHERE IsProcessed = 0
+										WHERE (Defrag = 1 and IsProcessed = 0)
 										AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1)
 										AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
 										GROUP BY DbName ORDER BY COUNT(*) ASC
@@ -262,7 +260,7 @@ BEGIN
 								WHEN @_CountNonReplIndexes = 0 /* When non-repl indexes are 0, set bucket count to min(count) of index of repl database */
 								THEN (	SELECT TOP 1 COUNT(*) AS index_counts
 										FROM dbo.IndexProcessing_IndexOptimize
-										WHERE IsProcessed = 0
+										WHERE (Defrag = 1 and IsProcessed = 0)
 										AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1)
 										AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
 										GROUP BY DbName ORDER BY COUNT(*) ASC
@@ -282,7 +280,7 @@ BEGIN
 	BEGIN
 		SELECT 'Index Counts By Database' as RunningQuery, 'Non-Repl' as Category, DbName, COUNT(*) AS index_counts
 		FROM dbo.IndexProcessing_IndexOptimize
-		WHERE IsProcessed = 0
+		WHERE (Defrag = 1 and IsProcessed = 0)
 		AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) 
 		AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
 		GROUP BY DbName
@@ -291,7 +289,7 @@ BEGIN
 		--
 		SELECT 'Index Counts By Database' as RunningQuery, 'Repl' as Category, DbName, COUNT(*) AS index_counts
 		FROM dbo.IndexProcessing_IndexOptimize
-		WHERE IsProcessed = 0
+		WHERE (Defrag = 1 and IsProcessed = 0)
 		AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) 
 		AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
 		GROUP BY DbName
@@ -307,13 +305,13 @@ BEGIN
 		FROM (
 			SELECT ID, DbName, ParameterValue, TotalPages, IsReplIndex = 1, OrderID = ROW_NUMBER()OVER(ORDER BY TotalPages DESC)
 			FROM dbo.IndexProcessing_IndexOptimize -- REPL databases
-			WHERE IsProcessed = 0 AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+			WHERE (Defrag = 1 and IsProcessed = 0) AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
 			--
 			UNION ALL
 			--
 			SELECT ID, DbName, ParameterValue, TotalPages, IsReplIndex = 0, OrderID = ROW_NUMBER()OVER(ORDER BY TotalPages DESC)
 			FROM dbo.IndexProcessing_IndexOptimize -- Not REPL databases
-			WHERE IsProcessed = 0 AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+			WHERE (Defrag = 1 and IsProcessed = 0) AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
 		) AS R
 		ORDER BY NTILE(@_CountMin)OVER(PARTITION BY IsReplIndex ORDER BY OrderID), OrderID;
 	END
@@ -324,13 +322,13 @@ BEGIN
 		FROM (
 			SELECT ID, DbName, ParameterValue, TotalPages, IsReplIndex = 1, OrderID = ROW_NUMBER()OVER(PARTITION BY DbName ORDER BY TotalPages DESC)
 			FROM dbo.IndexProcessing_IndexOptimize -- REPL databases
-			WHERE IsProcessed = 0 AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+			WHERE (Defrag = 1 and IsProcessed = 0) AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
 			--
 			UNION ALL
 			--
 			SELECT ID, DbName, ParameterValue, TotalPages, IsReplIndex = 0, OrderID = ROW_NUMBER()OVER(PARTITION BY DbName ORDER BY TotalPages DESC)
 			FROM dbo.IndexProcessing_IndexOptimize -- Not REPL databases
-			WHERE IsProcessed = 0 AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+			WHERE (Defrag = 1 and IsProcessed = 0) AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
 		) AS R
 		ORDER BY NTILE(@_CountMin)OVER(PARTITION BY IsReplIndex ORDER BY OrderID, DbName), OrderID;
 	END
@@ -469,5 +467,4 @@ BEGIN
 	END
 END
 GO
-
 
