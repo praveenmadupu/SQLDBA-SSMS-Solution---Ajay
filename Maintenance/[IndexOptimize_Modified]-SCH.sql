@@ -46,11 +46,9 @@ BEGIN
 	SET NOCOUNT ON;
 
 	/*	Created By:			Ajay Dwivedi
-		Version:			0.1
+		Version:			0.2
 		Modifications:		May 18, 2019 - Created for 1st time
-							Nov 12, 2019 - Trying to solve Bug
-							Nov 04, 2021 - Enhance for Non-Repl databases. Add parallelism. Log Space Check
-							Nov 13, 2021 - Enhance code for more debugging
+							Nov 13, 2021 - https://github.com/imajaydwivedi/SQLDBA-SSMS-Solution/issues/4
 	*/
 	IF(@Verbose = 1)
 		PRINT 'Declaring local variables..';
@@ -64,12 +62,12 @@ BEGIN
 	DECLARE @_DelayLength char(8)= '00:00:00'
 	DECLARE @c_IndexParameterValue VARCHAR(500);
 	DECLARE @_SQLString NVARCHAR(MAX);
-	DECLARE @_SQLString_Params NVARCHAR(500);  
-	DECLARE @tbl_Databases TABLE (ID INT IDENTITY(1,1), DBName VARCHAR(200));
+	DECLARE @_SQLString_Params NVARCHAR(500);
+	DECLARE @tbl_Databases TABLE (ID INT IDENTITY(1,1), DBName VARCHAR(200), HaDrEnabled bit default 0);
 	DECLARE @_IndexingStartTime datetime = GETDATE();
 	DECLARE @_IndexingEndTime datetime;
-	DECLARE @_CountReplIndexes INT;
-	DECLARE @_CountNonReplIndexes INT;
+	DECLARE @_CountHadrIndexes INT;
+	DECLARE @_CountNonHadrIndexes INT;
 	DECLARE @_CountMin INT;
 	DECLARE @_is_already_printed_frag_query bit = 0;
 	DECLARE @_is_already_printed_logspace_check_query bit = 0;
@@ -103,8 +101,15 @@ BEGIN
 			FROM t1
 			WHERE DBs > ''	
 		)
-		INSERT @tbl_Databases
-		SELECT LTRIM(RTRIM(DBName)) FROM t1
+		INSERT @tbl_Databases (DBName, HaDrEnabled)
+		SELECT [DBName] = LTRIM(RTRIM(DBName)), 
+				HaDrEnabled = (CASE WHEN	d.is_published = 1 OR d.is_subscribed = 1 
+											OR d.is_distributor = 1 OR group_database_id is not null
+									THEN	1
+									ELSE	0
+									END)
+		FROM t1
+		LEFT JOIN sys.databases d ON t1.DBName = d.name
 		OPTION (MAXRECURSION 32000);
 	END
 
@@ -112,13 +117,15 @@ BEGIN
 	BEGIN
 		PRINT 'SELECT * FROM @tbl_Databases;';
 		IF(CAST(SERVERPROPERTY('ProductMajorVersion') AS SMALLINT)> 13)
-			SELECT '@tbl_Databases' as RunningQuery, [@_isFreshStart] = @_isFreshStart, STRING_AGG(DBName,', ') AS Dbs FROM @tbl_Databases;
+			SELECT '@tbl_Databases__Hadr__' as RunningQuery, [@_isFreshStart] = @_isFreshStart, STRING_AGG(DBName,', ') AS Dbs FROM @tbl_Databases WHERE HaDrEnabled = 1
+			UNION ALL
+			SELECT '@tbl_Databases__NonHadr__' as RunningQuery, [@_isFreshStart] = @_isFreshStart, STRING_AGG(DBName,', ') AS Dbs FROM @tbl_Databases WHERE HaDrEnabled = 0;
 		ELSE
 			SELECT '@tbl_Databases' as RunningQuery, [@_isFreshStart] = @_isFreshStart, * FROM @tbl_Databases;
 	END
 
 	-- Check if there is any database for which there is no index to process
-	IF(@Verbose = 1)
+	IF(@Verbose = 1 AND @ForceReInitiate = 0)
 	begin
 		print 'Checking if there is any database for which there is no index to process';
 		--select [@_isFreshStart] = @_isFreshStart;
@@ -231,106 +238,110 @@ BEGIN
 
 	IF(@Verbose = 1)
 	BEGIN
-		PRINT 'Initializing variable @_CountReplIndexes, @_CountNonReplIndexes, @_CountMin ';
+		PRINT 'Initializing variable @_CountHadrIndexes, @_CountNonHadrIndexes, @_CountMin ';
 	END
 
-	-- Find out Repl database indexes
-	SELECT @_CountReplIndexes = COUNT(*)
-	FROM dbo.IndexProcessing_IndexOptimize as ipio 
+	-- Find out Hadr database indexes
+	SELECT @_CountHadrIndexes = COUNT(*)
+	FROM dbo.IndexProcessing_IndexOptimize as ipio
 	WHERE (Defrag = 1 and IsProcessed = 0)
-	AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1)
-	AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d);
+	--AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1 OR group_database_id is not null)
+	AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d WHERE HaDrEnabled = 1);
 
-	-- Find out Non-Repl database indexes
-	SELECT @_CountNonReplIndexes = COUNT(*)
+	-- Find out Non-Hadr database indexes
+	SELECT @_CountNonHadrIndexes = COUNT(*)
 	FROM dbo.IndexProcessing_IndexOptimize
 	WHERE (Defrag = 1 and IsProcessed = 0)
-	AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) 
-	AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d);
+	--AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1 OR group_database_id is not null) 
+	AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d WHERE HaDrEnabled = 0);
 
 	/* Set Bucket Size */
-	SELECT @_CountMin =	CASE	WHEN @_CountReplIndexes = 0 /* When repl indexes are 0, set bucket count to min(count) of index of non-repl database */
+	SELECT @_CountMin =	CASE	WHEN @_CountHadrIndexes = 0 /* When hadr indexes are 0, set bucket count to min(count) of index of non-hadr database */
 								THEN (	SELECT TOP 1 COUNT(*) AS index_counts
 										FROM dbo.IndexProcessing_IndexOptimize
 										WHERE (Defrag = 1 and IsProcessed = 0)
-										AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1)
-										AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+										--AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1 OR group_database_id is not null)
+										AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d WHERE HaDrEnabled = 0)
 										GROUP BY DbName ORDER BY COUNT(*) ASC
 									)
-								WHEN @_CountNonReplIndexes = 0 /* When non-repl indexes are 0, set bucket count to min(count) of index of repl database */
+								WHEN @_CountNonHadrIndexes = 0 /* When non-hadr indexes are 0, set bucket count to min(count) of index of hadr database */
 								THEN (	SELECT TOP 1 COUNT(*) AS index_counts
 										FROM dbo.IndexProcessing_IndexOptimize
 										WHERE (Defrag = 1 and IsProcessed = 0)
-										AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1)
-										AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+										--AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1 OR group_database_id is not null)
+										AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d WHERE HaDrEnabled = 1)
 										GROUP BY DbName ORDER BY COUNT(*) ASC
 									)
-								WHEN @_CountReplIndexes <= @_CountNonReplIndexes
-								THEN @_CountReplIndexes
-								ELSE @_CountNonReplIndexes
+								WHEN @_CountHadrIndexes <= @_CountNonHadrIndexes
+								THEN @_CountHadrIndexes
+								ELSE @_CountNonHadrIndexes
 								END
 
     IF @_CountMin < 10
         SET @_CountMin = 10;
 
 	IF(@Verbose = 1)
-		SELECT 'Bucket Size' AS RunningQuery, [@_CountReplIndexes] = @_CountReplIndexes, [@_CountNonReplIndexes] = @_CountNonReplIndexes, [@_CountMin] = @_CountMin;
+		SELECT 'Bucket Size' AS RunningQuery, [@_CountHadrIndexes] = @_CountHadrIndexes, [@_CountNonHadrIndexes] = @_CountNonHadrIndexes, [@_CountMin] = @_CountMin;
 
 	IF @Verbose = 1
 	BEGIN
-		SELECT 'Index Counts By Database' as RunningQuery, 'Non-Repl' as Category, DbName, COUNT(*) AS index_counts
+		SELECT 'Index Counts By Database' as RunningQuery, 'Non-Hadr' as Category, DbName, COUNT(*) AS index_counts
 		FROM dbo.IndexProcessing_IndexOptimize
 		WHERE (Defrag = 1 and IsProcessed = 0)
-		AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) 
-		AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+		--AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1 OR group_database_id is not null) 
+		AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d WHERE HaDrEnabled = 0)
 		GROUP BY DbName
 		--
 		UNION ALL
 		--
-		SELECT 'Index Counts By Database' as RunningQuery, 'Repl' as Category, DbName, COUNT(*) AS index_counts
+		SELECT 'Index Counts By Database' as RunningQuery, 'Hadr' as Category, DbName, COUNT(*) AS index_counts
 		FROM dbo.IndexProcessing_IndexOptimize
 		WHERE (Defrag = 1 and IsProcessed = 0)
-		AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) 
-		AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+		--AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1 OR group_database_id is not null) 
+		AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d WHERE HaDrEnabled = 1)
 		GROUP BY DbName
 		ORDER BY COUNT(*) ASC, Category, DbName
 	END
 
 	CREATE TABLE #IndexOptimize_Modified_Processing (ID bigint, DbName varchar(125), ParameterValue nvarchar(max), TotalPages bigint, RowRank int, OrderID int );
 
-	IF NOT (@_CountReplIndexes = 0 OR @_CountNonReplIndexes = 0)
-	BEGIN /* When Repl + NonRepl indexes */
+	IF NOT (@_CountHadrIndexes = 0 OR @_CountNonHadrIndexes = 0)
+	BEGIN /* When Hadr + NonHadr indexes */
 		INSERT #IndexOptimize_Modified_Processing (ID, DbName, ParameterValue, TotalPages ,RowRank, OrderID)
-		SELECT	ID, DbName, ParameterValue, TotalPages ,RowRank = NTILE(@_CountMin)OVER(PARTITION BY IsReplIndex ORDER BY OrderID), OrderID
+		SELECT	ID, DbName, ParameterValue, TotalPages ,RowRank = NTILE(@_CountMin)OVER(PARTITION BY IsHadrIndex ORDER BY OrderID), OrderID
 		FROM (
-			SELECT ID, DbName, ParameterValue, TotalPages, IsReplIndex = 1, OrderID = ROW_NUMBER()OVER(ORDER BY TotalPages DESC)
-			FROM dbo.IndexProcessing_IndexOptimize -- REPL databases
-			WHERE (Defrag = 1 and IsProcessed = 0) AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+			SELECT ID, DbName, ParameterValue, TotalPages, IsHadrIndex = 1, OrderID = ROW_NUMBER()OVER(ORDER BY TotalPages DESC)
+			FROM dbo.IndexProcessing_IndexOptimize -- Hadr databases
+			WHERE (Defrag = 1 and IsProcessed = 0)
+			AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d WHERE HaDrEnabled = 1)
 			--
 			UNION ALL
 			--
-			SELECT ID, DbName, ParameterValue, TotalPages, IsReplIndex = 0, OrderID = ROW_NUMBER()OVER(ORDER BY TotalPages DESC)
-			FROM dbo.IndexProcessing_IndexOptimize -- Not REPL databases
-			WHERE (Defrag = 1 and IsProcessed = 0) AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+			SELECT ID, DbName, ParameterValue, TotalPages, IsHadrIndex = 0, OrderID = ROW_NUMBER()OVER(ORDER BY TotalPages DESC)
+			FROM dbo.IndexProcessing_IndexOptimize -- Not Hadr databases
+			WHERE (Defrag = 1 and IsProcessed = 0)
+			AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d WHERE HaDrEnabled = 0)
 		) AS R
-		ORDER BY NTILE(@_CountMin)OVER(PARTITION BY IsReplIndex ORDER BY OrderID), OrderID;
+		ORDER BY NTILE(@_CountMin)OVER(PARTITION BY IsHadrIndex ORDER BY OrderID), OrderID;
 	END
 	ELSE
-	BEGIN /* When Only either Repl or NonRepl indexes */
+	BEGIN /* When Only either Hadr or NonHadr indexes */
 		INSERT #IndexOptimize_Modified_Processing (ID, DbName, ParameterValue, TotalPages ,RowRank, OrderID)
-		SELECT	ID, DbName, ParameterValue, TotalPages ,RowRank = NTILE(@_CountMin)OVER(PARTITION BY IsReplIndex ORDER BY OrderID, DbName), OrderID
+		SELECT	ID, DbName, ParameterValue, TotalPages ,RowRank = NTILE(@_CountMin)OVER(PARTITION BY IsHadrIndex ORDER BY OrderID, DbName), OrderID
 		FROM (
-			SELECT ID, DbName, ParameterValue, TotalPages, IsReplIndex = 1, OrderID = ROW_NUMBER()OVER(PARTITION BY DbName ORDER BY TotalPages DESC)
-			FROM dbo.IndexProcessing_IndexOptimize -- REPL databases
-			WHERE (Defrag = 1 and IsProcessed = 0) AND DbName IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+			SELECT ID, DbName, ParameterValue, TotalPages, IsHadrIndex = 1, OrderID = ROW_NUMBER()OVER(PARTITION BY DbName ORDER BY TotalPages DESC)
+			FROM dbo.IndexProcessing_IndexOptimize -- Hadr databases
+			WHERE (Defrag = 1 and IsProcessed = 0)
+			AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d WHERE HaDrEnabled = 1)
 			--
 			UNION ALL
 			--
-			SELECT ID, DbName, ParameterValue, TotalPages, IsReplIndex = 0, OrderID = ROW_NUMBER()OVER(PARTITION BY DbName ORDER BY TotalPages DESC)
-			FROM dbo.IndexProcessing_IndexOptimize -- Not REPL databases
-			WHERE (Defrag = 1 and IsProcessed = 0) AND DbName NOT IN (SELECT d.name FROM sys.databases as d WHERE d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1) AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d)
+			SELECT ID, DbName, ParameterValue, TotalPages, IsHadrIndex = 0, OrderID = ROW_NUMBER()OVER(PARTITION BY DbName ORDER BY TotalPages DESC)
+			FROM dbo.IndexProcessing_IndexOptimize -- Not Hadr databases
+			WHERE (Defrag = 1 and IsProcessed = 0)
+			AND DbName IN (SELECT d.DBName FROM @tbl_Databases as d WHERE HaDrEnabled = 0)
 		) AS R
-		ORDER BY NTILE(@_CountMin)OVER(PARTITION BY IsReplIndex ORDER BY OrderID, DbName), OrderID;
+		ORDER BY NTILE(@_CountMin)OVER(PARTITION BY IsHadrIndex ORDER BY OrderID, DbName), OrderID;
 	END
 
 	IF @Verbose = 1
@@ -361,8 +372,9 @@ BEGIN
 				SELECT [@c_ID] = @c_ID, [@c_DbName] = @c_DbName, [@c_IndexParameterValue] = @c_IndexParameterValue, [@c_TotalPages] = @c_TotalPages;
 		END
 
-		-- If Trying to Rebuild/ReOrg continsouly for Repl involved database, then Delay for 5 Minutes
-		IF @c_DbName_PreviousIndex IS NOT NULL AND @c_DbName_PreviousIndex = @c_DbName AND @_CountReplIndexes > 0 AND EXISTS (SELECT 1 FROM sys.databases as d WHERE d.name = @c_DbName AND d.is_published = 1 OR d.is_subscribed = 1 OR d.is_distributor = 1)
+		-- If Trying to Rebuild/ReOrg continsouly for Hadr involved database, then Delay for 5 Minutes
+		IF @c_DbName_PreviousIndex IS NOT NULL AND @c_DbName_PreviousIndex = @c_DbName AND @_CountHadrIndexes > 0 
+			AND EXISTS (SELECT 1 FROM @tbl_Databases as d WHERE d.DBName = @c_DbName AND HaDrEnabled = 1)
 		BEGIN
 			SET @_DelaySeconds = 20 + (@c_TotalPages/10000)*0.56;
 

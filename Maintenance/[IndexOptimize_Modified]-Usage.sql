@@ -18,7 +18,7 @@ AND DB_NAME(mf.database_id) NOT IN ('master','tempdb','model','msdb','resourcedb
 
 EXECUTE dbo.IndexOptimize_Modified
 @Databases = @_dbNames, -- Multiple databases can also be passed here
-@TimeLimit = 1800, -- 30 Minutes
+@TimeLimit = 14400, -- 4 Hours
 @FragmentationLow = NULL,
 @FragmentationMedium = 'INDEX_REBUILD_ONLINE,INDEX_REBUILD_OFFLINE',
 @FragmentationHigh = 'INDEX_REBUILD_ONLINE,INDEX_REBUILD_OFFLINE',
@@ -43,6 +43,7 @@ EXECUTE dbo.IndexOptimize_Modified
 
 /*
 SELECT *
-FROM dbo.IndexProcessing_IndexOptimize
+FROM dbo.IndexProcessing_IndexOptimize i
+ORDER BY i.Defrag desc, i.IsProcessed desc
 
 */
