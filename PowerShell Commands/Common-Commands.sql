@@ -450,3 +450,23 @@ https://social.technet.microsoft.com/wiki/contents/articles/7703.powershell-runn
 powershell.exe -ExecutionPolicy Bypass -Command {
     Invoke-SqlCmd -ServerInstance "servername" -Query "insert into DB.dbo.tbl values ('cat')"
 }
+
+
+-- 41) Create Image Using PowerShell
+Add-Type -AssemblyName System.Drawing
+
+$disks = Get-SdtVolumeInfo | Format-Table -AutoSize | Out-String
+
+$filename = "$home\foo.png" 
+$bmp = new-object System.Drawing.Bitmap 1028,250 # Image size
+$font = new-object System.Drawing.Font Consolas,10 # Font size
+$brushBg = [System.Drawing.Brushes]::Yellow # Image background
+$brushFg = [System.Drawing.Brushes]::Black # Text Color
+$graphics = [System.Drawing.Graphics]::FromImage($bmp) 
+$graphics.FillRectangle($brushBg,0,0,$bmp.Width,$bmp.Height) 
+$graphics.DrawString($disks,$font,$brushFg,0,0) # Relative coordinates within Image Canvas
+$graphics.Dispose() 
+$bmp.Save($filename) 
+
+Invoke-Item $filename  
+
