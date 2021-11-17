@@ -3,8 +3,8 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="LOCALHOST:MSI\ajayd">
-          <Created>2021-02-02T20:18:09.8299159+05:30</Created>
+        <ConnectionNode Name="LOCALHOST:LAB\adwivedi">
+          <Created>2021-02-02T14:48:09.8299159+00:00</Created>
           <Type>SQL</Type>
           <Server>LOCALHOST</Server>
           <UserName />
@@ -19,6 +19,30 @@
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
+        <FileNode Name="2021-PASS-Precon-Advanced-TSQL-Demo-Queries.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>2021-PASS-Precon-Advanced-TSQL-Demo-Queries.sql</FullPath>
+        </FileNode>
+        <FileNode Name="2021-PASS-Precon-Advanced-TSQL-PerformanceV5-Db-Config.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>2021-PASS-Precon-Advanced-TSQL-PerformanceV5-Db-Config.sql</FullPath>
+        </FileNode>
+        <FileNode Name="2021-PASS-Precon-Advanced-TSQL-Self-Queries.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>2021-PASS-Precon-Advanced-TSQL-Self-Queries.sql</FullPath>
+        </FileNode>
+        <FileNode Name="2021-PASS-Precon-Advanced-TSQLV5-Db-Config.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>2021-PASS-Precon-Advanced-TSQLV5-Db-Config.sql</FullPath>
+        </FileNode>
         <FileNode Name="Blocking-Demo.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
