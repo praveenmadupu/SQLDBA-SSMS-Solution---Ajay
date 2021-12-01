@@ -83,6 +83,8 @@ Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Projects-Testing", "Project
 EndProject
 Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "Maintenance", "Maintenance\Maintenance.ssmssqlproj", "{49DFF171-1634-4AA9-AE4C-0CD8C9EBD1A3}"
 EndProject
+Project("{4F2E2C19-372F-40D8-9FA7-9D2138C6997A}") = "_SQLDBATools", "_SQLDBATools\_SQLDBATools.ssmssqlproj", "{A1C5E029-364F-458E-AA6B-2F652A31F008}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Default|Default = Default|Default
@@ -127,8 +129,9 @@ Global
 		{2AA8E206-6A25-4890-8FDA-08B61B56AD00}.Default|Default.ActiveCfg = Default
 		{5BC08764-DBEC-4148-AD69-4DF9BE6CAFDC}.Default|Default.ActiveCfg = Default
 		{ABC58D6E-0694-4E25-8FA6-1F1647C9E7D8}.Default|Default.ActiveCfg = Default
-		{A360839F-5B61-4277-81C1-8A8C69735325}.Default|Default.ActiveCfg = Default
 		{49DFF171-1634-4AA9-AE4C-0CD8C9EBD1A3}.Default|Default.ActiveCfg = Default
+		{76E9A3BF-8A4B-484A-BDEC-AF2E43E022E6}.Default|Default.ActiveCfg = Default
+		{A1C5E029-364F-458E-AA6B-2F652A31F008}.Default|Default.ActiveCfg = Default
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
