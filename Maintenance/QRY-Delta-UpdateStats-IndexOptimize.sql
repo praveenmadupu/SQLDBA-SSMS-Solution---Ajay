@@ -38,17 +38,16 @@ begin
 	) as ps
 	where ps.rows_total >= 50000
 	and (NOT ( o.name like ''!_td!_bl%'' escape ''!'' or o.name like ''%audit%''))
-	and (	sp.modification_counter >= 10000 or 
+	and (	--sp.modification_counter >= 10000 or
 			(case when sp.modification_counter >= (SELECT CONVERT(decimal(20,0),MIN (val)) FROM (VALUES (500 + (0.20 * ps.rows_total)),(SQRT(1000 * ps.rows_total))) as Thresholds(val)) then 1 else 0 end) = 1
 		)
 	and ( (case when o.is_ms_shipped = 1 and ps.rows_total >= 100000 then 1 when o.is_ms_shipped = 0 then 1 else 0 end) = 1 )
-	--order by  sp.last_updated asc;
 	)
 	select *, convert(decimal(20,0),(modification_counter*100)/SqrtFormula) as [threshold %]
 			,(SQRT(s.rows_total)*0.3) +(convert(decimal(20,0),(modification_counter*100)/SqrtFormula)) as order_id
 	from tStats s
 	where SqrtFormula > 0
-	--order by (SQRT(s.rows_total)*0.3) +(convert(decimal(20,0),(modification_counter*100)/SqrtFormula)) DESC
+	order by order_id
 end
 '
 --print @query_get_stats
@@ -98,7 +97,7 @@ begin
 
 		fetch next from cur_stats into @db_name, @indexes;
 	end
-	CLOSE cur_stats;  
-	DEALLOCATE cur_stats; 
+	CLOSE cur_stats;
+	DEALLOCATE cur_stats;
 end
 go
