@@ -3,30 +3,6 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="(local):MSI\ajayd">
-          <Created>2020-04-13T17:43:46.957843+05:30</Created>
-          <Type>SQL</Type>
-          <Server>(local)</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB>sqldbatools</InitialDB>
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
-        <ConnectionNode Name="LOCALHOST:MSI\ajayd">
-          <Created>2020-04-14T09:17:10.2941827+05:30</Created>
-          <Type>SQL</Type>
-          <Server>LOCALHOST</Server>
-          <UserName />
-          <Authentication>Windows Authentication</Authentication>
-          <InitialDB>master</InitialDB>
-          <LoginTimeout>30</LoginTimeout>
-          <ExecutionTimeout>0</ExecutionTimeout>
-          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
-          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
-        </ConnectionNode>
         <ConnectionNode Name="sqla:sa">
           <Created>2020-04-20T18:41:08.1726728+05:30</Created>
           <Type>SQL</Type>
@@ -50,8 +26,8 @@
           <FullPath>Aadhar Loan Calculator.sql</FullPath>
         </FileNode>
         <FileNode Name="AO_RoleSwitch_History.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>AO_RoleSwitch_History.sql</FullPath>
         </FileNode>
@@ -62,8 +38,8 @@
           <FullPath>Backup Restore CreateDate Test.sql</FullPath>
         </FileNode>
         <FileNode Name="BCP-QueryOut.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>BCP-QueryOut.sql</FullPath>
         </FileNode>
@@ -110,8 +86,8 @@
           <FullPath>Find Long Running Query.sql</FullPath>
         </FileNode>
         <FileNode Name="FOR XML PATH.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>FOR XML PATH.sql</FullPath>
         </FileNode>
@@ -164,8 +140,8 @@
           <FullPath>Powershell - Stop - SQLServices.sql</FullPath>
         </FileNode>
         <FileNode Name="PowerShell Commands - iCacls.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:(local):True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>(local)</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>PowerShell Commands - iCacls.sql</FullPath>
         </FileNode>
@@ -182,8 +158,8 @@
           <FullPath>PS-Keep-Skype-Alive.sql</FullPath>
         </FileNode>
         <FileNode Name="QRY-AlwaysOn-Health.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>QRY-AlwaysOn-Health.sql</FullPath>
         </FileNode>
@@ -200,8 +176,8 @@
           <FullPath>Return Query Output as HTML Table.sql</FullPath>
         </FileNode>
         <FileNode Name="RoboCopy.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:LOCALHOST:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>LOCALHOST</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>RoboCopy.sql</FullPath>
         </FileNode>
