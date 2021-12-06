@@ -30,8 +30,17 @@ select	[db_name], [object_name], stats_name,
 from tStats s
 where s.[object_name] in ('dbo.who_is_active')
 order by 1,2,4,3,[threshold %] desc
---order by order_id
 go
 
 
 --DBCC SHOW_STATISTICS ('dbo.who_is_active','pk_who_is_active');
+
+/*
+OPTION (	RECOMPILE
+			,QUERYTRACEON 9481 /* Old CE */
+			--QUERYTRACEON 2312 /* New CE */
+			--USE HINT('QUERY_OPTIMIZER_COMPATIBILITY_LEVEL_150','FORCE_DEFAULT_CARDINALITY_ESTIMATION')
+			,QUERYTRACEON 9204 /* Get loaded stats */
+			,QUERYTRACEON 3604 /* Output stats to msg tab */
+		)
+*/
