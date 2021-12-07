@@ -3,10 +3,22 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="MSI:CORP\dwivedaj_sa">
-          <Created>2020-08-03T23:23:57.2241558+05:30</Created>
+        <ConnectionNode Name="MSI:LAB\adwivedi">
+          <Created>2020-08-03T17:53:57.2241558+00:00</Created>
           <Type>SQL</Type>
           <Server>MSI</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="sqlprod1:LAB\adwivedi">
+          <Created>2021-12-07T03:31:54.5920903+00:00</Created>
+          <Type>SQL</Type>
+          <Server>sqlprod1</Server>
           <UserName />
           <Authentication>Windows Authentication</Authentication>
           <InitialDB />
@@ -74,8 +86,8 @@
           <FullPath>6. Fetch Blocking Information.sql</FullPath>
         </FileNode>
         <FileNode Name="Blocking-Alert-Azure.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:sqlprod1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>sqlprod1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Blocking-Alert-Azure.sql</FullPath>
         </FileNode>

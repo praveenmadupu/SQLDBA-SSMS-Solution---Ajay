@@ -17,7 +17,7 @@ DECLARE @threshold_continous_failure tinyint = 3;
 DECLARE @notification_delay_minutes tinyint = 5;
 DECLARE @is_test_alert bit = 0;
 DECLARE @verbose tinyint = 0; /* 0 - no messages, 1 - debug messages, 2 = debug messages + table results */
-DECLARE @recipients varchar(500) = 'dba@company.com';
+DECLARE @recipients varchar(500) = 'sqlagentservice@gmail.com';
 
 /* Additional Requirements
 1) Default Global Mail Profile
@@ -194,35 +194,46 @@ BEGIN TRY
 	IF @verbose > 0
 		PRINT 'End Step 05: Create Log Table..'+char(10);
 
-	-- Step 06: Populate Staging table
+	-- Step 06: Purge Old Logs Older than 15 days
 	IF @verbose > 0
-		PRINT 'Start Step 06: Populate Staging table..';
-	SET @_output += '<br>Execute Step 06: Populate Staging table..'+CHAR(10);
+		PRINT 'Start Step 06: Purge Old Logs older than 15 days..';
+	SET @_output += '<br>Execute Step 06: Purge Old Logs..'+CHAR(10);
+	SET @_s = 'DELETE FROM '+@command_log_table+' where collection_time < DATEADD(day,-15,getdate());'
+	IF @verbose > 1
+		PRINT CHAR(9)+@_s;
+	EXEC(@_s);
+	IF @verbose > 0
+		PRINT 'End Step 06: Purge Old Logs older than 15 days..'+char(10);
+
+	-- Step 07: Populate Staging table
+	IF @verbose > 0
+		PRINT 'Start Step 07: Populate Staging table..';
+	SET @_output += '<br>Execute Step 07: Populate Staging table..'+CHAR(10);
 	EXEC dbo.sp_WhoIsActive @get_outer_command=1, @get_task_info=2, @find_block_leaders=1, @get_plans=1, @get_avg_time=1, @get_additional_info=1, @delta_interval = 10
 				,@output_column_list = @output_column_list
 				,@destination_table = @staging_table;
 	SET @_rows_affected = ISNULL(@@ROWCOUNT,0);
 	SET @_output += '<br>@_rows_affected is set from @@ROWCOUNT.'+CHAR(10);
 	IF @verbose > 0
-		PRINT 'End Step 06: Populate Staging table..'+char(10);
+		PRINT 'End Step 07: Populate Staging table..'+char(10);
 
 	--IF @is_test_alert = 1
 	--PRINT 1/0;
 
-	-- Step 07: Populate Main table
+	-- Step 08: Populate Main table
 	IF @verbose > 0
-		PRINT 'Start Step 07: Populate Main table..';
-	SET @_output += '<br>Execute Step 07: Populate Main table..'+CHAR(10);
+		PRINT 'Start Step 08: Populate Main table..';
+	SET @_output += '<br>Execute Step 08: Populate Main table..'+CHAR(10);
 	
 	IF @verbose > 0
-		PRINT CHAR(9)+'Inside Step 07: Get comma separated list of columns..';
+		PRINT CHAR(9)+'Inside Step 08: Get comma separated list of columns..';
 	SELECT @_columns = COALESCE(@_columns+','+QUOTENAME(c.COLUMN_NAME),QUOTENAME(c.COLUMN_NAME)) 
 	FROM INFORMATION_SCHEMA.COLUMNS c WHERE OBJECT_ID(c.TABLE_SCHEMA+'.'+TABLE_NAME) = OBJECT_ID(@staging_table)
 	ORDER BY c.ORDINAL_POSITION;
 
 	SET @_output += '<br>Fetch @_cpu_system & @_cpu_sql..'+CHAR(10);
 	IF @verbose > 0
-		PRINT CHAR(9)+'Inside Step 07: Get system & sql cpu into variables..';
+		PRINT CHAR(9)+'Inside Step 08: Get system & sql cpu into variables..';
 	SELECT	@_cpu_system = CASE WHEN system_cpu_utilization_post_sp2 IS NOT NULL THEN system_cpu_utilization_post_sp2 ELSE system_cpu_utilization_pre_sp2 END,  
 			@_cpu_sql = CASE WHEN sql_cpu_utilization_post_sp2 IS NOT NULL THEN sql_cpu_utilization_post_sp2 ELSE sql_cpu_utilization_pre_sp2 END
 	FROM  (	SELECT	record.value('(Record/@id)[1]', 'int') AS record_id,
@@ -240,7 +251,7 @@ BEGIN TRY
 	ORDER BY EventTime DESC OFFSET 0 ROWS FETCH FIRST 1 ROWS ONLY;
 	
 	IF @verbose > 0
-		PRINT CHAR(9)+'Inside Step 07: Calculate cpu_rank, CPU_delta_percent, pool & CPU_delta_all..';
+		PRINT CHAR(9)+'Inside Step 08: Calculate cpu_rank, CPU_delta_percent, pool & CPU_delta_all..';
 	SET @_output += '<br>Calculate cpu_rank, CPU_delta_percent, pool & CPU_delta_all..'+CHAR(10);
 	SET @_s = '
 	INSERT '+@destination_table+'
@@ -286,20 +297,20 @@ BEGIN TRY
 		PRINT @_s
 	EXEC(@_s);
 	IF @verbose > 0
-		PRINT 'End Step 07: Populate Main table..';
+		PRINT 'End Step 08: Populate Main table..';
 	
-	-- Step 08: Return rows affected
-	SET @_output += '<br>Execute Step 08: Return rows affected..'+CHAR(10);
+	-- Step 09: Return rows affected
+	SET @_output += '<br>Execute Step 09: Return rows affected..'+CHAR(10);
 	PRINT '[rows_affected] = '+CONVERT(varchar,ISNULL(@_rows_affected,0));
 	SET @_output += '<br>FINISH. Script executed without error.'+CHAR(10);
 	IF @verbose > 0
-		PRINT 'End Step 08: Return rows affected. Script completed without error'
+		PRINT 'End Step 09: Return rows affected. Script completed without error'
 
-	-- Step 09: Make Success log entry
-	SET @_output += '<br>Execute Step 09: Make Success log entry..'+CHAR(10);
+	-- Step 10: Make Success log entry
+	SET @_output += '<br>Execute Step 10: Make Success log entry..'+CHAR(10);
 	SET @_s = 'INSERT '+@command_log_table+' (status)	SELECT [status] = ''Success''';
 	IF @verbose > 0
-		PRINT 'End Step 09: Make Success log entry.'
+		PRINT 'End Step 10: Make Success log entry.'
 	EXEC (@_s);
 	
 END TRY  -- Perform main logic inside Try/Catch
@@ -424,7 +435,7 @@ BEGIN
 
 	EXEC msdb.dbo.sp_send_dbmail
 			@recipients = @recipients,
-			@_profile_name = @_profile_name,
+			@profile_name = @_profile_name,
 			@subject = @_subject,
 			@body = @_tableHTML,
 			@body_format = 'HTML';
@@ -432,4 +443,3 @@ END
 
 IF @_errorMessage IS NOT NULL --AND @send_error_mail = 0
 	THROW 50000, @_errorMessage, 1;
-GO

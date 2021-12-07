@@ -4,7 +4,7 @@
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
         <ConnectionNode Name="MSI:IPFreely">
-          <Created>2020-12-22T21:53:24.4920344+05:30</Created>
+          <Created>2020-12-22T16:23:24.4920344+00:00</Created>
           <Type>SQL</Type>
           <Server>MSI</Server>
           <UserName>IPFreely</UserName>
@@ -16,7 +16,7 @@
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
         <ConnectionNode Name="SQL-A:sa">
-          <Created>2020-09-16T00:17:41.6753159+05:30</Created>
+          <Created>2020-09-15T18:47:41.6753159+00:00</Created>
           <Type>SQL</Type>
           <Server>SQL-A</Server>
           <UserName>sa</UserName>
@@ -28,12 +28,24 @@
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
         <ConnectionNode Name="SQL-A\V17:sa">
-          <Created>2020-09-16T15:13:03.0844296+05:30</Created>
+          <Created>2020-09-16T09:43:03.0844296+00:00</Created>
           <Type>SQL</Type>
           <Server>SQL-A\V17</Server>
           <UserName>sa</UserName>
           <Authentication>SQL</Authentication>
           <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="sqlprod1:LAB\adwivedi">
+          <Created>2021-12-07T03:33:31.9599777+00:00</Created>
+          <Type>SQL</Type>
+          <Server>sqlprod1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>master</InitialDB>
           <LoginTimeout>30</LoginTimeout>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
@@ -62,8 +74,8 @@
           <FullPath>Baseline with [sp_BlitzFirst].sql</FullPath>
         </FileNode>
         <FileNode Name="Baselining-With-WhoIsActive-CPU.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:sqlprod1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>sqlprod1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>Baselining-With-WhoIsActive-CPU.sql</FullPath>
         </FileNode>
@@ -192,12 +204,6 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>SCH-Job-[(dba) Collect Metrics - WhoIsActive].sql</FullPath>
-        </FileNode>
-        <FileNode Name="SCH-WhoIsActive-Capturing-CPU-Focussed.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>SCH-WhoIsActive-Capturing-CPU-Focussed.sql</FullPath>
         </FileNode>
         <FileNode Name="SELECT permission to All Users.sql">
           <AssociatedConnectionMoniker />
