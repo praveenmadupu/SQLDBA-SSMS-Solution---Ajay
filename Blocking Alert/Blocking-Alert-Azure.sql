@@ -11,6 +11,8 @@ ALTER PROCEDURE [dbo].[usp_get_blocking_alert]
 		@delay_minutes int = 15,
 		@verbose tinyint = 0,
 		@alert_key varchar(100) = 'Sdt-AlertBlocking',
+		@job_name nvarchar(500) = '(dba) Sdt-AlertBlocking',
+		@is_test_alert bit = 1,
 		@help BIT = 0
 AS
 BEGIN 
@@ -18,7 +20,7 @@ BEGIN
 		Version:		0.2
 		Created By:		Ajay Kumar Dwivedi
 		Purpose:		To have custom alerting system for Consistant Blocking
-		Modifications:	2021-Dec-06 - Enhacement module to made it standard code, and implement Auto Clear
+		Modifications:	2021-Dec-08 - Enhacement module to made it standard code, and implement Auto Clear
 	*/
 	SET NOCOUNT ON;
 
@@ -28,7 +30,6 @@ BEGIN
 	DECLARE @_collection_time datetime;
 	DECLARE @_latest_collection_time datetime;
 	DECLARE @_second_latest_collection_time datetime;
-	DECLARE @_default_html_style VARCHAR(100) = 'GreenBackgroundHeader';
 	DECLARE @_mail_html  NVARCHAR(MAX) ;
 	DECLARE @_subject VARCHAR(1000);
 	DECLARE @_table_name VARCHAR(125);
@@ -44,19 +45,22 @@ BEGIN
 	DECLARE @_is_consistent_blocking_found bit = 0;
 	DECLARE @_last_sent_blocking_active datetime;
 	DECLARE @_last_sent_blocking_cleared datetime;
+	DECLARE @_profile_name varchar(200);
 
 	-- Store details in Variables 
 	SET @_collection_time = GETDATE();
 
 	IF OBJECT_ID('dbo.sdt_blocking_alert') IS NULL
-		CREATE TABLE [dbo].[sdt_blocking_alert]
+		CREATE TABLE dbo.sdt_blocking_alert
 		(
 			[collection_time] datetime NULL,
 			--[TimeInMinutes] bigint NULL,
 			[dd hh:mm:ss.mss] varchar(2000),
 			[blocking_tree] [nvarchar](max) NULL,
 			[session_id] [smallint] NULL,
-			[blocking_session_id] [smallint] NULL,
+			[blocker_spid] [smallint] NULL,
+			[blocked_counts] varchar(30) NULL,
+			[status] varchar(30) NULL,
 			--[sql_text] [xml] NULL,
 			[host_name] varchar(128) NULL,
 			[database_name] varchar(128) NULL,
@@ -68,16 +72,18 @@ BEGIN
 			--[tran_start_time] smalldatetime NULL,
 			[open_tran_count] smallint NULL,
 			--[additional_info] [xml] NULL,
+			[host_cpu_pcnt] tinyint,
 			[cpu] [varchar](30) NULL,
 			[tempdb_allocations] [varchar](30) NULL,
 			[tempdb_current] [varchar](30) NULL,
 			[reads] [varchar](30) NULL,
-			[writes] [varchar](30) NULL,
+			[writes] [varchar](30) NULL
 			--[physical_io] [varchar](30) NULL,
-			[physical_reads] [varchar](30) NULL
+			--[physical_reads] [varchar](30) NULL			
 		);
 	ELSE
-		TRUNCATE TABLE [dbo].[sdt_blocking_alert];
+		TRUNCATE TABLE dbo.sdt_blocking_alert;
+		--DROP TABLE dbo.sdt_blocking_alert;
 
 	--	Get latest 2 collection_time
 	IF(@verbose > 0)
@@ -88,9 +94,11 @@ BEGIN
 	
 	IF(@verbose > 1)
 	BEGIN
-		PRINT '@_collection_time = '''+CONVERT(nvarchar(30),@_collection_time,121)+'''';
+		PRINT CHAR(10)+'@_collection_time = '''+CONVERT(nvarchar(30),@_collection_time,121)+'''';
 		PRINT '@_latest_collection_time= '''+CONVERT(nvarchar(30),@_latest_collection_time,121)+'''';
 		PRINT '@_second_latest_collection_time = '''+CONVERT(nvarchar(30),@_second_latest_collection_time,121)+'''';
+		PRINT '@threshold_minutes = ' + CONVERT(varchar,@threshold_minutes);
+		PRINT '@delay_minutes = ' + CONVERT(varchar,@delay_minutes)+CHAR(10);
 	END
 
 	-- Get blocking details b/w latest 2 collection_time
@@ -155,10 +163,10 @@ BEGIN
 
 		-- Create Blocking Tree
 		IF(@verbose > 0)
-			PRINT 'Populate table [dbo].sdt_blocking_alert using CTE';
+			PRINT 'Populate table dbo.sdt_blocking_alert using CTE';
 		;WITH T_JobCaptures AS
 		(
-			SELECT [dd hh:mm:ss.mss], [session_id], [sql_text], [login_name], [wait_info], [CPU], [tempdb_allocations], [tempdb_current], [blocking_session_id], [reads], [writes], [physical_reads], [used_memory], [status], [open_tran_count], [percent_complete], [host_name], [database_name], [program_name], [start_time], [login_time], [request_id], [collection_time]
+			SELECT [dd hh:mm:ss.mss], [session_id], [sql_text], [login_name], [wait_info], [host_cpu_percent], [CPU], [tempdb_allocations], [tempdb_current], [blocking_session_id], [blocked_session_count], [status], [reads], [writes], [physical_reads], [used_memory], [open_tran_count], [percent_complete], [host_name], [database_name], [program_name], [start_time], [login_time], [request_id], [collection_time]
 				,[sql_query] = REPLACE(REPLACE(REPLACE(REPLACE(CAST(COALESCE([sql_text],null) AS VARCHAR(MAX)),char(13),''),CHAR(10),''),'<?query --',''),'--?>','')
 				,[LEVEL] = CAST (REPLICATE ('0', 4-LEN (CAST (r.session_id AS VARCHAR))) + CAST (r.session_id AS VARCHAR) AS VARCHAR (1000))
 			FROM #WhoIsActive_Filtered as r
@@ -167,7 +175,7 @@ BEGIN
 			--
 			UNION ALL
 			--
-			SELECT r.[dd hh:mm:ss.mss], r.[session_id], r.[sql_text], r.[login_name], r.[wait_info], r.[CPU], r.[tempdb_allocations], r.[tempdb_current], r.[blocking_session_id], r.[reads], r.[writes], r.[physical_reads], r.[used_memory], r.[status], r.[open_tran_count], r.[percent_complete], r.[host_name], r.[database_name], r.[program_name], r.[start_time], r.[login_time], r.[request_id], r.[collection_time]
+			SELECT r.[dd hh:mm:ss.mss], r.[session_id], r.[sql_text], r.[login_name], r.[wait_info], r.[host_cpu_percent], r.[CPU], r.[tempdb_allocations], r.[tempdb_current], r.[blocking_session_id], r.[blocked_session_count], r.[status], r.[reads], r.[writes], r.[physical_reads], r.[used_memory], r.[open_tran_count], r.[percent_complete], r.[host_name], r.[database_name], r.[program_name], r.[start_time], r.[login_time], r.[request_id], r.[collection_time]
 				,[sql_query] = REPLACE(REPLACE(REPLACE(REPLACE(CAST(COALESCE(r.[sql_text],NULL) AS VARCHAR(MAX)),char(13),''),CHAR(10),''),'<?query --',''),'--?>','')
 				,[LEVEL] = CAST (b.LEVEL + RIGHT (CAST ((1000 + r.session_id) AS VARCHAR (100)), 4) AS VARCHAR (1000))
 			FROM T_JobCaptures AS b
@@ -176,27 +184,27 @@ BEGIN
 				AND	r.blocking_session_id = b.session_id
 			WHERE	r.blocking_session_id <> r.session_id
 		)
-		INSERT [dbo].sdt_blocking_alert
+		INSERT dbo.sdt_blocking_alert
 		SELECT	[collection_time], [dd hh:mm:ss.mss],
 				[BLOCKING_TREE] = N'    ' + REPLICATE (N'|         ', LEN (LEVEL)/4 - 1) 
 								+	CASE	WHEN (LEN(LEVEL)/4 - 1) = 0
 											THEN 'HEAD -  '
 											ELSE '|------  ' 
 									END
-								+	CAST (r.session_id AS NVARCHAR (10)) + N' ' + (CASE WHEN LEFT(r.[sql_query],1) = '(' THEN SUBSTRING(r.[sql_query],CHARINDEX('exec',r.[sql_query]),LEN(r.[sql_query]))  ELSE r.[sql_query] END),
-				[session_id], [blocking_session_id], 				
+								+	CAST (r.session_id AS NVARCHAR (10)) + N' ' + ISNULL((CASE WHEN LEFT(r.[sql_query],1) = '(' THEN SUBSTRING(r.[sql_query],CHARINDEX('exec',r.[sql_query]),LEN(r.[sql_query]))  ELSE r.[sql_query] END),''),
+				[session_id], [blocking_session_id], [blocked_session_count], [status],
 				--[sql_text], 
 				[host_name], [database_name], [login_name], [program_name],	[wait_info],  
 				--[locks], 
 				[open_tran_count] --,additional_info
-				,r.[CPU], r.[tempdb_allocations], r.[tempdb_current], r.[reads], r.[writes], r.[physical_reads] --, r.[query_plan]
+				,[host_cpu_percent], r.[CPU], r.[tempdb_allocations], r.[tempdb_current], r.[reads], r.[writes]
 		FROM	T_JobCaptures as r
 		ORDER BY r.collection_time, LEVEL ASC;
 							
 		IF(@verbose > 1)
 		BEGIN
-			PRINT 'SELECT * FROM [dbo].sdt_blocking_alert;';
-			SELECT 'dbo.sdt_blocking_alert' AS RunningTable, * FROM [dbo].sdt_blocking_alert;
+			PRINT 'SELECT * FROM dbo.sdt_blocking_alert;';
+			SELECT 'dbo.sdt_blocking_alert' AS RunningTable, * FROM dbo.sdt_blocking_alert;
 		END
 		
 		IF EXISTS(SELECT * FROM dbo.sdt_blocking_alert)
@@ -207,25 +215,10 @@ BEGIN
 		END
 	END
 
-	--EXEC msdb.dbo.sp_send_dbmail 
-	--			@recipients = @recipients,  
-	--			@subject = @_subject,  
-	--			@body = @_mail_html,  
-	--			@body_format = 'HTML' ; 
-
 	/* 
 	Check if Consistent Blocking, then based on Continous Threshold & Delay, send mail
 	Check if No Error & No Consistent Blocking, then clear the Blocking alert if active
 	*/
-
-	IF @verbose > 0
-		PRINT 'Dynamically fetch @alert_key ..'
-	SET @alert_key = '(dba) Run-WhoIsActive';
-	IF program_name() LIKE 'SQLAgent - TSQL JobStep (Job %'
-		EXEC sp_executesql	@stmt = N'SELECT @alert_key_OUTPUT = name FROM msdb.dbo.sysjobs WHERE job_id = CONVERT(uniqueidentifier, $(ESCAPE_NONE(JOBID)))',
-							@params = N'@alert_key_OUTPUT nvarchar(500) OUTPUT',
-							@alert_key_OUTPUT = @alert_key OUTPUT;
-	--PRINT '"'+@alert_key+'"';
 	
 	IF @verbose > 0
 		PRINT 'Get Last @_last_sent_blocking_active & @_last_sent_blocking_cleared..';
@@ -236,17 +229,46 @@ BEGIN
 	BEGIN
 		PRINT '@_last_sent_blocking_active => '+ISNULL(CONVERT(nvarchar(30),@_last_sent_blocking_active,121),'');
 		PRINT '@_last_sent_blocking_cleared => '+ISNULL(CONVERT(nvarchar(30),@_last_sent_blocking_cleared,121),'');
-		PRINT '@_is_consistent_blocking_found => '+CONVERT(varchar,@_is_consistent_blocking_found);
+		PRINT '@_is_blocking_found => '+CONVERT(varchar,@_is_blocking_found);
 		PRINT '@_is_consistent_blocking_found => '+CONVERT(varchar,@_is_consistent_blocking_found);
 	END
 
-	--RETURN;
-	-- Check if Blocking, @delay_minutes is breached
-	IF @_is_consistent_blocking_found = 1
-		AND ( (@_last_sent_blocking_active IS NULL) OR (DATEDIFF(MINUTE,@_last_sent_blocking_active,GETDATE()) >= @_last_sent_blocking_cleared) )
+	SET @_css_style_green_background_header = N'
+		<head><style>
+		.GreenBackgroundHeader {
+			font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+			border-collapse: collapse;
+			width: 100%;
+		}
+
+		.GreenBackgroundHeader td, .GreenBackgroundHeader th {
+			border: 1px solid #ddd;
+			padding: 8px;
+		}
+
+		.GreenBackgroundHeader tr:nth-child(even){background-color: #f2f2f2;}
+
+		.GreenBackgroundHeader tr:hover {background-color: #ddd;}
+
+		.GreenBackgroundHeader th {
+			padding-top: 12px;
+			padding-bottom: 12px;
+			text-align: left;
+			background-color: #4CAF50;
+			color: white;
+		}
+		</style><head>';
+
+	IF @verbose > 0
+		PRINT 'Check if Consistent Blocking and @delay_minutes is breached, then Set Mail Notification variables..'
+	-- Check if Consistent Blocking, @delay_minutes is breached
+	IF	@_is_consistent_blocking_found = 1
+		AND (		(@_last_sent_blocking_active IS NULL) -- no alert active
+				OR	(ISNULL(@_last_sent_blocking_cleared,@_last_sent_blocking_active) > @_last_sent_blocking_active) -- no alert active
+				OR	(DATEDIFF(MINUTE,@_last_sent_blocking_active,GETDATE()) >= @delay_minutes) 
+			)
 	BEGIN
 		-- Generate HTML table Headers/Rows
-
 		IF(@verbose > 0)
 			PRINT 'Inside Generate HTML table Headers/Rows';
 		SET @_table_name = 'dbo.sdt_blocking_alert';
@@ -305,39 +327,13 @@ BEGIN
 		IF(@verbose > 0)
 			PRINT '@_column_list_4_table_data => '+@_column_list_4_table_data;
 
-		IF(@verbose > 0)
-			PRINT 'Setting value for @_subject'
-		SET @_subject = 'Consistent Blocking for more than '+cast(@threshold_minutes as varchar(5))+' minutes - '+cast(@_collection_time as varchar(100));
-
-
-		SET @_css_style_green_background_header = N'
-		<style>
-		.GreenBackgroundHeader {
-			font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-			border-collapse: collapse;
-			width: 100%;
-		}
-
-		.GreenBackgroundHeader td, .GreenBackgroundHeader th {
-			border: 1px solid #ddd;
-			padding: 8px;
-		}
-
-		.GreenBackgroundHeader tr:nth-child(even){background-color: #f2f2f2;}
-
-		.GreenBackgroundHeader tr:hover {background-color: #ddd;}
-
-		.GreenBackgroundHeader th {
-			padding-top: 12px;
-			padding-bottom: 12px;
-			text-align: left;
-			background-color: #4CAF50;
-			color: white;
-		}
-		</style>';
+		IF @verbose > 0
+			PRINT 'Setting Mail variable values for Blocking ACTIVE notification..'
+		SET @_subject = QUOTENAME(@@SERVERNAME)+' - ['+@alert_key+'] - [ACTIVE]';
+		--DECLARE @_default_html_style VARCHAR(100) = 'GreenBackgroundHeader';
 
 		SET @_html_body = N'<H1>'+@_subject+'</H1>' +  
-				N'<table border="1" class="'+@_default_html_style+'">' +  
+				N'<table border="1" class="GreenBackgroundHeader">' +  
 				N'<tr>'+@_column_list_4_table_header+'</tr>' +  
 				+@_column_list_4_table_data+
 				N'</table>' ;  
@@ -346,13 +342,58 @@ BEGIN
 		<p>
 		<br><br>
 		Thanks & Regards,<br>
-		SQL Alerts<br>
-		-- Alert Coming from SQL Agent Job [DBA - Blocking Alert]<br>
-		</p>
-		';
+		Job ['+@job_name+']<br>
+		Alert Generated @ '+CONVERT(varchar(30),@_collection_time,121)+'<br></p>'+
+		N'<br><br>// Blocking Threshold (Minutes) -> ' + CONVERT(varchar,@threshold_minutes) +
+		N'<br>// Notification Delay (Minutes) -> ' + CONVERT(varchar,@delay_minutes)
 
 		SET @_mail_html =  @_css_style_green_background_header + @_html_body;
+		SET @_send_mail = 1;
 	END
-			
+	ELSE
+		PRINT 'IMPORTANT => Blocking "Active" mail notification checks not satisfied. '+char(10)+char(9)+'@_is_consistent_blocking_found = 1 AND ( (@_last_sent_blocking_active IS NULL) OR	(ISNULL(@_last_sent_blocking_cleared,@_last_sent_blocking_active) > @_last_sent_blocking_active) OR (DATEDIFF(MINUTE,@_last_sent_blocking_active,GETDATE()) >= @delay_minutes) )';
 
+	-- If no consistent blocking found, then clear the active alert
+	IF @_is_consistent_blocking_found = 0
+	BEGIN
+		IF @verbose > 0
+			PRINT 'Setting Mail variable values for Blocking CLEARED notification..'
+		SET @_subject = QUOTENAME(@@SERVERNAME)+' - ['+@alert_key+'] - [CLEARED]';
+
+		SET @_html_body = N'<H1>'+@_subject+'</H1>'
+
+		SET @_html_body = @_html_body + '
+		<p>
+		<br><br>
+		Thanks & Regards,<br>
+		Job ['+@job_name+']<br>
+		Alert Generated @ '+CONVERT(varchar(30),@_collection_time,121)+'<br></p>'+
+		N'<br>// Blocking Threshold (Minutes) -> ' + CONVERT(varchar,@threshold_minutes) +
+		N'<br>// Notification Delay (Minutes) -> ' + CONVERT(varchar,@delay_minutes)
+
+		SET @_mail_html =  @_css_style_green_background_header + @_html_body;
+		SET @_send_mail = 1;
+	END
+	ELSE
+		PRINT 'IMPORTANT => Blocking "CLEARED" mail notification checks not satisfied. '+char(10)+char(9)+'@_is_consistent_blocking_found = 0';
+		
+	IF @is_test_alert = 1
+		SET @_subject = 'TestAlert - '+@_subject;
+
+	IF @_send_mail = 1
+	BEGIN
+		SELECT @_profile_name = p.name
+		FROM msdb.dbo.sysmail_profile p 
+		JOIN msdb.dbo.sysmail_principalprofile pp ON pp.profile_id = p.profile_id AND pp.is_default = 1
+		JOIN msdb.dbo.sysmail_profileaccount pa ON p.profile_id = pa.profile_id 
+		JOIN msdb.dbo.sysmail_account a ON pa.account_id = a.account_id 
+		JOIN msdb.dbo.sysmail_server s ON a.account_id = s.account_id;
+
+		EXEC msdb.dbo.sp_send_dbmail
+				@recipients = @recipients,
+				@profile_name = @_profile_name,
+				@subject = @_subject,
+				@body = @_mail_html,
+				@body_format = 'HTML';
+	END
 END
