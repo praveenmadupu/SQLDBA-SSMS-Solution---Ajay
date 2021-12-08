@@ -2,7 +2,20 @@
 <SqlWorkbenchSqlProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="TempScripts">
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
-      <Items />
+      <Items>
+        <ConnectionNode Name="sqlprod1:LAB\adwivedi">
+          <Created>2021-12-07T08:01:49.3377404+00:00</Created>
+          <Type>SQL</Type>
+          <Server>sqlprod1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>DBA</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+      </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
@@ -29,6 +42,12 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>Jobs-Try-Catch.sql</FullPath>
+        </FileNode>
+        <FileNode Name="QRY-Blocking-Testing.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:sqlprod1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>sqlprod1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>QRY-Blocking-Testing.sql</FullPath>
         </FileNode>
         <FileNode Name="QRY-dm_os_performance_counters_nonsql.sql">
           <AssociatedConnectionMoniker />

@@ -10,11 +10,10 @@ DECLARE @retention_day int = 60;
 DECLARE @drop_recreate bit = 0;
 DECLARE	@destination_table VARCHAR(4000) = 'dbo.WhoIsActive';
 DECLARE	@staging_table VARCHAR(4000) = @destination_table+'_Staging';
-DECLARE @command_log_table VARCHAR(4000) = @destination_table+'_CommandLog';
 DECLARE @output_column_list VARCHAR(8000);
 DECLARE @send_error_mail bit = 1;
 DECLARE @threshold_continous_failure tinyint = 3;
-DECLARE @notification_delay_minutes tinyint = 5;
+DECLARE @notification_delay_minutes tinyint = 15;
 DECLARE @is_test_alert bit = 0;
 DECLARE @verbose tinyint = 0; /* 0 - no messages, 1 - debug messages, 2 = debug messages + table results */
 DECLARE @recipients varchar(500) = 'sqlagentservice@gmail.com';
@@ -34,7 +33,7 @@ DECLARE @_output VARCHAR(8000);
 SET @_output = 'Declare local variables'+CHAR(10);
 -- Local Variables
 DECLARE @_rows_affected int = 0;
-DECLARE @_s VARCHAR(MAX);
+DECLARE @_s NVARCHAR(MAX);
 DECLARE @_collection_time datetime = GETDATE();
 DECLARE @_columns VARCHAR(8000);
 DECLARE @_cpu_system int;
@@ -47,12 +46,19 @@ DECLARE @_job_name nvarchar(500);
 DECLARE @_continous_failures tinyint = 0;
 DECLARE @_send_mail bit = 0;
 
+IF @verbose > 0
+	PRINT 'Dynamically fetch @_job_name ..'
+SET @_job_name = '(dba) Run-WhoIsActive';
+IF program_name() LIKE 'SQLAgent - TSQL JobStep (Job %'
+	EXEC sp_executesql	@stmt = N'SELECT @_job_name_OUTPUT = name FROM msdb.dbo.sysjobs WHERE job_id = CONVERT(uniqueidentifier, $(ESCAPE_NONE(JOBID)))',
+						@params = N'@_job_name_OUTPUT nvarchar(500) OUTPUT',
+						@_job_name_OUTPUT = @_job_name OUTPUT;
+--PRINT '"'+@_job_name+'"';
 
 IF @verbose > 0
 BEGIN
 	PRINT '@destination_table => '+@destination_table;
 	PRINT '@staging_table => '+@staging_table;
-	PRINT '@command_log_table => '+@command_log_table+char(10);
 END
 
 -- Variables for Try/Catch Block
@@ -178,62 +184,35 @@ BEGIN TRY
 	IF @verbose > 0
 		PRINT 'End Step 04: Purge Old data..'+char(10);
 
-	-- Step 05: Create Log Table
+	-- Step 05: Populate Staging table
 	IF @verbose > 0
-		PRINT 'Start Step 05: Create Log Table..';
-	SET @_output += '<br>Execute Step 04: Create Log Table '+@command_log_table+'..'+CHAR(10);
-	IF OBJECT_ID(@command_log_table) IS NULL
-	BEGIN
-		IF @verbose > 0
-			PRINT CHAR(9)+'Inside Step 05: Create log table..';
-		SET @_s = 'create table '+@command_log_table+' (collection_time datetime2 default SYSDATETIME() not null, status varchar(30) not null, message nvarchar(max) null, CONSTRAINT pk_'+SUBSTRING(@command_log_table,CHARINDEX('.',@command_log_table)+1,LEN(@command_log_table))+' PRIMARY KEY CLUSTERED ([collection_time]));';
-		IF @verbose > 1
-			PRINT CHAR(9)+@_s;
-		EXEC (@_s)
-	END
-	IF @verbose > 0
-		PRINT 'End Step 05: Create Log Table..'+char(10);
-
-	-- Step 06: Purge Old Logs Older than 15 days
-	IF @verbose > 0
-		PRINT 'Start Step 06: Purge Old Logs older than 15 days..';
-	SET @_output += '<br>Execute Step 06: Purge Old Logs..'+CHAR(10);
-	SET @_s = 'DELETE FROM '+@command_log_table+' where collection_time < DATEADD(day,-15,getdate());'
-	IF @verbose > 1
-		PRINT CHAR(9)+@_s;
-	EXEC(@_s);
-	IF @verbose > 0
-		PRINT 'End Step 06: Purge Old Logs older than 15 days..'+char(10);
-
-	-- Step 07: Populate Staging table
-	IF @verbose > 0
-		PRINT 'Start Step 07: Populate Staging table..';
-	SET @_output += '<br>Execute Step 07: Populate Staging table..'+CHAR(10);
+		PRINT 'Start Step 05: Populate Staging table..';
+	SET @_output += '<br>Execute Step 05: Populate Staging table..'+CHAR(10);
 	EXEC dbo.sp_WhoIsActive @get_outer_command=1, @get_task_info=2, @find_block_leaders=1, @get_plans=1, @get_avg_time=1, @get_additional_info=1, @delta_interval = 10
 				,@output_column_list = @output_column_list
 				,@destination_table = @staging_table;
 	SET @_rows_affected = ISNULL(@@ROWCOUNT,0);
 	SET @_output += '<br>@_rows_affected is set from @@ROWCOUNT.'+CHAR(10);
 	IF @verbose > 0
-		PRINT 'End Step 07: Populate Staging table..'+char(10);
+		PRINT 'End Step 05: Populate Staging table..'+char(10);
 
-	--IF @is_test_alert = 1
-	--PRINT 1/0;
+	IF @is_test_alert = 1
+		PRINT 1/0;
 
-	-- Step 08: Populate Main table
+	-- Step 06: Populate Main table
 	IF @verbose > 0
-		PRINT 'Start Step 08: Populate Main table..';
-	SET @_output += '<br>Execute Step 08: Populate Main table..'+CHAR(10);
+		PRINT 'Start Step 06: Populate Main table..';
+	SET @_output += '<br>Execute Step 06: Populate Main table..'+CHAR(10);
 	
 	IF @verbose > 0
-		PRINT CHAR(9)+'Inside Step 08: Get comma separated list of columns..';
+		PRINT CHAR(9)+'Inside Step 06: Get comma separated list of columns..';
 	SELECT @_columns = COALESCE(@_columns+','+QUOTENAME(c.COLUMN_NAME),QUOTENAME(c.COLUMN_NAME)) 
 	FROM INFORMATION_SCHEMA.COLUMNS c WHERE OBJECT_ID(c.TABLE_SCHEMA+'.'+TABLE_NAME) = OBJECT_ID(@staging_table)
 	ORDER BY c.ORDINAL_POSITION;
 
 	SET @_output += '<br>Fetch @_cpu_system & @_cpu_sql..'+CHAR(10);
 	IF @verbose > 0
-		PRINT CHAR(9)+'Inside Step 08: Get system & sql cpu into variables..';
+		PRINT CHAR(9)+'Inside Step 06: Get system & sql cpu into variables..';
 	SELECT	@_cpu_system = CASE WHEN system_cpu_utilization_post_sp2 IS NOT NULL THEN system_cpu_utilization_post_sp2 ELSE system_cpu_utilization_pre_sp2 END,  
 			@_cpu_sql = CASE WHEN sql_cpu_utilization_post_sp2 IS NOT NULL THEN sql_cpu_utilization_post_sp2 ELSE sql_cpu_utilization_pre_sp2 END
 	FROM  (	SELECT	record.value('(Record/@id)[1]', 'int') AS record_id,
@@ -251,7 +230,7 @@ BEGIN TRY
 	ORDER BY EventTime DESC OFFSET 0 ROWS FETCH FIRST 1 ROWS ONLY;
 	
 	IF @verbose > 0
-		PRINT CHAR(9)+'Inside Step 08: Calculate cpu_rank, CPU_delta_percent, pool & CPU_delta_all..';
+		PRINT CHAR(9)+'Inside Step 06: Calculate cpu_rank, CPU_delta_percent, pool & CPU_delta_all..';
 	SET @_output += '<br>Calculate cpu_rank, CPU_delta_percent, pool & CPU_delta_all..'+CHAR(10);
 	SET @_s = '
 	INSERT '+@destination_table+'
@@ -297,22 +276,14 @@ BEGIN TRY
 		PRINT @_s
 	EXEC(@_s);
 	IF @verbose > 0
-		PRINT 'End Step 08: Populate Main table..';
+		PRINT 'End Step 06: Populate Main table..';
 	
-	-- Step 09: Return rows affected
-	SET @_output += '<br>Execute Step 09: Return rows affected..'+CHAR(10);
+	-- Step 07: Return rows affected
+	SET @_output += '<br>Execute Step 07: Return rows affected..'+CHAR(10);
 	PRINT '[rows_affected] = '+CONVERT(varchar,ISNULL(@_rows_affected,0));
 	SET @_output += '<br>FINISH. Script executed without error.'+CHAR(10);
 	IF @verbose > 0
-		PRINT 'End Step 09: Return rows affected. Script completed without error'
-
-	-- Step 10: Make Success log entry
-	SET @_output += '<br>Execute Step 10: Make Success log entry..'+CHAR(10);
-	SET @_s = 'INSERT '+@command_log_table+' (status)	SELECT [status] = ''Success''';
-	IF @verbose > 0
-		PRINT 'End Step 10: Make Success log entry.'
-	EXEC (@_s);
-	
+		PRINT 'End Step 07: Return rows affected. Script completed without error'
 END TRY  -- Perform main logic inside Try/Catch
 BEGIN CATCH
 	IF @verbose > 0
@@ -324,13 +295,6 @@ BEGIN CATCH
 			,@_errorLine	 = Error_Line()
 			,@_errorMessage	 = Error_Message();
 
-	IF @verbose > 0
-		PRINT CHAR(9)+'Inside Catch Block. Insert failure entry into '+@command_log_table;
-	SET @_s = 'INSERT '+@command_log_table+' (status, message) VALUES (''Failure'', '''+@_errorMessage+''')';
-	IF @verbose > 1
-		PRINT CHAR(9)+@_s;
-	EXEC (@_s);
-
 	IF OBJECT_ID('tempdb..#CommandLog') IS NOT NULL
 		TRUNCATE TABLE #CommandLog;
 	ELSE
@@ -338,18 +302,32 @@ BEGIN CATCH
 
 	IF @verbose > 0
 		PRINT CHAR(9)+'Inside Catch Block. Get recent '+cast(@threshold_continous_failure as varchar)+' execution entries from logs..'
-	SET @_s = 'SELECT collection_time, status FROM '+@command_log_table+' ORDER BY collection_time DESC OFFSET 0 ROWS FETCH FIRST '+CONVERT(varchar,@threshold_continous_failure)+' ROWS ONLY;'
+	SET @_s = N'
+	DECLARE @threshold_continous_failure tinyint = @_threshold_continous_failure;
+	SET @threshold_continous_failure -= 1;
+	SELECT	[run_date_time] = msdb.dbo.agent_datetime(run_date, run_time),
+			[status] = case when run_status = 1 then ''Success'' else ''Failure'' end
+	FROM msdb.dbo.sysjobs jobs
+	INNER JOIN msdb.dbo.sysjobhistory history ON jobs.job_id = history.job_id
+	WHERE jobs.enabled = 1 AND jobs.name = @_job_name AND step_id = 0 AND run_status NOT IN (2,4) -- not retry/inprogress
+	ORDER BY run_date_time DESC OFFSET 0 ROWS FETCH FIRST @threshold_continous_failure ROWS ONLY;' + char(10);
 	IF @verbose > 1
 		PRINT CHAR(9)+@_s;
 	INSERT #CommandLog
-	EXEC(@_s)
+	EXEC sp_executesql @_s, N'@_job_name varchar(500), @_threshold_continous_failure tinyint', @_job_name = @_job_name, @_threshold_continous_failure = @threshold_continous_failure;
 
-	SELECT @_continous_failures = COUNT(*) FROM #CommandLog WHERE [status] = 'Failure';
+	SELECT @_continous_failures = COUNT(*)+1 FROM #CommandLog WHERE [status] = 'Failure';
 
 	IF @verbose > 0
 		PRINT CHAR(9)+'@_continous_failures => '+cast(@_continous_failures as varchar);
 	IF @verbose > 1
-		SELECT [RunningQuery] = 'SELECT * FROM #CommandLog', * FROM #CommandLog;
+	BEGIN
+		PRINT CHAR(9)+'SELECT [RunningQuery] = ''Previous Run Status from #CommandLog'', * FROM #CommandLog;'
+		SELECT [RunningQuery], cl.* 
+		FROM #CommandLog cl
+		FULL OUTER JOIN (VALUES ('Previous Run Status from #CommandLog')) rq (RunningQuery)
+		ON 1 = 1;
+	END
 
 	IF @verbose > 0
 		PRINT 'End Catch Block.'
@@ -359,15 +337,6 @@ END CATCH
 Check if Any Error, then based on Continous Threshold & Delay, send mail
 Check if No Error, then clear the alert if active,
 */
-
-IF @verbose > 0
-	PRINT 'Dynamically fetch @_job_name ..'
-SET @_job_name = '(dba) Run-WhoIsActive';
-IF program_name() LIKE 'SQLAgent - TSQL JobStep (Job %'
-	EXEC sp_executesql	@stmt = N'SELECT @_job_name_OUTPUT = name FROM msdb.dbo.sysjobs WHERE job_id = CONVERT(uniqueidentifier, $(ESCAPE_NONE(JOBID)))',
-						@params = N'@_job_name_OUTPUT nvarchar(500) OUTPUT',
-						@_job_name_OUTPUT = @_job_name OUTPUT;
---PRINT '"'+@_job_name+'"';
 
 IF @verbose > 0
 	PRINT 'Get Last @last_sent_failed &  @last_sent_cleared..';

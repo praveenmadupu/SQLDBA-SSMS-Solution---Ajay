@@ -4,7 +4,7 @@
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
         <ConnectionNode Name="SQL-A:sa">
-          <Created>2020-07-25T15:51:01.3754048+05:30</Created>
+          <Created>2020-07-25T10:21:01.3754048+00:00</Created>
           <Type>SQL</Type>
           <Server>SQL-A</Server>
           <UserName>sa</UserName>
@@ -16,12 +16,24 @@
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
         <ConnectionNode Name="SQL-A\V17:sa">
-          <Created>2020-09-16T15:11:41.0890883+05:30</Created>
+          <Created>2020-09-16T09:41:41.0890883+00:00</Created>
           <Type>SQL</Type>
           <Server>SQL-A\V17</Server>
           <UserName>sa</UserName>
           <Authentication>SQL</Authentication>
           <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="sqlprod1:LAB\adwivedi">
+          <Created>2021-12-07T06:24:59.6010364+00:00</Created>
+          <Type>SQL</Type>
+          <Server>sqlprod1</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>DBA</InitialDB>
           <LoginTimeout>30</LoginTimeout>
           <ExecutionTimeout>0</ExecutionTimeout>
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
@@ -158,14 +170,14 @@
           <FullPath>SCH-sp_WhoIsActive_v11_32(Modified).sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-sp_WhoIsActive_v11_35.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:sqlprod1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>sqlprod1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-sp_WhoIsActive_v11_35.sql</FullPath>
         </FileNode>
         <FileNode Name="SCH-sp_WhoIsActive_v12_00(Modified).sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:sqlprod1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>sqlprod1</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>SCH-sp_WhoIsActive_v12_00(Modified).sql</FullPath>
         </FileNode>

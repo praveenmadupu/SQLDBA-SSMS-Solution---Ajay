@@ -4,4 +4,4 @@
 4) Identify Caller using program_name()
 	SSMS -> Microsoft SQL Server Management Studio - Query
 	Agent -> SQLAgent - TSQL JobStep (Job 0x97544499D70588418EAEE4D198D90D37 : Step 1)
-5) 
+5) If Job history is required, then Jobs should log execution history in table dbo.sdt_job_execution_log
