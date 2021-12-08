@@ -2,12 +2,12 @@ USE DBA
 GO
 
 EXEC [dbo].[usp_get_blocking_alert] 
-@verbose = 2,
-@recipients = 'sqlagentservice@gmail.com',
-@threshold_minutes = 2,
-@delay_minutes = 1,
-@alert_key = 'Sdt-AlertBlocking',
-@is_test_alert = 1
+	@verbose = 2,
+	@recipients = 'sqlagentservice@gmail.com',
+	@threshold_minutes = 2,
+	@delay_minutes = 1,
+	@alert_key = 'Alert-SdtBlocking',
+	@is_test_alert = 1
 go
 
 select *

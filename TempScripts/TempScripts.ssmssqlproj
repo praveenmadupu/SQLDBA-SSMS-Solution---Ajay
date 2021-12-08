@@ -55,6 +55,12 @@
           <AssociatedConnUserName />
           <FullPath>QRY-dm_os_performance_counters_nonsql.sql</FullPath>
         </FileNode>
+        <FileNode Name="SCH-Blocking-Alert-Job-Body.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:sqlprod1:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>sqlprod1</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>SCH-Blocking-Alert-Job-Body.sql</FullPath>
+        </FileNode>
         <FileNode Name="Staging-Recommendation-TestCase01.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />

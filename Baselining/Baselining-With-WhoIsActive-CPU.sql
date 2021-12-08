@@ -40,7 +40,7 @@ DECLARE @_cpu_system int;
 DECLARE @_cpu_sql int;
 DECLARE @_last_sent_failed_active datetime;
 DECLARE @_last_sent_failed_cleared datetime;
-DECLARE @_tableHTML  NVARCHAR(MAX);  
+DECLARE @_mail_body_html  NVARCHAR(MAX);  
 DECLARE @_subject nvarchar(1000);
 DECLARE @_job_name nvarchar(500);
 DECLARE @_continous_failures tinyint = 0;
@@ -357,7 +357,7 @@ BEGIN
 	IF @verbose > 0
 		PRINT 'Setting Mail variable values for Job FAILED ACTIVE notification..'
 	SET @_subject = QUOTENAME(@@SERVERNAME)+' - Job ['+@_job_name+'] - [FAILED] - [ACTIVE]';
-	SET @_tableHTML =
+	SET @_mail_body_html =
 			N'Sql Agent job '''+@_job_name+''' has failed @'+ CONVERT(nvarchar(30),getdate(),121) +'.'+
 			N'<br><br>Error Number: ' + convert(varchar, @_errorNumber) + 
 			N'<br>Line Number: ' + convert(varchar, @_errorLine) +
@@ -379,7 +379,7 @@ BEGIN
 	IF @verbose > 0
 		PRINT 'Setting Mail variable values for Job FAILED CLEARED notification..'
 	SET @_subject = QUOTENAME(@@SERVERNAME)+' - Job ['+@_job_name+'] - [FAILED] - [CLEARED]';
-	SET @_tableHTML =
+	SET @_mail_body_html =
 			N'Sql Agent job '''+@_job_name+''' has completed successfully. So clearing alert @'+ CONVERT(nvarchar(30),getdate(),121) +'.'+
 			N'<br><br>Regards,'+
 			N'<br>Job ['+@_job_name+']' +
@@ -406,7 +406,7 @@ BEGIN
 			@recipients = @recipients,
 			@profile_name = @_profile_name,
 			@subject = @_subject,
-			@body = @_tableHTML,
+			@body = @_mail_body_html,
 			@body_format = 'HTML';
 END
 
