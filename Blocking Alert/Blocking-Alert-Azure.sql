@@ -354,7 +354,7 @@ BEGIN
 		PRINT 'IMPORTANT => Blocking "Active" mail notification checks not satisfied. '+char(10)+char(9)+'@_is_consistent_blocking_found = 1 AND ( (@_last_sent_blocking_active IS NULL) OR	(ISNULL(@_last_sent_blocking_cleared,@_last_sent_blocking_active) > @_last_sent_blocking_active) OR (DATEDIFF(MINUTE,@_last_sent_blocking_active,GETDATE()) >= @delay_minutes) )';
 
 	-- If no consistent blocking found, then clear the active alert
-	IF @_is_consistent_blocking_found = 0
+	IF (@_is_consistent_blocking_found = 0) AND (@_last_sent_blocking_active >= ISNULL(@_last_sent_blocking_cleared,@_last_sent_blocking_active))
 	BEGIN
 		IF @verbose > 0
 			PRINT 'Setting Mail variable values for Blocking CLEARED notification..'
@@ -375,7 +375,7 @@ BEGIN
 		SET @_send_mail = 1;
 	END
 	ELSE
-		PRINT 'IMPORTANT => Blocking "CLEARED" mail notification checks not satisfied. '+char(10)+char(9)+'@_is_consistent_blocking_found = 0';
+		PRINT 'IMPORTANT => Blocking "CLEARED" mail notification checks not satisfied. '+char(10)+char(9)+'(@_is_consistent_blocking_found = 0) AND (@_last_sent_blocking_active >= ISNULL(@_last_sent_blocking_cleared,@_last_sent_blocking_active))';
 		
 	IF @is_test_alert = 1
 		SET @_subject = 'TestAlert - '+@_subject;
