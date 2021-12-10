@@ -1,10 +1,9 @@
-USE DBA
-GO
-
 /*
 1) Create stored procedure [usp_get_blocking_alert]
 2) Setup Agent Job [(dba) Sdt-AlertBlocking]
 */
+
+--USE <<Your-DBA-Database>>;
 
 IF OBJECT_ID('dbo.usp_get_blocking_alert') IS NULL
 	EXEC('CREATE PROCEDURE [dbo].[usp_get_blocking_alert] AS SELECT 1 AS [Dummy];')
