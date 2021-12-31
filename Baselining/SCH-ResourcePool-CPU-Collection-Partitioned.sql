@@ -530,3 +530,35 @@ QuitWithRollback:
 EndSave:
 GO
 
+
+/* Grafana Queries */
+
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+DECLARE @From datetime = '2021-12-31T04:08:19Z';
+DECLARE @To datetime = '2021-12-31T04:38:19Z';
+DECLARE @Server sysname = 'MyProdServer';
+DECLARE @sql varchar(max) 
+
+SET QUOTED_IDENTIFIER OFF 
+
+SET @sql = "
+if object_id ('DBA.dbo.resource_pool_cpu') is not null
+begin
+	select rpc.[Current-Time-UTC] as [time], [% CPU @Pool-Level] = COALESCE(rpc.[% CPU @Pool-Level], rpc.[% CPU @SqlInstance-Level]),
+	      Pool = Pool + ' ('+CAST(COALESCE([Assigned Schedulers],[Sql Schedulers]) AS varchar)+')'
+	from DBA.dbo.resource_pool_cpu rpc
+	where rpc.[Current-Time-UTC] >= '"+convert(varchar,@From,120)+"'
+       AND rpc.[Current-Time-UTC] <= '"+convert(varchar,@To,120)+"'
+         AND (rpc.[% CPU @Pool-Level] > 0.0 OR rpc.[% CPU @SqlInstance-Level] > 0.0)
+  order by [time] ASC, [% CPU @Pool-Level] DESC
+end
+"
+SET QUOTED_IDENTIFIER ON
+IF ('MyProdServer' = SERVERPROPERTY('ServerName'))
+BEGIN
+	EXEC (@sql)
+END;
+ELSE
+BEGIN
+	EXEC (@sql) AT MyProdServer;
+END;

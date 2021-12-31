@@ -151,6 +151,18 @@
           <AssociatedConnUserName />
           <FullPath>Generate-Workload-StackOverflow.sql</FullPath>
         </FileNode>
+        <FileNode Name="Grafana - Wait Statistics.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Grafana - Wait Statistics.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Grafana-Database-Statistics-Dashboard.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>Grafana-Database-Statistics-Dashboard.sql</FullPath>
+        </FileNode>
         <FileNode Name="High-Memory-Usage-Alert-Response.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
