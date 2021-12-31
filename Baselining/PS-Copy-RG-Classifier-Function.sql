@@ -56,7 +56,7 @@ GO
     $query = $query.Replace($FunctionName,"$FunctionName`_$($srv.ToLower())")
     $query = $query -join '
 '
-    # Compile function on DBMONITOR
+    # Compile function on CentralServer
     Invoke-DbaQuery -SqlInstance $InventoryServer -Database $Database -Query $query
     $query
 }

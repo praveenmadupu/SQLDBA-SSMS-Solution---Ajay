@@ -63,13 +63,13 @@ AND ss.name = 'tt_IX'
 ORDER BY object_name, statistics_name, step_number;
 "
 SET QUOTED_IDENTIFIER ON
-IF ('DBCLPROD1DS2' = SERVERPROPERTY('ServerName'))
+IF ('SqlProd2' = SERVERPROPERTY('ServerName'))
 BEGIN
   EXEC (@sql);
 END;
 ELSE
 BEGIN
-  EXEC (@sql) AT DBCLPROD1DS2;
+  EXEC (@sql) AT SqlProd2;
 END;
 
 
