@@ -8,12 +8,13 @@ USE master;
 SET NOCOUNT ON; 
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 SET LOCK_TIMEOUT 60000; -- 60 seconds  
-DECLARE @pool_name sysname --= 'FACEBOOK';
+DECLARE @pool_name sysname --= 'REST';
 DECLARE @cpu_trend_minutes INT = 30;
 DECLARE @top_x_program_rows SMALLINT = 10;
-DECLARE @top_x_query_rows SMALLINT = 20;
-DECLARE @long_running_query_threshold_minutes INT = 15;
+DECLARE @top_x_query_rows SMALLINT = 10;
+DECLARE @long_running_query_threshold_minutes INT = 10;
 DECLARE @get_blitz_analysis BIT = 0;
+DECLARE @only_X_resultset smallint = -1;
 
 
 DECLARE @current_time_UTC datetime = sysutcdatetime();
@@ -276,7 +277,19 @@ BEGIN
 			[% CPU @SqlInstance-Level] = CONVERT(numeric(20,2),[% CPU @SqlInstance-Level]),
 			CONVERT(NUMERIC(20,2),[% CPU @Server-Level]) AS [% CPU @Server-Level],
 			[Assigned Schedulers], p.cpu_sql_counts as [Sql Schedulers], p.cpu_total_counts as [Total Schedulers]
+			,(
+					SELECT STUFF((SELECT ', ' + CAST(rp.scheduler_id as VARCHAR(3)) [text()]
+					FROM #resource_pool as rp
+					WHERE rp.rpoolname = [Pool]
+					FOR XML PATH(''), TYPE)
+					.value('.','NVARCHAR(MAX)'),1,2,' '
+				)) as [Schedulers]
 	FROM T_Pools as p
+				--,STUFF((SELECT ', ' + CAST(Value AS VARCHAR(10)) [text()]
+    --     FROM @Table1 
+    --     WHERE ID = t.ID
+    --     FOR XML PATH(''), TYPE)
+    --    .value('.','NVARCHAR(MAX)'),1,2,' ') List_Output
 	WHERE NOT ([Assigned Schedulers] IS NULL AND [% CPU @Server-Level] = 0)
 	ORDER BY [% CPU @SqlInstance-Level] desc, [% CPU @Server-Level] desc;
 END
@@ -297,7 +310,7 @@ IF (SELECT count(distinct rpoolname) FROM #resource_pool) < 2
 			where rgwg.group_id = s.group_id
 		) rp
 	WHERE s.is_user_process = 1	
-		AND login_name NOT LIKE '%SQLServices%'
+		AND login_name NOT LIKE '%sqlexec%'
 		AND (@pool_name is null or [Pool] = @pool_name )
 )
 ,T_Programs_Tasks_Total AS
@@ -455,7 +468,11 @@ SELECT RunningQuery = 'Concurrent-Session-Queries',
 			[query_count] = COUNT(*) OVER(PARTITION BY LEFT(statement_text,100)), 
 			[tasks_count] = SUM(tasks) OVER(PARTITION BY LEFT(statement_text,100)), 
 			--[tasks_count] = SUM(tasks) OVER(PARTITION BY Pool, LEFT(program_name,15), [DBName], LEFT(statement_text,100)), 
-			[session_id], [tasks], [request_status], [request_wait_type], [blocked by], [open_transaction_count], [granted_query_memory], [statement_text], [Batch_Text], [wait_time], [total_elapsed_time(S)], [login_time], [client_interface_name], [memory_usage], [session_writes], [request_writes], [session_logical_reads], [request_logical_reads], [is_user_process], [session_row_count], [request_row_count], [sql_handle], [plan_handle], [request_cpu_time], [request_start_time], [query_hash], [query_plan_hash], [BatchQueryPlan], [SqlQueryPlan],
+			[session_id], [tasks], [request_status], [request_wait_type], [blocked by], [open_transaction_count], [granted_query_memory], 
+			[statement_text], [Batch_Text], [wait_time], [total_elapsed_time(S)], [login_time], [client_interface_name], [memory_usage], 
+			[session_writes], [request_writes], [session_logical_reads], [request_logical_reads], [is_user_process], [session_row_count], 
+			[request_row_count], [sql_handle], [plan_handle], [request_cpu_time], [request_start_time], [query_hash], [query_plan_hash], 
+			[BatchQueryPlan], [SqlQueryPlan] = CONVERT(XML,[SqlQueryPlan]),
 			collection_time_utc = @current_time_UTC
 FROM T_Active_Requests ar
 WHERE @pool_name IS NULL -- No pool filter applied
@@ -509,7 +526,7 @@ begin
 											THEN 'HEAD -  '
 											ELSE '|------  ' 
 									END
-								+	CAST (r.session_id AS NVARCHAR (10)) + N' ' + (CASE WHEN LEFT(ISNULL(r.[sql_text],''),1) = '(' THEN SUBSTRING(ISNULL(r.[sql_text],''),CHARINDEX('exec',ISNULL(r.[sql_text],'')),LEN(ISNULL(r.[sql_text],'')))  ELSE ISNULL(r.[sql_text],'') END),
+								+	CAST (r.session_id AS NVARCHAR (10)) + N' ' + ISNULL((CASE WHEN LEFT(ISNULL(r.[sql_text],''),1) = '(' THEN SUBSTRING(ISNULL(r.[sql_text],''),CHARINDEX('exec',ISNULL(r.[sql_text],'')),LEN(ISNULL(r.[sql_text],'')))  ELSE ISNULL(r.[sql_text],'') END),''),
 				[session_id], [blocking_session_id], 
 				--w.lock_text,
 				[head_blocker],		
