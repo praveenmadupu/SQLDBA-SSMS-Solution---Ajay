@@ -101,7 +101,8 @@ declare @get_plans bit = 0;
 				END) = 1
 			)		
 )
-SELECT [kill_query] = 'kill '+convert(varchar,session_id), --[dd hh:mm:ss], elapsed_time_ms,
+SELECT --distinct [flush-plan] = plan_handle 
+		[kill_query] = 'kill '+convert(varchar,session_id), --[dd hh:mm:ss], elapsed_time_ms,
 		Concat
 				(
 						RIGHT('00'+CAST(ISNULL((elapsed_time_ms / 1000 / 3600 / 24), 0) AS VARCHAR(2)),2)
@@ -138,11 +139,42 @@ AND	(( @sql_text_fragment_filter is null or len(@sql_text_fragment_filter) = 0 )
 		or (	r.sql_command like ('%'+@sql_text_fragment_filter+'%')
 			 )
 	 ) 
---and r.program_name like '%Tableau 2020.3%'
---and (lower(r.login_name) like '%s1trd%' or r.program_name like '%alter_univ.pl%')
+--and r.program_name like '%Postgres Defragment%'
+--and (lower(r.login_name) like 'contso\adwivedi' )
+--and sql_command like '%#fields%'
 ORDER BY start_time asc, granted_query_memory_raw desc
 
 
 
 
 --exec sp_WhoIsActive
+
+/*
+use tempdb
+go
+
+SELECT 
+   [current-time] = getdate(),
+   [kill-query] = 'kill '+convert(varchar,des.session_id)+' /* '+ des.login_name + '(' + des.program_name + ') */',
+   GETDATE() AS [Current Time],
+   des.session_id,
+   [des].[login_name] AS [Login Name],
+   des.program_name,
+   DB_NAME ([dtdt].database_id) AS [Database Name],
+   des.open_transaction_count,
+   des.status, der.start_time as active_request_start_time,
+   des.last_request_end_time, datediff(minute,des.last_request_end_time,getdate()) as last_request_age_minutes,
+   [dtdt].[database_transaction_begin_time] AS [Transaction Begin Time],
+   [dtdt].[database_transaction_log_bytes_used] AS [Log Used Bytes],
+   [dtdt].[database_transaction_log_bytes_reserved] AS [Log Reserved Bytes],
+   SUBSTRING([dest].text, [der].statement_start_offset/2 + 1,(CASE WHEN [der].statement_end_offset = -1 THEN LEN(CONVERT(nvarchar(max),[dest].text)) * 2 ELSE [der].statement_end_offset END - [der].statement_start_offset)/2) as [Query Text]
+FROM 
+   sys.dm_tran_database_transactions [dtdt]
+   INNER JOIN sys.dm_tran_session_transactions [dtst] ON  [dtst].[transaction_id] = [dtdt].[transaction_id]
+   INNER JOIN sys.dm_exec_sessions [des] ON  [des].[session_id] = [dtst].[session_id]
+   INNER JOIN sys.dm_exec_connections [dec] ON   [dec].[session_id] = [dtst].[session_id]
+   LEFT OUTER JOIN sys.dm_exec_requests [der] ON [der].[session_id] = [dtst].[session_id]
+   OUTER APPLY sys.dm_exec_sql_text ([dec].[most_recent_sql_handle]) AS [dest]
+ORDER BY last_request_age_minutes desc, status
+GO
+*/
