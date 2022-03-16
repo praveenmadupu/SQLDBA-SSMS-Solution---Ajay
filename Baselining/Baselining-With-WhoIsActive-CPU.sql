@@ -1,4 +1,4 @@
-USE DBA_Admin
+USE DBA
 GO
 
 SET NOCOUNT ON;
@@ -16,8 +16,7 @@ DECLARE @threshold_continous_failure tinyint = 1;
 DECLARE @notification_delay_minutes tinyint = 15;
 DECLARE @is_test_alert bit = 0;
 DECLARE @verbose tinyint = 2; /* 0 - no messages, 1 - debug messages, 2 = debug messages + table results */
-DECLARE @recipients varchar(500) = 'ajay.1dwivedi@angelbroking.com'
---'sqlagentservice@gmail.com';
+DECLARE @recipients varchar(500) = 'sqlagentservice@gmail.com';
 
 /* Additional Requirements
 1) Default Global Mail Profile
