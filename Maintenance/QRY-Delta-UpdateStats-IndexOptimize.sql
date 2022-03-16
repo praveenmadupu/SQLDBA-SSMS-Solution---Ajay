@@ -6,7 +6,7 @@ set nocount on;
 --set quoted_identifier off;
 set lock_timeout 60000; -- 60 seconds
 
-declare @execute_indexoptimize bit = 1
+declare @execute_indexoptimize bit = 0
 declare @p_db_name sysname 
 --set @p_db_name = 'DBA'
 

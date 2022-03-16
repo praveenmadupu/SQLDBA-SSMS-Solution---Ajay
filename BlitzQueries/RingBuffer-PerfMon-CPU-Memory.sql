@@ -2,7 +2,7 @@
 USE master;
 
 /*	Version:			v0.1
-	Update Date:		01-Oct-2021
+	Update Date:		14-Oct-2022
 */
 
 SET NOCOUNT ON; 
@@ -13,7 +13,7 @@ DECLARE @cpu_trend_minutes INT = 30;
 DECLARE @top_x_program_rows SMALLINT = 10;
 DECLARE @top_x_query_rows SMALLINT = 10;
 DECLARE @long_running_query_threshold_minutes INT = 10;
-DECLARE @get_blitz_analysis BIT = 0;
+DECLARE @get_blitz_analysis BIT = 1;
 DECLARE @only_X_resultset smallint = -1;
 
 

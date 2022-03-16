@@ -1,4 +1,4 @@
-USE DBA
+USE DBA_Admin
 GO
 
 SET NOCOUNT ON;
@@ -6,17 +6,18 @@ SET QUOTED_IDENTIFIER ON;
 SET ANSI_WARNINGS ON;
 
 -- Parameters
-DECLARE @retention_day int = 60;
+DECLARE @retention_day int = 30;
 DECLARE @drop_recreate bit = 0;
 DECLARE	@destination_table VARCHAR(4000) = 'dbo.WhoIsActive';
 DECLARE	@staging_table VARCHAR(4000) = @destination_table+'_Staging';
 DECLARE @output_column_list VARCHAR(8000);
 DECLARE @send_error_mail bit = 1;
-DECLARE @threshold_continous_failure tinyint = 3;
+DECLARE @threshold_continous_failure tinyint = 1;
 DECLARE @notification_delay_minutes tinyint = 15;
 DECLARE @is_test_alert bit = 0;
-DECLARE @verbose tinyint = 0; /* 0 - no messages, 1 - debug messages, 2 = debug messages + table results */
-DECLARE @recipients varchar(500) = 'sqlagentservice@gmail.com';
+DECLARE @verbose tinyint = 2; /* 0 - no messages, 1 - debug messages, 2 = debug messages + table results */
+DECLARE @recipients varchar(500) = 'ajay.1dwivedi@angelbroking.com'
+--'sqlagentservice@gmail.com';
 
 /* Additional Requirements
 1) Default Global Mail Profile
@@ -239,7 +240,7 @@ BEGIN TRY
 	BEGIN
 		SET @_s = @_s + '
 	SELECT '+CONVERT(varchar,@_cpu_system)+' as [host_cpu_percent],
-			[cpu_rank] = DENSE_RANK()OVER(ORDER BY CPU_delta DESC, CPU DESC, start_time ASC, session_id), 
+			[cpu_rank] = DENSE_RANK()OVER(ORDER BY CPU_delta DESC, CPU DESC, start_time ASC, session_id, GETDATE()), 
 			[CPU_delta_percent] = CONVERT(tinyint,CASE WHEN SUM(CONVERT(bigint,REPLACE(CPU_delta,'','',''''))) over(partition by collection_time) = 0
 												THEN 0
 												ELSE ISNULL(CONVERT(bigint,REPLACE(CPU_delta,'','',''''))*100/SUM(CONVERT(bigint,REPLACE(CPU_delta,'','',''''))) over(partition by collection_time),0)
@@ -260,7 +261,7 @@ BEGIN TRY
 	BEGIN
 		SET @_s = @_s + '
 	SELECT '+CONVERT(varchar,@_cpu_system)+' as [host_cpu_percent],
-			[cpu_rank] = DENSE_RANK()OVER(ORDER BY CPU_delta DESC, CPU DESC, start_time ASC, session_id),
+			[cpu_rank] = DENSE_RANK()OVER(ORDER BY CPU_delta DESC, CPU DESC, start_time ASC, session_id, GETDATE()),
 			[CPU_delta_percent] = CONVERT(tinyint,CASE WHEN SUM(CONVERT(bigint,REPLACE(CPU_delta,'','',''''))) over(partition by collection_time) = 0
 												THEN 0
 												ELSE ISNULL(CONVERT(bigint,REPLACE(CPU_delta,'','',''''))*100/SUM(CONVERT(bigint,REPLACE(CPU_delta,'','',''''))) over(partition by collection_time),0)

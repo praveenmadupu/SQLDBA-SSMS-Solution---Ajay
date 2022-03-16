@@ -21,10 +21,11 @@ ALTER PROCEDURE [dbo].[usp_get_blocking_alert]
 AS
 BEGIN 
 	/*
-		Version:		0.2
+		Version:		0.3
 		Created By:		Ajay Kumar Dwivedi
 		Purpose:		To have custom alerting system for Consistant Blocking
-		Modifications:	2021-Dec-08 - Enhacement module to made it standard code, and implement Auto Clear
+		Modifications:	2022-Mar-15 - Wrong blocking deatils in mail https://github.com/imajaydwivedi/SQLDBA-SSMS-Solution/issues/7
+						2021-Dec-08 - Enhacement module to made it standard code, and implement Auto Clear
 	*/
 	SET NOCOUNT ON;
 
