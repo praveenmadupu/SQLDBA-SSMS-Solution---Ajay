@@ -4,6 +4,7 @@
 */
 
 --USE <<Your-DBA-Database>>;
+go
 
 IF OBJECT_ID('dbo.usp_get_blocking_alert') IS NULL
 	EXEC('CREATE PROCEDURE [dbo].[usp_get_blocking_alert] AS SELECT 1 AS [Dummy];')
@@ -20,13 +21,22 @@ ALTER PROCEDURE [dbo].[usp_get_blocking_alert]
 		@help BIT = 0
 AS
 BEGIN 
-	/*
-		Version:		0.3
-		Created By:		Ajay Kumar Dwivedi
-		Purpose:		To have custom alerting system for Consistant Blocking
-		Modifications:	2022-Mar-15 - Wrong blocking deatils in mail https://github.com/imajaydwivedi/SQLDBA-SSMS-Solution/issues/7
-						2021-Dec-08 - Enhacement module to made it standard code, and implement Auto Clear
-	*/
+/*
+	Version:		0.4
+	Created By:		Ajay Kumar Dwivedi
+	Purpose:		To have custom alerting system for Consistant Blocking
+	Modifications:	2022-Mar-15 - Wrong blocking details in mail https://github.com/imajaydwivedi/SQLDBA-SSMS-Solution/issues/7
+					2021-Dec-08 - Enhacement module to made it standard code, and implement Auto Clear
+
+EXEC [dbo].[usp_get_blocking_alert] 
+					@verbose = 2,
+					@recipients = 'sqlagentservice@gmail.com',
+					@threshold_minutes = 1,
+					@delay_minutes = 2,
+					@alert_key = 'Alert-SdtBlocking',
+					@job_name = 'Alert-SdtBlocking',
+					@is_test_alert = 0;
+*/
 	SET NOCOUNT ON;
 
 	--	Global Variables
@@ -100,7 +110,7 @@ BEGIN
 	IF(@verbose > 1)
 	BEGIN
 		PRINT CHAR(10)+'@_collection_time = '''+CONVERT(nvarchar(30),@_collection_time,121)+'''';
-		PRINT '@_latest_collection_time= '''+CONVERT(nvarchar(30),@_latest_collection_time,121)+'''';
+		PRINT '@_latest_collection_time = '''+CONVERT(nvarchar(30),@_latest_collection_time,121)+'''';
 		PRINT '@_second_latest_collection_time = '''+CONVERT(nvarchar(30),@_second_latest_collection_time,121)+'''';
 		PRINT '@threshold_minutes = ' + CONVERT(varchar,@threshold_minutes);
 		PRINT '@delay_minutes = ' + CONVERT(varchar,@delay_minutes)+CHAR(10);
@@ -284,7 +294,8 @@ BEGIN
 		SELECT	@_column_list_4_table_header = COALESCE(@_column_list_4_table_header ,'') + ('<th>'+COLUMN_NAME+'</th>'+CHAR(13)+CHAR(10))
 		FROM	INFORMATION_SCHEMA.COLUMNS as c
 		WHERE	TABLE_SCHEMA+'.'+c.TABLE_NAME = @_table_name
-			AND	c.COLUMN_NAME NOT IN ('ID');
+			AND	c.COLUMN_NAME NOT IN ('ID')
+		ORDER BY COLUMN_NAME;
 
 		IF(@verbose > 0)
 			PRINT '@_column_list_4_table_header => ' + @_column_list_4_table_header;
@@ -303,7 +314,8 @@ BEGIN
 							END)
 		FROM	INFORMATION_SCHEMA.COLUMNS as c
 		WHERE	TABLE_SCHEMA+'.'+c.TABLE_NAME = @_table_name
-			AND	c.COLUMN_NAME NOT IN ('ID');
+			AND	c.COLUMN_NAME NOT IN ('ID')
+		ORDER BY COLUMN_NAME;
 
 		IF(@verbose > 0)
 			PRINT '@_column_list_4_table_data => ' + @_column_list_4_table_data;
@@ -344,8 +356,10 @@ BEGIN
 				N'</table>' ;  
 
 		SET @_html_body = @_html_body + '
-		<p>
 		<br><br>
+		<p>To get more details, Kindly execute below query on ['+DB_NAME()+'] database-<br><br><code>
+		select * from ['+DB_NAME()+'].dbo.WhoIsActive where collection_time = '''+convert(varchar,@_latest_collection_time,121)+''' and (blocking_session_id is not null or blocked_session_count > 0);</code>
+		</p><br><br>
 		Thanks & Regards,<br>
 		Job ['+@job_name+']<br>
 		Alert Generated @ '+CONVERT(varchar(30),@_collection_time,121)+'<br></p>'+
