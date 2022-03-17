@@ -2,14 +2,27 @@
 <SqlWorkbenchSqlProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Name="Maintenance">
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
-      <Items />
+      <Items>
+        <ConnectionNode Name="196.1.115.204:E84947">
+          <Created>2022-03-15T15:31:13.0506665+05:30</Created>
+          <Type>SQL</Type>
+          <Server>196.1.115.204</Server>
+          <UserName>E84947</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB>master</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+      </Items>
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="[IndexOptimize_Modified]-SCH.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:196.1.115.204:False:E84947</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>196.1.115.204</AssociatedConnSrvName>
+          <AssociatedConnUserName>E84947</AssociatedConnUserName>
           <FullPath>[IndexOptimize_Modified]-SCH.sql</FullPath>
         </FileNode>
         <FileNode Name="[IndexOptimize_Modified]-Usage.sql">
@@ -25,9 +38,9 @@
           <FullPath>Get-Log-File-Size-Used.sql</FullPath>
         </FileNode>
         <FileNode Name="Index-Defrag-UpdateStats-Analysis.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:196.1.115.204:False:E84947</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>196.1.115.204</AssociatedConnSrvName>
+          <AssociatedConnUserName>E84947</AssociatedConnUserName>
           <FullPath>Index-Defrag-UpdateStats-Analysis.sql</FullPath>
         </FileNode>
         <FileNode Name="Maintainence - Delete files older than 72 hours.sql">
@@ -54,6 +67,12 @@
           <AssociatedConnUserName />
           <FullPath>Ola-Maintenance-Solution-Github.sql</FullPath>
         </FileNode>
+        <FileNode Name="QRY-Delta-UpdateStats-IndexOptimize.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:196.1.115.204:False:E84947</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>196.1.115.204</AssociatedConnSrvName>
+          <AssociatedConnUserName>E84947</AssociatedConnUserName>
+          <FullPath>QRY-Delta-UpdateStats-IndexOptimize.sql</FullPath>
+        </FileNode>
         <FileNode Name="QRY-Flush-Regressing-QueryPlans.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
@@ -72,10 +91,16 @@
           <AssociatedConnUserName />
           <FullPath>QRY-Last_Updated-Statistics.sql</FullPath>
         </FileNode>
-        <FileNode Name="Queries-Used.sql">
+        <FileNode Name="QRY-Statistics-State-Update-Status.sql">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
+          <FullPath>QRY-Statistics-State-Update-Status.sql</FullPath>
+        </FileNode>
+        <FileNode Name="Queries-Used.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:196.1.115.204:False:E84947</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>196.1.115.204</AssociatedConnSrvName>
+          <AssociatedConnUserName>E84947</AssociatedConnUserName>
           <FullPath>Queries-Used.sql</FullPath>
         </FileNode>
       </Items>

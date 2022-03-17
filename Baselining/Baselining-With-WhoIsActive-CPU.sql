@@ -239,7 +239,7 @@ BEGIN TRY
 	BEGIN
 		SET @_s = @_s + '
 	SELECT '+CONVERT(varchar,@_cpu_system)+' as [host_cpu_percent],
-			[cpu_rank] = DENSE_RANK()OVER(ORDER BY CPU_delta DESC, CPU DESC, start_time ASC, session_id, GETDATE()), 
+			[cpu_rank] = ROW_NUMBER()OVER(ORDER BY CPU_delta DESC, CPU DESC, start_time ASC, session_id), 
 			[CPU_delta_percent] = CONVERT(tinyint,CASE WHEN SUM(CONVERT(bigint,REPLACE(CPU_delta,'','',''''))) over(partition by collection_time) = 0
 												THEN 0
 												ELSE ISNULL(CONVERT(bigint,REPLACE(CPU_delta,'','',''''))*100/SUM(CONVERT(bigint,REPLACE(CPU_delta,'','',''''))) over(partition by collection_time),0)
@@ -260,7 +260,7 @@ BEGIN TRY
 	BEGIN
 		SET @_s = @_s + '
 	SELECT '+CONVERT(varchar,@_cpu_system)+' as [host_cpu_percent],
-			[cpu_rank] = DENSE_RANK()OVER(ORDER BY CPU_delta DESC, CPU DESC, start_time ASC, session_id, GETDATE()),
+			[cpu_rank] = ROW_NUMBER()OVER(ORDER BY CPU_delta DESC, CPU DESC, start_time ASC, session_id),
 			[CPU_delta_percent] = CONVERT(tinyint,CASE WHEN SUM(CONVERT(bigint,REPLACE(CPU_delta,'','',''''))) over(partition by collection_time) = 0
 												THEN 0
 												ELSE ISNULL(CONVERT(bigint,REPLACE(CPU_delta,'','',''''))*100/SUM(CONVERT(bigint,REPLACE(CPU_delta,'','',''''))) over(partition by collection_time),0)

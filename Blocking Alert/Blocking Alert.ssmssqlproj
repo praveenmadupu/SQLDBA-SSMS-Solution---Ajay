@@ -3,8 +3,20 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="MSI:LAB\adwivedi">
-          <Created>2020-08-03T17:53:57.2241558+00:00</Created>
+        <ConnectionNode Name="196.1.115.204:E84947">
+          <Created>2022-03-15T11:13:49.7315748+05:30</Created>
+          <Type>SQL</Type>
+          <Server>196.1.115.204</Server>
+          <UserName>E84947</UserName>
+          <Authentication>SQL</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="MSI:21L-LTPABL-1187\Ajay">
+          <Created>2020-08-03T23:23:57.2241558+05:30</Created>
           <Type>SQL</Type>
           <Server>MSI</Server>
           <UserName />
@@ -15,8 +27,8 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
-        <ConnectionNode Name="sqlprod1:LAB\adwivedi">
-          <Created>2021-12-07T03:31:54.5920903+00:00</Created>
+        <ConnectionNode Name="sqlprod1:21L-LTPABL-1187\Ajay">
+          <Created>2021-12-07T09:01:54.5920903+05:30</Created>
           <Type>SQL</Type>
           <Server>sqlprod1</Server>
           <UserName />
@@ -38,15 +50,15 @@
           <FullPath>__1. Create Blocking Scenario.sql</FullPath>
         </FileNode>
         <FileNode Name="__2. Cleanup Script.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:196.1.115.204:False:E84947</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>196.1.115.204</AssociatedConnSrvName>
+          <AssociatedConnUserName>E84947</AssociatedConnUserName>
           <FullPath>__2. Cleanup Script.sql</FullPath>
         </FileNode>
         <FileNode Name="0. Overview.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:196.1.115.204:False:E84947</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>196.1.115.204</AssociatedConnSrvName>
+          <AssociatedConnUserName>E84947</AssociatedConnUserName>
           <FullPath>0. Overview.sql</FullPath>
         </FileNode>
         <FileNode Name="1. Add DBAGroup Operator.sql">
@@ -86,9 +98,9 @@
           <FullPath>6. Fetch Blocking Information.sql</FullPath>
         </FileNode>
         <FileNode Name="Blocking-Alert-Azure.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:sqlprod1:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>sqlprod1</AssociatedConnSrvName>
-          <AssociatedConnUserName />
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:196.1.115.204:False:E84947</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>196.1.115.204</AssociatedConnSrvName>
+          <AssociatedConnUserName>E84947</AssociatedConnUserName>
           <FullPath>Blocking-Alert-Azure.sql</FullPath>
         </FileNode>
         <FileNode Name="BT-Capturing-ThresholdBased.sql">
