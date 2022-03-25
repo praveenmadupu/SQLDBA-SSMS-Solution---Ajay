@@ -1,8 +1,8 @@
 --	https://www.sqlskills.com/blogs/jonathan/identifying-external-memory-pressure-with-dm_os_ring_buffers-and-ring_buffer_resource_monitor/
 USE master;
 
-/*	Version:			v0.1
-	Update Date:		14-Oct-2022
+/*	Version:			v0.2
+	Update Date:		25-Mar-2022
 */
 
 SET NOCOUNT ON; 
@@ -13,8 +13,9 @@ DECLARE @cpu_trend_minutes INT = 30;
 DECLARE @top_x_program_rows SMALLINT = 10;
 DECLARE @top_x_query_rows SMALLINT = 10;
 DECLARE @long_running_query_threshold_minutes INT = 10;
-DECLARE @get_blitz_analysis BIT = 1;
+DECLARE @get_blitz_analysis BIT = 0;
 DECLARE @only_X_resultset smallint = -1;
+DECLARE @show_plan TINYINT = 1; /* 0 = no plan, 1 = query plan, 2 = batch plan */
 
 
 DECLARE @current_time_UTC datetime = sysutcdatetime();
@@ -471,9 +472,10 @@ SELECT RunningQuery = 'Concurrent-Session-Queries',
 			[session_id], [tasks], [request_status], [request_wait_type], [blocked by], [open_transaction_count], [granted_query_memory], 
 			[statement_text], [Batch_Text], [wait_time], [total_elapsed_time(S)], [login_time], [client_interface_name], [memory_usage], 
 			[session_writes], [request_writes], [session_logical_reads], [request_logical_reads], [is_user_process], [session_row_count], 
-			[request_row_count], [sql_handle], [plan_handle], [request_cpu_time], [request_start_time], [query_hash], [query_plan_hash], 
-			[BatchQueryPlan], [SqlQueryPlan] = CONVERT(XML,[SqlQueryPlan]),
-			collection_time_utc = @current_time_UTC
+			[request_row_count], [sql_handle], [plan_handle], [request_cpu_time], [request_start_time], [query_hash], [query_plan_hash]
+			,[BatchQueryPlan] = CASE WHEN @show_plan = 2 THEN [BatchQueryPlan] ELSE NULL END
+			,[SqlQueryPlan] = CASE WHEN @show_plan >= 1 THEN [SqlQueryPlan] ELSE NULL END
+			,collection_time_utc = @current_time_UTC
 FROM T_Active_Requests ar
 WHERE @pool_name IS NULL -- No pool filter applied
 	-- All sessions of Pool, or blockers of Pool session
