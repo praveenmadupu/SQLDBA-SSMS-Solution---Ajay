@@ -16,7 +16,7 @@ set @end_time = GETDATE()
 --set @end_time = DATEADD(minute,30*1,@start_time)
 --set @err_msg_1 = 'Unable to open the physical file'
 --set @err_msg_1 = 'There is insufficient system memory in resource pool'
-set @err_msg_1 = 'Internal'
+--set @err_msg_1 = 'Internal'
 --set @err_msg_1 = 'has been rejected due to breached concurrent connection limit';
 
 --EXEC master.dbo.xp_enumerrorlogs
@@ -58,7 +58,7 @@ select lower(convert(varchar,SERVERPROPERTY('MachineName'))) as ServerName,
 from #errorlog as e
 where 1 = 1
 --and e.Text like '%has been rejected due to breached concurrent connection limit%'
---and	e.ProcessInfo not in ('Backup')
+and	e.ProcessInfo not in ('Backup')
 --and e.ProcessInfo not in ('Logon')
 --and e.Text not like 'Error: 18456, Severity: 14, State: 5.'
 --and not (e.ProcessInfo = 'Backup' and (e.Text like 'Log was backed up%' or e.Text like 'Database backed up. %' or e.Text like 'BACKUP DATABASE successfully%') )

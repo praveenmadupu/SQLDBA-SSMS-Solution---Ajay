@@ -126,7 +126,10 @@ WHERE	s.session_id != @@SPID
 		   --How many memory operations are Outstanding (should always be 0, anything above 0 for extended periods of time is a very high sign of memory pressure)
 		   ,[MemoryGrantsOutstanding] = (SELECT cntr_value FROM sys.dm_os_performance_counters WITH (NOLOCK) WHERE [object_name] LIKE N'%Memory Manager%' AND counter_name = N'Memory Grants Outstanding' )
 )
-select  'Memory-Status' as RunningQuery, @current_time_UTC as [Current-Time-UTC], [MemoryGrantsPending] as [**M/r-Grants-Pending**], 
+select  'Memory-Status' as RunningQuery, [Domain] = DEFAULT_DOMAIN(), [ServerName] = @@servername, [IP] = CONNECTIONPROPERTY('local_net_address'),
+		[IsClustered/IsHadrEnabled] = (select CONVERT(varchar,SERVERPROPERTY('IsClustered'))+' / '+CONVERT(varchar,SERVERPROPERTY('IsHadrEnabled'))
+from sys.dm_os_host_info),
+		@current_time_UTC as [Current-Time-UTC], [MemoryGrantsPending] as [**M/r-Grants-Pending**], 
 		[**Blocking-Count**] = (select count(*) from #SysProcesses sp where sp.blocking_session_id <> 0 and sp.blocking_session_id <> sp.session_id),
 		[PageLifeExpectancy],
 		[CPU Count] = (select count(*) from sys.dm_os_schedulers as dos where dos.status IN ('VISIBLE ONLINE')),

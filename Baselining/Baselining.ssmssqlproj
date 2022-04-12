@@ -15,6 +15,18 @@
           <ConnectionProtocol>NotSpecified</ConnectionProtocol>
           <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
         </ConnectionNode>
+        <ConnectionNode Name="localhost:21L-LTPABL-1187\Ajay">
+          <Created>2022-03-21T09:43:18.4319273+05:30</Created>
+          <Type>SQL</Type>
+          <Server>localhost</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB />
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
         <ConnectionNode Name="MSI:IPFreely">
           <Created>2020-12-22T21:53:24.4920344+05:30</Created>
           <Type>SQL</Type>
@@ -86,9 +98,9 @@
           <FullPath>Baseline with [sp_BlitzFirst].sql</FullPath>
         </FileNode>
         <FileNode Name="Baselining-With-WhoIsActive-CPU.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:196.1.115.204:False:E84947</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>196.1.115.204</AssociatedConnSrvName>
-          <AssociatedConnUserName>E84947</AssociatedConnUserName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:localhost:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>localhost</AssociatedConnSrvName>
+          <AssociatedConnUserName />
           <FullPath>Baselining-With-WhoIsActive-CPU.sql</FullPath>
         </FileNode>
         <FileNode Name="BenchMarking-Storage-Network.sql">

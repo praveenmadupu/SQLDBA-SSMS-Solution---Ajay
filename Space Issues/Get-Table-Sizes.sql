@@ -13,10 +13,10 @@ if OBJECT_ID('tempdb..#ConvertedSizes') is not null
 create table #ConvertedSizes (
     [table_name] varchar(255),
     [rows] bigint,
-    reservedKb int,
-    dataKb int,
-    reservedIndexSize int,
-    reservedUnused int,
+    reservedKb bigint,
+    dataKb bigint,
+    reservedIndexSize bigint,
+    reservedUnused bigint,
 	reservedMB as cast(reservedKb/1024.0 as numeric(20,2)),
 	reservedGB as cast(reservedKb/1024.0/1024.0 as numeric(20,2)),
 	dataMB as cast(dataKb/1024.0 as numeric(20,2)),
@@ -34,7 +34,11 @@ select [name], [rows],
 		SUBSTRING(unused, 0, LEN(unused)-2)
 from #TableSize
 
-select [table_name], [rows], reservedMB, dataMB, reservedIndexSize, reservedUnused
+select [table_name], [rows], reservedMB, dataMB, 
+		reserved = case when reservedMB/1024 > 0 then convert(varchar,reservedMB/1024)+' gb' else convert(varchar,reservedMB) +' mb' end, 
+		data_size = case when dataMB/1024 > 0 then convert(varchar,dataMB/1024)+' gb' else convert(varchar,dataMB) +' mb' end, 
+		reservedIndexSize, 
+		reservedUnused
 from #ConvertedSizes
 where reservedMB > 5.0 
 	--and ltrim(rtrim(table_name)) in ('spn_iattr_user_stg','cattr_latest','data_mismatch_audit','iattr_latest','spn_cattr_user_stg','security_cache_stats','hierarchy_reconciler','pre_tdbl_nm_cattr','rattr_latest','hierarchy_old','spn_cattr_temporal_stg','backup_spn_universe','spn_iattr_temporal_stg','pre_tdbl_nm_iattr','_td_bl_mult_udlys')
